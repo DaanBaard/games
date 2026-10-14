@@ -39,24 +39,35 @@ jobs:
         with:
           fetch-depth: 0
       - name: Versietags aanmaken
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
         run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898283+github-actions[bot]@users.noreply.github.com"
+          set +e
+          fail=0
           git fetch --tags --quiet
           for meta in */game.json; do
             slug="${meta%/game.json}"
-            version="$(python3 -c 'import json,sys;print(json.load(open(sys.argv[1])).get("version",""))' "$meta")"
-            [ -z "$version" ] && continue
+            version="$(python3 -c 'import json,sys;print(json.load(open(sys.argv[1])).get("version",""))' "$meta" 2>&1)"
+            if [ $? -ne 0 ] || [ -z "$version" ]; then
+              echo "::warning::$meta: geen geldige version ($version)"
+              continue
+            fi
             tag="${slug}-v${version}"
             if git rev-parse -q --verify "refs/tags/$tag" >/dev/null; then
               echo "= $tag bestaat al"
               continue
             fi
             commit="$(git log -1 --format=%H -- "$slug")"
-            git tag -a "$tag" -m "$slug v$version" "$commit"
-            git push origin "refs/tags/$tag"
-            echo "+ $tag -> ${commit:0:7}"
+            out="$(gh api "repos/${GITHUB_REPOSITORY}/git/refs" -f ref="refs/tags/$tag" -f sha="$commit" 2>&1)"
+            if [ $? -eq 0 ]; then
+              echo "::notice::tag $tag aangemaakt op ${commit:0:7}"
+            else
+              echo "::error::tag $tag mislukt: $(echo "$out" | tr '\n' ' ' | cut -c1-300)"
+              fail=1
+            fi
           done
+          exit $fail
 
   deploy:
     needs: build
