@@ -69,6 +69,37 @@
     text-align: center; color: var(--muted);
   }
   footer { border-top: 1px solid var(--line); padding: 20px 0 40px; color: #776f64; font-size: 13px; }
+
+  /* Layout: games links, bezoekersteller rechts */
+  .layout { display: grid; grid-template-columns: minmax(0, 1fr) 280px; gap: 24px; align-items: start; }
+  .layout .grid { padding-top: 0; }
+  .counter {
+    position: sticky; top: 20px; background: var(--panel); border: 1px solid var(--line);
+    border-radius: var(--radius); padding: 22px 20px 20px; text-align: center; overflow: hidden;
+  }
+  .counter::before {
+    content: ""; position: absolute; inset: 0 0 auto; height: 4px; background: var(--accent);
+  }
+  .counter .label {
+    font-family: "JetBrains Mono", monospace; font-size: 12px; letter-spacing: .14em;
+    text-transform: uppercase; color: var(--accent); margin-bottom: 14px;
+  }
+  .digits { display: flex; justify-content: center; gap: 5px; }
+  .digit {
+    font-family: "JetBrains Mono", monospace; font-weight: 500; font-size: 38px; line-height: 1;
+    width: 1.05em; padding: 12px 0 10px; border-radius: 8px; color: var(--ink);
+    background: linear-gradient(#0b0a09 0 50%, #151310 50% 100%);
+    box-shadow: inset 0 0 0 1px #ffffff12, 0 3px 0 #0008; position: relative;
+  }
+  .digit::after { content: ""; position: absolute; left: 0; right: 0; top: 50%; height: 1px; background: #0009; }
+  .counter .sub { margin-top: 14px; color: var(--muted); font-size: 14px; }
+  .counter.loading .digit { color: #5a534a; }
+
+  @media (max-width: 760px) {
+    .layout { grid-template-columns: 1fr; }
+    .counter { position: relative; top: 0; order: -1; }
+    .digit { font-size: 36px; }
+  }
 </style>
 </head>
 <body>
@@ -78,13 +109,58 @@
       <h1>Daan's <span>Games</span></h1>
       <p class="lede">Zelfgebouwde browsergames. Klik en speel — geen installatie nodig.</p>
     </header>
-    <main id="grid" class="grid" aria-live="polite"></main>
+    <div class="layout">
+      <main id="grid" class="grid" aria-live="polite"></main>
+      <aside class="counter loading" id="counter" aria-label="Aantal bezoekers">
+        <div class="label">Bezoekers</div>
+        <div class="digits" id="digits"><span class="digit">0</span><span class="digit">0</span><span class="digit">0</span><span class="digit">0</span><span class="digit">0</span></div>
+        <div class="sub" id="counter-sub">laden…</div>
+      </aside>
+    </div>
     <footer>Nieuwe versies verschijnen hier automatisch.</footer>
   </div>
 <script>
   const hues = [12, 38, 150, 200, 265, 320];
   const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
   const fmt = d => { try { return new Date(d).toLocaleDateString("nl-NL", { day: "numeric", month: "short", year: "numeric" }); } catch { return ""; } };
+
+  // Bezoekersteller: telt elke browser één keer (unieke bezoekers) via de gratis Abacus-API.
+  (function visitorCounter() {
+    const API = "https://abacus.jasoncameron.dev";
+    const NS = "daanbaard-games", KEY = "visitors", FLAG = "dg-counted";
+    const box = document.getElementById("counter");
+    const digits = document.getElementById("digits");
+    const render = n => {
+      const s = String(n).padStart(5, "0");
+      digits.innerHTML = [...s].map(c => `<span class="digit">${c}</span>`).join("");
+      box.setAttribute("aria-label", `${n} bezoekers`);
+    };
+    const animate = target => {
+      const start = performance.now(), dur = 1200;
+      const step = t => {
+        const p = Math.min(1, (t - start) / dur);
+        render(Math.round(target * (1 - Math.pow(1 - p, 3))));
+        if (p < 1) requestAnimationFrame(step);
+      };
+      requestAnimationFrame(step);
+    };
+    let counted = false;
+    try { counted = localStorage.getItem(FLAG) === "1"; } catch {}
+    const url = `${API}/${counted ? "get" : "hit"}/${NS}/${KEY}`;
+    fetch(url)
+      .then(r => r.ok ? r.json() : Promise.reject(r.status))
+      .then(d => {
+        if (!counted) { try { localStorage.setItem(FLAG, "1"); } catch {} }
+        box.classList.remove("loading");
+        animate(Number(d.value) || 0);
+        document.getElementById("counter-sub").textContent = counted ? "bezoekers tot nu toe" : "jij bent nummer " + d.value + "!";
+      })
+      .catch(() => {
+        box.classList.remove("loading");
+        digits.innerHTML = '<span class="digit">–</span>';
+        document.getElementById("counter-sub").textContent = "teller even niet bereikbaar";
+      });
+  })();
 
   fetch("games.json", { cache: "no-store" })
     .then(r => r.ok ? r.json() : [])
