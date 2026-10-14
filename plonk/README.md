@@ -1,4 +1,4 @@
-# PLONK! — v1.1
+# PLONK! — v1.2
 
 Physics-puzzelgame met kettingreacties (geïnspireerd op het genre van The Incredible Machine), gebouwd voor Poki.
 Plaats onderdelen, druk op **Start** en laat de gouden knikker in de mond van **Bobo** belanden.
@@ -17,6 +17,16 @@ Open `index.html` in een browser (dubbelklikken werkt; een lokale server zoals `
 | Taal kiezen | Wereldbolknop linksboven op het titelscherm | – |
 | Muziek aan/uit | Knop met muzieknoot (titelscherm en rechtsboven in een level) | – |
 | Geluidseffecten aan/uit | Knop met luidspreker (titelscherm en rechtsboven in een level) | – |
+
+## Nieuw in v1.2 (op basis van de eerste Poki-data)
+Aanleiding: in de export van v1.1 haalde 76% level 1, haakte de helft binnen een minuut af, en waren level 9 en 14 muren.
+- **Start zonder onderdelen telt niet meer als poging**: Start, spatie of tik op de knikker geeft dan de tip
+  "Sleep eerst een onderdeel uit de balk onderin!", met een gloeiend vak en een wijzend handje bij de onderdelen
+- **Level 9 (Dominorij) makkelijker**: smallere sokkel onder de knikker; ruimte 14 → 37, ruim twee keer zoveel winnende dominoparen. Duidelijkere tip
+- **Level 14 (Wippen) makkelijker**: knikker dichter bij de zware bal; ruimte 5 → 12
+- **Gratis tip na 2 mislukte pogingen** (in plaats van 3) bij de levels waar spelers het vaakst vastliepen: 8, 9, 13, 14, 15, 18, 22 en 24
+- **Knop *Kast* op het winscherm** zodra er een nieuwe outfit vrijkomt (de kastknop op het titelscherm zagen nieuwe spelers nooit); *Terug* gaat weer naar het winscherm
+- **Betere meting**: Start-knop en knikker sturen nu ook een "gezien"-event, zodat ze in Poki's interactie-export verschijnen; de Start-tip en de nieuwe "sleep eerst"-tip meten ook of de speler daarna iets doet
 
 ## Nieuw in v1.1 (talen en duidelijker starten)
 - **9 talen**: Engels, Nederlands, Duits, Frans, Spaans, Italiaans, Portugees (Brazilië), Turks en Russisch

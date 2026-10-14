@@ -42,8 +42,8 @@
       inventory: { domino: 2 }, solution: [{ type: 'domino', x: 740, y: 399, a: 0 }], par: 1 },
     { id: 9, world: 2, name: 'Dominorij', tip: 'Het opstapje is hoger. Eén domino is niet genoeg: zet er twee achter elkaar.',
       items: [{ type: 'shelf', x: 190, y: 240, w: 300, a: 26 }, { type: 'heavy', x: 90, y: 144 }, { type: 'shelf', x: 610, y: 470, w: 660 },
-        { type: 'shelf', x: 895, y: 429, w: 90, h: 60 }, { type: 'marble', x: 890, y: 379 }, { type: 'shelf', x: 1030, y: 600, w: 180 }, { type: 'bobo', x: 1030, y: 530 }],
-      inventory: { domino: 3 }, solution: [{ type: 'domino', x: 660, y: 399, a: 0 }, { type: 'domino', x: 780, y: 399, a: 0 }], par: 2 },
+        { type: 'shelf', x: 895, y: 429, w: 60, h: 60 }, { type: 'marble', x: 895, y: 379 }, { type: 'shelf', x: 1030, y: 600, w: 180 }, { type: 'bobo', x: 1030, y: 530 }],
+      inventory: { domino: 3 }, solution: [{ type: 'domino', x: 680, y: 399, a: 0 }, { type: 'domino', x: 780, y: 399, a: 0 }], par: 2 }, // v1.2: smallere sokkel (data: 49% haalde dit level)
     { id: 10, world: 2, name: 'Keukenrol', tip: 'Breng de knikker over de muur. Tip: minder onderdelen = meer sterren.',
       items: [{ type: 'marble', x: 200, y: 100 }, { type: 'shelf', x: 700, y: 450, w: 30, h: 300 }, ...P(1000, 330)],
       inventory: { conveyor: 1, bouncer: 1 }, solution: [{ type: 'bouncer', x: 140, y: 180, a: 30 }], par: 1 },
@@ -59,9 +59,9 @@
       items: [{ type: 'marble', x: 300, y: 100 }, { type: 'shelf', x: 300, y: 590, w: 260 }, ...P(1060, 448), { type: 'shelf', x: 700, y: 450, w: 30, h: 300 }],
       inventory: { fan: 1, bouncer: 1, plank: 1 }, solution: [{ type: 'bouncer', x: 300, y: 540, a: 0 }, { type: 'fan', x: 220, y: 380, flip: false }], par: 2 },
     { id: 11, world: 3, name: 'Wippen', tip: 'Nieuw: de wip! Zet het midden precies tussen de knikker en de zware bal.',
-      items: [{ type: 'marble', x: 340, y: 380 }, { type: 'heavy', x: 520, y: 90 }, { type: 'shelf', x: 620, y: 500, w: 28, h: 200 },
+      items: [{ type: 'marble', x: 380, y: 380 }, { type: 'heavy', x: 520, y: 90 }, { type: 'shelf', x: 620, y: 500, w: 28, h: 200 },
         { type: 'shelf', x: 810, y: 470, w: 360, a: 12 }, ...P(1060, 530)],
-      inventory: { seesaw: 1 }, solution: [{ type: 'seesaw', x: 420, y: 450, a: 0 }], par: 1 },
+      inventory: { seesaw: 1 }, solution: [{ type: 'seesaw', x: 460, y: 540, a: 0 }], par: 1 },
     { id: 15, world: 3, name: 'Wipwap', tip: 'Precisiewerk: de zware bal en de knikker liggen ver uit elkaar.',
       items: [{ type: 'heavy', x: 330, y: 100 }, { type: 'marble', x: 570, y: 300 }, { type: 'shelf', x: 740, y: 480, w: 28, h: 240 },
         { type: 'shelf', x: 950, y: 470, w: 420, a: 12 }, { type: 'shelf', x: 1170, y: 600, w: 180 }, { type: 'bobo', x: 1190, y: 530 }],
@@ -105,6 +105,10 @@
       inventory: { plank: 1, conveyor: 1, bouncer: 1, fan: 1 }, solution: [{ type: 'plank', x: 220, y: 260, a: 30 }, { type: 'bouncer', x: 400, y: 360, a: 15 }], par: 2 },
   ];
   LEVELS.forEach((l, i) => { l.id = i + 1; }); // doorlopende nummering
+  // v1.2: levels waar spelers in de Poki-data vaak vastliepen (≥ 3 mislukte pogingen per oplossing, of weinig ruimte):
+  // daar komt de gratis tip al na 2 mislukte pogingen in plaats van 3
+  const HARD = ['Domino-effect', 'Dominorij', 'Tuinslang', 'Wippen', 'Wipwap', 'Kettingreactie', 'Sterrensprong', 'Meteoor'];
+  LEVELS.forEach(l => { if (HARD.includes(l.name)) l.hard = true; });
   root.PLONK_WORLDS = WORLDS;
   root.PLONK_LEVELS = LEVELS;
   if (typeof module !== 'undefined') { module.exports = LEVELS; module.exports.WORLDS = WORLDS; }

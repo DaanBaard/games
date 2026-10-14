@@ -6,7 +6,7 @@
   const S = window.PlonkSim, LEVELS = window.PLONK_LEVELS, WORLDS = window.PLONK_WORLDS, SFX = window.SFX, Poki = window.Poki;
   const W = 1280, H = 720, GRID = 10, PLAY_TOP = 60, PLAY_BOTTOM = 600;
   const FONT = "'Baloo 2','Nunito','Arial Rounded MT Bold','Trebuchet MS',system-ui,sans-serif";
-  const VERSION = 'v1.1';
+  const VERSION = 'v1.2';
 
   const cv = document.getElementById('game');
   const ctx = cv.getContext('2d');
@@ -663,7 +663,7 @@
   // eerste input, 'where' (waar is de speler na 1/3/5 min), terugkeer per dag en een funnel per versie (+ A/B-groep).
   // Volledige lijst: EVENTS.md
   const M = (c, w, a) => Poki.measure(c, w, a);
-  const GAME_VERSION = '11';
+  const GAME_VERSION = '12';
   const AB = (() => {                              // A/B-groep: ?ab=a of ?ab=b, anders opgeslagen; standaard 'a' (geen test actief)
     try { const q = new URLSearchParams(location.search).get('ab'); if (q === 'a' || q === 'b') { localStorage.setItem('plonk_ab', q); return q; } } catch (e) {}
     try { const g = localStorage.getItem('plonk_ab'); if (g === 'a' || g === 'b') return g; } catch (e) {}
@@ -720,7 +720,12 @@
   }
   function play(via) {
     if (G.screen !== 'build' || G.busy || G.intro) return;
+    if (!G.placements.length) {                    // v1.2: geen lege (kansloze) poging; wijs naar de onderdelenbalk
+      SFX.bad(); G.nudgeAt = G.t; G.toast = { text: tr('placeFirst'), t: 0, dur: 3 };
+      once('help', 'place-first', 'visible'); G.placeFirstPending = true; return;
+    }
     M('start', via || 'button', 'interact'); G.startsThisLevel = (G.startsThisLevel || 0) + 1;
+    if (G.pressHintPending) { G.pressHintPending = false; once('help', 'press-start', 'interact'); }
     SFX.start();
     G.sim = S.createSim(G.level, G.placements);
     G.screen = 'play'; G.selected = -1; G.slow = 1; G.acc = 0; G.eaten = 0; G.toast = null;
@@ -766,7 +771,7 @@
     const L = G.level; G.attempts = (G.attempts || 0) + 1; save.fails[L.id] = (save.fails[L.id] || 0) + 1; persist();
     const gap = Math.max(0, Math.round((G.minDist - S.BOBO_R - S.MARBLE_R) / 10));
     let msg = gap <= 3 ? tr('close') : gap <= 15 ? tr('almost', { n: gap }) : tr('tryAgain');
-    if (G.attempts >= 3 && !G.hint && !G.freeOffered) { G.freeHint = true; G.freeOffered = true; msg = tr('freeTip'); }
+    if (G.attempts >= (L.hard ? 2 : 3) && !G.hint && !G.freeOffered) { G.freeHint = true; G.freeOffered = true; msg = tr('freeTip'); }
     if (G.attempts >= 5 && !G.offerSkip) { G.offerSkip = true; msg = tr('skipOffer'); }
     G.toast = { text: msg, t: 0, dur: 3 };
     const simRef = G.sim; setTimeout(() => { if (G.screen === 'play' && G.sim === simRef && G.sim.state === 'lost') stopPlay(); }, 1500);
@@ -940,6 +945,7 @@
     // startmarkering van knikker in bouwmodus: tik op de knikker = Start
     if (G.screen === 'build') {
       const m = L.items.find(i => i.type === 'marble'), hov = G.hover === 'marble';
+      once('start', 'marble', 'visible');
       ctx.save(); ctx.strokeStyle = hov ? 'rgba(198,242,122,.95)' : 'rgba(255,220,120,.7)'; ctx.lineWidth = hov ? 3 : 2; ctx.setLineDash([6, 6]); ctx.lineDashOffset = -G.t * 20;
       ctx.beginPath(); ctx.arc(m.x, m.y, 30 + Math.sin(G.t * 3) * 2, 0, 7); ctx.stroke(); ctx.restore();
       // klein groen 'play'-rondje rechtsonder aan de knikker
@@ -1111,6 +1117,7 @@
   }
   function drawTray() {
     panel(TRAY.x, TRAY.y, TRAY.w, TRAY.h, 26, 0.8);
+    const nudge = G.nudgeAt != null && G.t - G.nudgeAt < 2.5 && !G.placements.length;
     for (const s of traySlots()) {
       const n = remaining(s.type), hov = G.hover === 'slot_' + s.type;
       ctx.save();
@@ -1135,6 +1142,13 @@
       ctx.font = `800 17px ${FONT}`; ctx.fillStyle = n > 0 ? '#5A2A00' : 'rgba(255,255,255,.5)'; ctx.fillText('×' + n, s.x + s.w - 10, s.y + 9);
       ctx.restore();
       G.buttons.push({ id: 'slot_' + s.type, x: s.x, y: s.y, w: s.w, h: s.h, slot: s.type });
+    }
+    if (nudge) {                                   // Start zonder onderdelen: laat zien waar ze vandaan komen
+      const s = traySlots().find(q => remaining(q.type) > 0); if (s) {
+        const k = 0.5 + 0.5 * Math.sin(G.t * 10);
+        ctx.save(); ctx.strokeStyle = `rgba(255,230,107,${0.6 + 0.4 * k})`; ctx.lineWidth = 5; rr(ctx, s.x - 6, s.y - 6, s.w + 12, s.h + 12, 22); ctx.stroke(); ctx.restore();
+        drawHand(s.x + s.w / 2 - 6, s.y + 30 - Math.abs(Math.sin(G.t * 6)) * 14, 1, false);
+      }
     }
   }
 
@@ -1169,9 +1183,10 @@
         const k = 0.5 + 0.5 * Math.sin(G.t * 5);
         ctx.save(); ctx.globalAlpha = 0.35 + 0.4 * k; ctx.fillStyle = '#C6F27A';
         rr(ctx, W - 200 - 8 - k * 6, 626 - 8 - k * 6, 180 + 16 + k * 12, 76 + 16 + k * 12, 46); ctx.fill(); ctx.restore();
-        if (!G.startsThisLevel && idle > 7 && !G.startHintShown) { G.startHintShown = true; G.toast = { text: tr('pressStart'), t: 0, dur: 4 }; once('help', 'press-start', 'visible'); }
+        if (!G.startsThisLevel && idle > 7 && !G.startHintShown) { G.startHintShown = true; G.toast = { text: tr('pressStart'), t: 0, dur: 4 }; once('help', 'press-start', 'visible'); G.pressHintPending = true; }
       }
       button('play', W - 200, 626, 180, 76, { color: COL.green, icon: icon.play, label: tr('start'), size: 30, fn: () => play('button') });
+      once('start', 'button', 'visible');
       if (urge && !G.startsThisLevel && idle > 4 && !L.tutorial) drawHand(W - 150, 662 + Math.abs(Math.sin(G.t * 5)) * 8, 0.95, false);
       // geselecteerd onderdeel: draai/verwijder
       if (G.selected >= 0 && !G.drag) {
@@ -1253,7 +1268,7 @@
     button('start', W / 2 - 140, 560, 280, 90, { color: COL.green, icon: icon.play, label: tr('play'), size: 38, fn: () => { SFX.unlock(); SFX.start(); if (fresh) { startLevel(0); return; } M('menu', 'open', 'interact'); G.world = lastOpenWorld(); G.screen = 'levels'; } });
     if (!fresh) {
       once('wardrobe', 'button', 'visible');
-      button('wardrobe', 40, 580, 210, 70, { color: COL.purple, icon: icon.hat, label: tr('wardrobe'), size: 26, fn: () => { SFX.click(); M('wardrobe', 'button', 'interact'); M('mode', 'wardrobe', 'interact'); G.screen = 'wardrobe'; } });
+      button('wardrobe', 40, 580, 210, 70, { color: COL.purple, icon: icon.hat, label: tr('wardrobe'), size: 26, fn: () => { SFX.click(); M('wardrobe', 'button', 'interact'); M('mode', 'wardrobe', 'interact'); G.wardFrom = null; G.screen = 'wardrobe'; } });
       const D = dailyChallenge();
       if (D) {
         const dx = W - 330, dy = 540;
@@ -1401,7 +1416,7 @@
       fillFit(on ? tr('wearing') : open ? tr('tapWear') : (o.daily ? tr('needDaily', { n: o.daily }) : tr('needStars', { n: o.need })), x + cw / 2, y + 172, cw - 12);
       G.buttons.push({ id: 'out_' + o.id, x, y, w: cw, h: ch, fn: () => { if (!open) { SFX.bad(); return; } SFX.pick(); if (save.outfit !== o.id) M('outfit', o.id, 'equip'); save.outfit = o.id; persist(); sparkle(x + cw / 2, y + 60, 10); } });
     });
-    button('back', 30, 630, 170, 66, { color: COL.purple, icon: icon.home, label: tr('back'), size: 24, fn: () => { SFX.click(); G.screen = 'title'; } });
+    button('back', 30, 630, 170, 66, { color: COL.purple, icon: icon.home, label: tr('back'), size: 24, fn: () => { SFX.click(); G.screen = G.wardFrom === 'win' && G.result ? 'win' : 'title'; G.wardFrom = null; } });
     drawOutfitBar(W / 2 + 60, 664, 560);
   }
 
@@ -1437,8 +1452,8 @@
       if (!R.sOut && rk > 0) { R.sOut = 1; SFX.win(); sparkle(W / 2 - 150, py + 316, 20); }
       panel(px + 40, py + 278, pw - 80, 78, 26, 0.6);
       ctx.save(); ctx.translate(px + 100, py + 324); ctx.scale(0.42, 0.42); drawBobo(0, 0, S.BOBO_R, G.t, null, { outfit: o.id }); ctx.restore();
-      textOut(tr('newForBobo'), px + 150, py + 304, 20, '#FFE66B', OUT, 4, 'left', pw - 200);
-      textOut(oname(o), px + 150, py + 334, 26, '#FFFFFF', OUT, 5, 'left', pw - 200);
+      textOut(tr('newForBobo'), px + 150, py + 304, 20, '#FFE66B', OUT, 4, 'left', pw - 370);
+      textOut(oname(o), px + 150, py + 334, 26, '#FFFFFF', OUT, 5, 'left', pw - 370);
     } else if (R.dailyDone) {
       panel(px + 40, py + 284, pw - 80, 62, 26, 0.6);
       textOut(tr('dailyWin', { n: save.daily.count }), W / 2, py + 315, 22, '#FFE66B', OUT, 5, 'center', pw - 100);
@@ -1458,6 +1473,11 @@
     if (k > 0.9) {
       button('again', px + 40, py + ph - 104, 220, 78, { color: COL.purple, icon: icon.stop, label: tr('again'), size: 26, fn: () => { SFX.click(); M('win', 'retry', 'interact'); retry(); } });
       button('next', px + pw - 300, py + ph - 104, 260, 78, { color: COL.green, icon: icon.next, label: G.daily ? tr('done') : tr('next'), size: 28, fn: () => { SFX.click(); M('win', 'next', 'interact'); nextLevel(); } });
+      // v1.2: nieuwe outfit? meteen naar de kast (de kastknop op het titelscherm zien nieuwe spelers nooit)
+      if (R.unlockedNow.length && G.t - G.winAt > 1.6) {
+        once('wardrobe', 'win-button', 'visible');
+        button('wardWin', px + pw - 210, py + 290, 160, 54, { color: COL.purple, icon: icon.hat, label: tr('wardrobe'), size: 20, fn: () => { if (G.busy) return; SFX.click(); M('wardrobe', 'win-button', 'interact'); M('mode', 'wardrobe', 'interact'); G.wardFrom = 'win'; G.screen = 'wardrobe'; } });
+      }
     }
   }
 
@@ -1679,6 +1699,7 @@
         SFX.place(); puff(it.x, it.y + 10, 8);
         if (S.PARTS[it.type].rotStep && !save.rotTip) { save.rotTip = 1; persist(); G.toast = { text: tr('rotateTip'), t: 0, dur: 4.5 }; }
         if (d.index == null && G.level.tutorial) once('tutorial', 'hand', 'part-placed');
+        if (d.index == null && G.placeFirstPending) { G.placeFirstPending = false; once('help', 'place-first', 'interact'); }
         else if (d.index != null) once('help', 'move-part', 'interact');
         if (d.magnet) { G.hint = null; sparkle(it.x, it.y, 12); SFX.star(1); }
       } else if (d.index != null && !inField) { G.placements.splice(d.index, 1); G.selected = -1; SFX.pick(); }
