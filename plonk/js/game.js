@@ -4,7 +4,7 @@
   const S = window.PlonkSim, LEVELS = window.PLONK_LEVELS, WORLDS = window.PLONK_WORLDS, SFX = window.SFX, Poki = window.Poki;
   const W = 1280, H = 720, GRID = 10, PLAY_TOP = 60, PLAY_BOTTOM = 600;
   const FONT = "'Baloo 2','Nunito','Arial Rounded MT Bold','Trebuchet MS',system-ui,sans-serif";
-  const VERSION = 'v0.9';
+  const VERSION = 'v1.0';
 
   const cv = document.getElementById('game');
   const ctx = cv.getContext('2d');
@@ -661,7 +661,7 @@
   // eerste input, 'where' (waar is de speler na 1/3/5 min), terugkeer per dag en een funnel per versie (+ A/B-groep).
   // Volledige lijst: EVENTS.md
   const M = (c, w, a) => Poki.measure(c, w, a);
-  const GAME_VERSION = '9';
+  const GAME_VERSION = '10';
   const AB = (() => {                              // A/B-groep: ?ab=a of ?ab=b, anders opgeslagen; standaard 'a' (geen test actief)
     try { const q = new URLSearchParams(location.search).get('ab'); if (q === 'a' || q === 'b') { localStorage.setItem('plonk_ab', q); return q; } } catch (e) {}
     try { const g = localStorage.getItem('plonk_ab'); if (g === 'a' || g === 'b') return g; } catch (e) {}
@@ -1016,10 +1016,17 @@
     stop: (x, y, s) => { ctx.strokeStyle = '#FFF'; ctx.lineWidth = s * 0.45; ctx.lineCap = 'round'; ctx.beginPath(); ctx.arc(x, y, s * 0.85, -2.6, 2.2); ctx.stroke(); ctx.fillStyle = '#FFF'; ctx.beginPath(); ctx.moveTo(x - s * 1.25, y - s * 0.9); ctx.lineTo(x - s * 0.15, y - s * 0.75); ctx.lineTo(x - s * 0.9, y + s * 0.05); ctx.fill(); },
     home: (x, y, s) => { ctx.fillStyle = '#FFF'; ctx.beginPath(); ctx.moveTo(x, y - s); ctx.lineTo(x + s, y); ctx.lineTo(x + s * 0.7, y); ctx.lineTo(x + s * 0.7, y + s * 0.9); ctx.lineTo(x - s * 0.7, y + s * 0.9); ctx.lineTo(x - s * 0.7, y); ctx.lineTo(x - s, y); ctx.closePath(); ctx.fill(); },
     bulb: (x, y, s) => { ctx.fillStyle = '#FFF'; ctx.beginPath(); ctx.arc(x, y - s * 0.25, s * 0.75, 0, 7); ctx.fill(); rr(ctx, x - s * 0.35, y + s * 0.4, s * 0.7, s * 0.5, 3); ctx.fill(); },
-    sound: (x, y, s) => { ctx.fillStyle = '#FFF'; ctx.beginPath(); ctx.moveTo(x - s, y - s * 0.4); ctx.lineTo(x - s * 0.4, y - s * 0.4); ctx.lineTo(x + s * 0.2, y - s); ctx.lineTo(x + s * 0.2, y + s); ctx.lineTo(x - s * 0.4, y + s * 0.4); ctx.lineTo(x - s, y + s * 0.4); ctx.fill();
+    sound: (x, y, s) => {          // geluidseffecten: luidspreker
+      ctx.fillStyle = '#FFF'; ctx.beginPath(); ctx.moveTo(x - s, y - s * 0.4); ctx.lineTo(x - s * 0.4, y - s * 0.4); ctx.lineTo(x + s * 0.2, y - s); ctx.lineTo(x + s * 0.2, y + s); ctx.lineTo(x - s * 0.4, y + s * 0.4); ctx.lineTo(x - s, y + s * 0.4); ctx.fill();
       ctx.strokeStyle = '#FFF'; ctx.lineWidth = s * 0.25; ctx.lineCap = 'round';
-      if (SFX.isMuted()) { ctx.beginPath(); ctx.moveTo(x + s * 0.5, y - s * 0.4); ctx.lineTo(x + s * 1.1, y + s * 0.4); ctx.moveTo(x + s * 1.1, y - s * 0.4); ctx.lineTo(x + s * 0.5, y + s * 0.4); ctx.stroke(); }
+      if (!SFX.sfxOn()) { ctx.beginPath(); ctx.moveTo(x + s * 0.5, y - s * 0.4); ctx.lineTo(x + s * 1.1, y + s * 0.4); ctx.moveTo(x + s * 1.1, y - s * 0.4); ctx.lineTo(x + s * 0.5, y + s * 0.4); ctx.stroke(); }
       else { ctx.beginPath(); ctx.arc(x + s * 0.2, y, s * 0.6, -0.8, 0.8); ctx.stroke(); ctx.beginPath(); ctx.arc(x + s * 0.2, y, s * 1.05, -0.8, 0.8); ctx.stroke(); } },
+    music: (x, y, s) => {          // achtergrondmuziek: dubbele muzieknoot
+      ctx.fillStyle = '#FFF'; ctx.strokeStyle = '#FFF'; ctx.lineWidth = s * 0.22; ctx.lineCap = 'round';
+      ctx.beginPath(); ctx.ellipse(x - s * 0.55, y + s * 0.65, s * 0.38, s * 0.28, -0.4, 0, 7); ctx.fill();
+      ctx.beginPath(); ctx.ellipse(x + s * 0.6, y + s * 0.45, s * 0.38, s * 0.28, -0.4, 0, 7); ctx.fill();
+      ctx.beginPath(); ctx.moveTo(x - s * 0.2, y + s * 0.6); ctx.lineTo(x - s * 0.2, y - s * 0.85); ctx.lineTo(x + s * 0.95, y - s * 1.05); ctx.lineTo(x + s * 0.95, y + s * 0.4); ctx.stroke();
+      if (!SFX.musicOn()) { ctx.strokeStyle = '#FF6B5B'; ctx.lineWidth = s * 0.3; ctx.beginPath(); ctx.moveTo(x - s * 1.1, y - s * 1.1); ctx.lineTo(x + s * 1.2, y + s * 1.1); ctx.stroke(); } },
     rotate: (x, y, s) => { ctx.strokeStyle = '#FFF'; ctx.lineWidth = s * 0.4; ctx.lineCap = 'round'; ctx.beginPath(); ctx.arc(x, y, s * 0.8, -0.3, 4.2); ctx.stroke(); ctx.fillStyle = '#FFF'; ctx.beginPath(); ctx.moveTo(x + s * 1.3, y - s * 0.6); ctx.lineTo(x + s * 0.3, y - s * 0.45); ctx.lineTo(x + s * 0.95, y + s * 0.4); ctx.fill(); },
     hat: (x, y, s) => { ctx.fillStyle = '#FFF'; ctx.beginPath(); ctx.moveTo(x - s * 0.9, y + s * 0.6); ctx.lineTo(x, y - s * 1.1); ctx.lineTo(x + s * 0.9, y + s * 0.6); ctx.closePath(); ctx.fill(); ctx.beginPath(); ctx.arc(x, y - s * 1.1, s * 0.3, 0, 7); ctx.fill(); },
     // kantel-iconen: een mini-plank met een pijl naar beneden bij het uiteinde dat zakt
@@ -1032,6 +1039,15 @@
     right: (x, y, s) => { ctx.strokeStyle = '#FFF'; ctx.lineWidth = s * 0.5; ctx.lineCap = 'round'; ctx.lineJoin = 'round'; ctx.beginPath(); ctx.moveTo(x - s * 0.35, y - s * 0.8); ctx.lineTo(x + s * 0.45, y); ctx.lineTo(x - s * 0.35, y + s * 0.8); ctx.stroke(); },
     left: (x, y, s) => { ctx.strokeStyle = '#FFF'; ctx.lineWidth = s * 0.5; ctx.lineCap = 'round'; ctx.lineJoin = 'round'; ctx.beginPath(); ctx.moveTo(x + s * 0.35, y - s * 0.8); ctx.lineTo(x - s * 0.45, y); ctx.lineTo(x + s * 0.35, y + s * 0.8); ctx.stroke(); },
   };
+  function drawBtnTips() {      // uitleg onder de muziek-/geluidknop als je ze aanwijst (of indrukt op touch)
+    const id = ['music', 'sound'].includes(G.pressed) ? G.pressed : ['music', 'sound'].includes(G.hover) ? G.hover : null;
+    if (!id) return; const b = G.buttons.find(q => q.id === id); if (!b) return;
+    const txt = id === 'music' ? (SFX.musicOn() ? 'Muziek: aan' : 'Muziek: uit') : (SFX.sfxOn() ? 'Geluidseffecten: aan' : 'Geluidseffecten: uit');
+    ctx.font = `800 16px ${FONT}`; const tw = ctx.measureText(txt).width + 26, tx = clamp(b.x + b.w / 2, tw / 2 + 8, W - tw / 2 - 8), ty = b.y + b.h + 24;
+    panel(tx - tw / 2, ty - 16, tw, 32, 16, 0.92); textOut(txt, tx, ty, 16, '#FFFFFF', OUT, 4);
+  }
+  function toggleMusic() { SFX.unlock(); SFX.setMusic(!SFX.musicOn()); M('settings', 'music', SFX.musicOn() ? 'on' : 'off'); SFX.click(); G.toast = { text: SFX.musicOn() ? 'Muziek aan' : 'Muziek uit', t: 0, dur: 1.2 }; }
+  function toggleSfx() { SFX.unlock(); SFX.setSfx(!SFX.sfxOn()); M('settings', 'sfx', SFX.sfxOn() ? 'on' : 'off'); SFX.click(); G.toast = { text: SFX.sfxOn() ? 'Geluidseffecten aan' : 'Geluidseffecten uit', t: 0, dur: 1.2 }; }
   function drawTiltIcon(x, y, s, dir) {
     ctx.save(); ctx.translate(x, y + s * 0.15);
     ctx.save(); ctx.rotate(dir * 0.42);
@@ -1044,7 +1060,8 @@
     ctx.beginPath(); ctx.moveTo(ex - s * 0.38, ey - s * 0.12); ctx.lineTo(ex + s * 0.38, ey - s * 0.12); ctx.lineTo(ex, ey + s * 0.38); ctx.closePath(); ctx.fill();
     ctx.restore();
   }
-  const COL = { green: ['#C6F27A', '#8AE234', '#4E9A12'], blue: ['#9BE6FF', '#4CC9F0', '#1D7FC2'], purple: ['#D7B8FF', '#9B5DE5', '#5C2BA8'], yellow: ['#FFF0A0', '#FFC93C', '#D88A0E'], coral: ['#FF9C88', '#FF6B5B', '#C8303E'] };
+  const COL = {
+    gray: ['#B9B4CC', '#7E7898', '#4B4666'], green: ['#C6F27A', '#8AE234', '#4E9A12'], blue: ['#9BE6FF', '#4CC9F0', '#1D7FC2'], purple: ['#D7B8FF', '#9B5DE5', '#5C2BA8'], yellow: ['#FFF0A0', '#FFC93C', '#D88A0E'], coral: ['#FF9C88', '#FF6B5B', '#C8303E'] };
 
   function textOut(str, x, y, size, fill = '#FFF', stroke = OUT, lw = 6, align = 'center') {
     ctx.font = `800 ${size}px ${FONT}`; ctx.textAlign = align; ctx.textBaseline = 'middle';
@@ -1109,8 +1126,9 @@
     const best = save.stars[L.id] || 0;
     for (let i = 0; i < 3; i++) drawStar(272 + i * 26, 33, 11, i < best);
 
-    button('home', W - 196, 10, 50, 46, { color: COL.purple, icon: icon.home, fn: () => { SFX.click(); if (G.screen === 'play') stopPlay(true); trackEnd('fail'); M('menu', 'open', 'interact'); Poki.gameplayStop(); G.world = G.level.world - 1; G.screen = 'levels'; } });
-    button('sound', W - 138, 10, 50, 46, { color: COL.purple, icon: icon.sound, fn: () => { SFX.setMuted(!SFX.isMuted()); M('settings', 'sound', SFX.isMuted() ? 'off' : 'on'); SFX.click(); } });
+    button('home', W - 254, 10, 50, 46, { color: COL.purple, icon: icon.home, fn: () => { SFX.click(); if (G.screen === 'play') stopPlay(true); trackEnd('fail'); M('menu', 'open', 'interact'); Poki.gameplayStop(); G.world = G.level.world - 1; G.screen = 'levels'; } });
+    button('music', W - 196, 10, 50, 46, { color: SFX.musicOn() ? COL.purple : COL.gray, icon: icon.music, fn: toggleMusic });
+    button('sound', W - 138, 10, 50, 46, { color: SFX.sfxOn() ? COL.purple : COL.gray, icon: icon.sound, fn: toggleSfx });
     if (G.screen === 'build' && !G.intro) {          // per level één keer 'visible' per hintsoort
       const hk = L.tutorial ? 'tutorial' : G.freeHint ? 'free' : 'reward';
       if (!G.hintSent[hk]) { G.hintSent[hk] = 1; if (hk === 'tutorial') M('tutorial', 'hint', 'visible'); else if (hk === 'free') M('help', 'free-hint', 'visible'); else M('reward', 'hint', 'visible'); }
@@ -1121,7 +1139,7 @@
     if (G.freeHint) { ctx.save(); ctx.globalAlpha = 0.5 + 0.5 * Math.sin(G.t * 6); ctx.strokeStyle = '#FFE66B'; ctx.lineWidth = 5; rr(ctx, W - 86, 4, 76, 58, 26); ctx.stroke(); ctx.restore(); }
     ctx.save(); rr(ctx, W - (freeH ? 62 : 44), 44, freeH ? 52 : 30, 16, 8); ctx.fillStyle = freeH ? '#3E8A1A' : '#2A1240'; ctx.fill(); ctx.font = `800 10px ${FONT}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillStyle = freeH ? '#FFFFFF' : '#FFC93C'; ctx.fillText(freeH ? 'GRATIS' : 'AD', W - (freeH ? 36 : 29), 52); ctx.restore();
     if (G.offerSkip && G.screen === 'build' && !G.hintSent.skip) { G.hintSent.skip = 1; M('help', 'skip', 'visible'); }
-    if (G.offerSkip && G.screen === 'build') button('skip', W - 366, 10, 160, 46, { color: COL.purple, icon: icon.next, label: 'Overslaan', size: 18, fn: skipLevel });
+    if (G.offerSkip && G.screen === 'build') button('skip', W - 424, 10, 160, 46, { color: COL.purple, icon: icon.next, label: 'Overslaan', size: 18, fn: skipLevel });
     if (G.daily) { panel(16, 62, 270, 34, 17, 0.8); ctx.font = `800 16px ${FONT}`; ctx.textAlign = 'left'; ctx.textBaseline = 'middle'; ctx.fillStyle = '#FFE66B'; ctx.fillText(`Dagpuzzel: binnen ${G.daily.goal}s`, 32, 80); }
     if (G.screen === 'build') {
       button('play', W - 200, 626, 180, 76, { color: COL.green, icon: icon.play, label: 'Start', size: 30, fn: play });
@@ -1220,7 +1238,8 @@
         }
       }
     }
-    button('sound', W - 80, 16, 60, 54, { color: COL.purple, icon: icon.sound, fn: () => { SFX.unlock(); SFX.setMuted(!SFX.isMuted()); M('settings', 'sound', SFX.isMuted() ? 'off' : 'on'); SFX.click(); } });
+    button('music', W - 146, 16, 60, 54, { color: SFX.musicOn() ? COL.purple : COL.gray, icon: icon.music, fn: toggleMusic });
+    button('sound', W - 80, 16, 60, 54, { color: SFX.sfxOn() ? COL.purple : COL.gray, icon: icon.sound, fn: toggleSfx });
     ctx.font = `700 14px ${FONT}`; ctx.fillStyle = 'rgba(255,255,255,.45)'; ctx.textAlign = 'right'; ctx.fillText(VERSION, W - 16, H - 14);
   }
 
@@ -1270,6 +1289,48 @@
     const total = LEVELS.reduce((a, L) => a + (save.stars[L.id] || 0), 0);
     panel(W - 250, 630, 220, 56, 28, 0.75); drawStar(W - 212, 658, 18, true); textOut(`${total} / ${LEVELS.length * 3}`, W - 125, 659, 28, '#FFFFFF', OUT, 5);
     drawOutfitBar(W / 2, 660, 460);
+  }
+
+  // ---------- key-art voor de Poki-thumbnail (alleen via PLONK_DEBUG.thumb()) ----------
+  // Poki-richtlijnen: vierkant, geen tekst, hoofdfiguur in dynamische pose, één duidelijk middelpunt,
+  // eenvoudige achtergrond, veel contrast, niets wat niet in de game zit.
+  function drawThumb() {
+    const cx = 640;
+    drawBackground(G.t);
+    ctx.fillStyle = 'rgba(16,8,48,.45)'; ctx.fillRect(0, 0, W, H);                       // achtergrond rustiger
+    ctx.fillStyle = rg(ctx, cx + 20, 420, 40, cx + 20, 420, 420, [[0, 'rgba(255,214,120,.55)'], [0.5, 'rgba(255,170,90,.18)'], [1, 'rgba(255,170,90,0)']]);
+    ctx.fillRect(0, 0, W, H);                                                              // warme spot op Bobo
+    // stralen achter Bobo
+    ctx.save(); ctx.translate(cx + 40, 440); ctx.globalAlpha = 0.16; ctx.fillStyle = '#FFE9A8';
+    for (let i = 0; i < 14; i++) { ctx.rotate(Math.PI / 7); ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(-40, -640); ctx.lineTo(40, -640); ctx.closePath(); ctx.fill(); }
+    ctx.restore();
+    // plank waar de knikker vanaf komt (echt onderdeel uit de game)
+    drawSprite(partSprite('plank'), cx - 330, 150, rad(28), 1, 1.35, 1.35);
+    // spoor van de knikker: boog met stippen en snelheidslijnen
+    const mx = cx - 120, my = 300;
+    ctx.save();
+    ctx.globalAlpha = 0.9; ctx.strokeStyle = '#FFF4C4'; ctx.lineCap = 'round';
+    for (const [o, l, w] of [[-26, 60, 5], [0, 84, 7], [26, 52, 5]]) {   // snelheidslijnen in de vliegrichting
+      const ox = mx - 46 - o * 0.45, oy = my - 22 + o * 0.9;
+      ctx.lineWidth = w; ctx.beginPath(); ctx.moveTo(ox, oy); ctx.lineTo(ox - l * 0.88, oy - l * 0.47); ctx.stroke();
+    }
+    ctx.restore();
+    // Bobo groot, mond wijd open, ogen op de knikker
+    bobo.mood = 'idle'; bobo.blink = 0; bobo.mouth = 1; bobo.chomp = 0; bobo.happy = 0; bobo.sad = 0; bobo.look.x = -0.75; bobo.look.y = -0.66;
+    ctx.save(); ctx.translate(cx + 40, 470); ctx.rotate(-0.08); ctx.scale(2.55, 2.55);
+    drawBobo(0, 0, S.BOBO_R, 1.3, null, { outfit: 'none' }); ctx.restore();
+    // de gouden knikker, groot en glanzend
+    ctx.save(); ctx.translate(mx, my); ctx.scale(2.3, 2.3);
+    ctx.fillStyle = rg(ctx, 0, 0, 6, 0, 0, 44, [[0, 'rgba(255,220,90,.8)'], [1, 'rgba(255,220,90,0)']]); ctx.beginPath(); ctx.arc(0, 0, 44, 0, 7); ctx.fill();
+    ctx.restore();
+    drawSprite(partSprite('marble'), mx, my, 0.6, 1, 2.3, 2.3);
+    drawSprite(sprite('spec20', 40, 40, 2, artSpec(20)), mx, my, 0, 1, 2.3, 2.3, false);
+    // een paar sterretjes en confetti voor energie
+    seed = 11;
+    for (let i = 0; i < 7; i++) { const a = rnd() * 6.28, d = 60 + rnd() * 50; ctx.fillStyle = i % 2 ? '#FFFFFF' : '#FFF2A8'; star5(ctx, mx + Math.cos(a) * d, my + Math.sin(a) * d, 7 + rnd() * 6, 0.4); ctx.fill(); }
+    for (let i = 0; i < 16; i++) { ctx.save(); ctx.translate(cx - 340 + rnd() * 720, 40 + rnd() * 260); ctx.rotate(rnd() * 6); ctx.fillStyle = CONF[i % 5]; ctx.fillRect(-7, -4, 14, 8); ctx.restore(); }
+    // vloer + vignet
+    ctx.fillStyle = rg(ctx, cx, 380, 260, cx, 380, 620, [[0, 'rgba(10,5,30,0)'], [1, 'rgba(10,5,30,.5)']]); ctx.fillRect(0, 0, W, H);
   }
 
   function drawWardrobe() {
@@ -1660,6 +1721,7 @@
     if (G.screen === 'title') drawTitle(dt);
     else if (G.screen === 'levels') { drawLevels(); }
     else if (G.screen === 'wardrobe') { drawWardrobe(); }
+    else if (G.screen === 'thumb') { drawThumb(); }
     else {
       tickSim(dt);
       drawBackground(G.t);
@@ -1670,6 +1732,7 @@
       if (G.screen === 'build' || G.screen === 'play') drawIntro();
     }
     if (G.screen === 'title' || G.screen === 'levels' || G.screen === 'wardrobe') { updateParticles(dt); drawParticles(); }
+    drawBtnTips();
     drawToast(dt);
     ctx.restore();
     if (cssH > cssW * 1.1) {
@@ -1684,9 +1747,10 @@
   (async function boot() {
     await Poki.init();
     Poki.loadingFinished();
+    setTimeout(() => SFX.preloadMusic(), 300);   // muziek pas ná het laden ophalen: telt niet mee voor de eerste download
     sessionOpen();
     const L = document.getElementById('loader'); if (L) L.remove();
     requestAnimationFrame(t => { last = t; frame(t); });
   })();
-  window.PLONK = G; window.PLONK_DEBUG = { startLevel, play, backdate: ms => { firstInput -= ms; } }; // debug
+  window.PLONK = G; window.PLONK_DEBUG = { thumb: () => { G.screen = 'thumb'; G.toast = null; }, startLevel, play, backdate: ms => { firstInput -= ms; } }; // debug
 })();

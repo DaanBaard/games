@@ -16,4 +16,7 @@ ${scripts.map(s => `<script>\n${R(s)}\n</script>`).join('\n')}
 `;
 fs.mkdirSync(path.join(__dirname, '..', 'dist'), { recursive: true });
 fs.writeFileSync(path.join(__dirname, '..', 'dist', 'plonk.html'), html);
+// muziek naast de pagina (wordt als los bestand meegepubliceerd)
+fs.mkdirSync(path.join(__dirname, '..', 'dist', 'music'), { recursive: true });
+for (const f of fs.readdirSync(path.join(__dirname, '..', 'music'))) fs.copyFileSync(path.join(__dirname, '..', 'music', f), path.join(__dirname, '..', 'dist', 'music', f));
 console.log('dist/plonk.html', (html.length / 1024).toFixed(0) + ' KB');

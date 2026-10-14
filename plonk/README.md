@@ -1,4 +1,4 @@
-# PLONK! — v0.9
+# PLONK! — v1.0
 
 Physics-puzzelgame met kettingreacties (geïnspireerd op het genre van The Incredible Machine), gebouwd voor Poki.
 Plaats onderdelen, druk op **Start** en laat de gouden knikker in de mond van **Bobo** belanden.
@@ -14,6 +14,18 @@ Open `index.html` in een browser (dubbelklikken werkt; een lokale server zoals `
 | Andere kant op (ventilator, band) | Blauwe knop met twee pijlen boven het onderdeel | `R` |
 | Verwijderen | Rode knop *Weghalen* linksonder, of terugslepen naar de balk | `Delete` |
 | Start / reset | Groene / rode knop rechtsonder | `Spatie` |
+| Muziek aan/uit | Knop met muzieknoot (titelscherm en rechtsboven in een level) | – |
+| Geluidseffecten aan/uit | Knop met luidspreker (titelscherm en rechtsboven in een level) | – |
+
+## Nieuw in v1.0 (muziek en thumbnail)
+- **Achtergrondmuziek**: twee tracks ("Lichtgewicht Avontuur") lopen om en om in een lus, met een zachte overgang van 2,5 s
+  - wordt pas ná het laden opgehaald, dus de eerste download blijft klein (Poki: < 8 MB)
+  - alleen geladen als muziek aanstaat; zachter tijdens de winjingle; stil tijdens advertenties en als het tabblad verborgen is
+  - 128 kbps, stilte aan het einde weggeknipt (`music/`)
+- **Aparte schakelaars** voor muziek en geluidseffecten, op het titelscherm en in elk level; uitleg bij aanwijzen; keuze wordt onthouden
+- **Poki-thumbnail** volgens de richtlijnen in `thumbnails/`: vierkant 1024×1024 en 628×628, zonder tekst of rand,
+  Bobo groot in beeld met open mond terwijl de gouden knikker aan komt vliegen; geen kleuren dicht bij #83FFE7
+- `thumb.png` (16:10) voor de gamesite met dezelfde key-art
 
 ## Nieuw in v0.9 (duidelijker kantelen)
 - De draaiknoppen laten nu zien wat er gebeurt: een mini-plank met een gele pijl bij het uiteinde dat **zakt**
@@ -81,7 +93,7 @@ Gebaseerd op onderzoek; zie `ONTWERP-SPELPLEZIER.md` voor de onderbouwing en bro
 - Wereldmenu met pijlen; een wereld gaat open zodra de vorige is uitgespeeld
 - 3 sterren per level: opgelost · binnen het aantal onderdelen · binnen de tijd
 - Hint via rewarded ad (toont een oplichtend silhouet van de oplossing)
-- Alle graphics en geluiden worden in code gegenereerd
+- Alle graphics en geluidseffecten worden in code gegenereerd
 
 ## Levels controleren
 `node tools/design.js` controleert elk level: zonder onderdelen mag het niet lukken, de opgeslagen oplossing
@@ -110,7 +122,11 @@ index.html        startpagina
 js/sim.js         simulatie, onderdelen, plaatsingscontrole
 js/levels.js      leveldata + geverifieerde oplossingen
 js/game.js        rendering, Bobo, UI, input, game-flow
-js/audio.js       gesynthetiseerde geluidseffecten
+js/audio.js       geluidseffecten (gesynthetiseerd) + achtergrondmuziek
+music/            achtergrondmuziek (2 tracks)
+thumbnails/       Poki-thumbnails (vierkant)
+thumb.png         thumbnail voor de gamesite (16:10)
+game.json         titel/versie/beschrijving voor de gamesite
 js/poki.js        Poki SDK-wrapper
 lib/matter.min.js physics-engine (MIT-licentie)
 tools/design.js   level-controle + moeilijkheid (Node)
