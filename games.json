@@ -2,14 +2,14 @@
   {
     "slug": "plonk",
     "title": "PLONK!",
-    "version": "1.0",
+    "version": "1.1",
     "description": "Physics-puzzel vol kettingreacties: plaats planken, trampolines, domino's en ventilatoren zodat de gouden knikker in Bobo's mond belandt. 25 levels in 5 werelden, dagpuzzel en outfits. Mobiel speelbaar.",
     "thumbnail": "plonk/thumb.png",
     "tags": [
       "puzzel",
       "physics"
     ],
-    "updated": "2026-10-14T16:13:02+02:00"
+    "updated": "2026-10-14T16:38:04+02:00"
   },
   {
     "slug": "prismaticz",

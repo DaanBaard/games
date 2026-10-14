@@ -1,4 +1,4 @@
-# PLONK! — Poki game events (v1.0)
+# PLONK! — Poki game events (v1.1)
 
 De opzet is dezelfde als in **Prismatic (v28)**, zodat de exports van beide games op dezelfde manier te lezen zijn.
 Alle events lopen via `Poki.measure(category, what, action)` in `js/poki.js`, dat `PokiSDK.measure()` aanroept
@@ -29,7 +29,7 @@ het bereiken, maar ook hoeveel pogingen het kost.
 | `session / return / sameday · day1 · day2-3 · day4-7 · day8plus` | Terugkerende speler, met het aantal dagen sinds het vorige bezoek |
 
 ## 3. Funnel per versie
-`version / <versie><groep> / <mijlpaal>`, bijvoorbeeld `version / 10a / 3min`. Elke mijlpaal wordt één keer per sessie verstuurd.
+`version / <versie><groep> / <mijlpaal>`, bijvoorbeeld `version / 11a / 3min`. Elke mijlpaal wordt één keer per sessie verstuurd.
 Mijlpalen: `load`, `first-input`, `return`, `return-nextday`, `1min`, `3min`, `5min`, `12min`, `20min`, `level5`, `level10`, `level15`, `level20`, `level25`.
 De levelmijlpalen markeren het einde van elke wereld.
 
@@ -46,6 +46,7 @@ beide groepen spelen hetzelfde spel. Het mechanisme staat klaar voor een volgend
 | `help / skip` | **Overslaan** aangeboden (na 5 mislukte pogingen) · gebruikt |
 | `banner / daily` | Dagpuzzel-kaart op het titelscherm · gestart |
 | `wardrobe / button` | Knop **Kast** · geopend |
+| `help / press-start / visible` | Tip "Druk op Start of tik op de knikker" getoond (7 s niets gedaan na het bouwen, één keer per sessie) |
 | `help / move-part · rotate-part · rotate-knob / interact` | Speler verschuift of draait voor het eerst een onderdeel (één keer per sessie) |
 
 ## 5. Overige events
@@ -60,11 +61,15 @@ beide groepen spelen hetzelfde spel. Het mechanisme staat klaar voor een volgend
 | `win / next · retry / interact` | Keuze op het winscherm |
 | `settings / music / on · off` | Muziek aan- of uitgezet |
 | `settings / sfx / on · off` | Geluidseffecten aan- of uitgezet |
+| `settings / language / open · <code>` | Taalkeuze geopend, of een taal gekozen (`en`, `nl`, `de`, `fr`, `es`, `it`, `pt`, `tr`, `ru`) |
+| `start / button · marble · key / interact` | Hoe een poging gestart wordt: Start-knop, tik op de knikker of spatiebalk |
 
 Advertenties (`commercialBreak`, `rewardedBreak`) meet Poki zelf.
 
 ## Handige vragen voor de export
 - **Hoe lang spelen mensen?** Bekijk het verloop van `session/played/<k>min`. Waar ze dan zitten, staat in `where/<k>min/*`.
 - **Welk level is te moeilijk?** Vergelijk het aantal `fail` met `complete` per level. Elke `start` is één poging.
-- **Is de nieuwe versie beter?** Vergelijk `version/10a/*` met de vorige versie, of `10a` met `10b` zodra er een test loopt.
+- **Is de nieuwe versie beter?** Vergelijk `version/11a/*` met de vorige versie, of `11a` met `11b` zodra er een test loopt.
+- **Vinden spelers Start?** Vergelijk `help/press-start/visible` met het aantal spelers in level 1-3, en `start/marble` met `start/button`.
+- **Welke talen?** `settings/language/<code>` toont handmatige keuzes; Poki splitst de rest zelf per land.
 - **Komen spelers terug?** Bekijk `session/return/day1` ten opzichte van `session/new/visit`.

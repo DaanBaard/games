@@ -1,4 +1,4 @@
-# PLONK! — v1.0
+# PLONK! — v1.1
 
 Physics-puzzelgame met kettingreacties (geïnspireerd op het genre van The Incredible Machine), gebouwd voor Poki.
 Plaats onderdelen, druk op **Start** en laat de gouden knikker in de mond van **Bobo** belanden.
@@ -13,9 +13,23 @@ Open `index.html` in een browser (dubbelklikken werkt; een lokale server zoals `
 | Kantelen | Knop met pijl links = linkerkant omlaag, pijl rechts = rechterkant omlaag; of sleep het blauwe bolletje aan het uiteinde rond; of scrollwiel | `E` (links omlaag) / `R` (rechts omlaag) |
 | Andere kant op (ventilator, band) | Blauwe knop met twee pijlen boven het onderdeel | `R` |
 | Verwijderen | Rode knop *Weghalen* linksonder, of terugslepen naar de balk | `Delete` |
-| Start / reset | Groene / rode knop rechtsonder | `Spatie` |
+| Start / reset | Groene / rode knop rechtsonder, of tik op de gouden knikker | `Spatie` |
+| Taal kiezen | Wereldbolknop linksboven op het titelscherm | – |
 | Muziek aan/uit | Knop met muzieknoot (titelscherm en rechtsboven in een level) | – |
 | Geluidseffecten aan/uit | Knop met luidspreker (titelscherm en rechtsboven in een level) | – |
+
+## Nieuw in v1.1 (talen en duidelijker starten)
+- **9 talen**: Engels, Nederlands, Duits, Frans, Spaans, Italiaans, Portugees (Brazilië), Turks en Russisch
+  - keuze volgens Poki's advies: eerst EFIGS, daarna Turks, Portugees en Russisch, plus Nederlands
+  - alle teksten, levelnamen en tips in `js/i18n.js`; lange woorden krimpen automatisch zodat ze in knoppen en panelen passen
+- **Taal wordt automatisch gekozen**: `?lang=xx` → eerder gekozen taal → taal uit de Poki-URL (`poki.com/de/…`) → browsertaal → Engels
+- **Taalknop** (wereldbol) linksboven op het titelscherm; de keuze wordt onthouden
+- **Tik op de knikker = Start**: de knikker heeft in bouwmodus een groen afspeelbolletje
+- **Start valt meer op**:
+  - de knop gloeit zodra er iets geplaatst is en je even niets doet, of als alle onderdelen op zijn
+  - na 4 s wijst een handje naar Start
+  - na 7 s komt de tip "Klaar? Druk op Start of tik op de knikker!"
+- Meetbaar via nieuwe events (zie `EVENTS.md`): hoe er gestart wordt (knop, knikker of toets), hoe vaak de Start-tip nodig is, en welke taal gekozen wordt
 
 ## Nieuw in v1.0 (muziek en thumbnail)
 - **Achtergrondmuziek**: twee tracks ("Lichtgewicht Avontuur") lopen om en om in een lus, met een zachte overgang van 2,5 s
@@ -122,6 +136,7 @@ index.html        startpagina
 js/sim.js         simulatie, onderdelen, plaatsingscontrole
 js/levels.js      leveldata + geverifieerde oplossingen
 js/game.js        rendering, Bobo, UI, input, game-flow
+js/i18n.js        vertalingen (9 talen) + taaldetectie
 js/audio.js       geluidseffecten (gesynthetiseerd) + achtergrondmuziek
 music/            achtergrondmuziek (2 tracks)
 thumbnails/       Poki-thumbnails (vierkant)

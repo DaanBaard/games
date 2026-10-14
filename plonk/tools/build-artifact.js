@@ -2,7 +2,7 @@
 // Gebruik: node tools/build-artifact.js  → dist/plonk.html
 const fs = require('fs'), path = require('path');
 const R = p => fs.readFileSync(path.join(__dirname, '..', p), 'utf8').replace(/<\/script/gi, '<\\/script');
-const scripts = ['lib/matter.min.js', 'js/sim.js', 'js/levels.js', 'js/audio.js', 'js/poki.js', 'js/game.js'];
+const scripts = ['lib/matter.min.js', 'js/sim.js', 'js/levels.js', 'js/i18n.js', 'js/audio.js', 'js/poki.js', 'js/game.js'];
 const html = `<title>PLONK!</title>
 <style>
   :root { color-scheme: dark; }
