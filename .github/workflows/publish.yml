@@ -28,6 +28,36 @@ jobs:
         with:
           path: .
 
+  tag:
+    # Maakt per game de tag <slug>-v<versie> aan (uit game.json) als die nog niet bestaat,
+    # op de laatste commit die die game-map veranderde. Sessies hoeven zelf geen tags te pushen.
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Versietags aanmaken
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898283+github-actions[bot]@users.noreply.github.com"
+          git fetch --tags --quiet
+          for meta in */game.json; do
+            slug="${meta%/game.json}"
+            version="$(python3 -c 'import json,sys;print(json.load(open(sys.argv[1])).get("version",""))' "$meta")"
+            [ -z "$version" ] && continue
+            tag="${slug}-v${version}"
+            if git rev-parse -q --verify "refs/tags/$tag" >/dev/null; then
+              echo "= $tag bestaat al"
+              continue
+            fi
+            commit="$(git log -1 --format=%H -- "$slug")"
+            git tag -a "$tag" -m "$slug v$version" "$commit"
+            git push origin "refs/tags/$tag"
+            echo "+ $tag -> ${commit:0:7}"
+          done
+
   deploy:
     needs: build
     runs-on: ubuntu-latest
