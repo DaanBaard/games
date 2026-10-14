@@ -1,4 +1,4 @@
-# PLONK! — v0.8
+# PLONK! — v0.9
 
 Physics-puzzelgame met kettingreacties (geïnspireerd op het genre van The Incredible Machine), gebouwd voor Poki.
 Plaats onderdelen, druk op **Start** en laat de gouden knikker in de mond van **Bobo** belanden.
@@ -10,10 +10,17 @@ Open `index.html` in een browser (dubbelklikken werkt; een lokale server zoals `
 |---|---|---|
 | Onderdeel plaatsen | Sleep vanuit de balk onderin | – |
 | Verplaatsen | Sleep een geplaatst onderdeel | – |
-| Draaien | Twee blauwe knoppen boven het onderdeel (links/rechtsom), of scrollwiel | `R` / `E` |
-| Spiegelen (ventilator, band) | Blauwe knop boven het onderdeel | `R` |
+| Kantelen | Knop met pijl links = linkerkant omlaag, pijl rechts = rechterkant omlaag; of sleep het blauwe bolletje aan het uiteinde rond; of scrollwiel | `E` (links omlaag) / `R` (rechts omlaag) |
+| Andere kant op (ventilator, band) | Blauwe knop met twee pijlen boven het onderdeel | `R` |
 | Verwijderen | Rode knop *Weghalen* linksonder, of terugslepen naar de balk | `Delete` |
 | Start / reset | Groene / rode knop rechtsonder | `Spatie` |
+
+## Nieuw in v0.9 (duidelijker kantelen)
+- De draaiknoppen laten nu zien wat er gebeurt: een mini-plank met een gele pijl bij het uiteinde dat **zakt**
+- Bij aanwijzen of indrukken van een knop: een geel voorbeeld van de nieuwe stand en een uitleg ("Linkerkant omlaag")
+- Ventilator/band: de voorbeeldpijl toont de nieuwe blaas-/looprichting
+- Nieuw **draaibolletje** aan het uiteinde: sleep het rond, de plank volgt je vinger (stappen van 15°, -60° tot 60°)
+- De hoek staat altijd boven het geselecteerde onderdeel; eenmalige uitleg bij de eerste keer kantelen
 
 ## Nieuw in v0.8 (bugfixes)
 - Dubbel tikken op *Volgende*, *Opnieuw* of de hintknop tijdens een advertentie startte de actie twee keer

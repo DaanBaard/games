@@ -19,7 +19,7 @@
     { id: 2, world: 1, name: 'Glijbaan', tip: 'De knikker valt recht naar beneden. Vang hem op met een schuine plank.',
       items: [{ type: 'marble', x: 220, y: 100 }, ...P(560, 518)],
       inventory: { plank: 1 }, solution: [{ type: 'plank', x: 260, y: 300, a: 30 }], par: 1 },
-    { id: 3, world: 1, name: 'Andersom', tip: 'Bobo zit links. Draai de plank de andere kant op met de blauwe knop.',
+    { id: 3, world: 1, name: 'Andersom', tip: 'Bobo zit links. Laat de linkerkant van de plank zakken: tik op de knop met de pijl links, of sleep het bolletje.',
       items: [{ type: 'marble', x: 1060, y: 100 }, ...P(720, 518)],
       inventory: { plank: 1 }, solution: [{ type: 'plank', x: 1020, y: 300, a: -30 }], par: 1 },
     { id: 4, world: 1, name: 'Zigzag', tip: 'Eén plank is te kort. Laat de knikker van plank naar plank rollen.',

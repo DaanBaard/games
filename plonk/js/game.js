@@ -4,7 +4,7 @@
   const S = window.PlonkSim, LEVELS = window.PLONK_LEVELS, WORLDS = window.PLONK_WORLDS, SFX = window.SFX, Poki = window.Poki;
   const W = 1280, H = 720, GRID = 10, PLAY_TOP = 60, PLAY_BOTTOM = 600;
   const FONT = "'Baloo 2','Nunito','Arial Rounded MT Bold','Trebuchet MS',system-ui,sans-serif";
-  const VERSION = 'v0.8';
+  const VERSION = 'v0.9';
 
   const cv = document.getElementById('game');
   const ctx = cv.getContext('2d');
@@ -661,7 +661,7 @@
   // eerste input, 'where' (waar is de speler na 1/3/5 min), terugkeer per dag en een funnel per versie (+ A/B-groep).
   // Volledige lijst: EVENTS.md
   const M = (c, w, a) => Poki.measure(c, w, a);
-  const GAME_VERSION = '8';
+  const GAME_VERSION = '9';
   const AB = (() => {                              // A/B-groep: ?ab=a of ?ab=b, anders opgeslagen; standaard 'a' (geen test actief)
     try { const q = new URLSearchParams(location.search).get('ab'); if (q === 'a' || q === 'b') { localStorage.setItem('plonk_ab', q); return q; } } catch (e) {}
     try { const g = localStorage.getItem('plonk_ab'); if (g === 'a' || g === 'b') return g; } catch (e) {}
@@ -868,6 +868,7 @@
     ctx.restore();
   }
   function drawWorld(dt) {
+    G.knobHit = null;                              // wordt opnieuw gezet als er een kantelbaar onderdeel geselecteerd is
     const L = G.level, playing = G.sim && (G.screen === 'play' || G.screen === 'win');
     const bi = boboItem();
     // blauwdruk-grid in bouwmodus
@@ -941,6 +942,21 @@
     }
     // hint
     if (G.hint && G.screen === 'build') ghost(G.hint, '#FFE66B', 0.6 + 0.4 * Math.sin(G.t * 5));
+    if (G.screen === 'build' && G.selected >= 0 && !G.drag) {
+      const sp = G.placements[G.selected], SP = S.PARTS[sp.type];
+      const pv = G.pressed || G.hover;
+      if (pv === 'rotL' || pv === 'rotR' || pv === 'flip') {          // zo komt hij te staan
+        const nx = nextOrientation(sp, pv === 'rotL' ? -1 : 1);
+        if (nx) ghost(nx, '#FFE66B', 0.9);
+        if (nx && pv === 'flip') {                                       // ventilator/band: laat de nieuwe richting zien
+          const d = nx.flip ? -1 : 1, ax = nx.x + d * (SP.w / 2 + 30), ay = nx.y;
+          ctx.save(); ctx.globalAlpha = 0.6 + 0.4 * Math.sin(G.t * 8); ctx.fillStyle = '#FFE66B'; ctx.strokeStyle = OUT; ctx.lineWidth = 3; ctx.lineJoin = 'round';
+          ctx.beginPath(); ctx.moveTo(ax - d * 22, ay - 9); ctx.lineTo(ax, ay - 9); ctx.lineTo(ax, ay - 20); ctx.lineTo(ax + d * 24, ay); ctx.lineTo(ax, ay + 20); ctx.lineTo(ax, ay + 9); ctx.lineTo(ax - d * 22, ay + 9); ctx.closePath();
+          ctx.fill(); ctx.stroke(); ctx.restore();
+        }
+      }
+      if (SP.rotStep) drawRotKnob(sp, G.rot ? 1 : (G.hover === 'knob' ? 0.85 : 0.6 + 0.25 * Math.sin(G.t * 4)));
+    }
     if (L.tutorial && G.screen === 'build' && !G.intro && !G.drag && G.hint) {
       once('tutorial', 'hand', 'visible');
       const slot = traySlots().find(s => s.type === G.hint.type);
@@ -1006,6 +1022,9 @@
       else { ctx.beginPath(); ctx.arc(x + s * 0.2, y, s * 0.6, -0.8, 0.8); ctx.stroke(); ctx.beginPath(); ctx.arc(x + s * 0.2, y, s * 1.05, -0.8, 0.8); ctx.stroke(); } },
     rotate: (x, y, s) => { ctx.strokeStyle = '#FFF'; ctx.lineWidth = s * 0.4; ctx.lineCap = 'round'; ctx.beginPath(); ctx.arc(x, y, s * 0.8, -0.3, 4.2); ctx.stroke(); ctx.fillStyle = '#FFF'; ctx.beginPath(); ctx.moveTo(x + s * 1.3, y - s * 0.6); ctx.lineTo(x + s * 0.3, y - s * 0.45); ctx.lineTo(x + s * 0.95, y + s * 0.4); ctx.fill(); },
     hat: (x, y, s) => { ctx.fillStyle = '#FFF'; ctx.beginPath(); ctx.moveTo(x - s * 0.9, y + s * 0.6); ctx.lineTo(x, y - s * 1.1); ctx.lineTo(x + s * 0.9, y + s * 0.6); ctx.closePath(); ctx.fill(); ctx.beginPath(); ctx.arc(x, y - s * 1.1, s * 0.3, 0, 7); ctx.fill(); },
+    // kantel-iconen: een mini-plank met een pijl naar beneden bij het uiteinde dat zakt
+    tiltL: (x, y, s) => drawTiltIcon(x, y, s, -1),
+    tiltR: (x, y, s) => drawTiltIcon(x, y, s, 1),
     rotL: (x, y, s) => { ctx.save(); ctx.translate(x, y); ctx.scale(-1, 1); icon.rotate(0, 0, s); ctx.restore(); },
     flip: (x, y, s) => { ctx.fillStyle = '#FFF'; ctx.beginPath(); ctx.moveTo(x - s * 1.2, y); ctx.lineTo(x - s * 0.3, y - s * 0.8); ctx.lineTo(x - s * 0.3, y + s * 0.8); ctx.fill(); ctx.beginPath(); ctx.moveTo(x + s * 1.2, y); ctx.lineTo(x + s * 0.3, y - s * 0.8); ctx.lineTo(x + s * 0.3, y + s * 0.8); ctx.fill(); ctx.fillRect(x - s * 0.08, y - s, s * 0.16, s * 2); },
     trash: (x, y, s) => { ctx.fillStyle = '#FFF'; rr(ctx, x - s * 0.75, y - s * 0.55, s * 1.5, s * 1.55, s * 0.25); ctx.fill(); rr(ctx, x - s * 0.95, y - s * 0.95, s * 1.9, s * 0.3, s * 0.12); ctx.fill(); rr(ctx, x - s * 0.3, y - s * 1.15, s * 0.6, s * 0.3, s * 0.1); ctx.fill(); ctx.fillStyle = 'rgba(180,40,60,.9)'; for (const k of [-0.35, 0, 0.35]) ctx.fillRect(x + k * s - s * 0.07, y - s * 0.3, s * 0.14, s * 1.05); },
@@ -1013,6 +1032,18 @@
     right: (x, y, s) => { ctx.strokeStyle = '#FFF'; ctx.lineWidth = s * 0.5; ctx.lineCap = 'round'; ctx.lineJoin = 'round'; ctx.beginPath(); ctx.moveTo(x - s * 0.35, y - s * 0.8); ctx.lineTo(x + s * 0.45, y); ctx.lineTo(x - s * 0.35, y + s * 0.8); ctx.stroke(); },
     left: (x, y, s) => { ctx.strokeStyle = '#FFF'; ctx.lineWidth = s * 0.5; ctx.lineCap = 'round'; ctx.lineJoin = 'round'; ctx.beginPath(); ctx.moveTo(x + s * 0.35, y - s * 0.8); ctx.lineTo(x - s * 0.45, y); ctx.lineTo(x + s * 0.35, y + s * 0.8); ctx.stroke(); },
   };
+  function drawTiltIcon(x, y, s, dir) {
+    ctx.save(); ctx.translate(x, y + s * 0.15);
+    ctx.save(); ctx.rotate(dir * 0.42);
+    rr(ctx, -s * 1.15, -s * 0.2, s * 2.3, s * 0.4, s * 0.2); ctx.fillStyle = '#FFFFFF'; ctx.fill();
+    ctx.restore();
+    // pijl omlaag bij het lage uiteinde
+    const ex = dir * s * 1.05, ey = s * 0.45;
+    ctx.strokeStyle = '#FFE66B'; ctx.fillStyle = '#FFE66B'; ctx.lineWidth = s * 0.26; ctx.lineCap = 'round';
+    ctx.beginPath(); ctx.moveTo(ex, ey - s * 0.95); ctx.lineTo(ex, ey + s * 0.05); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(ex - s * 0.38, ey - s * 0.12); ctx.lineTo(ex + s * 0.38, ey - s * 0.12); ctx.lineTo(ex, ey + s * 0.38); ctx.closePath(); ctx.fill();
+    ctx.restore();
+  }
   const COL = { green: ['#C6F27A', '#8AE234', '#4E9A12'], blue: ['#9BE6FF', '#4CC9F0', '#1D7FC2'], purple: ['#D7B8FF', '#9B5DE5', '#5C2BA8'], yellow: ['#FFF0A0', '#FFC93C', '#D88A0E'], coral: ['#FF9C88', '#FF6B5B', '#C8303E'] };
 
   function textOut(str, x, y, size, fill = '#FFF', stroke = OUT, lw = 6, align = 'center') {
@@ -1100,14 +1131,22 @@
         // vaste plek t.o.v. het midden, zodat de knoppen niet verspringen tijdens het draaien
         const reach = P.rotStep ? Math.max(P.w, P.h) / 2 * 0.87 + 14 : Math.max(P.w, P.h) / 2 + 10;
         const bx = clamp(p.x, 90, W - 90), by = clamp(p.y - reach - 52, 66, 540);
-        const bw = G.touch ? 72 : 56, bh = G.touch ? 64 : 52, by2 = by - (bh - 52);
+        const bw = G.touch ? 72 : 60, bh = G.touch ? 64 : 54, by2 = by - (bh - 52);
         if (P.rotStep) {
-          button('rotL', bx - bw - 8, by2, bw, bh, { color: COL.blue, icon: icon.rotL, fn: () => rotateSelected(-1) });
-          button('rotR', bx + 8, by2, bw, bh, { color: COL.blue, icon: icon.rotate, fn: () => rotateSelected(1) });
+          button('rotL', bx - bw - 8, by2, bw, bh, { color: COL.blue, icon: icon.tiltL, fn: () => rotateSelected(-1) });
+          button('rotR', bx + 8, by2, bw, bh, { color: COL.blue, icon: icon.tiltR, fn: () => rotateSelected(1) });
         } else if (P.flip) button('flip', bx - bw / 2, by2, bw, bh, { color: COL.blue, icon: icon.flip, fn: () => rotateSelected(1) });
-        if (P.rotStep && G.t - (G.rotShow || -9) < 1.2) { panel(bx - 32, by - 36, 64, 28, 14, 0.85); textOut(`${p.a || 0}°`, bx, by - 22, 18, '#FFFFFF', OUT, 4); }
-      }
-    } else if (G.screen === 'play') {
+        // uitleg boven de knop waar je overheen gaat of op drukt
+        const tipFor = { rotL: 'Linkerkant omlaag', rotR: 'Rechterkant omlaag', flip: 'Andere kant op' };
+        const tipId = G.pressed in tipFor ? G.pressed : G.hover in tipFor ? G.hover : null;
+        if (tipId) {
+          ctx.font = `800 17px ${FONT}`; const tw = ctx.measureText(tipFor[tipId]).width + 28;
+          const tb = G.buttons.find(b => b.id === tipId), tx = clamp(tb.x + tb.w / 2, tw / 2 + 8, W - tw / 2 - 8), ty = Math.max(30, by2 - 24);
+          panel(tx - tw / 2, ty - 17, tw, 34, 17, 0.9); textOut(tipFor[tipId], tx, ty, 17, '#FFFFFF', OUT, 4);
+        } else if (P.rotStep) {
+          panel(bx - 34, by2 - 40, 68, 30, 15, 0.85); textOut(`${p.a || 0}°`, bx, by2 - 25, 18, '#FFFFFF', OUT, 4);
+        }
+      }    } else if (G.screen === 'play') {
       button('stop', W - 200, 626, 180, 76, { color: COL.coral, icon: icon.stop, label: 'Reset', size: 30, fn: () => { SFX.click(); stopPlay(); } });
     }
     // timer
@@ -1400,6 +1439,52 @@
     if (it.type === 'domino') { const st = S.settle(G.level, G.placements, it, ign); it.y = st.y; }
     return it;
   }
+  function nextOrientation(p, dir) {
+    const P = S.PARTS[p.type], c = { ...p };
+    if (P.flip) { c.flip = !c.flip; return c; }
+    for (let k = 0; k < 9; k++) {
+      c.a = (c.a || 0) + dir * P.rotStep; if (c.a > 60) c.a = -60; if (c.a < -60) c.a = 60;
+      if (!S.overlaps(G.level, G.placements, c, G.selected)) return c;
+    }
+    return null;
+  }
+  // draaibolletje aan het rechteruiteinde: sleep het rond om te draaien
+  function knobPos(p) {
+    const P = S.PARTS[p.type], a = rad(p.a || 0), r = P.w / 2 + (G.touch ? 34 : 28);
+    return { x: p.x + Math.cos(a) * r, y: p.y + Math.sin(a) * r, ex: p.x + Math.cos(a) * P.w / 2, ey: p.y + Math.sin(a) * P.w / 2 };
+  }
+  function drawRotKnob(p, k) {
+    const q = knobPos(p), R = G.touch ? 19 : 15;
+    ctx.save(); ctx.globalAlpha = 0.9;
+    ctx.strokeStyle = 'rgba(255,255,255,.75)'; ctx.lineWidth = 3; ctx.setLineDash([5, 5]);
+    ctx.beginPath(); ctx.moveTo(q.ex, q.ey); ctx.lineTo(q.x, q.y); ctx.stroke(); ctx.setLineDash([]);
+    if (G.rot) { // boog die laat zien waar je kunt draaien (-60° … 60°)
+      ctx.strokeStyle = 'rgba(255,230,107,.45)'; ctx.lineWidth = 4; ctx.beginPath();
+      ctx.arc(p.x, p.y, Math.hypot(q.x - p.x, q.y - p.y), rad(-60), rad(60)); ctx.stroke();
+    }
+    ctx.beginPath(); ctx.arc(q.x, q.y, R * (1 + 0.08 * k), 0, 7);
+    ctx.fillStyle = lg(ctx, 0, q.y - R, 0, q.y + R, [[0, '#9BE6FF'], [1, '#1D7FC2']]); ctx.fill();
+    ctx.lineWidth = 3.5; ctx.strokeStyle = OUT; ctx.stroke();
+    // twee gebogen pijltjes = 'draai mij'
+    ctx.strokeStyle = '#FFFFFF'; ctx.fillStyle = '#FFFFFF'; ctx.lineWidth = 2.6; ctx.lineCap = 'round';
+    for (const sgn of [1, -1]) {
+      ctx.beginPath(); ctx.arc(q.x, q.y, R * 0.55, sgn > 0 ? -2.4 : 0.75, sgn > 0 ? -0.75 : 2.4); ctx.stroke();
+      const ang = sgn > 0 ? -0.75 : 2.4, ax = q.x + Math.cos(ang) * R * 0.55, ay = q.y + Math.sin(ang) * R * 0.55;
+      ctx.beginPath(); ctx.arc(ax, ay, 2.6, 0, 7); ctx.fill();
+    }
+    ctx.restore();
+    G.knobHit = { x: q.x, y: q.y, r: R + (G.touch ? 14 / scale : 6) };
+  }
+  function rotateToPointer(p) {
+    const pl = G.placements[G.rot.index]; if (!pl) { G.rot = null; return; }
+    let ang = Math.atan2(p.y - pl.y, p.x - pl.x) * 180 / Math.PI;   // het bolletje zit rechts: hoek van de vinger = hoek van de plank
+    if (ang > 90) ang -= 180; if (ang < -90) ang += 180;             // plank is symmetrisch
+    const P = S.PARTS[pl.type], a = clamp(Math.round(ang / P.rotStep) * P.rotStep, -60, 60);
+    if (a === (pl.a || 0)) return;
+    const c = { ...pl, a };
+    if (S.overlaps(G.level, G.placements, c, G.rot.index)) return;    // past niet: blijf staan
+    pl.a = a; SFX.rotate();
+  }
   function rotateSelected(dir = 1) {
     const p = G.placements[G.selected]; if (!p) return; const P = S.PARTS[p.type];
     const old = { a: p.a, flip: p.flip };
@@ -1434,6 +1519,9 @@
         return;
       }
       if (b) { G.pressed = b.id; return; }
+      if (G.selected >= 0 && G.knobHit && Math.hypot(p.x - G.knobHit.x, p.y - G.knobHit.y) <= G.knobHit.r) {
+        G.rot = { index: G.selected, startA: G.placements[G.selected].a || 0 }; SFX.pick(); return;
+      }
       const idx = hitPlacement(p);
       if (idx >= 0) {
         const pl = G.placements[idx];
@@ -1448,15 +1536,19 @@
     if (G.pointerId != null && e.pointerId !== G.pointerId) return;
     if (e.pointerType === 'mouse') G.touch = false;
     const p = toLogical(e);
+    if (G.rot) { rotateToPointer(p); return; }
     if (G.drag) { updateDrag(p); return; }
     const b = hitButton(p); G.hover = b ? b.id : null;
-    cv.style.cursor = b || (G.screen === 'build' && hitPlacement(p) >= 0) ? 'pointer' : 'default';
+    const onKnob = G.screen === 'build' && G.selected >= 0 && G.knobHit && Math.hypot(p.x - G.knobHit.x, p.y - G.knobHit.y) <= G.knobHit.r;
+    if (onKnob && !b) G.hover = 'knob';
+    cv.style.cursor = onKnob ? 'grab' : b || (G.screen === 'build' && hitPlacement(p) >= 0) ? 'pointer' : 'default';
   });
   function endPointer(e) {
     if (G.pointerId != null && e.pointerId !== G.pointerId) return;
     G.pointerId = null;
     const p = toLogical(e);
     if (G.swallow) { G.swallow = false; return; }
+    if (G.rot) { G.rot = null; SFX.place(); once('help', 'rotate-knob', 'interact'); return; }
     if (G.drag) {
       const d = G.drag; G.drag = null;
       if (d.index != null && !d.moved) { return; } // tik = selecteren
@@ -1468,6 +1560,7 @@
         if (d.index != null) { G.placements[d.index] = it; G.selected = d.index; }
         else { G.placements.push(it); G.selected = G.placements.length - 1; }
         SFX.place(); puff(it.x, it.y + 10, 8);
+        if (S.PARTS[it.type].rotStep && !save.rotTip) { save.rotTip = 1; persist(); G.toast = { text: 'Kantelen: tik op een pijlknop, of sleep het blauwe bolletje rond.', t: 0, dur: 4.5 }; }
         if (d.index == null && G.level.tutorial) once('tutorial', 'hand', 'part-placed');
         else if (d.index != null) once('help', 'move-part', 'interact');
         if (d.magnet) { G.hint = null; sparkle(it.x, it.y, 12); SFX.star(1); }
@@ -1482,11 +1575,11 @@
   // drag kan null zijn bij updateDrag in endPointer; bewaak dat
   const _ud = updateDrag; updateDrag = function (p) { if (G.drag) _ud(p); };
   cv.addEventListener('pointerup', endPointer);
-  cv.addEventListener('pointercancel', e => { if (G.pointerId != null && e.pointerId !== G.pointerId) return; G.pointerId = null; G.drag = null; G.pressed = null; });
+  cv.addEventListener('pointercancel', e => { if (G.pointerId != null && e.pointerId !== G.pointerId) return; G.pointerId = null; G.drag = null; G.rot = null; G.pressed = null; });
   window.addEventListener('keydown', e => {
     act();
     if (G.screen === 'build') {
-      if (G.drag || G.busy) return;                  // niet draaien/verwijderen terwijl je sleept of tijdens een advertentie
+      if (G.drag || G.rot || G.busy) return;         // niet draaien/verwijderen terwijl je sleept of tijdens een advertentie
       if ((e.key === 'r' || e.key === 'R') && G.selected >= 0) rotateSelected(e.shiftKey ? -1 : 1);
       if ((e.key === 'e' || e.key === 'E') && G.selected >= 0) rotateSelected(-1);
       if ((e.key === 'Delete' || e.key === 'Backspace') && G.selected >= 0) deleteSelected();

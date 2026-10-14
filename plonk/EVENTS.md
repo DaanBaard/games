@@ -1,4 +1,4 @@
-# PLONK! — Poki game events (v0.8)
+# PLONK! — Poki game events (v0.9)
 
 De opzet is dezelfde als in **Prismatic (v28)**, zodat de exports van beide games op dezelfde manier te lezen zijn.
 Alle events lopen via `Poki.measure(category, what, action)` in `js/poki.js`, dat `PokiSDK.measure()` aanroept
@@ -29,7 +29,7 @@ het bereiken, maar ook hoeveel pogingen het kost.
 | `session / return / sameday · day1 · day2-3 · day4-7 · day8plus` | Terugkerende speler, met het aantal dagen sinds het vorige bezoek |
 
 ## 3. Funnel per versie
-`version / <versie><groep> / <mijlpaal>`, bijvoorbeeld `version / 8a / 3min`. Elke mijlpaal wordt één keer per sessie verstuurd.
+`version / <versie><groep> / <mijlpaal>`, bijvoorbeeld `version / 9a / 3min`. Elke mijlpaal wordt één keer per sessie verstuurd.
 Mijlpalen: `load`, `first-input`, `return`, `return-nextday`, `1min`, `3min`, `5min`, `12min`, `20min`, `level5`, `level10`, `level15`, `level20`, `level25`.
 De levelmijlpalen markeren het einde van elke wereld.
 
@@ -46,7 +46,7 @@ beide groepen spelen hetzelfde spel. Het mechanisme staat klaar voor een volgend
 | `help / skip` | **Overslaan** aangeboden (na 5 mislukte pogingen) · gebruikt |
 | `banner / daily` | Dagpuzzel-kaart op het titelscherm · gestart |
 | `wardrobe / button` | Knop **Kast** · geopend |
-| `help / move-part · rotate-part / interact` | Speler verschuift of draait voor het eerst een onderdeel (één keer per sessie) |
+| `help / move-part · rotate-part · rotate-knob / interact` | Speler verschuift of draait voor het eerst een onderdeel (één keer per sessie) |
 
 ## 5. Overige events
 | Event | Betekenis |
@@ -65,5 +65,5 @@ Advertenties (`commercialBreak`, `rewardedBreak`) meet Poki zelf.
 ## Handige vragen voor de export
 - **Hoe lang spelen mensen?** Bekijk het verloop van `session/played/<k>min`. Waar ze dan zitten, staat in `where/<k>min/*`.
 - **Welk level is te moeilijk?** Vergelijk het aantal `fail` met `complete` per level. Elke `start` is één poging.
-- **Is de nieuwe versie beter?** Vergelijk `version/8a/*` met de vorige versie, of `8a` met `8b` zodra er een test loopt.
+- **Is de nieuwe versie beter?** Vergelijk `version/9a/*` met de vorige versie, of `9a` met `9b` zodra er een test loopt.
 - **Komen spelers terug?** Bekijk `session/return/day1` ten opzichte van `session/new/visit`.

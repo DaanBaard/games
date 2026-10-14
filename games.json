@@ -1,5 +1,17 @@
 [
   {
+    "slug": "prismaticz",
+    "title": "Prismaticz",
+    "version": "29",
+    "description": "Lichtpuzzel: zet spiegels, prisma's en gekleurd glas zo dat lichtstralen in de juiste kleur op elk kristal vallen. 71 levels in 7 werelden, dagpuzzel, eindeloze modus en level-editor. 9 talen, mobiel speelbaar.",
+    "thumbnail": "",
+    "tags": [
+      "puzzel",
+      "licht"
+    ],
+    "updated": "2026-10-14T16:12:38+02:00"
+  },
+  {
     "slug": "hamsterbal",
     "title": "Hamsterbal",
     "version": "41",
@@ -25,14 +37,11 @@
   },
   {
     "slug": "plonk",
-    "title": "PLONK!",
-    "version": "0.8",
-    "description": "Physics-puzzel vol kettingreacties: plaats planken, trampolines, domino's en ventilatoren zodat de gouden knikker in Bobo's mond belandt. 25 levels in 5 werelden, dagpuzzel en outfits. Mobiel speelbaar.",
+    "title": "Plonk",
+    "version": "0.9",
+    "description": "",
     "thumbnail": "plonk/thumb.png",
-    "tags": [
-      "puzzel",
-      "physics"
-    ],
+    "tags": [],
     "updated": "2026-10-14T16:00:59+02:00"
   },
   {
@@ -45,6 +54,6 @@
       "arcade",
       "puzzel"
     ],
-    "updated": "2026-10-14T16:00:59+02:00"
+    "updated": "2026-10-14T12:36:03+02:00"
   }
 ]
