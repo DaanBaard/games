@@ -1,5 +1,17 @@
 [
   {
+    "slug": "plonk",
+    "title": "PLONK!",
+    "version": "0.8",
+    "description": "Physics-puzzel vol kettingreacties: plaats planken, trampolines, domino's en ventilatoren zodat de gouden knikker in Bobo's mond belandt. 25 levels in 5 werelden, dagpuzzel en outfits. Mobiel speelbaar.",
+    "thumbnail": "plonk/thumb.png",
+    "tags": [
+      "puzzel",
+      "physics"
+    ],
+    "updated": "2026-10-14T16:00:59+02:00"
+  },
+  {
     "slug": "tumblerz",
     "title": "Tumblerz",
     "version": "1.3.2",
@@ -9,17 +21,17 @@
       "arcade",
       "puzzel"
     ],
-    "updated": "2026-10-14T12:36:03+02:00"
+    "updated": "2026-10-14T16:00:59+02:00"
   },
   {
-    "slug": "plonk",
-    "title": "PLONK!",
-    "version": "0.8",
-    "description": "Physics-puzzel vol kettingreacties: plaats planken, trampolines, domino's en ventilatoren zodat de gouden knikker in Bobo's mond belandt. 25 levels in 5 werelden, dagpuzzel en outfits. Mobiel speelbaar.",
-    "thumbnail": "plonk/thumb.png",
+    "slug": "hamsterbal",
+    "title": "Hamsterbal",
+    "version": "41",
+    "description": "Side-scrolling platformer: rol als hamster in een bal door 30 levels in twintig werelden, met zes eindbazen, power-ups, een winkel, trofeeën en een eindeloze modus. NL/EN, mobiel speelbaar.",
+    "thumbnail": "hamsterbal/thumb.png",
     "tags": [
-      "puzzel",
-      "physics"
+      "platformer",
+      "arcade"
     ],
     "updated": ""
   }
