@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Daan's Games</title>
+<meta name="description" content="Browsergames van Daan — speel direct, geen installatie.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,700;12..96,800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #12100e;
+    --panel: #1c1916;
+    --line: #2e2a25;
+    --ink: #f3ece2;
+    --muted: #a39a8e;
+    --accent: #ffb636;
+    --accent-ink: #1a1305;
+    --radius: 14px;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: var(--bg); color: var(--ink); }
+  body {
+    font-family: "Bricolage Grotesque", system-ui, sans-serif;
+    min-height: 100vh;
+    background-image: radial-gradient(circle at 1px 1px, #ffffff0d 1px, transparent 0);
+    background-size: 22px 22px;
+  }
+  .wrap { max-width: 1120px; margin: 0 auto; padding: 0 16px; }
+  header { padding: 56px 0 28px; }
+  .eyebrow {
+    font-family: "JetBrains Mono", monospace; font-size: 12px; letter-spacing: .14em;
+    text-transform: uppercase; color: var(--accent);
+  }
+  h1 { font-size: clamp(42px, 8vw, 84px); font-weight: 800; line-height: .95; margin: 10px 0 14px; letter-spacing: -.03em; }
+  h1 span { color: var(--accent); }
+  .lede { color: var(--muted); font-size: 18px; max-width: 46ch; margin: 0; }
+
+  .grid {
+    display: grid; gap: 18px; padding: 12px 0 64px;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  }
+  .card {
+    display: flex; flex-direction: column; background: var(--panel);
+    border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden;
+    color: inherit; text-decoration: none;
+    transition: transform .15s ease, border-color .15s ease;
+  }
+  .card:hover, .card:focus-visible { transform: translateY(-3px); border-color: var(--accent); outline: none; }
+  .thumb {
+    aspect-ratio: 16 / 10; background: #000 center / cover no-repeat;
+    display: grid; place-items: center; position: relative;
+  }
+  .thumb .initial { font-size: 72px; font-weight: 800; color: #ffffffd9; text-shadow: 0 4px 0 #0004; }
+  .play {
+    position: absolute; right: 12px; bottom: 12px; background: var(--accent); color: var(--accent-ink);
+    font-weight: 700; font-size: 14px; padding: 7px 14px; border-radius: 999px;
+    box-shadow: 0 3px 0 #0006;
+  }
+  .body { padding: 14px 16px 16px; display: flex; flex-direction: column; gap: 6px; flex: 1; }
+  .row { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; }
+  .title { font-size: 21px; font-weight: 700; margin: 0; }
+  .ver { font-family: "JetBrains Mono", monospace; font-size: 12px; color: var(--muted); white-space: nowrap; }
+  .desc { color: var(--muted); font-size: 15px; margin: 0; line-height: 1.4; }
+  .meta { margin-top: auto; padding-top: 8px; font-family: "JetBrains Mono", monospace; font-size: 11px; color: #776f64; }
+
+  .empty {
+    border: 1px dashed var(--line); border-radius: var(--radius); padding: 40px 20px;
+    text-align: center; color: var(--muted);
+  }
+  footer { border-top: 1px solid var(--line); padding: 20px 0 40px; color: #776f64; font-size: 13px; }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="eyebrow">Arcade · speel in je browser</div>
+      <h1>Daan's <span>Games</span></h1>
+      <p class="lede">Zelfgebouwde browsergames. Klik en speel — geen installatie nodig.</p>
+    </header>
+    <main id="grid" class="grid" aria-live="polite"></main>
+    <footer>Nieuwe versies verschijnen hier automatisch.</footer>
+  </div>
+<script>
+  const hues = [12, 38, 150, 200, 265, 320];
+  const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+  const fmt = d => { try { return new Date(d).toLocaleDateString("nl-NL", { day: "numeric", month: "short", year: "numeric" }); } catch { return ""; } };
+
+  fetch("games.json", { cache: "no-store" })
+    .then(r => r.ok ? r.json() : [])
+    .catch(() => [])
+    .then(games => {
+      const grid = document.getElementById("grid");
+      if (!games.length) {
+        grid.innerHTML = '<div class="empty">Nog geen games gepubliceerd. De eerste komt eraan.</div>';
+        return;
+      }
+      grid.innerHTML = games.map((g, i) => {
+        const h = hues[[...g.slug].reduce((a, c) => a + c.charCodeAt(0), 0) % hues.length];
+        const bg = g.thumbnail
+          ? `background-image:url('${esc(g.thumbnail)}')`
+          : `background-image:linear-gradient(135deg,hsl(${h} 70% 45%),hsl(${(h + 40) % 360} 70% 25%))`;
+        return `
+          <a class="card" href="${esc(g.slug)}/">
+            <div class="thumb" style="${bg}">
+              ${g.thumbnail ? "" : `<span class="initial">${esc(g.title[0] || "?")}</span>`}
+              <span class="play">▶ Speel</span>
+            </div>
+            <div class="body">
+              <div class="row"><h2 class="title">${esc(g.title)}</h2>${g.version ? `<span class="ver">v${esc(g.version)}</span>` : ""}</div>
+              ${g.description ? `<p class="desc">${esc(g.description)}</p>` : ""}
+              ${g.updated ? `<div class="meta">bijgewerkt ${fmt(g.updated)}</div>` : ""}
+            </div>
+          </a>`;
+      }).join("");
+    });
+</script>
+</body>
+</html>
