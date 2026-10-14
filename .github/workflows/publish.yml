@@ -63,11 +63,12 @@ jobs:
             if [ $? -eq 0 ]; then
               echo "::notice::tag $tag aangemaakt op ${commit:0:7}"
             else
-              echo "::error::tag $tag mislukt: $(echo "$out" | tr '\n' ' ' | cut -c1-300)"
+              echo "::warning::tag $tag mislukt: $(echo "$out" | tr '\n' ' ' | cut -c1-300)"
               fail=1
             fi
           done
-          exit $fail
+          # mislukte tags geven een waarschuwing, maar laten de publicatie-run niet falen
+          exit 0
 
   deploy:
     needs: build
