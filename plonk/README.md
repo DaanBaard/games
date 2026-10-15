@@ -1,4 +1,4 @@
-# PLONK! — v1.2
+# PLONK! — v1.3
 
 Physics-puzzelgame met kettingreacties (geïnspireerd op het genre van The Incredible Machine), gebouwd voor Poki.
 Plaats onderdelen, druk op **Start** en laat de gouden knikker in de mond van **Bobo** belanden.
@@ -17,6 +17,10 @@ Open `index.html` in een browser (dubbelklikken werkt; een lokale server zoals `
 | Taal kiezen | Wereldbolknop linksboven op het titelscherm | – |
 | Muziek aan/uit | Knop met muzieknoot (titelscherm en rechtsboven in een level) | – |
 | Geluidseffecten aan/uit | Knop met luidspreker (titelscherm en rechtsboven in een level) | – |
+
+## Nieuw in v1.3 (geen vertraging bij de hap)
+- De slowmotion vlak voor Bobo is weg: die liet de knikker op de laatste 170 pixels tot 35% afremmen, wat als hapering voelde
+- Het winscherm komt na 0,65 s in plaats van 1,3 s (de hap-animatie blijft zichtbaar)
 
 ## Nieuw in v1.2 (op basis van de eerste Poki-data)
 Aanleiding: in de export van v1.1 haalde 76% level 1, haakte de helft binnen een minuut af, en waren level 9 en 14 muren.

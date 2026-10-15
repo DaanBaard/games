@@ -1,27 +1,51 @@
 [
   {
-    "slug": "plonk",
-    "title": "PLONK!",
-    "version": "1.2",
-    "description": "Physics-puzzel vol kettingreacties: plaats planken, trampolines, domino's en ventilatoren zodat de gouden knikker in Bobo's mond belandt. 25 levels in 5 werelden, dagpuzzel en outfits. Mobiel speelbaar.",
-    "thumbnail": "plonk/thumb.png",
+    "slug": "jungle-skirmish",
+    "title": "Jungle Skirmish",
+    "version": "1.4",
+    "description": "Real-time strategie in de geest van Red Alert, maar dan in de jungle: Apenstam tegen Insectenkolonie, gevochten met fruit. Campagne met 12 missies en vrij gevecht. NL/EN.",
+    "thumbnail": "jungle-skirmish/thumb.png",
     "tags": [
-      "puzzel",
-      "physics"
+      "strategie",
+      "rts"
     ],
-    "updated": "2026-10-14T16:57:42+02:00"
+    "updated": "2026-10-15T09:07:59+02:00"
   },
   {
     "slug": "prismaticz",
     "title": "Prismaticz",
     "version": "29",
     "description": "Lichtpuzzel: zet spiegels, prisma's en gekleurd glas zo dat lichtstralen in de juiste kleur op elk kristal vallen. 71 levels in 7 werelden, dagpuzzel, eindeloze modus en level-editor. 9 talen, mobiel speelbaar.",
-    "thumbnail": "",
+    "thumbnail": "prismaticz/thumb.png",
     "tags": [
       "puzzel",
       "licht"
     ],
-    "updated": "2026-10-14T16:12:38+02:00"
+    "updated": "2026-10-15T09:07:59+02:00"
+  },
+  {
+    "slug": "sprout-squad",
+    "title": "Sprout Squad",
+    "version": "0.4",
+    "description": "Survivor-actie in de tuin: speel als plantje, ontwijk zwermen beestjes en kies na elke level-up een nieuwe kracht. 5 tuinen met eindbazen plus een eindeloze modus, upgrades en vriendjes om vrij te spelen. 13 talen, mobiel speelbaar.",
+    "thumbnail": "sprout-squad/thumb.png",
+    "tags": [
+      "actie",
+      "survivor"
+    ],
+    "updated": "2026-10-14T22:23:06+02:00"
+  },
+  {
+    "slug": "plonk",
+    "title": "PLONK!",
+    "version": "1.3",
+    "description": "Physics-puzzel vol kettingreacties: plaats planken, trampolines, domino's en ventilatoren zodat de gouden knikker in Bobo's mond belandt. 25 levels in 5 werelden, dagpuzzel en outfits. Mobiel speelbaar.",
+    "thumbnail": "plonk/thumb.png",
+    "tags": [
+      "puzzel",
+      "physics"
+    ],
+    "updated": "2026-10-14T21:31:19+02:00"
   },
   {
     "slug": "hamsterbal",
@@ -34,18 +58,6 @@
       "arcade"
     ],
     "updated": "2026-10-14T16:11:39+02:00"
-  },
-  {
-    "slug": "jungle-skirmish",
-    "title": "Jungle Skirmish",
-    "version": "1.4",
-    "description": "Real-time strategie in de geest van Red Alert, maar dan in de jungle: Apenstam tegen Insectenkolonie, gevochten met fruit. Campagne met 12 missies en vrij gevecht. NL/EN.",
-    "thumbnail": "",
-    "tags": [
-      "strategie",
-      "rts"
-    ],
-    "updated": "2026-10-14T16:11:14+02:00"
   },
   {
     "slug": "tumblerz",

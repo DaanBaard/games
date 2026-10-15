@@ -6,7 +6,7 @@
   const S = window.PlonkSim, LEVELS = window.PLONK_LEVELS, WORLDS = window.PLONK_WORLDS, SFX = window.SFX, Poki = window.Poki;
   const W = 1280, H = 720, GRID = 10, PLAY_TOP = 60, PLAY_BOTTOM = 600;
   const FONT = "'Baloo 2','Nunito','Arial Rounded MT Bold','Trebuchet MS',system-ui,sans-serif";
-  const VERSION = 'v1.2';
+  const VERSION = 'v1.3';
 
   const cv = document.getElementById('game');
   const ctx = cv.getContext('2d');
@@ -663,7 +663,7 @@
   // eerste input, 'where' (waar is de speler na 1/3/5 min), terugkeer per dag en een funnel per versie (+ A/B-groep).
   // Volledige lijst: EVENTS.md
   const M = (c, w, a) => Poki.measure(c, w, a);
-  const GAME_VERSION = '12';
+  const GAME_VERSION = '13';
   const AB = (() => {                              // A/B-groep: ?ab=a of ?ab=b, anders opgeslagen; standaard 'a' (geen test actief)
     try { const q = new URLSearchParams(location.search).get('ab'); if (q === 'a' || q === 'b') { localStorage.setItem('plonk_ab', q); return q; } } catch (e) {}
     try { const g = localStorage.getItem('plonk_ab'); if (g === 'a' || g === 'b') return g; } catch (e) {}
@@ -764,7 +764,7 @@
     if (!G.daily && wl.every(l => save.stars[l.id] > 0)) once('world', String(L.world), 'cleared');
     for (const o of unlockedNow) M('outfit', o.id, 'unlock');
     Poki.gameplayStop();
-    const simRef = G.sim; setTimeout(() => { if (G.screen === 'play' && G.sim === simRef && G.result) { G.screen = 'win'; G.winAt = G.t; } }, 1300);
+    const simRef = G.sim; setTimeout(() => { if (G.screen === 'play' && G.sim === simRef && G.result) { G.screen = 'win'; G.winAt = G.t; } }, 650);
   }
   function lose() {
     SFX.wind(false); SFX.sad(); bobo.mood = 'lost';
@@ -1732,12 +1732,10 @@
   // ---------- sim tick + events ----------
   function tickSim(dt) {
     const sim = G.sim; if (!sim || sim.state !== 'running') return;
-    // slowmotion vlak voor de hap
-    const m = sim.marble.position, bi = boboItem();
-    const d = Math.hypot(m.x - bi.x, m.y - bi.y);
-    const targetSlow = d < 170 && sim.marble.speed > 2 ? 0.35 : 1;
-    G.slow = lerp(G.slow, targetSlow, 0.2);
-    G.acc = (G.acc || 0) + dt * G.slow;
+    // v1.3: geen slowmotion meer vlak voor de hap (voelde als vertraging); de simulatie loopt altijd op normale snelheid
+    const bi = boboItem();
+    G.slow = 1;
+    G.acc = (G.acc || 0) + dt;
     let n = 0;
     while (G.acc >= S.STEP / 1000 && n < 5) {
       sim.step(); G.acc -= S.STEP / 1000; n++;
