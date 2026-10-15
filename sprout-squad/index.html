@@ -1,5 +1,5 @@
 <!doctype html>
-<!-- Sprout Squad v0.4 -->
+<!-- Sprout Squad v0.8 -->
 <html lang="en">
 <head>
 <meta charset="utf-8">
@@ -69,6 +69,21 @@ canvas#c{position:fixed;inset:0;width:100%;height:100%;display:block}
 .plabel{font-weight:800;margin-bottom:6px}
 .pbar{height:22px;background:#e6dfd0;border-radius:12px;overflow:hidden}
 .pbar i{display:block;height:100%;width:0;background:linear-gradient(90deg,#3fbf5a,#a6e85a);border-radius:12px;transition:width 1.2s cubic-bezier(.2,.8,.2,1)}
+#toast{position:fixed;left:50%;top:max(96px,calc(env(safe-area-inset-top,0px) + 96px));transform:translate(-50%,-20px);background:#fffaf0;color:var(--ink);font-weight:900;font-size:16px;padding:8px 16px;border-radius:999px;box-shadow:0 4px 0 rgba(0,0,0,.2);opacity:0;transition:opacity .25s,transform .25s;z-index:9;pointer-events:none;max-width:calc(100% - 32px);text-align:center}
+#toast.on{opacity:1;transform:translate(-50%,0)}
+.mlist{width:100%;display:flex;flex-direction:column;gap:6px;max-width:420px}
+.mlist h3{font-size:15px;text-align:left;color:#7a7090;letter-spacing:.04em;text-transform:uppercase}
+.mrow{display:flex;align-items:center;gap:8px;background:#fff;border-radius:12px;padding:6px 10px;text-align:left;font-size:14px;font-weight:800}
+.mrow .mt{flex:1;min-width:0}.mrow .mt small{display:block;font-weight:700;color:#7a7090;font-size:12px}
+.mrow .mb{height:7px;background:#e6dfd0;border-radius:4px;overflow:hidden;margin-top:3px}.mrow .mb i{display:block;height:100%;background:linear-gradient(90deg,#ffb52e,#ffe14d)}
+.mrow .mr{font-size:13px;white-space:nowrap}
+.mrow.done{background:#eaffd8}
+#home .mlist{background:rgba(255,250,240,.92);border-radius:16px;padding:8px;box-shadow:0 4px 0 rgba(0,0,0,.15)}
+#runBar{width:100%;display:none}#runBar .pbar i{background:linear-gradient(90deg,#ff9d4a,#ff4d6d)}
+#bless{display:none;color:#c97a00;font-weight:900}
+#quickUp{display:none;flex-direction:column;gap:6px;width:100%;align-items:center}
+#quickUp .row{gap:8px}
+@media (max-height:760px){#hPrev{width:84px;height:84px}.logo{font-size:clamp(38px,8vmin,60px)}}
 #newFriend{display:none;flex-direction:column;align-items:center;font-weight:900;color:#ff3d5a;font-size:22px;animation:pop .4s}
 #newFriend canvas{width:90px;height:90px}
 .shoprow{display:flex;align-items:center;gap:10px;width:100%;background:#fff;border-radius:14px;padding:8px 10px;text-align:left}
@@ -112,6 +127,7 @@ canvas#c{position:fixed;inset:0;width:100%;height:100%;display:block}
   <div class="stagebox"><button class="arrow" id="sPrev">◀</button><div class="stagename"><small id="sNum">Stage 1</small><b id="sName">Backyard</b></div><button class="arrow" id="sNext">▶</button></div>
   <button class="btn big green" id="playBtn" data-primary data-i18n="play">PLAY</button>
   <div class="row"><button class="btn blue" id="upBtn">💪 <span data-i18n="upgrades">Upgrades</span><span class="badge" id="upBadge">!</span></button><button class="btn purple" id="frBtn">🌱 <span data-i18n="friends">Friends</span><span class="badge" id="frBadge">!</span></button><button class="btn gray" id="langBtn" aria-label="Language">🌐 <span id="langCode">EN</span></button></div>
+  <div class="mlist" id="hMissions"></div>
 </div>
 
 <div id="levelup" class="screen dim"><div class="title" data-i18n="levelUp">Level Up!</div><div class="sub" data-i18n="pick">Pick a power</div><div class="cards" id="cards"></div></div>
@@ -123,9 +139,13 @@ canvas#c{position:fixed;inset:0;width:100%;height:100%;display:block}
 <div id="over" class="screen dim"><div class="panel">
   <h2 id="oTitle">Stage Clear!</h2><p class="sub" id="oStats"></p>
   <div class="earn"><span id="oCoins">+0 🪙</span><button id="dblBtn" class="btn blue ad small">x2</button></div>
+  <div class="prog" id="runBar"><div class="plabel" id="rLabel"></div><div class="pbar"><i id="rFill"></i></div></div>
+  <div id="bless"></div>
   <div class="prog"><div class="plabel" id="pLabel"></div><div class="pbar"><i id="pFill"></i></div></div>
+  <div id="quickUp"><div class="plabel" data-i18n="upNow">Get stronger</div><div class="row" id="quRow"></div></div>
   <div id="newFriend"><canvas id="nfPrev" width="180" height="180"></canvas><span id="nfName"></span></div>
   <div class="col"><button id="againBtn" class="btn big green" data-primary>Next</button><button id="homeBtn" class="btn gray" data-i18n="home">Home</button></div>
+  <div class="mlist" id="oMissions"></div>
 </div></div>
 
 <div id="shop" class="screen dim"><div class="panel"><h2 data-i18n="upgrades">Upgrades</h2><div class="earn" style="font-size:22px">🪙 <b id="shCoins">0</b></div><div class="col" id="shopList"></div><button id="freeCoins" class="btn blue ad small">Free 50 🪙</button><button id="shClose" class="btn green" data-primary data-i18n="done">Done</button></div></div>
@@ -135,13 +155,14 @@ canvas#c{position:fixed;inset:0;width:100%;height:100%;display:block}
 <div id="langs" class="screen dim"><div class="panel"><h2 data-i18n="language">Language</h2><div id="langGrid"></div><button id="lgClose" class="btn green" data-primary data-i18n="done">Done</button></div></div>
 
 <div id="hud"><button id="pauseBtn" class="ibtn" aria-label="Pause">⏸</button><button id="muteBtn" class="ibtn" aria-label="Sound">🔊</button></div>
-<div id="hint"><div class="hand">👆</div><div data-i18n="drag">Drag to move</div><small data-i18n="keysHint">or WASD / arrows</small></div>
+<div id="hint"><div class="hand">👆</div><div data-i18n="drag">Drag to the sunbeam</div><small data-i18n="keysHint">or WASD / arrows</small></div>
 <div id="banner"></div>
 <div id="ver"></div>
+<div id="toast"></div>
 
 <script>
 'use strict';
-const VERSION='0.4';
+const VERSION='0.8';
 const $=id=>document.getElementById(id);
 const cv=$('c'),ctx=cv.getContext('2d');
 const rand=(a,b)=>a+Math.random()*(b-a),clamp=(v,a,b)=>v<a?a:v>b?b:v,TAU=Math.PI*2;
@@ -192,17 +213,17 @@ function musicTick(){if(!AC||!musicOn||S.muted||adMute)return;if(mNext<AC.curren
 /* ---------- data ---------- */
 const SKINS=[
  {name:'Sprout',col:'#58c94f',dark:'#2f8f32',start:'seed',hat:'leaf',need:0},
- {name:'Cactus',col:'#3fbf9a',dark:'#23866a',start:'thorns',hat:'spikes',need:80},
+ {name:'Cactus',col:'#3fbf9a',dark:'#23866a',start:'thorns',hat:'spikes',need:60},
  {name:'Sunny',col:'#ffcf3a',dark:'#d99a12',start:'pollen',hat:'petals',need:200},
  {name:'Tulip',col:'#ff7fb3',dark:'#c93f78',start:'bee',hat:'tulip',need:380},
  {name:'Shroom',col:'#f4e6d0',dark:'#b89c7a',start:'splash',hat:'cap',need:600},
  {name:'Goldie',col:'#ffd700',dark:'#c99a00',start:'seed',hat:'crown',need:900,bonus:1.25}];
 const STAGES=[
  {g1:'#7fd35f',g2:'#73c853',hp:1,sp:1,pool:['aphid','ant'],late:['ladybug','beetle'],boss:{col:'#ff4d6d',dark:'#9e1834',mv:['charge','summon']}},
- {g1:'#a8d65e',g2:'#9bcb50',hp:1.6,sp:1.15,pool:['aphid','ant','worm'],late:['ladybug','mole'],boss:{col:'#ff9d2e',dark:'#a8550c',mv:['leap','summon']}},
- {g1:'#79c98a',g2:'#6dbe7e',hp:2.4,sp:1.3,pool:['ant','wasp','spider'],late:['beetle','pillbug'],boss:{col:'#e0457b',dark:'#7d1a42',mv:['rings','charge']}},
- {g1:'#6cc8b0',g2:'#60bca4',hp:3.4,sp:1.45,pool:['wasp','snail','dragonfly'],late:['ladybug','spider','mole'],boss:{col:'#4cc96a',dark:'#1f7a3a',mv:['leap','rings','summon']}},
- {g1:'#9bd98c',g2:'#8fcd80',hp:4.8,sp:1.6,pool:['spider','pillbug','ladybug','beetle'],late:['mole','worm','snail','dragonfly'],boss:{col:'#b07cff',dark:'#5a2ea8',mv:['charge','leap','rings','summon']}},
+ {g1:'#a8d65e',g2:'#9bcb50',hp:1.25,sp:1.05,pool:['aphid','ant','worm'],late:['ladybug','mole'],boss:{col:'#ff9d2e',dark:'#a8550c',mv:['leap','summon']}},
+ {g1:'#79c98a',g2:'#6dbe7e',hp:1.55,sp:1.1,pool:['ant','wasp','spider'],late:['beetle','pillbug'],boss:{col:'#e0457b',dark:'#7d1a42',mv:['rings','charge']}},
+ {g1:'#6cc8b0',g2:'#60bca4',hp:1.9,sp:1.15,pool:['wasp','snail','dragonfly'],late:['ladybug','spider','mole'],boss:{col:'#4cc96a',dark:'#1f7a3a',mv:['leap','rings','summon']}},
+ {g1:'#9bd98c',g2:'#8fcd80',hp:2.3,sp:1.2,pool:['spider','pillbug','ladybug','beetle'],late:['mole','worm','snail','dragonfly'],boss:{col:'#b07cff',dark:'#5a2ea8',mv:['charge','leap','rings','summon']}},
  {g1:'#b3e07a',g2:'#a6d46d',hp:2,sp:1.3,pool:['aphid','ant','wasp','worm','ladybug','spider'],late:['beetle','snail','mole','pillbug','dragonfly'],boss:{col:'#ff4d6d',dark:'#9e1834',mv:['charge','leap','rings','summon']},endless:true}];
 const EN={
  aphid:{r:12,hp:12,spd:72,dmg:8,xp:1,col:'#9be14a',dark:'#5e9d1f'},
@@ -223,24 +244,24 @@ const WUP={seed:'+damage, more seeds',thorns:'+1 thorn, more damage',pollen:'Big
 const PASS={armor:{n:'Leaf Armor',i:'🍃',d:'+20 max HP and heal'},speed:{n:'Swift Roots',i:'💨',d:'+8% move speed'},magnet:{n:'Sun Magnet',i:'🧲',d:'+30% pickup range'},quick:{n:'Quick Bloom',i:'⚡',d:'+10% attack speed'},power:{n:'Strong Stem',i:'💪',d:'+12% damage'}};
 const UPG=[{k:'power',n:'Power',i:'💪',d:'+10% damage'},{k:'hp',n:'Health',i:'❤️',d:'+15 max HP'},{k:'speed',n:'Speed',i:'💨',d:'+5% move speed'},{k:'magnet',n:'Magnet',i:'🧲',d:'+15% pickup range'},{k:'luck',n:'Luck',i:'🍀',d:'+15% coin drops'}];
 /* ---------- localization ---------- */
-const KEYS='play upgrades friends stage best levelUp pick paused resume home wilted reviveQ noThanks revive clear runOver nextStage again nextFriend allFriends newFriend done free soon gpts findMore pts drag keysHint bugs max new lv bigHeal healD coinPile coinD language swarm ambush squad treasure bossDown survive back seed seedD thorns thornsD pollen pollenD bee beeD splash splashD seedU thornsU pollenU beeU splashU armor armorD speedP speedPD magnetP magnetPD quick quickD powerP powerPD uPower uPowerD uHp uHpD uSpeed uSpeedD uMagnet uMagnetD uLuck uLuckD s0 s1 s2 s3 s4 s5 b0 b1 b2 b3 b4 b5'.split(' ');
+const KEYS='play upgrades friends stage best levelUp pick paused resume home wilted reviveQ noThanks revive clear runOver nextStage again nextFriend allFriends newFriend done free soon gpts findMore pts drag keysHint bugs max new lv bigHeal healD coinPile coinD language swarm ambush squad treasure bossDown survive back seed seedD thorns thornsD pollen pollenD bee beeD splash splashD seedU thornsU pollenU beeU splashU armor armorD speedP speedPD magnetP magnetPD quick quickD powerP powerPD uPower uPowerD uHp uHpD uSpeed uSpeedD uMagnet uMagnetD uLuck uLuckD s0 s1 s2 s3 s4 s5 b0 b1 b2 b3 b4 b5 bless easier toBoss almost upNow missions mDone mKills mSuns mLevel mBoss mTime mChest tapStart'.split(' ');
 const KI={};KEYS.forEach((k,i)=>KI[k]=i);
 const PK={armor:'armor',speed:'speedP',magnet:'magnetP',quick:'quick',power:'powerP'};
 const LANGS={en:'English',fr:'Français',it:'Italiano',de:'Deutsch',es:'Español',tr:'Türkçe',pt:'Português',ru:'Русский',nl:'Nederlands',pl:'Polski',ja:'日本語',ko:'한국어',zh:'中文'};
 const TR={
-en:'PLAY|Upgrades|Friends|Stage|Best|Level Up!|Pick a power|Paused|Resume|Home|Wilted!|Spring back with half health?|No thanks|Revive|Stage Clear!|Run Over!|Next Stage ▶|Play Again|Next friend|All friends found! 🌟|NEW FRIEND|Done|Free|Free coins soon|Garden points|Play runs to find more friends!|pts|Drag to move|or WASD / arrows|bugs|MAX|NEW!|Lv|Big Heal|Restore all health|Coin Pile|+15 coins|Language|SWARM!|AMBUSH!|INCOMING!|TREASURE!|BOSS DOWN!|SURVIVE!|BACK IN BLOOM!|Seed Shot|Fires seeds at the closest bug|Thorn Ring|Spinning thorns guard you|Pollen Burst|Blasts every bug around you|Bee Pals|Homing bees hunt bugs|Splash Wave|A wave that hits everything|More damage, more seeds|+1 thorn, more damage|Bigger, faster blasts|More bees, more damage|More waves, more damage|Leaf Armor|+20 max HP and heal|Swift Roots|+8% move speed|Sun Magnet|+30% pickup range|Quick Bloom|+10% attack speed|Strong Stem|+12% damage|Power|+10% damage|Health|+15 max HP|Speed|+5% move speed|Magnet|+15% pickup range|Luck|+15% coin drops|Backyard|Veggie Patch|Rose Garden|Pond Edge|Greenhouse|Endless|Big Beetle|Carrot Crusher|Thorn King|Frog Lord|Mega Moth|Swarm Queen',
-nl:'SPELEN|Upgrades|Vriendjes|Tuin|Record|Level omhoog!|Kies een kracht|Pauze|Verder|Menu|Verwelkt!|Opnieuw opbloeien met halve gezondheid?|Nee, bedankt|Herleven|Tuin gehaald!|Ronde voorbij!|Volgende tuin ▶|Opnieuw spelen|Volgend vriendje|Alle vriendjes gevonden! 🌟|NIEUW VRIENDJE|Klaar|Gratis|Straks gratis munten|Tuinpunten|Speel rondes om meer vriendjes te vinden!|ptn|Sleep om te bewegen|of WASD / pijltjes|beestjes|MAX|NIEUW!|Lv|Grote genezing|Herstel alle gezondheid|Muntenstapel|+15 munten|Taal|ZWERM!|HINDERLAAG!|DAAR KOMEN ZE!|SCHAT!|BAAS VERSLAGEN!|OVERLEEF!|WEER IN BLOEI!|Zaadschot|Schiet zaadjes op het dichtstbijzijnde beestje|Doornenring|Draaiende doorns beschermen je|Stuifmeelknal|Raakt alle beestjes om je heen|Bijenvriendjes|Bijen jagen op beestjes|Spatgolf|Een golf die alles raakt|Meer schade, meer zaadjes|+1 doorn, meer schade|Grotere, snellere knallen|Meer bijen, meer schade|Meer golven, meer schade|Bladpantser|+20 max HP en genezing|Snelle wortels|+8% snelheid|Zonnemagneet|+30% oppakbereik|Snelle bloei|+10% aanvalssnelheid|Sterke stengel|+12% schade|Kracht|+10% schade|Gezondheid|+15 max HP|Snelheid|+5% snelheid|Magneet|+15% oppakbereik|Geluk|+15% meer munten|Achtertuin|Moestuin|Rozentuin|Vijverrand|Kas|Eindeloos|Grote Kever|Wortelpletter|Doornenkoning|Kikkerheer|Megamot|Zwermkoningin',
-fr:'JOUER|Améliorations|Amis|Niveau|Record|Niveau supérieur !|Choisis un pouvoir|Pause|Reprendre|Accueil|Fané !|Refleurir avec la moitié de ta vie ?|Non merci|Revivre|Niveau terminé !|Partie terminée !|Niveau suivant ▶|Rejouer|Prochain ami|Tous les amis trouvés ! 🌟|NOUVEL AMI|OK|Gratuit|Pièces gratuites bientôt|Points jardin|Joue pour trouver plus d’amis !|pts|Glisse pour bouger|ou ZQSD / flèches|insectes|MAX|NOUVEAU !|Niv|Grand soin|Rend toute la vie|Tas de pièces|+15 pièces|Langue|ESSAIM !|EMBUSCADE !|ILS ARRIVENT !|TRÉSOR !|BOSS VAINCU !|SURVIS !|DE NOUVEAU EN FLEUR !|Tir de graines|Tire des graines sur l’insecte le plus proche|Anneau d’épines|Des épines tournent autour de toi|Explosion de pollen|Frappe tous les insectes autour de toi|Abeilles amies|Des abeilles chassent les insectes|Vague d’eau|Une vague qui touche tout|Plus de dégâts, plus de graines|+1 épine, plus de dégâts|Explosions plus grandes et rapides|Plus d’abeilles, plus de dégâts|Plus de vagues, plus de dégâts|Armure de feuilles|+20 PV max et soin|Racines rapides|+8% de vitesse|Aimant solaire|+30% de portée de collecte|Floraison rapide|+10% de vitesse d’attaque|Tige solide|+12% de dégâts|Puissance|+10% de dégâts|Santé|+15 PV max|Vitesse|+5% de vitesse|Aimant|+15% de portée de collecte|Chance|+15% de pièces|Jardin|Potager|Roseraie|Bord de l’étang|Serre|Sans fin|Gros Scarabée|Broyeur de Carottes|Roi des Épines|Seigneur Grenouille|Méga Papillon|Reine de l’Essaim',
-de:'SPIELEN|Upgrades|Freunde|Stufe|Rekord|Level up!|Wähle eine Kraft|Pause|Weiter|Menü|Verwelkt!|Mit halber Gesundheit wieder aufblühen?|Nein danke|Wiederbeleben|Stufe geschafft!|Runde vorbei!|Nächste Stufe ▶|Nochmal spielen|Nächster Freund|Alle Freunde gefunden! 🌟|NEUER FREUND|Fertig|Gratis|Bald Gratis-Münzen|Gartenpunkte|Spiele Runden, um mehr Freunde zu finden!|Pkt|Ziehen zum Bewegen|oder WASD / Pfeiltasten|Käfer|MAX|NEU!|Lv|Große Heilung|Volle Gesundheit|Münzhaufen|+15 Münzen|Sprache|SCHWARM!|HINTERHALT!|SIE KOMMEN!|SCHATZ!|BOSS BESIEGT!|ÜBERLEBE!|WIEDER IN BLÜTE!|Samenschuss|Schießt Samen auf den nächsten Käfer|Dornenring|Kreisende Dornen schützen dich|Pollenstoß|Trifft alle Käfer um dich herum|Bienenfreunde|Zielsuchende Bienen jagen Käfer|Spritzwelle|Eine Welle, die alles trifft|Mehr Schaden, mehr Samen|+1 Dorn, mehr Schaden|Größere, schnellere Stöße|Mehr Bienen, mehr Schaden|Mehr Wellen, mehr Schaden|Blattpanzer|+20 max. LP und Heilung|Flinke Wurzeln|+8% Tempo|Sonnenmagnet|+30% Sammelradius|Schnelle Blüte|+10% Angriffstempo|Starker Stängel|+12% Schaden|Kraft|+10% Schaden|Gesundheit|+15 max. LP|Tempo|+5% Tempo|Magnet|+15% Sammelradius|Glück|+15% mehr Münzen|Hinterhof|Gemüsebeet|Rosengarten|Teichufer|Gewächshaus|Endlos|Großer Käfer|Karottenquetscher|Dornenkönig|Froschfürst|Mega-Motte|Schwarmkönigin',
-es:'JUGAR|Mejoras|Amigos|Nivel|Récord|¡Subes de nivel!|Elige un poder|Pausa|Seguir|Inicio|¡Marchito!|¿Volver a florecer con la mitad de vida?|No, gracias|Revivir|¡Nivel superado!|¡Fin de la partida!|Siguiente nivel ▶|Jugar otra vez|Próximo amigo|¡Todos los amigos encontrados! 🌟|NUEVO AMIGO|Listo|Gratis|Monedas gratis pronto|Puntos de jardín|¡Juega partidas para encontrar más amigos!|pts|Arrastra para moverte|o WASD / flechas|bichos|MÁX|¡NUEVO!|Nv|Gran curación|Recupera toda la vida|Montón de monedas|+15 monedas|Idioma|¡ENJAMBRE!|¡EMBOSCADA!|¡AHÍ VIENEN!|¡TESORO!|¡JEFE DERROTADO!|¡SOBREVIVE!|¡FLORECES DE NUEVO!|Disparo de semillas|Dispara semillas al bicho más cercano|Anillo de espinas|Espinas giratorias te protegen|Explosión de polen|Golpea a todos los bichos a tu alrededor|Abejas amigas|Abejas que persiguen bichos|Ola de agua|Una ola que golpea todo|Más daño, más semillas|+1 espina, más daño|Explosiones más grandes y rápidas|Más abejas, más daño|Más olas, más daño|Armadura de hojas|+20 vida máx. y curación|Raíces veloces|+8% de velocidad|Imán solar|+30% de alcance|Floración rápida|+10% de velocidad de ataque|Tallo fuerte|+12% de daño|Poder|+10% de daño|Salud|+15 vida máx.|Velocidad|+5% de velocidad|Imán|+15% de alcance|Suerte|+15% más monedas|Patio|Huerto|Rosaleda|Orilla del estanque|Invernadero|Infinito|Gran Escarabajo|Aplastazanahorias|Rey Espino|Señor Rana|Mega Polilla|Reina del Enjambre',
-it:'GIOCA|Potenziamenti|Amici|Livello|Record|Livello su!|Scegli un potere|Pausa|Riprendi|Menu|Appassito!|Rifiorire con metà salute?|No grazie|Rianima|Livello superato!|Partita finita!|Livello successivo ▶|Gioca ancora|Prossimo amico|Tutti gli amici trovati! 🌟|NUOVO AMICO|Fatto|Gratis|Monete gratis tra poco|Punti giardino|Gioca partite per trovare altri amici!|pt|Trascina per muoverti|o WASD / frecce|insetti|MAX|NUOVO!|Lv|Grande cura|Ripristina tutta la salute|Mucchio di monete|+15 monete|Lingua|SCIAME!|IMBOSCATA!|IN ARRIVO!|TESORO!|BOSS SCONFITTO!|SOPRAVVIVI!|DI NUOVO IN FIORE!|Colpo di semi|Spara semi all’insetto più vicino|Anello di spine|Spine rotanti ti proteggono|Esplosione di polline|Colpisce tutti gli insetti vicini|Api amiche|Api che inseguono gli insetti|Onda d’acqua|Un’onda che colpisce tutto|Più danni, più semi|+1 spina, più danni|Esplosioni più grandi e veloci|Più api, più danni|Più onde, più danni|Armatura di foglie|+20 PS max e cura|Radici veloci|+8% di velocità|Magnete solare|+30% di raggio di raccolta|Fioritura rapida|+10% di velocità d’attacco|Stelo forte|+12% di danni|Potenza|+10% di danni|Salute|+15 PS max|Velocità|+5% di velocità|Magnete|+15% di raggio di raccolta|Fortuna|+15% di monete|Cortile|Orto|Roseto|Riva dello stagno|Serra|Infinito|Grande Scarabeo|Schiaccia-carote|Re delle Spine|Signore Rana|Mega Falena|Regina dello Sciame',
-pt:'JOGAR|Melhorias|Amigos|Fase|Recorde|Subiu de nível!|Escolha um poder|Pausa|Continuar|Início|Murchou!|Florescer de novo com metade da vida?|Não, obrigado|Reviver|Fase concluída!|Fim da partida!|Próxima fase ▶|Jogar de novo|Próximo amigo|Todos os amigos encontrados! 🌟|NOVO AMIGO|Pronto|Grátis|Moedas grátis em breve|Pontos de jardim|Jogue partidas para achar mais amigos!|pts|Arraste para mover|ou WASD / setas|insetos|MÁX|NOVO!|Nv|Grande cura|Recupera toda a vida|Pilha de moedas|+15 moedas|Idioma|ENXAME!|EMBOSCADA!|LÁ VÊM ELES!|TESOURO!|CHEFE DERROTADO!|SOBREVIVA!|FLORESCEU DE NOVO!|Tiro de sementes|Atira sementes no inseto mais próximo|Anel de espinhos|Espinhos giratórios protegem você|Explosão de pólen|Atinge todos os insetos ao redor|Abelhas amigas|Abelhas que caçam insetos|Onda de água|Uma onda que atinge tudo|Mais dano, mais sementes|+1 espinho, mais dano|Explosões maiores e mais rápidas|Mais abelhas, mais dano|Mais ondas, mais dano|Armadura de folhas|+20 vida máx. e cura|Raízes velozes|+8% de velocidade|Ímã solar|+30% de alcance de coleta|Florada rápida|+10% de velocidade de ataque|Caule forte|+12% de dano|Poder|+10% de dano|Vida|+15 vida máx.|Velocidade|+5% de velocidade|Ímã|+15% de alcance de coleta|Sorte|+15% mais moedas|Quintal|Horta|Roseiral|Beira do lago|Estufa|Infinito|Besouro Gigante|Esmaga-Cenoura|Rei dos Espinhos|Senhor Sapo|Mega Mariposa|Rainha do Enxame',
-tr:'OYNA|Geliştirmeler|Arkadaşlar|Bölüm|Rekor|Seviye atladın!|Bir güç seç|Duraklatıldı|Devam|Ana menü|Soldun!|Yarım canla yeniden çiçek açmak ister misin?|Hayır, teşekkürler|Canlan|Bölüm tamamlandı!|Oyun bitti!|Sonraki bölüm ▶|Tekrar oyna|Sıradaki arkadaş|Tüm arkadaşlar bulundu! 🌟|YENİ ARKADAŞ|Tamam|Bedava|Bedava altın yakında|Bahçe puanı|Daha fazla arkadaş için oyna!|puan|Hareket için sürükle|veya WASD / ok tuşları|böcek|MAKS|YENİ!|Sv|Büyük iyileşme|Tüm canı yeniler|Altın yığını|+15 altın|Dil|SÜRÜ!|PUSU!|GELİYORLAR!|HAZİNE!|PATRON YENİLDİ!|HAYATTA KAL!|YENİDEN ÇİÇEK AÇTIN!|Tohum Atışı|En yakın böceğe tohum atar|Diken Halkası|Dönen dikenler seni korur|Polen Patlaması|Etrafındaki tüm böcekleri vurur|Arı Dostlar|Güdümlü arılar böcek avlar|Su Dalgası|Her şeye çarpan bir dalga|Daha çok hasar, daha çok tohum|+1 diken, daha çok hasar|Daha büyük, daha hızlı patlamalar|Daha çok arı, daha çok hasar|Daha çok dalga, daha çok hasar|Yaprak Zırh|+20 maks can ve iyileşme|Hızlı Kökler|+%8 hız|Güneş Mıknatısı|+%30 toplama alanı|Hızlı Çiçeklenme|+%10 saldırı hızı|Güçlü Sap|+%12 hasar|Güç|+%10 hasar|Can|+15 maks can|Hız|+%5 hız|Mıknatıs|+%15 toplama alanı|Şans|+%15 daha çok altın|Arka Bahçe|Sebze Bahçesi|Gül Bahçesi|Gölet Kenarı|Sera|Sonsuz|Dev Böcek|Havuç Ezici|Diken Kral|Kurbağa Lord|Mega Güve|Sürü Kraliçesi',
-ru:'ИГРАТЬ|Улучшения|Друзья|Уровень|Рекорд|Новый уровень!|Выбери силу|Пауза|Продолжить|Меню|Завял!|Снова расцвести с половиной здоровья?|Нет, спасибо|Ожить|Уровень пройден!|Забег окончен!|Следующий уровень ▶|Ещё раз|Следующий друг|Все друзья найдены! 🌟|НОВЫЙ ДРУГ|Готово|Бесплатно|Скоро бесплатные монеты|Очки сада|Играй, чтобы найти новых друзей!|оч.|Тяни, чтобы двигаться|или WASD / стрелки|жуков|МАКС|НОВОЕ!|Ур|Большое лечение|Полностью восстанавливает здоровье|Куча монет|+15 монет|Язык|РОЙ!|ЗАСАДА!|ЛЕТЯТ!|СОКРОВИЩЕ!|БОСС ПОВЕРЖЕН!|ВЫЖИВИ!|СНОВА В ЦВЕТУ!|Выстрел семенами|Стреляет семенами в ближайшего жука|Кольцо шипов|Вращающиеся шипы защищают тебя|Взрыв пыльцы|Бьёт всех жуков вокруг|Друзья-пчёлы|Самонаводящиеся пчёлы охотятся на жуков|Водяная волна|Волна, которая бьёт всех|Больше урона, больше семян|+1 шип, больше урона|Больше и чаще взрывы|Больше пчёл, больше урона|Больше волн, больше урона|Лиственная броня|+20 к здоровью и лечение|Быстрые корни|+8% к скорости|Солнечный магнит|+30% к радиусу сбора|Быстрое цветение|+10% к скорости атаки|Крепкий стебель|+12% к урону|Сила|+10% к урону|Здоровье|+15 к здоровью|Скорость|+5% к скорости|Магнит|+15% к радиусу сбора|Удача|+15% монет|Задний двор|Огород|Розарий|Берег пруда|Теплица|Бесконечный|Большой Жук|Морковный Громила|Король Шипов|Лорд Лягушка|Мега Моль|Королева Роя',
-pl:'GRAJ|Ulepszenia|Przyjaciele|Etap|Rekord|Nowy poziom!|Wybierz moc|Pauza|Wznów|Menu|Zwiędłeś!|Zakwitnąć ponownie z połową zdrowia?|Nie, dzięki|Ożyw|Etap ukończony!|Koniec gry!|Następny etap ▶|Zagraj jeszcze|Następny przyjaciel|Wszyscy przyjaciele znalezieni! 🌟|NOWY PRZYJACIEL|Gotowe|Za darmo|Darmowe monety wkrótce|Punkty ogrodu|Graj, by znaleźć więcej przyjaciół!|pkt|Przeciągnij, by się ruszać|lub WASD / strzałki|robaków|MAX|NOWE!|Poz|Wielkie leczenie|Przywraca całe zdrowie|Stos monet|+15 monet|Język|RÓJ!|ZASADZKA!|NADCHODZĄ!|SKARB!|BOSS POKONANY!|PRZETRWAJ!|ZNÓW KWITNIESZ!|Strzał nasionami|Strzela nasionami w najbliższego robaka|Pierścień cierni|Wirujące ciernie cię chronią|Wybuch pyłku|Trafia wszystkie robaki wokół|Pszczoły kumple|Pszczoły ścigają robaki|Fala wody|Fala, która trafia wszystko|Więcej obrażeń, więcej nasion|+1 cierń, więcej obrażeń|Większe i szybsze wybuchy|Więcej pszczół, więcej obrażeń|Więcej fal, więcej obrażeń|Liściasty pancerz|+20 maks. zdrowia i leczenie|Szybkie korzenie|+8% szybkości|Słoneczny magnes|+30% zasięgu zbierania|Szybkie kwitnienie|+10% szybkości ataku|Mocna łodyga|+12% obrażeń|Moc|+10% obrażeń|Zdrowie|+15 maks. zdrowia|Szybkość|+5% szybkości|Magnes|+15% zasięgu zbierania|Szczęście|+15% więcej monet|Podwórko|Warzywnik|Ogród różany|Brzeg stawu|Szklarnia|Bez końca|Wielki Żuk|Miażdżyciel Marchwi|Król Cierni|Pan Żaba|Mega Ćma|Królowa Roju',
-ja:'プレイ|強化|なかま|ステージ|ベスト|レベルアップ!|パワーを選ぼう|一時停止|つづける|ホーム|しおれた!|体力半分で復活する?|いいえ|復活|ステージクリア!|ゲーム終了!|次のステージ ▶|もう一度|次のなかま|なかま全員発見! 🌟|新しいなかま|OK|無料|まもなく無料コイン|ガーデンポイント|プレイしてなかまを見つけよう!|pt|ドラッグで移動|または WASD / 矢印キー|匹|MAX|NEW!|Lv|大回復|体力を全回復|コインの山|+15コイン|言語|大群!|奇襲!|来るぞ!|宝箱!|ボス撃破!|生き残れ!|復活!|タネショット|一番近い虫にタネを撃つ|トゲリング|回転するトゲが守る|花粉バースト|周りの虫をまとめて攻撃|ミツバチ仲間|追尾するハチが虫を狩る|しぶきウェーブ|すべてを貫く波|ダメージ増加、タネ増加|トゲ+1、ダメージ増加|より大きく速いバースト|ハチ増加、ダメージ増加|波増加、ダメージ増加|葉っぱアーマー|最大HP+20と回復|すばやい根|移動速度+8%|太陽マグネット|回収範囲+30%|はやい開花|攻撃速度+10%|つよい茎|ダメージ+12%|パワー|ダメージ+10%|体力|最大HP+15|スピード|移動速度+5%|マグネット|回収範囲+15%|ラック|コイン+15%|裏庭|家庭菜園|バラ園|池のほとり|温室|エンドレス|ビッグビートル|ニンジンクラッシャー|イバラキング|カエル大王|メガガ|群れの女王',
-ko:'플레이|강화|친구|스테이지|최고|레벨 업!|능력을 고르세요|일시정지|계속|홈|시들었어요!|체력 절반으로 다시 피어날까요?|괜찮아요|부활|스테이지 클리어!|게임 종료!|다음 스테이지 ▶|다시 하기|다음 친구|모든 친구를 찾았어요! 🌟|새 친구|완료|무료|곧 무료 코인|정원 포인트|플레이해서 친구를 더 찾아보세요!|점|드래그로 이동|또는 WASD / 방향키|마리|MAX|NEW!|Lv|큰 회복|체력 전부 회복|코인 더미|+15 코인|언어|떼 습격!|매복!|몰려온다!|보물!|보스 처치!|살아남아라!|다시 피어났다!|씨앗 발사|가장 가까운 벌레에게 씨앗 발사|가시 고리|도는 가시가 지켜줘요|꽃가루 폭발|주변 벌레 모두 공격|꿀벌 친구|유도 꿀벌이 벌레를 사냥|물보라 파도|모든 것을 맞히는 파도|피해 증가, 씨앗 증가|가시 +1, 피해 증가|더 크고 빠른 폭발|꿀벌 증가, 피해 증가|파도 증가, 피해 증가|잎사귀 갑옷|최대 체력 +20 및 회복|빠른 뿌리|이동 속도 +8%|햇빛 자석|획득 범위 +30%|빠른 개화|공격 속도 +10%|튼튼한 줄기|피해 +12%|힘|피해 +10%|체력|최대 체력 +15|속도|이동 속도 +5%|자석|획득 범위 +15%|행운|코인 +15%|뒷마당|텃밭|장미 정원|연못가|온실|무한|왕딱정벌레|당근 분쇄기|가시 왕|개구리 군주|메가 나방|떼의 여왕',
-zh:'开始|升级|伙伴|关卡|最佳|升级啦!|选择一个能力|暂停|继续|主页|枯萎了!|用一半生命重新绽放?|不用了|复活|关卡完成!|游戏结束!|下一关 ▶|再玩一次|下一个伙伴|找到了所有伙伴! 🌟|新伙伴|完成|免费|免费金币即将可用|花园点数|多玩几局来寻找更多伙伴!|点|拖动来移动|或 WASD / 方向键|只虫子|满级|新!|等级|大治疗|恢复全部生命|金币堆|+15 金币|语言|虫群!|伏击!|来了!|宝藏!|击败首领!|活下去!|重新绽放!|种子射击|向最近的虫子发射种子|荆棘环|旋转的荆棘保护你|花粉爆发|攻击周围所有虫子|蜜蜂伙伴|追踪蜜蜂猎杀虫子|水花波|击中一切的水波|更多伤害,更多种子|荆棘+1,更多伤害|更大更快的爆发|更多蜜蜂,更多伤害|更多水波,更多伤害|树叶护甲|最大生命+20并治疗|迅捷根系|移动速度+8%|阳光磁铁|拾取范围+30%|快速绽放|攻击速度+10%|坚韧茎干|伤害+12%|力量|伤害+10%|生命|最大生命+15|速度|移动速度+5%|磁铁|拾取范围+15%|幸运|金币+15%|后院|菜园|玫瑰园|池塘边|温室|无尽|大甲虫|胡萝卜粉碎者|荆棘之王|青蛙领主|巨型飞蛾|虫群女王'};
+en:'PLAY|Upgrades|Friends|Stage|Best|Level Up!|Pick a power|Paused|Resume|Home|Wilted!|Spring back with half health?|No thanks|Revive|Stage Clear!|Run Over!|Next Stage ▶|Play Again|Next friend|All friends found! 🌟|NEW FRIEND|Done|Free|Free coins soon|Garden points|Play runs to find more friends!|pts|Drag to the sunbeam|or WASD / arrows|bugs|MAX|NEW!|Lv|Big Heal|Restore all health|Coin Pile|+15 coins|Language|SWARM!|AMBUSH!|INCOMING!|TREASURE!|BOSS DOWN!|SURVIVE!|BACK IN BLOOM!|Seed Shot|Fires seeds at the closest bug|Thorn Ring|Spinning thorns guard you|Pollen Burst|Blasts every bug around you|Bee Pals|Homing bees hunt bugs|Splash Wave|A wave that hits everything|More damage, more seeds|+1 thorn, more damage|Bigger, faster blasts|More bees, more damage|More waves, more damage|Leaf Armor|+20 max HP and heal|Swift Roots|+8% move speed|Sun Magnet|+30% pickup range|Quick Bloom|+10% attack speed|Strong Stem|+12% damage|Power|+10% damage|Health|+15 max HP|Speed|+5% move speed|Magnet|+15% pickup range|Luck|+15% coin drops|Backyard|Veggie Patch|Rose Garden|Pond Edge|Greenhouse|Endless|Big Beetle|Carrot Crusher|Thorn King|Frog Lord|Mega Moth|Swarm Queen|Sun blessing: bugs are weaker|Next try is easier ☀|Boss|So close!|Get stronger|Missions|Mission complete!|Defeat {n} bugs|Catch {n} sunbeams|Reach level {n} in one run|Defeat {n} bosses|Play {n} minutes|Open {n} treasure chests|Tap to start',
+nl:'SPELEN|Upgrades|Vriendjes|Tuin|Record|Level omhoog!|Kies een kracht|Pauze|Verder|Menu|Verwelkt!|Opnieuw opbloeien met halve gezondheid?|Nee, bedankt|Herleven|Tuin gehaald!|Ronde voorbij!|Volgende tuin ▶|Opnieuw spelen|Volgend vriendje|Alle vriendjes gevonden! 🌟|NIEUW VRIENDJE|Klaar|Gratis|Straks gratis munten|Tuinpunten|Speel rondes om meer vriendjes te vinden!|ptn|Sleep naar de zonnestraal|of WASD / pijltjes|beestjes|MAX|NIEUW!|Lv|Grote genezing|Herstel alle gezondheid|Muntenstapel|+15 munten|Taal|ZWERM!|HINDERLAAG!|DAAR KOMEN ZE!|SCHAT!|BAAS VERSLAGEN!|OVERLEEF!|WEER IN BLOEI!|Zaadschot|Schiet zaadjes op het dichtstbijzijnde beestje|Doornenring|Draaiende doorns beschermen je|Stuifmeelknal|Raakt alle beestjes om je heen|Bijenvriendjes|Bijen jagen op beestjes|Spatgolf|Een golf die alles raakt|Meer schade, meer zaadjes|+1 doorn, meer schade|Grotere, snellere knallen|Meer bijen, meer schade|Meer golven, meer schade|Bladpantser|+20 max HP en genezing|Snelle wortels|+8% snelheid|Zonnemagneet|+30% oppakbereik|Snelle bloei|+10% aanvalssnelheid|Sterke stengel|+12% schade|Kracht|+10% schade|Gezondheid|+15 max HP|Snelheid|+5% snelheid|Magneet|+15% oppakbereik|Geluk|+15% meer munten|Achtertuin|Moestuin|Rozentuin|Vijverrand|Kas|Eindeloos|Grote Kever|Wortelpletter|Doornenkoning|Kikkerheer|Megamot|Zwermkoningin|Zon-zegen: beestjes zijn zwakker|Volgende poging is makkelijker ☀|Baas|Bijna!|Word sterker|Missies|Missie voltooid!|Versla {n} beestjes|Vang {n} zonnestralen|Haal level {n} in één ronde|Versla {n} bazen|Speel {n} minuten|Open {n} schatkisten|Tik om te starten',
+fr:'JOUER|Améliorations|Amis|Niveau|Record|Niveau supérieur !|Choisis un pouvoir|Pause|Reprendre|Accueil|Fané !|Refleurir avec la moitié de ta vie ?|Non merci|Revivre|Niveau terminé !|Partie terminée !|Niveau suivant ▶|Rejouer|Prochain ami|Tous les amis trouvés ! 🌟|NOUVEL AMI|OK|Gratuit|Pièces gratuites bientôt|Points jardin|Joue pour trouver plus d’amis !|pts|Glisse vers le rayon de soleil|ou ZQSD / flèches|insectes|MAX|NOUVEAU !|Niv|Grand soin|Rend toute la vie|Tas de pièces|+15 pièces|Langue|ESSAIM !|EMBUSCADE !|ILS ARRIVENT !|TRÉSOR !|BOSS VAINCU !|SURVIS !|DE NOUVEAU EN FLEUR !|Tir de graines|Tire des graines sur l’insecte le plus proche|Anneau d’épines|Des épines tournent autour de toi|Explosion de pollen|Frappe tous les insectes autour de toi|Abeilles amies|Des abeilles chassent les insectes|Vague d’eau|Une vague qui touche tout|Plus de dégâts, plus de graines|+1 épine, plus de dégâts|Explosions plus grandes et rapides|Plus d’abeilles, plus de dégâts|Plus de vagues, plus de dégâts|Armure de feuilles|+20 PV max et soin|Racines rapides|+8% de vitesse|Aimant solaire|+30% de portée de collecte|Floraison rapide|+10% de vitesse d’attaque|Tige solide|+12% de dégâts|Puissance|+10% de dégâts|Santé|+15 PV max|Vitesse|+5% de vitesse|Aimant|+15% de portée de collecte|Chance|+15% de pièces|Jardin|Potager|Roseraie|Bord de l’étang|Serre|Sans fin|Gros Scarabée|Broyeur de Carottes|Roi des Épines|Seigneur Grenouille|Méga Papillon|Reine de l’Essaim|Bénédiction solaire : insectes affaiblis|Prochain essai plus facile ☀|Boss|Presque !|Deviens plus fort|Missions|Mission accomplie !|Bats {n} insectes|Attrape {n} rayons de soleil|Atteins le niveau {n} en une partie|Bats {n} boss|Joue {n} minutes|Ouvre {n} coffres|Touche pour commencer',
+de:'SPIELEN|Upgrades|Freunde|Stufe|Rekord|Level up!|Wähle eine Kraft|Pause|Weiter|Menü|Verwelkt!|Mit halber Gesundheit wieder aufblühen?|Nein danke|Wiederbeleben|Stufe geschafft!|Runde vorbei!|Nächste Stufe ▶|Nochmal spielen|Nächster Freund|Alle Freunde gefunden! 🌟|NEUER FREUND|Fertig|Gratis|Bald Gratis-Münzen|Gartenpunkte|Spiele Runden, um mehr Freunde zu finden!|Pkt|Zieh zum Sonnenstrahl|oder WASD / Pfeiltasten|Käfer|MAX|NEU!|Lv|Große Heilung|Volle Gesundheit|Münzhaufen|+15 Münzen|Sprache|SCHWARM!|HINTERHALT!|SIE KOMMEN!|SCHATZ!|BOSS BESIEGT!|ÜBERLEBE!|WIEDER IN BLÜTE!|Samenschuss|Schießt Samen auf den nächsten Käfer|Dornenring|Kreisende Dornen schützen dich|Pollenstoß|Trifft alle Käfer um dich herum|Bienenfreunde|Zielsuchende Bienen jagen Käfer|Spritzwelle|Eine Welle, die alles trifft|Mehr Schaden, mehr Samen|+1 Dorn, mehr Schaden|Größere, schnellere Stöße|Mehr Bienen, mehr Schaden|Mehr Wellen, mehr Schaden|Blattpanzer|+20 max. LP und Heilung|Flinke Wurzeln|+8% Tempo|Sonnenmagnet|+30% Sammelradius|Schnelle Blüte|+10% Angriffstempo|Starker Stängel|+12% Schaden|Kraft|+10% Schaden|Gesundheit|+15 max. LP|Tempo|+5% Tempo|Magnet|+15% Sammelradius|Glück|+15% mehr Münzen|Hinterhof|Gemüsebeet|Rosengarten|Teichufer|Gewächshaus|Endlos|Großer Käfer|Karottenquetscher|Dornenkönig|Froschfürst|Mega-Motte|Schwarmkönigin|Sonnensegen: Käfer sind schwächer|Nächster Versuch ist leichter ☀|Boss|Fast geschafft!|Werde stärker|Missionen|Mission erfüllt!|Besiege {n} Käfer|Fange {n} Sonnenstrahlen|Erreiche Level {n} in einer Runde|Besiege {n} Bosse|Spiele {n} Minuten|Öffne {n} Schatztruhen|Tippen zum Starten',
+es:'JUGAR|Mejoras|Amigos|Nivel|Récord|¡Subes de nivel!|Elige un poder|Pausa|Seguir|Inicio|¡Marchito!|¿Volver a florecer con la mitad de vida?|No, gracias|Revivir|¡Nivel superado!|¡Fin de la partida!|Siguiente nivel ▶|Jugar otra vez|Próximo amigo|¡Todos los amigos encontrados! 🌟|NUEVO AMIGO|Listo|Gratis|Monedas gratis pronto|Puntos de jardín|¡Juega partidas para encontrar más amigos!|pts|Arrastra hacia el rayo de sol|o WASD / flechas|bichos|MÁX|¡NUEVO!|Nv|Gran curación|Recupera toda la vida|Montón de monedas|+15 monedas|Idioma|¡ENJAMBRE!|¡EMBOSCADA!|¡AHÍ VIENEN!|¡TESORO!|¡JEFE DERROTADO!|¡SOBREVIVE!|¡FLORECES DE NUEVO!|Disparo de semillas|Dispara semillas al bicho más cercano|Anillo de espinas|Espinas giratorias te protegen|Explosión de polen|Golpea a todos los bichos a tu alrededor|Abejas amigas|Abejas que persiguen bichos|Ola de agua|Una ola que golpea todo|Más daño, más semillas|+1 espina, más daño|Explosiones más grandes y rápidas|Más abejas, más daño|Más olas, más daño|Armadura de hojas|+20 vida máx. y curación|Raíces veloces|+8% de velocidad|Imán solar|+30% de alcance|Floración rápida|+10% de velocidad de ataque|Tallo fuerte|+12% de daño|Poder|+10% de daño|Salud|+15 vida máx.|Velocidad|+5% de velocidad|Imán|+15% de alcance|Suerte|+15% más monedas|Patio|Huerto|Rosaleda|Orilla del estanque|Invernadero|Infinito|Gran Escarabajo|Aplastazanahorias|Rey Espino|Señor Rana|Mega Polilla|Reina del Enjambre|Bendición solar: bichos más débiles|El próximo intento es más fácil ☀|Jefe|¡Casi!|Hazte más fuerte|Misiones|¡Misión cumplida!|Derrota {n} bichos|Atrapa {n} rayos de sol|Llega al nivel {n} en una partida|Derrota {n} jefes|Juega {n} minutos|Abre {n} cofres|Toca para empezar',
+it:'GIOCA|Potenziamenti|Amici|Livello|Record|Livello su!|Scegli un potere|Pausa|Riprendi|Menu|Appassito!|Rifiorire con metà salute?|No grazie|Rianima|Livello superato!|Partita finita!|Livello successivo ▶|Gioca ancora|Prossimo amico|Tutti gli amici trovati! 🌟|NUOVO AMICO|Fatto|Gratis|Monete gratis tra poco|Punti giardino|Gioca partite per trovare altri amici!|pt|Trascina verso il raggio di sole|o WASD / frecce|insetti|MAX|NUOVO!|Lv|Grande cura|Ripristina tutta la salute|Mucchio di monete|+15 monete|Lingua|SCIAME!|IMBOSCATA!|IN ARRIVO!|TESORO!|BOSS SCONFITTO!|SOPRAVVIVI!|DI NUOVO IN FIORE!|Colpo di semi|Spara semi all’insetto più vicino|Anello di spine|Spine rotanti ti proteggono|Esplosione di polline|Colpisce tutti gli insetti vicini|Api amiche|Api che inseguono gli insetti|Onda d’acqua|Un’onda che colpisce tutto|Più danni, più semi|+1 spina, più danni|Esplosioni più grandi e veloci|Più api, più danni|Più onde, più danni|Armatura di foglie|+20 PS max e cura|Radici veloci|+8% di velocità|Magnete solare|+30% di raggio di raccolta|Fioritura rapida|+10% di velocità d’attacco|Stelo forte|+12% di danni|Potenza|+10% di danni|Salute|+15 PS max|Velocità|+5% di velocità|Magnete|+15% di raggio di raccolta|Fortuna|+15% di monete|Cortile|Orto|Roseto|Riva dello stagno|Serra|Infinito|Grande Scarabeo|Schiaccia-carote|Re delle Spine|Signore Rana|Mega Falena|Regina dello Sciame|Benedizione solare: insetti più deboli|Il prossimo tentativo è più facile ☀|Boss|Quasi!|Diventa più forte|Missioni|Missione compiuta!|Sconfiggi {n} insetti|Prendi {n} raggi di sole|Raggiungi il livello {n} in una partita|Sconfiggi {n} boss|Gioca {n} minuti|Apri {n} forzieri|Tocca per iniziare',
+pt:'JOGAR|Melhorias|Amigos|Fase|Recorde|Subiu de nível!|Escolha um poder|Pausa|Continuar|Início|Murchou!|Florescer de novo com metade da vida?|Não, obrigado|Reviver|Fase concluída!|Fim da partida!|Próxima fase ▶|Jogar de novo|Próximo amigo|Todos os amigos encontrados! 🌟|NOVO AMIGO|Pronto|Grátis|Moedas grátis em breve|Pontos de jardim|Jogue partidas para achar mais amigos!|pts|Arraste até o raio de sol|ou WASD / setas|insetos|MÁX|NOVO!|Nv|Grande cura|Recupera toda a vida|Pilha de moedas|+15 moedas|Idioma|ENXAME!|EMBOSCADA!|LÁ VÊM ELES!|TESOURO!|CHEFE DERROTADO!|SOBREVIVA!|FLORESCEU DE NOVO!|Tiro de sementes|Atira sementes no inseto mais próximo|Anel de espinhos|Espinhos giratórios protegem você|Explosão de pólen|Atinge todos os insetos ao redor|Abelhas amigas|Abelhas que caçam insetos|Onda de água|Uma onda que atinge tudo|Mais dano, mais sementes|+1 espinho, mais dano|Explosões maiores e mais rápidas|Mais abelhas, mais dano|Mais ondas, mais dano|Armadura de folhas|+20 vida máx. e cura|Raízes velozes|+8% de velocidade|Ímã solar|+30% de alcance de coleta|Florada rápida|+10% de velocidade de ataque|Caule forte|+12% de dano|Poder|+10% de dano|Vida|+15 vida máx.|Velocidade|+5% de velocidade|Ímã|+15% de alcance de coleta|Sorte|+15% mais moedas|Quintal|Horta|Roseiral|Beira do lago|Estufa|Infinito|Besouro Gigante|Esmaga-Cenoura|Rei dos Espinhos|Senhor Sapo|Mega Mariposa|Rainha do Enxame|Bênção solar: insetos mais fracos|A próxima tentativa é mais fácil ☀|Chefe|Quase!|Fique mais forte|Missões|Missão cumprida!|Derrote {n} insetos|Pegue {n} raios de sol|Chegue ao nível {n} em uma partida|Derrote {n} chefes|Jogue {n} minutos|Abra {n} baús|Toque para começar',
+tr:'OYNA|Geliştirmeler|Arkadaşlar|Bölüm|Rekor|Seviye atladın!|Bir güç seç|Duraklatıldı|Devam|Ana menü|Soldun!|Yarım canla yeniden çiçek açmak ister misin?|Hayır, teşekkürler|Canlan|Bölüm tamamlandı!|Oyun bitti!|Sonraki bölüm ▶|Tekrar oyna|Sıradaki arkadaş|Tüm arkadaşlar bulundu! 🌟|YENİ ARKADAŞ|Tamam|Bedava|Bedava altın yakında|Bahçe puanı|Daha fazla arkadaş için oyna!|puan|Güneş ışığına sürükle|veya WASD / ok tuşları|böcek|MAKS|YENİ!|Sv|Büyük iyileşme|Tüm canı yeniler|Altın yığını|+15 altın|Dil|SÜRÜ!|PUSU!|GELİYORLAR!|HAZİNE!|PATRON YENİLDİ!|HAYATTA KAL!|YENİDEN ÇİÇEK AÇTIN!|Tohum Atışı|En yakın böceğe tohum atar|Diken Halkası|Dönen dikenler seni korur|Polen Patlaması|Etrafındaki tüm böcekleri vurur|Arı Dostlar|Güdümlü arılar böcek avlar|Su Dalgası|Her şeye çarpan bir dalga|Daha çok hasar, daha çok tohum|+1 diken, daha çok hasar|Daha büyük, daha hızlı patlamalar|Daha çok arı, daha çok hasar|Daha çok dalga, daha çok hasar|Yaprak Zırh|+20 maks can ve iyileşme|Hızlı Kökler|+%8 hız|Güneş Mıknatısı|+%30 toplama alanı|Hızlı Çiçeklenme|+%10 saldırı hızı|Güçlü Sap|+%12 hasar|Güç|+%10 hasar|Can|+15 maks can|Hız|+%5 hız|Mıknatıs|+%15 toplama alanı|Şans|+%15 daha çok altın|Arka Bahçe|Sebze Bahçesi|Gül Bahçesi|Gölet Kenarı|Sera|Sonsuz|Dev Böcek|Havuç Ezici|Diken Kral|Kurbağa Lord|Mega Güve|Sürü Kraliçesi|Güneş kutsaması: böcekler daha zayıf|Sonraki deneme daha kolay ☀|Patron|Az kaldı!|Güçlen|Görevler|Görev tamamlandı!|{n} böcek yen|{n} güneş ışığı yakala|Bir oyunda {n}. seviyeye ulaş|{n} patron yen|{n} dakika oyna|{n} hazine sandığı aç|Başlamak için dokun',
+ru:'ИГРАТЬ|Улучшения|Друзья|Уровень|Рекорд|Новый уровень!|Выбери силу|Пауза|Продолжить|Меню|Завял!|Снова расцвести с половиной здоровья?|Нет, спасибо|Ожить|Уровень пройден!|Забег окончен!|Следующий уровень ▶|Ещё раз|Следующий друг|Все друзья найдены! 🌟|НОВЫЙ ДРУГ|Готово|Бесплатно|Скоро бесплатные монеты|Очки сада|Играй, чтобы найти новых друзей!|оч.|Тяни к солнечному лучу|или WASD / стрелки|жуков|МАКС|НОВОЕ!|Ур|Большое лечение|Полностью восстанавливает здоровье|Куча монет|+15 монет|Язык|РОЙ!|ЗАСАДА!|ЛЕТЯТ!|СОКРОВИЩЕ!|БОСС ПОВЕРЖЕН!|ВЫЖИВИ!|СНОВА В ЦВЕТУ!|Выстрел семенами|Стреляет семенами в ближайшего жука|Кольцо шипов|Вращающиеся шипы защищают тебя|Взрыв пыльцы|Бьёт всех жуков вокруг|Друзья-пчёлы|Самонаводящиеся пчёлы охотятся на жуков|Водяная волна|Волна, которая бьёт всех|Больше урона, больше семян|+1 шип, больше урона|Больше и чаще взрывы|Больше пчёл, больше урона|Больше волн, больше урона|Лиственная броня|+20 к здоровью и лечение|Быстрые корни|+8% к скорости|Солнечный магнит|+30% к радиусу сбора|Быстрое цветение|+10% к скорости атаки|Крепкий стебель|+12% к урону|Сила|+10% к урону|Здоровье|+15 к здоровью|Скорость|+5% к скорости|Магнит|+15% к радиусу сбора|Удача|+15% монет|Задний двор|Огород|Розарий|Берег пруда|Теплица|Бесконечный|Большой Жук|Морковный Громила|Король Шипов|Лорд Лягушка|Мега Моль|Королева Роя|Благословение солнца: жуки слабее|Следующая попытка легче ☀|Босс|Почти!|Стань сильнее|Задания|Задание выполнено!|Победи {n} жуков|Поймай {n} солнечных лучей|Достигни {n} уровня за забег|Победи {n} боссов|Играй {n} минут|Открой {n} сундуков|Нажми, чтобы начать',
+pl:'GRAJ|Ulepszenia|Przyjaciele|Etap|Rekord|Nowy poziom!|Wybierz moc|Pauza|Wznów|Menu|Zwiędłeś!|Zakwitnąć ponownie z połową zdrowia?|Nie, dzięki|Ożyw|Etap ukończony!|Koniec gry!|Następny etap ▶|Zagraj jeszcze|Następny przyjaciel|Wszyscy przyjaciele znalezieni! 🌟|NOWY PRZYJACIEL|Gotowe|Za darmo|Darmowe monety wkrótce|Punkty ogrodu|Graj, by znaleźć więcej przyjaciół!|pkt|Przeciągnij do promienia słońca|lub WASD / strzałki|robaków|MAX|NOWE!|Poz|Wielkie leczenie|Przywraca całe zdrowie|Stos monet|+15 monet|Język|RÓJ!|ZASADZKA!|NADCHODZĄ!|SKARB!|BOSS POKONANY!|PRZETRWAJ!|ZNÓW KWITNIESZ!|Strzał nasionami|Strzela nasionami w najbliższego robaka|Pierścień cierni|Wirujące ciernie cię chronią|Wybuch pyłku|Trafia wszystkie robaki wokół|Pszczoły kumple|Pszczoły ścigają robaki|Fala wody|Fala, która trafia wszystko|Więcej obrażeń, więcej nasion|+1 cierń, więcej obrażeń|Większe i szybsze wybuchy|Więcej pszczół, więcej obrażeń|Więcej fal, więcej obrażeń|Liściasty pancerz|+20 maks. zdrowia i leczenie|Szybkie korzenie|+8% szybkości|Słoneczny magnes|+30% zasięgu zbierania|Szybkie kwitnienie|+10% szybkości ataku|Mocna łodyga|+12% obrażeń|Moc|+10% obrażeń|Zdrowie|+15 maks. zdrowia|Szybkość|+5% szybkości|Magnes|+15% zasięgu zbierania|Szczęście|+15% więcej monet|Podwórko|Warzywnik|Ogród różany|Brzeg stawu|Szklarnia|Bez końca|Wielki Żuk|Miażdżyciel Marchwi|Król Cierni|Pan Żaba|Mega Ćma|Królowa Roju|Błogosławieństwo słońca: robaki słabsze|Następna próba będzie łatwiejsza ☀|Boss|Prawie!|Stań się silniejszy|Misje|Misja ukończona!|Pokonaj {n} robaków|Złap {n} promieni słońca|Osiągnij poziom {n} w jednej grze|Pokonaj {n} bossów|Graj {n} minut|Otwórz {n} skrzyń|Dotknij, by zacząć',
+ja:'プレイ|強化|なかま|ステージ|ベスト|レベルアップ!|パワーを選ぼう|一時停止|つづける|ホーム|しおれた!|体力半分で復活する?|いいえ|復活|ステージクリア!|ゲーム終了!|次のステージ ▶|もう一度|次のなかま|なかま全員発見! 🌟|新しいなかま|OK|無料|まもなく無料コイン|ガーデンポイント|プレイしてなかまを見つけよう!|pt|日だまりまでドラッグ|または WASD / 矢印キー|匹|MAX|NEW!|Lv|大回復|体力を全回復|コインの山|+15コイン|言語|大群!|奇襲!|来るぞ!|宝箱!|ボス撃破!|生き残れ!|復活!|タネショット|一番近い虫にタネを撃つ|トゲリング|回転するトゲが守る|花粉バースト|周りの虫をまとめて攻撃|ミツバチ仲間|追尾するハチが虫を狩る|しぶきウェーブ|すべてを貫く波|ダメージ増加、タネ増加|トゲ+1、ダメージ増加|より大きく速いバースト|ハチ増加、ダメージ増加|波増加、ダメージ増加|葉っぱアーマー|最大HP+20と回復|すばやい根|移動速度+8%|太陽マグネット|回収範囲+30%|はやい開花|攻撃速度+10%|つよい茎|ダメージ+12%|パワー|ダメージ+10%|体力|最大HP+15|スピード|移動速度+5%|マグネット|回収範囲+15%|ラック|コイン+15%|裏庭|家庭菜園|バラ園|池のほとり|温室|エンドレス|ビッグビートル|ニンジンクラッシャー|イバラキング|カエル大王|メガガ|群れの女王|太陽の加護:虫が弱くなった|次はもっとかんたん ☀|ボス|おしい!|強くなろう|ミッション|ミッション達成!|虫を{n}匹たおす|日だまりを{n}回あつめる|1回のプレイでLv{n}に到達|ボスを{n}体たおす|{n}分あそぶ|宝箱を{n}個あける|タップでスタート',
+ko:'플레이|강화|친구|스테이지|최고|레벨 업!|능력을 고르세요|일시정지|계속|홈|시들었어요!|체력 절반으로 다시 피어날까요?|괜찮아요|부활|스테이지 클리어!|게임 종료!|다음 스테이지 ▶|다시 하기|다음 친구|모든 친구를 찾았어요! 🌟|새 친구|완료|무료|곧 무료 코인|정원 포인트|플레이해서 친구를 더 찾아보세요!|점|햇빛까지 드래그|또는 WASD / 방향키|마리|MAX|NEW!|Lv|큰 회복|체력 전부 회복|코인 더미|+15 코인|언어|떼 습격!|매복!|몰려온다!|보물!|보스 처치!|살아남아라!|다시 피어났다!|씨앗 발사|가장 가까운 벌레에게 씨앗 발사|가시 고리|도는 가시가 지켜줘요|꽃가루 폭발|주변 벌레 모두 공격|꿀벌 친구|유도 꿀벌이 벌레를 사냥|물보라 파도|모든 것을 맞히는 파도|피해 증가, 씨앗 증가|가시 +1, 피해 증가|더 크고 빠른 폭발|꿀벌 증가, 피해 증가|파도 증가, 피해 증가|잎사귀 갑옷|최대 체력 +20 및 회복|빠른 뿌리|이동 속도 +8%|햇빛 자석|획득 범위 +30%|빠른 개화|공격 속도 +10%|튼튼한 줄기|피해 +12%|힘|피해 +10%|체력|최대 체력 +15|속도|이동 속도 +5%|자석|획득 범위 +15%|행운|코인 +15%|뒷마당|텃밭|장미 정원|연못가|온실|무한|왕딱정벌레|당근 분쇄기|가시 왕|개구리 군주|메가 나방|떼의 여왕|태양의 축복: 벌레가 약해졌어요|다음 도전은 더 쉬워요 ☀|보스|아깝다!|더 강해지기|미션|미션 완료!|벌레 {n}마리 처치|햇빛 {n}번 모으기|한 판에 레벨 {n} 달성|보스 {n}마리 처치|{n}분 플레이|보물상자 {n}개 열기|탭해서 시작',
+zh:'开始|升级|伙伴|关卡|最佳|升级啦!|选择一个能力|暂停|继续|主页|枯萎了!|用一半生命重新绽放?|不用了|复活|关卡完成!|游戏结束!|下一关 ▶|再玩一次|下一个伙伴|找到了所有伙伴! 🌟|新伙伴|完成|免费|免费金币即将可用|花园点数|多玩几局来寻找更多伙伴!|点|拖动到阳光处|或 WASD / 方向键|只虫子|满级|新!|等级|大治疗|恢复全部生命|金币堆|+15 金币|语言|虫群!|伏击!|来了!|宝藏!|击败首领!|活下去!|重新绽放!|种子射击|向最近的虫子发射种子|荆棘环|旋转的荆棘保护你|花粉爆发|攻击周围所有虫子|蜜蜂伙伴|追踪蜜蜂猎杀虫子|水花波|击中一切的水波|更多伤害,更多种子|荆棘+1,更多伤害|更大更快的爆发|更多蜜蜂,更多伤害|更多水波,更多伤害|树叶护甲|最大生命+20并治疗|迅捷根系|移动速度+8%|阳光磁铁|拾取范围+30%|快速绽放|攻击速度+10%|坚韧茎干|伤害+12%|力量|伤害+10%|生命|最大生命+15|速度|移动速度+5%|磁铁|拾取范围+15%|幸运|金币+15%|后院|菜园|玫瑰园|池塘边|温室|无尽|大甲虫|胡萝卜粉碎者|荆棘之王|青蛙领主|巨型飞蛾|虫群女王|阳光祝福:虫子变弱了|下次尝试会更简单 ☀|首领|差一点!|变得更强|任务|任务完成!|击败 {n} 只虫子|收集 {n} 次阳光|单局达到 {n} 级|击败 {n} 个首领|游玩 {n} 分钟|打开 {n} 个宝箱|点击开始'};
 for(const l in TR)TR[l]=TR[l].split('|');
 let lang='en';
 function tt(k){const i=KI[k],a=TR[lang]||TR.en;return (a&&a[i]!==undefined?a[i]:TR.en[i])||k}
@@ -250,7 +271,7 @@ function applyI18n(){document.documentElement.lang=lang;document.querySelectorAl
 function setLang(l){if(!TR[l])return;lang=l;S.lang=l;save();applyI18n();if(state==='home')refreshHome()}
 
 const upCost=l=>Math.round(20*Math.pow(l+1,1.6));
-const xpNeed=l=>2+l*3+Math.floor(Math.pow(l,1.45));
+const xpNeed=l=>2+l*2+Math.floor(Math.pow(l,1.4));
 
 /* ---------- view ---------- */
 let cw=0,ch=0,dpr=1,zoom=1;
@@ -265,17 +286,17 @@ const keys={};let joy=null;
 function show(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('on'));if(id)$(id).classList.add('on');$('ver').hidden=!id||id==='levelup'||id==='revive'}
 function banner(t){const b=$('banner');b.textContent=t;b.classList.remove('go');void b.offsetWidth;b.classList.add('go')}
 function shake(a){if(R)R.shake=Math.max(R.shake,a)}
-function stats(){const sk=SKINS[S.skin],p=R.p;return{dmg:(1+.12*(p.power||0))*(1+.1*S.upg.power)*(sk.bonus||1),cd:1/(1+.1*(p.quick||0)),spd:175*(1+.08*(p.speed||0))*(1+.05*S.upg.speed),mag:75*(1+.3*(p.magnet||0))*(1+.15*S.upg.magnet),luck:1+.15*S.upg.luck}}
+function stats(){const sk=SKINS[S.skin],p=R.p;return{dmg:(1+.12*(p.power||0))*(1+.1*S.upg.power)*(sk.bonus||1),cd:1/(1+.1*(p.quick||0))*(R.sunT>0?.6:1),spd:175*(1+.08*(p.speed||0))*(1+.05*S.upg.speed),mag:75*(1+.3*(p.magnet||0))*(1+.15*S.upg.magnet),luck:1+.15*S.upg.luck}}
 
 /* ---------- run ---------- */
 function newRun(si){
-  const st=STAGES[si],sk=SKINS[S.skin],hp=100+S.upg.hp*15;
-  R={st,si,t:0,kills:0,coins:0,lvl:1,xp:0,need:xpNeed(1),pend:0,w:{[sk.start]:1},wt:{},p:{},thAng:0,boss:null,bossSpawned:false,won:false,winT:0,revived:false,shake:0,tut:S.first,spawnAcc:0,ev:{},nextElite:60,nextBossT:120,moved:0,dbl:false};
+  const st=STAGES[si],sk=SKINS[S.skin],hp=100+S.upg.hp*15,fl=st.endless?0:Math.min(3,(S.fails&&S.fails[si])||0);
+  R={st,si,t:0,kills:0,coins:0,lvl:1,xp:0,need:xpNeed(1),pend:0,w:{[sk.start]:1},wt:{},p:{},thAng:0,boss:null,bossSpawned:false,won:false,winT:0,revived:false,shake:0,tut:S.first,spawnAcc:0,ev:{},nextElite:25,nextBossT:120,moved:0,dbl:false,sun:{x:150,y:0,fill:0,n:0},sunN:0,sunWait:0,sunT:0,easy:1-.15*fl,fails:fl,bossKills:0,chests:0,mT:0,committed:false};
   P={x:0,y:0,r:16,hp,max:hp,inv:0,fx:1,fy:0,mv:0};
   enemies=[];bullets=[];gems=[];parts=[];texts=[];rings=[];ebul=[];joy=null;
 }
 function beginRun(si,withAd){
-  const go=()=>{newRun(si);for(let k=0;k<8;k++){const a=k/8*TAU+.3;spawnEnemy(STAGES[si].pool[0],false,Math.cos(a)*300,Math.sin(a)*300)}show(null);state='run';$('pauseBtn').style.display='block';$('hint').style.display=R.tut?'block':'none';musicOn=true;gpStart();measure('stage',stageKey(si),'start');banner(STAGES[si].endless?tt('survive'):upc(tt('s'+si)))};
+  const go=()=>{newRun(si);for(let k=0;k<8;k++){const a=k/8*TAU+.3;spawnEnemy(STAGES[si].pool[0],false,Math.cos(a)*300,Math.sin(a)*300)}show(null);state='run';$('pauseBtn').style.display='block';$('hint').style.display=R.tut?'block':'none';if(withAd){musicOn=true;gpStart()}else R.waiting=true;measure('stage',stageKey(si),'start');if(R.fails){measure('assist',stageKey(si),'f'+R.fails);setTimeout(()=>toast('☀ '+tt('bless')),1300)}banner(STAGES[si].endless?tt('survive'):upc(tt('s'+si)))};
   if(withAd)commercial().then(go);else go();
 }
 const stageKey=si=>STAGES[si].endless?'endless':'stage'+(si+1);
@@ -284,16 +305,17 @@ function nearest(x,y,maxD){let b=null,bd=maxD*maxD;for(const e of enemies){if(e.
 function spawnEnemy(k,elite,x,y){
   const d=EN[k];let uw=0;
   if(x===undefined){if(k==='mole'){const a=Math.random()*TAU,r=rand(150,240);x=P.x+Math.cos(a)*r;y=P.y+Math.sin(a)*r;uw=1.2}else{const a=Math.random()*TAU,dist=Math.hypot(cw,ch)/2/zoom+60;x=P.x+Math.cos(a)*dist;y=P.y+Math.sin(a)*dist}}
-  const hm=R.st.hp*(1+R.t/100)*(elite?7:1);
-  const e={k,x,y,r:d.r*(elite?1.6:1),hp:d.hp*hm,max:d.hp*hm,spd:d.spd*(elite?.8:1)*rand(.9,1.1),dmg:d.dmg*(1+R.t/300),xp:d.xp*(elite?6:1),elite,flash:0,kx:0,ky:0,ph:Math.random()*TAU,tcd:0,dead:false,uw,sh:rand(1,2.4),lt:rand(1,2.5),lw:0,ld:0,rt:rand(1,2.4),roll:false,dx:0,dy:0};
+  const hm=R.st.hp*(1+R.t/(R.st.endless?100:70))*(elite?7:1)*R.easy;
+  const e={k,x,y,r:d.r*(elite?1.6:1),hp:d.hp*hm,max:d.hp*hm,spd:d.spd*(elite?.8:1)*rand(.9,1.1),dmg:d.dmg*(1+R.t/300)*R.easy,xp:d.xp*(elite?6:1),elite,flash:0,kx:0,ky:0,ph:Math.random()*TAU,tcd:0,dead:false,uw,sh:rand(1,2.4),lt:rand(1,2.5),lw:0,ld:0,rt:rand(1,2.4),roll:false,dx:0,dy:0};
   if(k==='dragonfly'){const a=Math.atan2(P.y-y,P.x-x);e.dx=Math.cos(a);e.dy=Math.sin(a)}
   enemies.push(e);return e}
 function dragonPack(){const a=Math.random()*TAU,dist=Math.hypot(cw,ch)/2/zoom+40,bx=P.x+Math.cos(a)*dist,by=P.y+Math.sin(a)*dist,px=-Math.sin(a),py=Math.cos(a),b=Math.atan2(P.y-by,P.x-bx);
   for(let i=-2;i<=2;i++){const e=spawnEnemy('dragonfly',false,bx+px*i*34+Math.cos(a)*Math.abs(i)*26,by+py*i*34+Math.sin(a)*Math.abs(i)*26);e.dx=Math.cos(b);e.dy=Math.sin(b)}}
-function pickKind(){const st=R.st;const pool=R.t>60?st.pool.concat(st.late):st.pool;return pool[Math.floor(Math.random()*pool.length)]}
+function pickKind(){const st=R.st,late=R.t>(st.endless?60:25)&&st.late.length&&Math.random()<(st.endless?.45:.22+R.si*.04);let k=late?st.late[Math.floor(Math.random()*st.late.length)]:st.pool[Math.floor(Math.random()*st.pool.length)];
+  if(k==='ladybug'&&!st.endless&&enemies.filter(e=>e.k==='ladybug'&&!e.dead).length>=3+R.si)k=st.pool[0];return k}
 function spawnBoss(){
-  const hp=1100*R.st.hp*(R.st.endless?(1+R.t/150):1),a=Math.random()*TAU,dist=Math.hypot(cw,ch)/2/zoom+40,bd=R.st.boss;
-  const b={k:'boss',x:P.x+Math.cos(a)*dist,y:P.y+Math.sin(a)*dist,r:50,hp,max:hp,spd:62,dmg:28*(1+R.t/400),xp:60,boss:true,flash:0,kx:0,ky:0,ph:0,tcd:0,ct:3,act:null,at:0,dx:0,dy:0,jz:0,col:bd.col,dark:bd.dark,mv:bd.mv,dead:false,uw:0};
+  const hp=(R.st.endless?1100:300)*R.st.hp*R.easy*(R.st.endless?(1+R.t/150):1),a=Math.random()*TAU,dist=Math.hypot(cw,ch)/2/zoom+40,bd=R.st.boss;
+  const b={k:'boss',x:P.x+Math.cos(a)*dist,y:P.y+Math.sin(a)*dist,r:50,hp,max:hp,spd:62,dmg:(R.st.endless?28:15+R.si*3)*(1+R.t/400)*R.easy,xp:60,boss:true,flash:0,kx:0,ky:0,ph:0,tcd:0,ct:3,act:null,at:0,dx:0,dy:0,jz:0,col:bd.col,dark:bd.dark,mv:bd.mv,dead:false,uw:0};
   enemies.push(b);R.boss=b;R.bossSpawned=true;banner(upc(tt('b'+R.si))+'!');sfx.boss();shake(14);measure('boss',stageKey(R.si),'spawn')}
 function bossAI(e,dt,vx,vy){
   if(e.act){e.at-=dt;
@@ -305,22 +327,22 @@ function bossAI(e,dt,vx,vy){
   e.ct-=dt;if(e.ct>0)return;e.ct=rand(2.4,3.4);const m=e.mv[Math.floor(Math.random()*e.mv.length)];
   if(m==='charge'){e.act='charge';e.at=.75;e.dx=vx;e.dy=vy;texts.push({x:e.x,y:e.y-60,t:'!!',life:.6,col:'#ff3d5a',s:30})}
   else if(m==='leap'){e.act='leapwind';e.at=.6;e.tx=P.x;e.ty=P.y}
-  else if(m==='rings'){for(let w=0;w<2;w++)setTimeout(()=>{if(!R||e.dead||state!=='run')return;const n=14;for(let k=0;k<n;k++){const a=k/n*TAU+w*.22;ebul.push({x:e.x,y:e.y,vx:Math.cos(a)*170,vy:Math.sin(a)*170,r:8,dmg:e.dmg*.5,life:4})}tone(300,.15,'triangle',.06,-100)},w*450)}
+  else if(m==='rings'){for(let w=0;w<2;w++)setTimeout(()=>{if(!R||e.dead||state!=='run')return;const n=R.st.endless?14:10;for(let k=0;k<n;k++){const a=k/n*TAU+w*.22;ebul.push({x:e.x,y:e.y,vx:Math.cos(a)*150,vy:Math.sin(a)*150,r:8,dmg:e.dmg*(R.st.endless?.5:.35),life:4})}tone(300,.15,'triangle',.06,-100)},w*450)}
   else{for(let k=0;k<5;k++){const a=k/5*TAU;spawnEnemy(R.st.pool[0],false,e.x+Math.cos(a)*70,e.y+Math.sin(a)*70)}}}
 function swarm(){const type=R.si===0?0:Math.floor(Math.random()*3);
   if(type===1){const n=6+R.si;for(let i=0;i<n;i++){const a=i/n*TAU,e=spawnEnemy('mole',false,P.x+Math.cos(a)*210,P.y+Math.sin(a)*210);e.uw=1.3}banner(tt('ambush'));return}
   if(type===2){for(let i=0;i<3;i++)setTimeout(()=>{if(R&&state==='run')dragonPack()},i*700);banner(tt('squad'));return}
-  const n=14+Math.floor(R.t/20),dist=Math.hypot(cw,ch)/2/zoom+30;for(let i=0;i<n;i++){const a=i/n*TAU;spawnEnemy(R.st.pool[0],false,P.x+Math.cos(a)*dist,P.y+Math.sin(a)*dist)}banner(tt('swarm'))}
+  const n=(R.st.endless?14:9+R.si*2)+Math.floor(R.t/20),dist=Math.hypot(cw,ch)/2/zoom+30;for(let i=0;i<n;i++){const a=i/n*TAU;spawnEnemy(R.st.pool[0],false,P.x+Math.cos(a)*dist,P.y+Math.sin(a)*dist)}banner(tt('swarm'))}
 
 function spawnLogic(dt){
   const st=R.st,t=R.t;
-  if(!st.endless&&t>=150&&!R.bossSpawned)spawnBoss();
+  if(!st.endless&&t>=60&&!R.bossSpawned)spawnBoss();
   if(st.endless&&t>=R.nextBossT){R.nextBossT+=120;spawnBoss()}
-  let rate=(1.6+t*.035)*st.sp;if(R.tut&&t<45)rate*=.7;if(R.boss&&!R.boss.dead)rate*=.45;if(R.won)rate=0;
-  R.spawnAcc+=rate*dt;while(R.spawnAcc>=1){R.spawnAcc--;if(enemies.length<230){const k=pickKind();if(k==='dragonfly'){if(Math.random()<.3)dragonPack()}else spawnEnemy(k)}}
-  const sw=st.endless?Math.floor(t/50):[45,95,135].filter(x=>t>=x).length;
+  let rate=(st.endless?1.6+t*.035:1.0+t*.035)*st.sp*R.easy;if(R.tut&&t<25)rate*=.7;if(R.boss&&!R.boss.dead)rate*=.45;if(R.won)rate=0;
+  R.spawnAcc+=rate*dt;while(R.spawnAcc>=1){R.spawnAcc--;if(enemies.length<(st.endless?230:150)){const k=pickKind();if(k==='dragonfly'){if(Math.random()<.3)dragonPack()}else spawnEnemy(k)}}
+  const sw=st.endless?Math.floor(t/50):[20,42].filter(x=>t>=x).length;
   if(sw>(R.ev.sw||0)){R.ev.sw=sw;if(!R.won)swarm()}
-  if(t>=R.nextElite&&!R.won){R.nextElite+=50;const e=spawnEnemy(R.st.late[0]||'beetle',true);e.k=EN[e.k]?e.k:'beetle'}
+  if(t>=R.nextElite&&!R.won){R.nextElite+=R.st.endless?50:25;const e=spawnEnemy(R.st.late[0]||'beetle',true);e.k=EN[e.k]?e.k:'beetle'}
 }
 
 function hitE(e,dmg,kx,ky){
@@ -338,19 +360,75 @@ function killE(e){
   if(e.elite)gems.push({x:e.x,y:e.y,v:1,t:'chest',m:false});
   burst(e.x,e.y,EN[e.k].col,e.elite?16:7);sfx.pop();rings.push({x:e.x,y:e.y,r:e.r*.4,max:e.r*2,life:.28,col:'255,255,255'});
   if(e.k==='worm')for(let q=-1;q<=1;q+=2){const w=spawnEnemy('wormlet',false,e.x+q*12,e.y);w.kx=q*160}
-  if(e.boss){for(let i=0;i<12;i++)gems.push({x:e.x+rand(-40,40),y:e.y+rand(-40,40),v:2,t:'coin',m:false});gems.push({x:e.x,y:e.y,v:1,t:'chest',m:false});shake(18);burst(e.x,e.y,'#ffd23f',40,400);
+  if(e.boss){R.bossKills++;for(let i=0;i<12;i++)gems.push({x:e.x+rand(-40,40),y:e.y+rand(-40,40),v:2,t:'coin',m:false});gems.push({x:e.x,y:e.y,v:1,t:'chest',m:false});shake(18);burst(e.x,e.y,'#ffd23f',40,400);
     if(!R.st.endless){R.won=true;ebul=[];R.winT=2.2;sfx.win();banner(upc(tt('clear')));confettiBurst(120);for(const o of enemies)if(!o.dead){o.dead=true;burst(o.x,o.y,EN[o.k].col,5)}}else{R.boss=null;banner(tt('bossDown'))}}
 }
 function hurt(d){
-  if(R.won)return;P.hp-=d;if(R.tut&&R.t<45)P.hp=Math.max(1,P.hp);P.inv=.5;R.hurtT=.3;shake(7);sfx.hurt();
+  if(R.won)return;P.hp-=d;if(R.tut&&R.t<25)P.hp=Math.max(1,P.hp);P.inv=.7;R.hurtT=.3;shake(7);sfx.hurt();
   texts.push({x:P.x,y:P.y-24,t:'-'+Math.round(d),life:.7,col:'#ff5a6e',s:18});
   if(P.hp<=0){P.hp=0;die()}}
 function die(){gpStop();musicOn=false;$('pauseBtn').style.display='none';$('hint').style.display='none';if(!R.revived){state='revive';show('revive')}else endRun(false)}
 
+/* ---------- missions ---------- */
+const MPOOL=[{k:'kills',t:'mKills',g:[60,150,300,600,1000],r:[30,50,80,120,160]},{k:'suns',t:'mSuns',g:[5,12,25,40],r:[30,50,80,110]},
+ {k:'level',t:'mLevel',g:[6,9,12,15,20],r:[30,50,80,110,150],max:true},{k:'boss',t:'mBoss',g:[2,4,8,12],r:[50,80,120,160]},
+ {k:'time',t:'mTime',g:[3,8,15,25],r:[30,60,100,140]},{k:'chest',t:'mChest',g:[2,5,10,16],r:[30,60,90,120]}];
+const MDEF=k=>MPOOL.find(m=>m.k===k);
+function ensureMissions(){if(!Array.isArray(S.ms))S.ms=[];if(!S.mt)S.mt={};S.ms=S.ms.filter(m=>MDEF(m.k));
+  while(S.ms.length<3){const used=S.ms.map(m=>m.k),opts=MPOOL.filter(m=>!used.includes(m.k)),d=opts[Math.floor(Math.random()*opts.length)];S.ms.push({k:d.k,tier:Math.min(d.g.length-1,S.mt[d.k]||0),p:0,done:false})}}
+function runVal(k){if(!R||R.committed)return 0;return k==='kills'?R.kills:k==='suns'?R.sunN:k==='level'?R.lvl:k==='boss'?R.bossKills:k==='time'?R.t/60:R.chests}
+function mGoal(m){return MDEF(m.k).g[m.tier]}function mRew(m){return MDEF(m.k).r[m.tier]}
+function mProg(m){const d=MDEF(m.k),v=runVal(m.k);return m.done?mGoal(m):d.max?Math.max(m.p,v):m.p+v}
+function mText(m){return tt(MDEF(m.k).t).replace('{n}',mGoal(m))}
+function checkMissions(){ensureMissions();for(const m of S.ms){if(m.done)continue;if(mProg(m)>=mGoal(m)){m.done=true;S.coins+=mRew(m);save();toast('✔ '+tt('mDone')+' +'+mRew(m)+' 🪙');sfx.chest();measure('mission',m.k+(m.tier+1),'complete')}}}
+function commitMissions(){ensureMissions();for(const m of S.ms)if(!m.done)m.p=mProg(m);R.committed=true;}
+function rotateMissions(){ensureMissions();S.ms=S.ms.filter(m=>{if(m.done){S.mt[m.k]=(S.mt[m.k]||0)+1;return false}return true});ensureMissions();save()}
+function renderMissions(el,compact){ensureMissions();let h='<h3>'+tt('missions')+'</h3>';
+  for(const m of S.ms){const g=mGoal(m),pv=Math.min(g,mProg(m)),pct=Math.floor(pv/g*100),shown=m.k==='time'?pv.toFixed(1):Math.floor(pv);
+    h+='<div class="mrow'+(m.done?' done':'')+'"><div class="mt">'+(m.done?'✔ ':'')+mText(m)+(compact?'':'<small>'+shown+' / '+g+'</small>')+'<div class="mb"><i style="width:'+pct+'%"></i></div></div><div class="mr">+'+mRew(m)+' 🪙</div></div>'}
+  el.innerHTML=h}
+let toastT=null;function toast(msg){const t=$('toast');t.textContent=msg;t.classList.add('on');clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('on'),2600)}
+function renderQuickUp(){const row=$('quRow');row.innerHTML='';const opts=UPG.filter(u=>S.upg[u.k]<10).sort((a,b)=>upCost(S.upg[a.k])-upCost(S.upg[b.k]));
+  const aff=opts.filter(u=>upCost(S.upg[u.k])<=S.coins).slice(0,3),list=aff.length?aff:opts.slice(0,1);
+  $('quickUp').style.display=list.length?'flex':'none';
+  for(const u of list){const c=upCost(S.upg[u.k]),b=document.createElement('button');b.className='btn small blue';b.textContent=u.i+' '+c+' 🪙';b.disabled=S.coins<c;b.title=tt('u'+u.k[0].toUpperCase()+u.k.slice(1));
+    b.addEventListener('click',ev=>{ev.stopPropagation();if(S.coins<c)return;S.coins-=c;S.upg[u.k]++;save();sfx.chest();burst(P?P.x:0,P?P.y:0,'#ffd23f',10,200);toast(u.i+' '+tt('u'+u.k[0].toUpperCase()+u.k.slice(1))+' '+tt('lv')+' '+S.upg[u.k]);renderQuickUp()});row.appendChild(b)}}
+let autoIv=null;function stopAuto(){if(autoIv){clearInterval(autoIv);autoIv=null;if(R&&R.won)$('againBtn').textContent=tt('nextStage')}}
+
+/* ---------- sunbeams (movement goals) ---------- */
+function placeSun(){let a=Math.random()*TAU;if(R.boss&&!R.boss.dead){const ba=Math.atan2(R.boss.y-P.y,R.boss.x-P.x);a=ba+Math.PI+rand(-1.2,1.2)}
+  const d=rand(260,420);R.sun={x:P.x+Math.cos(a)*d,y:P.y+Math.sin(a)*d,fill:0,n:R.sunN};tone(880,.12,'sine',.04,300)}
+function sunReward(){const sn=R.sun;R.sun=null;R.sunWait=1.2;R.sunN++;
+  rings.push({x:sn.x,y:sn.y,r:20,max:120,life:.5,col:'255,230,100'});burst(sn.x,sn.y,'#ffe14d',24,260);[523,784,1047].forEach((f,i)=>tone(f,.15,'triangle',.07,0,i*.06));shake(4);
+  const kind=sn.n===0?0:Math.floor(Math.random()*3);
+  if(kind===0){for(let i=0;i<10;i++){const a=i/10*TAU;gems.push({x:sn.x+Math.cos(a)*40,y:sn.y+Math.sin(a)*40,v:2,t:'xp',m:true})}texts.push({x:sn.x,y:sn.y-50,t:'☀ +XP',life:1,col:'#ffe14d',s:16})}
+  else if(kind===1){P.hp=Math.min(P.max,P.hp+P.max*.3);texts.push({x:sn.x,y:sn.y-50,t:'☀ ❤',life:1,col:'#6dff8a',s:16})}
+  else{R.sunT=7;texts.push({x:sn.x,y:sn.y-50,t:'☀ ⚡⚡',life:1,col:'#ffe14d',s:16})}}
+function drawSunIcon(c,x,y,r){c.strokeStyle='#ffb52e';c.lineWidth=r*.25;c.lineCap='round';for(let k=0;k<8;k++){const a=k/8*TAU+anim;c.beginPath();c.moveTo(x+Math.cos(a)*r*1.3,y+Math.sin(a)*r*1.3);c.lineTo(x+Math.cos(a)*r*1.75,y+Math.sin(a)*r*1.75);c.stroke()}
+  c.fillStyle='#ffe14d';c.strokeStyle='#ffb52e';c.lineWidth=r*.18;c.beginPath();c.arc(x,y,r,0,TAU);c.fill();c.stroke()}
+function drawSun(){const sn=R.sun;if(!sn)return;const pu=1+Math.sin(anim*4)*.06;
+  const g=ctx.createRadialGradient(sn.x,sn.y,5,sn.x,sn.y,72*pu);g.addColorStop(0,'rgba(255,250,200,.9)');g.addColorStop(.6,'rgba(255,225,90,.45)');g.addColorStop(1,'rgba(255,225,90,0)');ctx.fillStyle=g;ctx.beginPath();ctx.arc(sn.x,sn.y,72*pu,0,TAU);ctx.fill();
+  ctx.save();ctx.translate(sn.x,sn.y);ctx.rotate(anim*.6);ctx.fillStyle='rgba(255,240,150,.35)';for(let k=0;k<8;k++){ctx.rotate(TAU/8);ctx.beginPath();ctx.moveTo(-7,0);ctx.lineTo(7,0);ctx.lineTo(0,-100);ctx.closePath();ctx.fill()}ctx.restore();
+  ctx.strokeStyle='rgba(255,255,255,.9)';ctx.lineWidth=3;ctx.setLineDash([8,8]);ctx.lineDashOffset=-anim*20;ctx.beginPath();ctx.arc(sn.x,sn.y,56,0,TAU);ctx.stroke();ctx.setLineDash([]);ctx.lineDashOffset=0;
+  if(sn.fill>0){ctx.strokeStyle='#ffe14d';ctx.lineWidth=7;ctx.lineCap='round';ctx.beginPath();ctx.arc(sn.x,sn.y,56,-Math.PI/2,-Math.PI/2+TAU*Math.min(1,sn.fill));ctx.stroke()}
+  drawSunIcon(ctx,sn.x,sn.y-10+Math.sin(anim*3)*4,13);
+  if(sn.n===0&&R.tut){const dx=sn.x-P.x,dy=sn.y-P.y,d=Math.hypot(dx,dy);if(d>95){ctx.strokeStyle='rgba(255,255,255,.9)';ctx.lineWidth=6;ctx.lineCap='round';ctx.setLineDash([1,15]);ctx.lineDashOffset=-anim*45;ctx.beginPath();ctx.moveTo(P.x+dx/d*32,P.y+dy/d*32);ctx.lineTo(sn.x-dx/d*60,sn.y-dy/d*60);ctx.stroke();ctx.setLineDash([]);ctx.lineDashOffset=0}}}
+function drawEdgeArrows(){
+  const edge=(wx,wy,kind)=>{const sx=cw/2+(wx-P.x)*zoom,sy=ch/2+(wy-P.y)*zoom,m=46;if(sx>m&&sx<cw-m&&sy>m+70&&sy<ch-m)return;
+    const a=Math.atan2(sy-ch/2,sx-cw/2),k=Math.min(Math.abs((cw/2-m)/(Math.cos(a)||1e-6)),Math.abs((ch/2-m-35)/(Math.sin(a)||1e-6)));
+    const ex=cw/2+Math.cos(a)*k,ey=ch/2+20+Math.sin(a)*k,bob=Math.sin(anim*6)*3;
+    ctx.save();ctx.translate(ex+Math.cos(a)*bob,ey+Math.sin(a)*bob);ctx.fillStyle='rgba(43,33,64,.55)';ctx.beginPath();ctx.arc(0,0,22,0,TAU);ctx.fill();
+    ctx.save();ctx.rotate(a);ctx.fillStyle='#fff';ctx.beginPath();ctx.moveTo(33,0);ctx.lineTo(22,-9);ctx.lineTo(22,9);ctx.closePath();ctx.fill();ctx.restore();
+    if(kind==='sun')drawSunIcon(ctx,0,0,9);
+    else if(kind==='chest'){ctx.fillStyle='#c97b3a';ctx.strokeStyle='#ffd23f';ctx.lineWidth=2;ctx.fillRect(-10,-7,20,14);ctx.strokeRect(-10,-7,20,14)}
+    else{ctx.fillStyle='#ff4d6d';ctx.beginPath();ctx.arc(0,0,13,0,TAU);ctx.fill();txt('!',0,1,17,'#fff')}
+    ctx.restore()};
+  if(R.sun)edge(R.sun.x,R.sun.y,'sun');for(const g of gems)if(g.t==='chest')edge(g.x,g.y,'chest');if(R.boss&&!R.boss.dead)edge(R.boss.x,R.boss.y,'boss')}
+
 /* ---------- weapons ---------- */
 function weapons(dt,s){
   const L=R.w;for(const k in L)R.wt[k]=(R.wt[k]||0)-dt;
-  if(L.seed&&R.wt.seed<=0){const tg=nearest(P.x,P.y,520);if(!tg)R.wt.seed=.1;else{R.wt.seed=.6*s.cd/(1+.12*(L.seed-1));
+  if(L.seed&&R.wt.seed<=0){const bz=R.boss&&!R.boss.dead&&!(R.boss.jz>15)&&(R.boss.x-P.x)**2+(R.boss.y-P.y)**2<480*480?R.boss:null,tg=bz||nearest(P.x,P.y,520);if(!tg)R.wt.seed=.1;else{R.wt.seed=.6*s.cd/(1+.12*(L.seed-1));
     const n=1+Math.floor((L.seed-1)/2),base=Math.atan2(tg.y-P.y,tg.x-P.x);
     for(let i=0;i<n;i++){const a=base+(i-(n-1)/2)*.16;bullets.push({k:'seed',x:P.x,y:P.y,vx:Math.cos(a)*540,vy:Math.sin(a)*540,r:7,dmg:(10+4*(L.seed-1))*s.dmg,pierce:L.seed>=4?2:0,life:1.1,hit:new Set()})}sfx.shoot()}}
   if(L.thorns){R.thAng+=dt*(2.6+.25*L.thorns);const n=Math.min(6,L.thorns+1),rad=64+L.thorns*4,dm=(8+4*L.thorns)*s.dmg;
@@ -374,8 +452,8 @@ function update(dt){
   const m=Math.hypot(mx,my);if(m>1){mx/=m;my/=m}
   P.mv=Math.min(1,m);P.x+=mx*s.spd*dt;P.y+=my*s.spd*dt;if(m>.15){const l=Math.hypot(mx,my);P.fx=mx/l;P.fy=my/l;R.moved+=s.spd*dt*Math.min(1,m)}
   if(m>.3&&Math.random()<dt*14&&parts.length<450)parts.push({x:P.x+rand(-8,8),y:P.y+P.r*1.1,vx:rand(-20,20),vy:rand(-30,-10),life:.4,r:rand(2,4),col:'rgba(255,255,255,.7)'});
-  P.inv-=dt;R.hurtT=Math.max(0,(R.hurtT||0)-dt);gemT-=dt;if(gemT<=0)gemChain=0;R.shake=Math.max(0,R.shake-dt*40);
-  if(R.tut&&R.moved>220){$('hint').style.display='none'}
+  P.inv-=dt;R.hurtT=Math.max(0,(R.hurtT||0)-dt);R.sunT=Math.max(0,(R.sunT||0)-dt);gemT-=dt;if(gemT<=0)gemChain=0;R.shake=Math.max(0,R.shake-dt*40);
+  if(R.tut&&R.sunN>0){$('hint').style.display='none'}
   spawnLogic(dt);weapons(dt,s);
   for(const b of bullets){b.life-=dt;
     if(b.k==='bee'){if(!b.tg||b.tg.dead)b.tg=nearest(b.x,b.y,420);if(b.tg){const dx=b.tg.x-b.x,dy=b.tg.y-b.y,d=Math.hypot(dx,dy)||1;b.vx+=(dx/d*360-b.vx)*Math.min(1,dt*5);b.vy+=(dy/d*360-b.vy)*Math.min(1,dt*5)}}
@@ -387,11 +465,11 @@ function update(dt){
     let dx=P.x-e.x,dy=P.y-e.y;const d=Math.hypot(dx,dy)||1;let vx=dx/d,vy=dy/d,sp=e.spd;
     if(e.uw>0){e.uw-=dt;if(e.uw<=0){burst(e.x,e.y,'#8a6a4a',12,180);tone(140,.12,'square',.04,120)}continue}
     if(e.k==='wasp'){const w=Math.sin(R.t*5+e.ph)*.8;const nx=vx-vy*w,ny=vy+vx*w,l=Math.hypot(nx,ny);vx=nx/l;vy=ny/l}
-    else if(e.k==='ladybug'){const m=d>270?1:d<190?-.7:0;vx*=m;vy*=m;e.sh-=dt;if(e.sh<=0&&d<480){e.sh=2.4;const a=Math.atan2(dy,dx);ebul.push({x:e.x,y:e.y,vx:Math.cos(a)*190,vy:Math.sin(a)*190,r:7,dmg:e.dmg,life:3.5});tone(520,.07,'sine',.03,-200)}}
+    else if(e.k==='ladybug'){const m=d>270?1:d<190?-.7:0;vx*=m;vy*=m;e.sh-=dt;if(e.sh<=0&&d<480){e.sh=R.st.endless?2.4:3.2;const a=Math.atan2(dy,dx);ebul.push({x:e.x,y:e.y,vx:Math.cos(a)*190,vy:Math.sin(a)*190,r:7,dmg:e.dmg,life:3.5});tone(520,.07,'sine',.03,-200)}}
     else if(e.k==='spider'){if(e.lw>0){e.lw-=dt;sp=0;if(e.lw<=0){e.ld=.35;e.dx=vx;e.dy=vy}}else if(e.ld>0){e.ld-=dt;vx=e.dx;vy=e.dy;sp*=4.5}else{e.lt-=dt;if(e.lt<=0&&d<300){e.lt=rand(2.2,3.2);e.lw=.45}}}
     else if(e.k==='dragonfly'){vx=e.dx;vy=e.dy;if(d>1500){e.dead=true;continue}}
     else if(e.k==='pillbug'){e.rt-=dt;if(e.rt<=0){e.roll=!e.roll;e.rt=e.roll?1.5:2.5}if(e.roll)sp*=3}
-    if(e.boss){bossAI(e,dt,vx,vy);if(e.act==='charge'){vx=e.dx;vy=e.dy;sp*=3.4}else if(e.act)sp=0}
+    if(e.boss){bossAI(e,dt,vx,vy);if(e.act==='charge'){vx=e.dx;vy=e.dy;sp*=(R.st.endless?3.4:2.9)}else if(e.act)sp=0}
     e.x+=vx*sp*dt+e.kx*dt;e.y+=vy*sp*dt+e.ky*dt;const f=Math.max(0,1-dt*9);e.kx*=f;e.ky*=f;
     for(let j=i+1;j<n;j++){const o=enemies[j];if(o.dead)continue;const ox=o.x-e.x,oy=o.y-e.y,rr=e.r+o.r;if(ox>rr||ox<-rr||oy>rr||oy<-rr)continue;const od=Math.hypot(ox,oy)||.1;if(od<rr){const push=(rr-od)*.5,px=ox/od*push,py=oy/od*push;if(!e.boss){e.x-=px;e.y-=py}if(!o.boss){o.x+=px;o.y+=py}}}
     if(d<e.r+P.r&&P.inv<=0&&state==='run'&&!(e.jz>15))hurt(e.dmg)}
@@ -402,6 +480,12 @@ function update(dt){
     if(d<P.r+10){g.got=true;collect(g)}}
   gems=gems.filter(g=>!g.got);
   if(gems.length>380){const old=gems.splice(0,60);for(const g of old)if(g.t==='xp')R.xp+=g.v}
+  if(R.sun){const sn=R.sun,sd=Math.hypot(P.x-sn.x,P.y-sn.y);
+    if(sd<58){sn.fill+=dt/(sn.n===0?.7:1.4);if(Math.random()<dt*20&&parts.length<450)parts.push({x:sn.x+rand(-40,40),y:sn.y+rand(-40,40),vx:0,vy:-60,life:.5,r:rand(2,4),col:'#fff3a0'})}
+    else sn.fill=Math.max(0,sn.fill-dt*.4);
+    if(sn.fill>=1)sunReward()}
+  else if(!R.won){R.sunWait-=dt;if(R.sunWait<=0)placeSun()}
+  R.mT-=dt;if(R.mT<=0){R.mT=.5;checkMissions()}
   for(const p of parts){p.life-=dt;p.x+=p.vx*dt;p.y+=p.vy*dt;p.vx*=.92;p.vy*=.92}parts=parts.filter(p=>p.life>0);
   for(const t of texts){t.life-=dt;t.y-=40*dt}texts=texts.filter(t=>t.life>0);
   for(const b of ebul){b.life-=dt;b.x+=b.vx*dt;b.y+=b.vy*dt;if(P.inv<=0&&state==='run'&&(b.x-P.x)**2+(b.y-P.y)**2<(b.r+P.r)**2){b.life=0;hurt(b.dmg)}}ebul=ebul.filter(b=>b.life>0);
@@ -414,7 +498,7 @@ function collect(g){
   if(g.t==='xp'){R.xp+=g.v;sfx.gem()}
   else if(g.t==='coin'){R.coins+=g.v;sfx.coin();texts.push({x:P.x,y:P.y-28,t:'+'+g.v+'🪙',life:.6,col:'#ffd23f',s:16})}
   else if(g.t==='heart'){P.hp=Math.min(P.max,P.hp+g.v);tone(660,.2,'sine',.08,300);texts.push({x:P.x,y:P.y-28,t:'+'+g.v,life:.7,col:'#6dff8a',s:18})}
-  else if(g.t==='chest'){R.coins+=10;P.hp=Math.min(P.max,P.hp+P.max*.3);R.pend++;sfx.chest();banner(tt('treasure'));burst(P.x,P.y,'#ffd23f',30,300)}}
+  else if(g.t==='chest'){R.chests++;R.coins+=10;P.hp=Math.min(P.max,P.hp+P.max*.3);R.pend++;sfx.chest();banner(tt('treasure'));burst(P.x,P.y,'#ffd23f',30,300)}}
 
 /* ---------- level up ---------- */
 let curChoices=[],selCard=0;
@@ -445,9 +529,11 @@ function pickCard(i){
 function friendIndexFor(g){let i=0;SKINS.forEach((s,k)=>{if(g>=s.need)i=k});return i}
 function endRun(win){
   gpStop();musicOn=false;$('pauseBtn').style.display='none';$('hint').style.display='none';state='over';
+  stopAuto();checkMissions();commitMissions();
   const st=R.st,clearBonus=win?20*(R.si+1):0,earned=R.coins+Math.floor(R.kills/10)+clearBonus;
+  if(!st.endless){S.fails=S.fails||{};if(win)delete S.fails[R.si];else S.fails[R.si]=Math.min(3,(S.fails[R.si]||0)+1)}
   R.earned=earned;S.coins+=earned;
-  const gBefore=S.gxp,gain=Math.floor(R.kills/3)+Math.floor(R.t/5)+(win?25:0);S.gxp+=gain;
+  const gBefore=S.gxp,gain=Math.floor(R.kills/2)+Math.floor(R.t/3)+(win?30:0);S.gxp+=gain;
   if(win&&R.si===S.maxStage&&S.maxStage<5)S.maxStage++;
   if(win&&!st.endless)S.stage=Math.min(S.maxStage,R.si+1);
   if(st.endless)S.best=Math.max(S.best,Math.floor(R.t));
@@ -466,6 +552,12 @@ function endRun(win){
   const pf=$('pFill');pf.style.transition='none';pf.style.width=(after>before?0:clamp((gBefore-lo)/(hi-lo)*100,0,100))+'%';void pf.offsetWidth;pf.style.transition='';setTimeout(()=>pf.style.width=pct+'%',150);
   if(after>before){S.skin=after;save();nf.style.display='flex';$('nfName').textContent=tt('newFriend')+': '+SKINS[after].name+'!';drawPreview($('nfPrev'),after,0);setTimeout(()=>{confettiBurst(140);sfx.win()},500)}
   if(win)confettiBurst(80);
+  // stage progress bar on a loss
+  const rb=$('runBar');if(!win&&!st.endless){const bf=R.boss&&R.bossSpawned?clamp(1-R.boss.hp/R.boss.max,0,1):0,pct=Math.floor(R.bossSpawned?60+40*bf:60*Math.min(1,R.t/60));
+    rb.style.display='block';$('rLabel').textContent=(pct>=70?tt('almost')+'  ':'')+tt('toBoss')+(R.bossSpawned?' ✔':'')+'  ·  '+pct+'%';const rf=$('rFill');rf.style.transition='none';rf.style.width='0';void rf.offsetWidth;rf.style.transition='width 1s';setTimeout(()=>rf.style.width=pct+'%',100)}else rb.style.display='none';
+  const bl=$('bless');if(!win&&!st.endless){bl.style.display='block';bl.textContent=tt('easier')}else bl.style.display='none';
+  renderQuickUp();renderMissions($('oMissions'),true);rotateMissions();
+  if(win&&!st.endless&&R.si<4){let n=6;const ab=$('againBtn');ab.textContent=tt('nextStage')+'  '+n;autoIv=setInterval(()=>{n--;if(state!=='over'){stopAuto();return}if(n<=0){stopAuto();ab.click()}else ab.textContent=tt('nextStage')+'  '+n},1000)}
   show('over');
 }
 
@@ -584,6 +676,7 @@ function draw(dt){
   drawGround(cx,cy,st,R&&state!=='home'?R.si:S.stage);
   if(R&&state!=='home'){
     const hw=cw/2/zoom+60,hh=ch/2/zoom+60,vis=(x,y)=>x>cx-hw&&x<cx+hw&&y>cy-hh&&y<cy+hh;
+    drawSun();
     for(const g of gems){if(!vis(g.x,g.y))continue;const b=Math.sin(anim*6+g.x)*2;
       if(g.t==='xp'){const big=g.v>=3;ctx.fillStyle=big?'rgba(180,140,255,.3)':'rgba(95,211,255,.3)';ctx.beginPath();ctx.arc(g.x,g.y+b,big?13:10,0,TAU);ctx.fill();ctx.fillStyle=big?'#b48cff':'#5fd3ff';ctx.strokeStyle='#fff';ctx.lineWidth=2;const s=big?8:6;ctx.beginPath();ctx.moveTo(g.x,g.y-s*1.3+b);ctx.lineTo(g.x+s,g.y+b);ctx.lineTo(g.x,g.y+s*1.3+b);ctx.lineTo(g.x-s,g.y+b);ctx.closePath();ctx.fill();ctx.stroke();if(Math.sin(anim*3+g.x*.1)>.9){ctx.fillStyle='#fff';ctx.fillRect(g.x-1,g.y+b-10,2,8);ctx.fillRect(g.x-4,g.y+b-7,8,2)}}
       else if(g.t==='coin'){ctx.fillStyle='rgba(255,210,63,.3)';ctx.beginPath();ctx.arc(g.x,g.y+b,12,0,TAU);ctx.fill();ctx.fillStyle='#ffd23f';ctx.strokeStyle='#c99a00';ctx.lineWidth=2.5;ctx.beginPath();ctx.ellipse(g.x,g.y+b,8*Math.abs(Math.cos(anim*4+g.y))+2,8,0,0,TAU);ctx.fill();ctx.stroke()}
@@ -597,17 +690,19 @@ function draw(dt){
       else{const a=Math.atan2(b.vy,b.vx),al=Math.min(1,b.life*2);ctx.strokeStyle='rgba(61,179,255,'+al+')';ctx.lineWidth=9;ctx.lineCap='round';ctx.beginPath();ctx.arc(b.x-Math.cos(a)*b.r,b.y-Math.sin(a)*b.r,b.r*1.4,a-1,a+1);ctx.stroke();ctx.strokeStyle='rgba(255,255,255,'+al*.8+')';ctx.lineWidth=3;ctx.stroke()}}
     for(const b of ebul){if(!vis(b.x,b.y))continue;ctx.fillStyle='rgba(255,60,90,.35)';ctx.beginPath();ctx.arc(b.x,b.y,b.r+5,0,TAU);ctx.fill();ctx.fillStyle='#ff3c5a';ctx.beginPath();ctx.arc(b.x,b.y,b.r,0,TAU);ctx.fill();ctx.fillStyle='#fff';ctx.beginPath();ctx.arc(b.x-2,b.y-2,b.r*.4,0,TAU);ctx.fill()}
     if(R.w.thorns){const n=Math.min(6,R.w.thorns+1),rad=64+R.w.thorns*4;for(let i=0;i<n;i++){const a=R.thAng+i*TAU/n,tx=P.x+Math.cos(a)*rad,ty=P.y+Math.sin(a)*rad;ctx.save();ctx.translate(tx,ty);ctx.rotate(a+Math.PI/2);ctx.fillStyle='#3fbf9a';ctx.strokeStyle='#1f6f57';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(0,-13);ctx.lineTo(8,8);ctx.lineTo(-8,8);ctx.closePath();ctx.fill();ctx.stroke();ctx.restore()}}
+    if(R.waiting){const k=(anim*1.2)%1;ctx.strokeStyle='rgba(255,255,255,'+(1-k)+')';ctx.lineWidth=5;ctx.beginPath();ctx.arc(P.x,P.y,P.r*1.25+8+k*40,0,TAU);ctx.stroke();txt(tt('tapStart'),P.x,P.y-P.r*1.25-34,20,'#ffe14d')}
+    if(R.sunT>0){ctx.strokeStyle='rgba(255,225,80,'+(.5+.3*Math.sin(anim*12))+')';ctx.lineWidth=5;ctx.beginPath();ctx.arc(P.x,P.y,P.r*1.25+12,0,TAU);ctx.stroke()}
     drawPlayer(ctx,P.x,P.y,P.r*1.25,S.skin,anim,P.fx,P.fy,P.mv,P.inv);
     const hpw=40;ctx.fillStyle='rgba(43,33,64,.6)';roundRect(P.x-hpw/2-2,P.y+P.r*1.5,hpw+4,9,4);ctx.fill();ctx.fillStyle=P.hp/P.max>.3?'#6dff8a':'#ff5a6e';roundRect(P.x-hpw/2,P.y+P.r*1.5+2,hpw*Math.max(0,P.hp/P.max),5,3);ctx.fill();
     for(const p of parts){ctx.globalAlpha=Math.min(1,p.life*2.5);ctx.fillStyle=p.col;ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,TAU);ctx.fill()}ctx.globalAlpha=1;
     for(const t of texts){ctx.globalAlpha=Math.min(1,t.life*3);txt(String(t.t),t.x,t.y,t.s*(1+Math.max(0,t.life-.45)*3),t.col)}ctx.globalAlpha=1;
     // HUD
-    ctx.setTransform(dpr,0,0,dpr,0,0);drawAmbient(dt);
+    ctx.setTransform(dpr,0,0,dpr,0,0);drawAmbient(dt);drawEdgeArrows();
     const bw=cw-24;ctx.fillStyle='rgba(43,33,64,.55)';roundRect(12,8,bw,16,8);ctx.fill();ctx.fillStyle='#5fd3ff';roundRect(14,10,Math.max(0,(bw-4)*R.xp/R.need),12,6);ctx.fill();
     txt(tt('lv')+' '+R.lvl,26,16,13,'#fff','left');
-    const tm=R.st.endless?R.t:Math.max(0,150-R.t),mm=Math.floor(tm/60),ss=('0'+Math.floor(tm%60)).slice(-2);
+    const tm=R.st.endless?R.t:Math.max(0,60-R.t),mm=Math.floor(tm/60),ss=('0'+Math.floor(tm%60)).slice(-2);
     if(R.boss&&!R.boss.dead){const w=Math.min(420,cw-40),x=(cw-w)/2;txt(tt('b'+R.si),cw/2,92,20,'#ffd23f');ctx.fillStyle='rgba(43,33,64,.6)';roundRect(x,106,w,14,7);ctx.fill();ctx.fillStyle='#ff4d6d';roundRect(x+2,108,(w-4)*Math.max(0,R.boss.hp/R.boss.max),10,5);ctx.fill()}
-    else txt(R.won?'🎉':mm+':'+ss,cw/2,48,30,R.st.endless||tm>20?'#fff':'#ffd23f');
+    else txt(R.won?'🎉':mm+':'+ss,cw/2,48,30,R.st.endless||tm>10?'#fff':'#ffd23f');
     txt('🐞 '+R.kills,16,48,18,'#fff','left');txt('🪙 '+R.coins,16,74,18,'#ffd23f','left');
     if(joy&&state==='run'){ctx.globalAlpha=.35;ctx.fillStyle='#fff';ctx.beginPath();ctx.arc(joy.ox,joy.oy,48,0,TAU);ctx.fill();ctx.globalAlpha=.7;const dx=clamp(joy.x-joy.ox,-48,48),dy=clamp(joy.y-joy.oy,-48,48);ctx.beginPath();ctx.arc(joy.ox+dx,joy.oy+dy,22,0,TAU);ctx.fill();ctx.globalAlpha=1}
   }
@@ -625,8 +720,8 @@ function refreshHome(){
   $('sNum').textContent=st.endless?tt('best')+' '+Math.floor(S.best/60)+':'+('0'+S.best%60).slice(-2):tt('stage')+' '+(S.stage+1)+' / 5';
   $('sName').textContent=tt('s'+S.stage);$('sPrev').disabled=S.stage<=0;$('sNext').disabled=S.stage>=S.maxStage;
   $('upBadge').style.display=UPG.some(u=>S.upg[u.k]<10&&S.coins>=upCost(S.upg[u.k]))?'block':'none';
-  $('frBadge').style.display=unlockedCount()>S.seenSkins?'block':'none'}
-function goHome(){state='home';R=null;musicOn=false;gpStop();$('pauseBtn').style.display='none';$('hint').style.display='none';refreshHome();show('home')}
+  $('frBadge').style.display=unlockedCount()>S.seenSkins?'block':'none';renderMissions($('hMissions'),false)}
+function goHome(){stopAuto();state='home';R=null;musicOn=false;gpStop();$('pauseBtn').style.display='none';$('hint').style.display='none';refreshHome();show('home')}
 function renderShop(){
   $('shCoins').textContent=S.coins;const list=$('shopList');list.innerHTML='';
   UPG.forEach(u=>{const l=S.upg[u.k],max=l>=10,cost=upCost(l);const row=document.createElement('div');row.className='shoprow';
@@ -658,20 +753,21 @@ on('quitBtn',()=>{sfx.click();goHome()});
 on('noRev',()=>{sfx.click();endRun(false)});
 on('yesRev',()=>{rewarded().then(ok=>{if(ok){R.revived=true;P.hp=P.max*.5;P.inv=2.5;for(const e of enemies){if((e.x-P.x)**2+(e.y-P.y)**2<260*260&&!e.boss){e.dead=true;burst(e.x,e.y,EN[e.k].col,5)}}enemies=enemies.filter(e=>!e.dead);ebul=[];rings.push({x:P.x,y:P.y,r:10,max:260,life:.6,col:'109,255,138'});show(null);state='run';musicOn=true;$('pauseBtn').style.display='block';banner(tt('back'));gpStart()}else endRun(false)})});
 on('dblBtn',()=>{rewarded().then(ok=>{if(ok&&R&&!R.dbl){R.dbl=true;S.coins+=R.earned;save();$('oCoins').textContent='+'+R.earned*2+' 🪙';$('dblBtn').disabled=true;sfx.chest();confettiBurst(50)}})});
-on('againBtn',()=>{sfx.click();const si=R?R.si:S.stage;const next=R&&R.won&&!R.st.endless&&si<4?si+1:si;S.stage=Math.min(next,S.maxStage);save();beginRun(S.stage,true)});
+on('againBtn',()=>{stopAuto();sfx.click();const si=R?R.si:S.stage;const next=R&&R.won&&!R.st.endless&&si<4?si+1:si;S.stage=Math.min(next,S.maxStage);save();beginRun(S.stage,true)});
 on('homeBtn',()=>{sfx.click();goHome()});
 on('langBtn',()=>{sfx.click();renderLangs();show('langs')});
 on('lgClose',()=>{sfx.click();refreshHome();show('home')});
 function renderLangs(){const g=$('langGrid');g.innerHTML='';for(const l in LANGS){const b=document.createElement('button');b.className='lg'+(l===lang?' sel':'');b.textContent=LANGS[l];b.addEventListener('click',()=>{setLang(l);sfx.click();renderLangs()});g.appendChild(b)}}
 on('muteBtn',()=>{S.muted=!S.muted;save();$('muteBtn').textContent=S.muted?'🔇':'🔊';setAdMute(adMute)});
 function pauseGame(){if(state!=='run')return;state='paused';gpStop();musicOn=false;joy=null;show('pause')}
-function resumeGame(){if(state!=='paused')return;sfx.click();show(null);state='run';musicOn=true;gpStart()}
+function resumeGame(){if(state!=='paused')return;sfx.click();show(null);state='run';if(R)R.waiting=false;musicOn=true;gpStart()}
+function firstInput(){if(state==='run'&&R&&R.waiting&&!inAd){R.waiting=false;musicOn=true;gpStart()}}
 document.addEventListener('visibilitychange',()=>{if(document.hidden)pauseGame()});
 
 /* ---------- input ---------- */
 addEventListener('keydown',e=>{
   if(['ArrowDown','ArrowUp','ArrowLeft','ArrowRight',' '].includes(e.key))e.preventDefault();
-  if(inAd)return;audio();keys[e.code]=true;
+  if(inAd)return;audio();firstInput();keys[e.code]=true;
   if(state==='run'&&(e.code==='Escape'||e.code==='KeyP'))pauseGame();
   else if(state==='levelup'){const n=parseInt(e.key);if(n>=1&&n<=3)pickCard(n-1);
     else if(['ArrowLeft','ArrowUp','KeyA','KeyW'].includes(e.code)){selCard=(selCard+curChoices.length-1)%curChoices.length;markSel()}
@@ -683,16 +779,18 @@ function markSel(){[...$('cards').children].forEach((c,i)=>c.classList.toggle('s
 addEventListener('keyup',e=>{keys[e.code]=false});
 addEventListener('blur',()=>{for(const k in keys)keys[k]=false});
 addEventListener('wheel',e=>e.preventDefault(),{passive:false});
-cv.addEventListener('pointerdown',e=>{audio();if(state!=='run'||inAd)return;joy={id:e.pointerId,ox:e.clientX,oy:e.clientY,x:e.clientX,y:e.clientY};try{cv.setPointerCapture(e.pointerId)}catch(_){}});
+cv.addEventListener('pointerdown',e=>{audio();firstInput();if(state!=='run'||inAd)return;joy={id:e.pointerId,ox:e.clientX,oy:e.clientY,x:e.clientX,y:e.clientY};try{cv.setPointerCapture(e.pointerId)}catch(_){}});
 cv.addEventListener('pointermove',e=>{if(!joy||e.pointerId!==joy.id)return;joy.x=e.clientX;joy.y=e.clientY;const dx=joy.x-joy.ox,dy=joy.y-joy.oy,d=Math.hypot(dx,dy);if(d>70){joy.ox=joy.x-dx/d*70;joy.oy=joy.y-dy/d*70}});
 const endJoy=e=>{if(joy&&e.pointerId===joy.id)joy=null};cv.addEventListener('pointerup',endJoy);cv.addEventListener('pointercancel',endJoy);
 document.addEventListener('pointerdown',()=>audio(),{passive:true});
 document.addEventListener('contextmenu',e=>e.preventDefault());
+$('over').addEventListener('pointerdown',e=>{if(e.target.closest&&e.target.closest('#againBtn'))return;stopAuto()});
+document.addEventListener('pointerdown',()=>firstInput(),{passive:true});
 
 /* ---------- loop & boot ---------- */
 let lastT=0,hp=$('hPrev');
 function frame(ts){const dt=Math.min(.05,(ts-lastT)/1000||0);lastT=ts;
-  if(state==='run'&&!inAd)update(dt);
+  if(state==='run'&&!inAd&&!(R&&R.waiting))update(dt);
   draw(dt);if(state==='home')drawPreview(hp,S.skin,anim);musicTick();requestAnimationFrame(frame)}
 $('muteBtn').textContent=S.muted?'🔇':'🔊';
 $('ver').textContent='v'+VERSION;console.log('Sprout Squad v'+VERSION);
