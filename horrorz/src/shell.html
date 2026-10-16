@@ -1,0 +1,81 @@
+<!doctype html>
+<!-- Horrorz v__VERSION__ -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<title>Horrorz</title>
+<script>
+/* Poki SDK alleen laden buiten de eigen gamesite (github.io): daar meldt de SDK "unauthorized hosting". */
+window.__pokiReady=new Promise(function(res){
+  if(/(^|\.)github\.io$/i.test(location.hostname)||/[?&](thumb|test)=1/.test(location.search)){res(false);return}
+  var s=document.createElement('script');s.src='https://game-cdn.poki.com/scripts/v2/poki-sdk.js';
+  s.onload=function(){res(true)};s.onerror=function(){res(false)};setTimeout(function(){res(false)},8000);
+  document.head.appendChild(s);
+});
+</script>
+<style>
+/*CSS*/
+</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div id="hudBtns"><button id="pauseBtn" class="hb" aria-label="pause"><span class="pz"></span></button><button id="muteBtn" class="hb" aria-label="sound"></button></div>
+
+<div id="load" class="screen center on">
+  <div class="logo" id="logoL"></div>
+  <div class="lbar"><div id="lfill"></div></div>
+</div>
+
+<div id="home" class="screen">
+  <div class="topbar">
+    <button id="setBtn" class="hb" aria-label="settings"><span class="gear"></span></button>
+    <div class="pill"><img class="ic" data-icon="candy" alt=""><span id="hCandy">0</span></div>
+  </div>
+  <div class="homeMain">
+    <div class="logo" id="logo"></div>
+    <div class="chapSel">
+      <button class="arrow" id="chPrev" aria-label="previous">&#8249;</button>
+      <div class="chapCard" id="chapCard"></div>
+      <button class="arrow" id="chNext" aria-label="next">&#8250;</button>
+    </div>
+    <div class="playRow">
+      <button class="btn big" id="playBtn"></button>
+    </div>
+    <button class="btn mint" id="nightBtn"></button>
+  </div>
+  <div class="nav" id="nav"></div>
+  <div class="ver" id="ver"></div>
+</div>
+
+<div id="panel" class="screen center dim">
+  <div class="panel">
+    <div class="ph"><h2 id="pTitle"></h2><button class="x" id="pClose" aria-label="close">&#10005;</button></div>
+    <div class="pb" id="pBody"></div>
+  </div>
+</div>
+
+<div id="cards" class="screen center dim">
+  <h2 class="ctitle" id="cTitle"></h2>
+  <div class="cards" id="cardRow"></div>
+  <div class="crow"><button class="btn ghost small" id="rerollBtn"></button><button class="btn ghost small" id="adRerollBtn"></button></div>
+</div>
+
+<div id="pause" class="screen center dim">
+  <h2 class="ctitle" id="paTitle"></h2>
+  <div class="build" id="pauseBuild"></div>
+  <button class="btn big" id="resumeBtn"></button>
+  <div class="crow"><button class="btn ghost small" id="sndToggle"></button><button class="btn ghost small" id="musToggle"></button></div>
+  <button class="btn ghost small" id="quitBtn"></button>
+</div>
+
+<div id="over" class="screen center dim"><div class="panel result" id="overBox"></div></div>
+
+<div id="adwait" class="screen center"><div class="spinner"></div></div>
+
+<div id="toasts"></div>
+<script>
+/*JS*/
+</script>
+</body>
+</html>
