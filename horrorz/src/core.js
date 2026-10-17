@@ -35,7 +35,7 @@ function defSave(){return{candy:0,total:0,first:true,muted:false,music:true,shak
   skins:['lumi'],skin:'lumi',beams:['warm'],beam:'warm',
   best:[0,0,0,0,0],clear:[0,0,0,0,0],unlocked:1,nightBest:0,selCh:0,
   seen:{},popped:{},trophies:{},
-  st:{pops:0,runs:0,golden:0,maxCombo:0,bosses:0,flawless:0,maxed:0},
+  st:{pops:0,runs:0,golden:0,maxCombo:0,bosses:0,flawless:0,maxed:0,rtypes:{}},
   daily:{day:'',list:[],bonus:false},gift:{last:'',n:0},tut:0}}
 let S=defSave();
 function mergeSave(dst,src){for(const k in src){const v=src[k];if(v&&typeof v==='object'&&!Array.isArray(v)&&dst[k]&&typeof dst[k]==='object'&&!Array.isArray(dst[k]))mergeSave(dst[k],v);else dst[k]=v}}
@@ -97,22 +97,44 @@ const SFX={
   chest(i){tone(330*ST(i*2),.08,'square',.06)},
   lose(){[7,3,0,-5].forEach((s,i)=>tone(330*ST(s),.35,'triangle',.13,null,i*.16))},
   strobe(){if(!canPlay('strobe',100))return;noise(.18,.1,6000,'highpass');tone(1800,.12,'sine',.05,900)},
+  whoosh(){if(!canPlay('whoosh',80))return;noise(.3,.12,900,'bandpass')},
+  thud(){if(!canPlay('thud',60))return;tone(110,.15,'sine',.16,60);noise(.08,.1,400)},
+  exorcise(){tone(300,.6,'sine',.12,900);noise(.5,.12,2500,'bandpass');[0,5,9].forEach((s,i)=>tone(440*ST(s),.4,'triangle',.08,null,.15+i*.08))},
+  ignite(){noise(.25,.12,3000,'highpass');tone(520,.3,'triangle',.1,780)},
+  bell(){[0,.02].forEach(d=>{tone(196,2.2,'sine',.16,null,d);tone(392*1.01,1.6,'sine',.07,null,d);tone(588,1.2,'sine',.05,null,d)})},
+  chime(){[0,7,12].forEach((s,i)=>tone(988*ST(s),.25,'sine',.06,null,i*.06))},
+  wail(){tone(900,1,'sawtooth',.05,520);tone(1200,1,'sine',.06,700);noise(.9,.06,3000,'bandpass')},
+  shriek(){tone(1400,.35,'square',.05,600);noise(.3,.1,4000,'highpass')},
+  dark(){tone(80,1.2,'sawtooth',.12,40);noise(1,.1,200)},
+  thunder(){noise(2.2,.35,180);noise(.6,.25,900,'lowpass',.05);tone(55,1.6,'sine',.18,35)},
+  amb(kind){if(!AC||S.muted)return;switch(kind){
+    case 'creak':tone(rand(140,220),.9,'sawtooth',.025,rand(90,130));noise(.8,.03,600,'bandpass');break;
+    case 'wind':noise(2.4,.06,rand(300,600),'bandpass');break;
+    case 'drip':tone(rand(1400,1900),.12,'sine',.05,rand(600,800));tone(rand(1600,2000),.1,'sine',.03,700,.6);break;
+    case 'tick':for(let i=0;i<6;i++)noise(.03,.06,3500,'highpass',i*.5);break;
+    case 'crickets':for(let i=0;i<5;i++)tone(4200,.05,'square',.012,null,i*.09);break}
+    if(Math.random()<.25){tone(rand(180,260),1.6,'sine',.02,rand(120,170),.3)}},
 };
-/* music: small procedural spooky loop (A harmonic minor) */
-const MUS={next:0,step:0,mode:'calm'};
-const PROG=[[0,3,7],[-4,0,3],[5,8,12],[-5,-1,2]];
-const n2f=s=>220*ST(s);
+/* music: procedural, one mood per chapter */
+const MUS={next:0,step:0,mode:'calm',ch:0};
+const MKEYS=[
+  {root:220,prog:[[0,3,7],[-4,0,3],[5,8,12],[-5,-1,2]],bpm:92,lead:'sine'},
+  {root:196,prog:[[0,3,7],[1,5,8],[-2,1,5],[0,3,7]],bpm:84,lead:'triangle'},
+  {root:174.6,prog:[[0,3,7],[-4,-1,3],[-7,-4,0],[-2,1,5]],bpm:76,lead:'sine'},
+  {root:233,prog:[[0,3,7],[0,4,7],[-2,2,5],[-5,-1,2]],bpm:104,lead:'triangle'},
+  {root:207.6,prog:[[0,3,7,10],[-4,0,3,7],[2,5,9],[-1,2,5]],bpm:88,lead:'sine'}];
 function musicTick(){
   if(!AC||S.muted||!S.music||adMuted||AC.state!=='running')return;
   const now=AC.currentTime;if(MUS.next<now-.3)MUS.next=now+.05;
-  const fast=MUS.mode==='boss',sd=60/(fast?128:98)/4;
+  const K=MKEYS[MUS.ch]||MKEYS[0],fast=MUS.mode==='boss',sd=60/(fast?K.bpm*1.35:K.bpm)/4,n2f=s=>K.root*ST(s);
   while(MUS.next<now+.2){
-    const st=MUS.step%64,bar=(st/16)|0,s=st%16,ch=PROG[bar],tt=MUS.next;
-    if(s===0||s===10||(fast&&s%4===0))osc(n2f(ch[0]-24),sd*(fast?2.5:6),'triangle',.2,null,tt,musG);
-    if(s%2===0){const idx=[0,1,2,1,0,2,1,2][s>>1];osc(n2f(ch[idx]+(s>=8?12:0)),sd*1.8,'sine',.075,null,tt,musG,true)}
-    if((s===6||s===14)&&Math.random()<.45)osc(n2f(ch[2]+24),.5,'sine',.04,null,tt,musG,true);
-    if(fast&&s%2===1)noise(.03,.035,7000,'highpass',tt-now,musG);
-    if(fast&&s%8===4)noise(.09,.07,900,'lowpass',tt-now,musG);
+    const st=MUS.step%64,bar=(st/16)|0,s=st%16,ch=K.prog[bar],tt=MUS.next;
+    if(s===0||s===10||(fast&&s%4===0))osc(n2f(ch[0]-24),sd*(fast?2.5:7),'triangle',.18,null,tt,musG);
+    if(s%2===0&&(MUS.ch!==2||s%4===0)){const idx=[0,1,2,1,0,2,1,2][s>>1]%ch.length;osc(n2f(ch[idx]+(s>=8?12:0)),sd*1.9,K.lead,.065,null,tt,musG,true)}
+    if((s===6||s===14)&&Math.random()<.45)osc(n2f(ch[ch.length-1]+24),.6,'sine',.035,null,tt,musG,true);
+    if(s===0&&bar===0&&Math.random()<.5)osc(n2f(ch[0]-12),sd*14,'sawtooth',.02,null,tt,musG,true);
+    if(fast&&s%2===1)noise(.03,.03,7000,'highpass',tt-now,musG);
+    if(fast&&s%8===4)noise(.09,.06,900,'lowpass',tt-now,musG);
     MUS.next+=sd;MUS.step++;
   }
 }

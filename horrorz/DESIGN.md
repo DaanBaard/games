@@ -64,3 +64,32 @@ Beweeg → lamp op spoken → spoken poppen in snoep + zieltjes → XP-balk vol 
 2. Kamer waarop spelers de eerste run sterven (moeilijkheid kamer 3–5).
 3. % dat na game-over op "Nog een keer" drukt.
 4. Gemiddelde speeltijd (doel ≥ 7 min).
+
+---
+
+# v2.0 — variatie en realisme
+
+Feedback op v1.0: te eenzijdig, te cartoonesk, te veel herhaling. Wat er veranderd is:
+
+## Variatie in levels
+| Laag | v1.0 | v2.0 |
+|---|---|---|
+| Kamertypes | 1 (golven) | 7: Spookerij, Zwerm, Ritueel (kaarsen aansteken), Volhouden (overleef tot de klok slaat), Glimmerjacht, Klopgeest (bezeten meubels), Altaar (kies een offer) |
+| Wendingen | geen | 6: mist, flikkerende lamp, onweer, rusteloze doden, ijskoud (glad), pikdonker |
+| Indelingen | 1 (willekeurig) | 8: verspreid, zuilenzaal, gangpaden, middenstuk, volgestouwd, arena, lange gang, kleine kamer — met wisselende kamermaten |
+| Spawnpatronen | randen | 6: randen, omsingeling, deuren, uit meubels, uit de vloer, linie |
+| Golfthema's | gemengd | gemengd, één soort, elite met escorte |
+| Spooksoorten | 7 | 11 + Gouden Glimmer (nieuw: stofgeestjes, nepkaars, banshee, lichtvreter) |
+| Bazen | 4–5 aanvallen | + jammerring, verduistering, schijnbeelden, en een woedefase op 50% |
+| Kamernamen | geen | 30 (6 per hoofdstuk) |
+| Muziek/geluid | 1 loop | eigen toonsoort en tempo per hoofdstuk + omgevingsgeluid (kraken, wind, druppels, tikken, krekels) |
+
+**Anti-herhaling:** de deurkeuze toont kamertype, beloning en wending; hetzelfde kamertype, dezelfde indeling of dezelfde wending komt zelden twee keer achter elkaar; kamernamen herhalen pas als alle zes geweest zijn. De speler kiest dus zelf zijn route (autonomie) en weet wat er komt (verwachting → dopamine bij de beloning).
+
+## Realisme
+- **Belichting:** de zaklamp werpt echte schaduwen achter meubels; meubels blokkeren ook het licht voor de gameplay (spoken kunnen zich verstoppen). Volumetrische lichtbundel met mist en stofdeeltjes, kaarsen, kroonluchters, maanlicht door ramen, bliksem.
+- **Texturen:** procedureel gegenereerd parket, zolderplanken, natuursteen, ijzeren platen, terracotta; behang met damastpatroon en lambrisering, baksteen, glaswanden met nachtlucht.
+- **Spoken:** doorschijnende, rafelige gestaltes die naar onderen vervagen, holle oogkassen, gloeiende pupillen in het donker, bewegingsspoor; bij licht verbleken ze en gaan ze “schreeuwen”.
+- **Lumi:** realistischere verhoudingen, regenjas met schaduw, metalen zaklamp.
+- **Interface:** serif-typografie, donkere panelen met dunne gouden lijnen, tarotkaart-stijl voor krachten, iconen in duotoon. Filmkorrel en vignet.
+- **Prestaties:** licht, mist en korrel draaien op lage resolutie; bij een trage telefoon schakelt de game automatisch naar lagere kwaliteit.

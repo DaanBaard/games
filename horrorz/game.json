@@ -1,6 +1,10 @@
 {
   "title": "Horrorz",
-  "version": "1.0",
-  "description": "Griezelig-schattige zaklamp-roguelite: het spookhuis is pikdonker, je ziet alleen oplichtende ogen. Schijn met je lamp op spoken tot ze in snoep ploppen. 5 hoofdstukken met eindbazen, 20 krachten, nachtmerrie-modus, kostuums, missies en trofeeën. 5 talen, mobiel speelbaar.",
-  "tags": ["actie", "roguelite", "halloween"]
+  "version": "2.0",
+  "description": "Sfeervolle zaklamp-roguelite in een pikdonker spookhuis: schijn op spoken tot ze vervliegen, met echte schaduwen, mist en onweer. 5 hoofdstukken, 7 soorten kamers (rituelen, klopgeesten, glimmerjacht, altaren…), 6 wendingen, 12 spooksoorten, eindbazen en een eindeloze nachtmerrie-modus. 5 talen, mobiel speelbaar.",
+  "tags": [
+    "actie",
+    "roguelite",
+    "horror"
+  ]
 }

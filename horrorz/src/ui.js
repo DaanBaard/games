@@ -3,7 +3,7 @@ const SCREENS=['load','home','panel','cards','pause','over','adwait'];
 function show(id){for(const s of SCREENS)$(s).classList.toggle('on',s===id||(id==='panel'&&s==='home'))}
 const img=(k,cls)=>'<img class="'+(cls||'ic')+'" src="'+iconURL(k)+'" alt="">';
 const pips=(cur,max,nxt)=>{let h='<div class="pips">';for(let i=0;i<max;i++)h+='<i class="pip'+(i<cur?' on':(nxt&&i===cur?' new':''))+'"></i>';return h+'</div>'};
-function buildLogo(el){el.innerHTML='';[['H','d'],['O','o'],['R',''],['R','d'],['O','o'],['R',''],['Z','z']].forEach(([ch,c])=>{const s=document.createElement('span');s.textContent=ch;if(c)s.className=c;el.appendChild(s)})}
+function buildLogo(el){el.innerHTML='';'HORRORZ'.split('').forEach((ch,i)=>{const s=document.createElement('span');s.textContent=ch;if(i===4)s.className='o';if(i===6)s.className='z';el.appendChild(s)})}
 function detectLang(){let l=null;try{if(window.PokiSDK&&PokiSDK.getLanguage)l=PokiSDK.getLanguage()}catch(e){}if(!l)l=navigator.language||'en';l=String(l).slice(0,2).toLowerCase();return LANGS.includes(l)?l:'en'}
 function toast(icon,title,text){const d=document.createElement('div');d.className='toast';d.innerHTML=img(icon,'')+'<div><b>'+title+'</b><span>'+text+'</span></div>';$('toasts').appendChild(d);setTimeout(()=>d.remove(),3500)}
 function missionText(m){return t('ms_'+m.id,{n:m.n})}
@@ -104,8 +104,15 @@ function openCards(){
   cardList=rollCards(R.cardBoost);R.cardBoost=0;renderCards();show('cards');SFX.card();cardsAt=performance.now();
   stick.on=false;for(const kk in KEY)KEY[kk]=false;
 }
+function openShrine(){
+  state='cards';R.cardTitle='shrineTitle';const o=['power','heal','candy','luck'].filter(x=>!(x==='power'&&P.hearts<=1)&&!(x==='heal'&&P.hearts>=P.maxH));
+  o.sort(()=>Math.random()-.5);cardList=o.slice(0,3).map(id=>({id,r:id==='power'?2:1,offer:true}));renderCards();show('cards');SFX.chime();cardsAt=performance.now();stick.on=false;for(const kk in KEY)KEY[kk]=false;
+}
 function renderCards(){
   $('cTitle').textContent=t(R.cardTitle);
+  const offer=cardList.length&&cardList[0].offer;$('rerollBtn').style.display=offer?'none':'';
+  if(offer){$('cardRow').innerHTML=cardList.map((a,i)=>'<div class="card r'+a.r+' offer" data-i="'+i+'"><span class="ck">'+(i+1)+'</span>'+img('of_'+a.id,'')+'<div class="cnm">'+t('of_'+a.id)+'</div><div class="cd">'+t('ofd_'+a.id)+'</div></div>').join('');
+    $('cardRow').querySelectorAll('.card').forEach(el=>el.onclick=()=>pickCard(+el.dataset.i));$('adRerollBtn').style.display='none';return}
   $('cardRow').innerHTML=cardList.map((a,i)=>{const cur=R.ab[a.id]||0;return '<div class="card r'+a.r+'" data-i="'+i+'"><span class="ck">'+(i+1)+'</span>'+img(a.id,'')+'<div class="cr">'+t('rar'+a.r)+'</div><div class="cnm">'+t('ab_'+a.id)+'</div><div class="cd">'+t('abd_'+a.id)+'</div>'+(a.max<99&&a.max>1?pips(cur,a.max,true):'')+'</div>'}).join('');
   $('cardRow').querySelectorAll('.card').forEach(el=>el.onclick=()=>pickCard(+el.dataset.i));
   $('rerollBtn').innerHTML=img('reroll')+' '+t('reroll',{n:R.rerolls});$('rerollBtn').disabled=R.rerolls<=0;
@@ -113,6 +120,12 @@ function renderCards(){
 }
 function pickCard(i){
   if(state!=='cards'||performance.now()-cardsAt<280)return;const a=cardList[i];if(!a)return;
+  if(a.offer){SFX.pick();BURSTS.push({x:P.x,y:P.y,r:200,t:0,dur:.6,col:'255,210,150'});
+    if(a.id==='power'){P.hearts=Math.max(1,P.hearts-1);flash(160,20,30,.3);R.pendingCards++;R.cardBoost=1}
+    else if(a.id==='heal'){P.hearts=P.maxH}
+    else if(a.id==='candy'){const n=14+R.room*2;for(let j=0;j<n;j++)addDrop(j%4?'candy':'big',room.altar.x,room.altar.y,j%4?2:5)}
+    else if(a.id==='luck'){R.rerolls+=2}
+    state='run';show(null);roomCleared();if(R.pendingCards>0)R.wantCards=true;return}
   if(a.id==='snack'){R.candy+=25;P.hearts=Math.min(P.maxH,P.hearts+1)}
   else{R.ab[a.id]=(R.ab[a.id]||0)+1;if(a.r>=1)mProg('cards',1);if(R.ab[a.id]>=a.max&&a.max>1)S.st.maxed=1;calcStats();if(a.id==='heart')P.hearts=Math.min(P.maxH,P.hearts+1)}
   SFX.pick();BURSTS.push({x:P.x,y:P.y,r:160,t:0,dur:.5,col:a.r===2?'200,120,255':a.r===1?'90,200,255':'255,240,190'});
@@ -246,9 +259,10 @@ addEventListener('resize',()=>{resize();if(room)room.cv=null});
 addEventListener('wheel',e=>{if(state==='run')e.preventDefault()},{passive:false});
 
 /* ---- main loop ---- */
-let lastT=0,hudOn=null;
+let lastT=0,hudOn=null,perfT=0,perfN=0;
 function frame(ts){
-  const dt=Math.min(.05,Math.max(0,(ts-lastT)/1000)||0);lastT=ts;
+  const raw=Math.max(0,(ts-lastT)/1000)||0;const dt=Math.min(.05,raw);lastT=ts;
+  if(!window.LOWQ&&(state==='run'||state==='home')&&raw<.5){perfT+=raw;perfN++;if(perfT>4){if(perfT/perfN>.034){window.LOWQ=true;resize();if(room)room.cv=null}perfT=0;perfN=0}}
   if(!inAd){
     if(state==='run'){
       if(trans){trans.t+=dt;if(!trans.fired&&trans.t>=trans.dur/2){trans.fired=true;trans.mid()}if(trans.t>=trans.dur)trans=null}
@@ -267,7 +281,7 @@ function thumbSetup(){
   P.x=430;P.y=430;demo.t=0;k=W/640;camX=560;camY=300;
   G=[];const tps=['sheet','wisp','flitter','pumpkin','wisp','sheet'];const pos=[[650,330],[730,390],[600,250],[800,260],[420,250],[330,330]];
   tps.forEach((tp,i)=>{const g=mkGhost(tp,pos[i][0],pos[i][1],{spawnT:0});g.alpha=1;g.hp=1e9;g.spd=0;g.wa=0;g.fear=i<2?g.hp*.5:0;G.push(g)});
-  updDemo=function(dt){gtime+=dt;camX=560;camY=300;P.aim=Math.atan2(340-P.y,690-P.x);R={beams:[{a:P.aim,len:330,ang:.36,dps:0,main:true}],ab:{},combo:0};
+  updDemo=function(dt){gtime+=dt;camX=560;camY=300;P.aim=Math.atan2(340-P.y,690-P.x);R={beams:[{a:P.aim,len:330,ang:.36,dps:0,main:true}],ab:{},combo:0,lamp:1,drain:0};
     for(const g of G){g.lit=!!inBeam(R.beams[0],g.x,g.y,g.r)}};
   for(let i=0;i<14;i++)DROPS.push({kind:i%4?'candy':'big',x:690+rand(-60,60),y:360+rand(-40,50),vx:0,vy:0,z:rand(0,30),vz:0,val:1,t:0,mag:false,col:pick(CANDYCOLS),rot:rand(0,6)});
   BURSTS.push({x:700,y:340,r:180,t:.05,dur:9e9,col:'160,240,255'});sparks(700,340,'#9ff3ff',30,260);for(const f of FX)f.dur=9e9;
@@ -276,11 +290,12 @@ function boot(){
   loadSave();setLang(S.lang||detectLang());resize();
   buildLogo($('logo'));buildLogo($('logoL'));bindUI();updMuteBtn();
   $('lfill').style.width='55%';
-  if(TEST)window.T={get R(){return R},get P(){return P},get G(){return G},get state(){return state},get room(){return room},get S(){return S},startFlow,pickCard,goHome,openPanel,showOver,update,hurtPlayer,popGhost,setSkip:v=>{window.__skip=v}};
+  if(TEST)window.T={get R(){return R},openShrine,get P(){return P},get G(){return G},get state(){return state},get room(){return room},get S(){return S},startFlow,pickCard,goHome,openPanel,showOver,update,hurtPlayer,popGhost,setSkip:v=>{window.__skip=v}};
   Promise.resolve(window.__pokiReady).catch(()=>{}).then(()=>{if(window.PokiSDK)SDK=window.PokiSDK;return SDK.init()}).catch(()=>{}).then(()=>{
     if(!S.lang){setLang(detectLang())}
     $('lfill').style.width='100%';try{SDK.gameLoadingFinished()}catch(e){}
     ensureDaily();checkTrophies();
+    if(!THUMB){let ci=0;const warm=()=>{if(ci>=5)return;if(state!=='home'){setTimeout(warm,1500);return}const c2=CH[ci++];try{floorTex(c2.floor);wallTex(c2.wallf,c2);capTex(c2)}catch(e){}setTimeout(warm,250)};setTimeout(warm,1200)}
     requestAnimationFrame(t0=>{lastT=t0;requestAnimationFrame(frame)});
     console.log('Horrorz v'+VERSION);
     if(THUMB){thumbSetup();return}
