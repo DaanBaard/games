@@ -1,0 +1,331 @@
+play	开始游戏
+nightmare	噩梦之夜
+nightLocked	噩梦：通关第1章
+chapter	第{n}章
+locked	未解锁 — 先通关上一章
+best	最佳：房间 {n}/10
+cleared	已通关！
+newCh	新！还没玩过
+upgrades	升级
+wardrobe	衣柜
+missions	任务
+trophies	奖杯
+ghostbook	幽灵图鉴
+gift	礼物
+settings	设置
+sound	音效
+music	音乐
+shake	屏幕震动
+on	开
+off	关
+language	语言
+resume	继续
+home	菜单
+paused	已暂停
+levelUp	升级了！
+pickPower	选择一种能力
+reroll	重抽（{n}）
+adReroll	重抽
+room	房间 {n}
+roomOf	房间 {n}/{m}
+roomClear	房间清空！
+chooseDoor	选一扇门 — 看看后面有什么！
+bossAhead	前方有首领！
+rest	片刻安宁：+1 心
+bossTitle	首领
+miniTitle	小首领
+fainted	你晕倒了！
+chClear	本章通关！
+newRecord	新纪录！
+nearBoss	离首领只差 {n} 个了！
+nearEnd	就差一点！还剩 {n} 个房间
+nearBest	再过 {n} 个房间就破纪录
+candyEarned	获得糖果
+revive	复活
+double	双倍糖果
+again	再玩一次
+next	下一章
+pops	消灭幽灵
+bestCombo	最高连击
+level	等级
+toUnlock	距离{name}：{a}/{b}
+canBuy	你可以买新东西了！
+buy	购买
+equip	穿上
+equipped	已穿上
+use	使用
+inUse	使用中
+max	已满
+claim	领取
+claimed	已完成
+day	第{n}天
+giftClaim	打开礼物
+giftDone	明天再来领下一份礼物！
+giftNote	错过一天？没关系 — 进度会保留。
+missionsAll	3个全部完成：奖励+60
+missionsReady	可领取的任务：{n}
+missionsNew	每天都有新任务
+costumes	服装
+beams	光的颜色
+unknown	？？？
+popped	已消灭：{n}
+trophyGet	获得奖杯
+tutMove	移动：WASD / 方向键 — 或在屏幕上拖动
+tutLight	用手电筒照幽灵！
+tutCandy	受惊的幽灵会变成糖果！
+tutDash	冲刺：空格 / 点击 — 或按按钮。冲刺时不会受伤！
+dash	冲刺
+boo	哇！
+close	好险！
+escaped	跑掉了…
+rw_card	能力
+rw_candy	糖果
+rw_heart	心
+rw_chest	宝箱
+rw_mystery	神秘
+rw_boss	首领
+gotCandy	+{n} 糖果
+gotHeart	+1 心
+jackpot	大奖！
+goldenSpot	金色光点！快抓住它！
+revived	守护精灵救了你！
+loading	加载中…
+lv	等级 {n}
+rar0	普通
+rar1	稀有
+rar2	史诗
+newSkin	新服装！
+unlockCh	新章节已解锁！
+nightBest	最佳：房间 {n}
+reachedNight	到达房间 {n}
+viaTrophy	奖杯：{t}
+viaGift	每日礼物 第7天
+bosses	已击败首领：{n}
+noAd	暂时没有可用的视频
+bonusPct	含 +{n}% 奖励
+ch0	低语大厅
+ch1	阁楼
+ch2	地下墓穴
+ch3	钟楼
+ch4	月光温室
+cw0	好吓人！
+cw1	毛骨悚然！
+cw2	鬼气十足！
+cw3	恐怖之夜！
+cw4	传奇！
+ab_wide	广角镜头
+abd_wide	光束宽度 +18%
+ab_long	远射光束
+abd_long	光束距离 +15%
+ab_bright	明亮灯泡
+abd_bright	光照强度 +18%（增强所有能力）
+ab_boots	疾风运动鞋
+abd_boots	移动速度 +9%
+ab_magnet	甜蜜磁铁
+abd_magnet	拾取范围 +45%
+ab_heart	额外的心
+abd_heart	最大心数 +1 并回复 1
+ab_dashcd	轻快步伐
+abd_dashcd	冲刺充能快 18%
+ab_jump	惊吓
+abd_jump	幽灵首次被照到时减少 12%
+ab_strobe	频闪
+abd_strobe	吓到附近所有幽灵的闪光
+ab_aura	小夜灯
+abd_aura	身边的光晕会吓跑幽灵
+ab_fire	萤火虫
+abd_fire	+1 只绕着你飞的萤火虫
+ab_chill	寒光
+abd_chill	被照到的幽灵慢 15%
+ab_bomb	糖果爆发
+abd_bomb	被消灭的幽灵会吓到附近的幽灵
+ab_candle	蜡烛伙伴
+abd_candle	走路时留下吓人的蜡烛
+ab_salt	盐之冲刺
+abd_salt	冲刺会留下一道盐痕
+ab_sugar	糖分冲劲
+abd_sugar	连击5以上：更强更快
+ab_lucky	幸运袜
+abd_lucky	糖果 +15%，金色光点更多
+ab_twin	背后光束
+abd_twin	身后再照出第二道光
+ab_prism	棱镜
+abd_prism	光束一分为三
+ab_angel	守护精灵
+abd_angel	每局一次：防止你晕倒
+ab_snack	糖果袋
+abd_snack	+25 糖果并回复 1
+gh_wisp	鬼火
+ghd_wisp	朝你飘过来。害羞但好奇。
+gh_sheet	床单幽灵
+ghd_sheet	又慢又倔。需要很多光。
+gh_flitter	扑扑
+ghd_flitter	快速之字形飞行，很难留在光里。
+gh_peeker	躲猫猫
+ghd_peeker	在黑暗中隐形，会瞬移到你附近。
+gh_moaner	呻吟鬼
+ghd_moaner	保持距离并吐黏液。光能融化黏液！
+gh_pumpkin	南瓜幽灵
+ghd_pumpkin	被消灭时分裂成两个小鬼火。
+gh_shade	暗影
+ghd_shade	先瞄准，再直冲向你。
+gh_golden	金色光点
+ghd_golden	稀有又快。抓住它就能拿糖果大奖！
+sh_hearts	额外的心
+shd_hearts	每局开始时 +1 心
+sh_power	更亮的灯泡
+shd_power	光照强度 +12%
+sh_range	长焦镜头
+shd_range	光束距离 +8%
+sh_speed	运动鞋
+shd_speed	移动速度 +6%
+sh_bonus	爱吃甜
+shd_bonus	每局糖果 +10%
+sh_magnet	糖果磁铁
+shd_magnet	拾取范围 +25%
+sh_reroll	幸运硬币
+shd_reroll	每局免费重抽 +1
+sk_lumi	雨衣
+sk_pumpkin	南瓜装
+sk_witch	小女巫
+sk_dino	恐龙卫衣
+sk_astro	宇航员
+sk_vamp	夜之斗篷
+sk_skelly	骨头睡衣
+sk_golden	黄金英雄
+bm_warm	暖光
+bm_mint	薄荷
+bm_pink	泡泡糖
+bm_violet	紫罗兰
+bm_ice	冰蓝
+bm_gold	金色
+ms_pop	消灭 {n} 个幽灵
+ms_room	一局内到达房间 {n}
+ms_combo	达成 {n} 连击
+ms_golden	抓住一个金色光点
+ms_boss	击败首领或小首领
+ms_dash	冲刺 {n} 次
+ms_cards	选择 {n} 个稀有或史诗能力
+ms_candy	收集 {n} 个糖果
+ms_clean	无伤通过 {n} 个房间
+tr_first	初次惊吓
+trd_first	消灭你的第一个幽灵
+tr_pop100	糖果收藏家
+trd_pop100	消灭 100 个幽灵
+tr_pop1000	光之传奇
+trd_pop1000	消灭 1,000 个幽灵
+tr_combo20	连击小将
+trd_combo20	达成 20 连击
+tr_combo50	连击大师
+trd_combo50	达成 50 连击
+tr_ch1	大厅守卫
+trd_ch1	通关低语大厅
+tr_ch2	阁楼高手
+trd_ch2	通关阁楼
+tr_ch3	墓穴冠军
+trd_ch3	通关地下墓穴
+tr_ch4	时间守护者
+trd_ch4	通关钟楼
+tr_ch5	月光英雄
+trd_ch5	通关月光温室
+tr_golden1	幸运一抓
+trd_golden1	抓住一个金色光点
+tr_golden10	淘金热
+trd_golden10	抓住 10 个金色光点
+tr_flawless	毫发无伤
+trd_flawless	无伤击败一个首领
+tr_night10	夜猫子
+trd_night10	在噩梦之夜到达房间 10
+tr_rich	糖果山
+trd_rich	累计获得 2,000 糖果
+tr_maxed	充能满格
+trd_maxed	一局内把一种能力升到满级
+rt_waves	闹鬼
+rt_swarm	群袭
+rt_ritual	仪式
+rt_survive	坚持住
+rt_hunt	光点狩猎
+rt_poltergeist	捣蛋鬼
+rt_shrine	祭坛
+rw_shrine	供品
+tw_fog	迷雾
+tw_flicker	闪烁的手电
+tw_storm	雷雨
+tw_haunt	不安的亡灵
+tw_cold	冰冷刺骨
+tw_dark	漆黑一片
+twd_fog	光束变短
+twd_flicker	手电筒时不时熄灭
+twd_storm	闪电会吓到每个幽灵
+twd_haunt	幽灵更强，糖果 +50%
+twd_cold	地板很滑
+twd_dark	一根蜡烛都没有
+hRitual	站在每根蜡烛旁把它点亮
+hSurvive	坚持到钟声响起
+hHunt	在金色光点消失前抓住它们
+hPolter	照亮颤动的家具来解放灵魂
+hShrine	走到祭坛前选择一份供品
+hSwarm	幽灵群来了 — 不要停下
+obRitual	已点亮蜡烛：{a}/{b}
+obSurvive	坚持：{s}秒
+obHunt	已抓光点：{a}/{b}
+obPolter	已解放灵魂：{a}/{b}
+obShrine	在祭坛选择一份供品
+ritualDone	仪式完成了
+dawn	钟声响起
+freed	解放了！
+hushed	安静了！
+enraged	它被激怒了
+shrineTitle	古老的祭坛
+of_power	以血换力
+ofd_power	失去 1 心，从稀有和史诗能力中选择
+of_heal	温暖之光
+ofd_heal	回满所有的心
+of_candy	甜蜜贡品
+ofd_candy	拿走一大堆糖果
+of_luck	幸运硬币
+ofd_luck	本局重抽 +2
+gh_mote	尘灵
+ghd_mote	总是成群出现的小飞蛾精灵。
+gh_mimic	拟态怪
+ghd_mimic	假装成蜡烛。每根蜡烛都照一照！
+gh_wailer	报丧女妖
+ghd_wailer	尖叫出一圈声波。冲刺穿过它 — 或照亮她让她安静。
+gh_drinker	噬光者
+ghd_drinker	一团黑暗。靠近时手电筒会变弱。
+ms_ritual	完成 {n} 次仪式
+ms_kinds	一局内消灭 {n} 种幽灵
+tr_allrooms	见多识广
+trd_allrooms	通关每一种房间
+tr_book	幽灵学者
+trd_book	集齐整本幽灵图鉴
+rn0_0	长廊
+rn0_1	餐厅
+rn0_2	图书室
+rn0_3	音乐室
+rn0_4	客厅
+rn0_5	儿童房
+rn1_0	积灰的阁楼
+rn1_1	箱子间
+rn1_2	横梁之下
+rn1_3	缝纫角
+rn1_4	旧游戏室
+rn1_5	鸽舍
+rn2_0	酒窖
+rn2_1	墓室大厅
+rn2_2	滴水隧道
+rn2_3	藏骨堂
+rn2_4	被遗忘的礼拜堂
+rn2_5	井室
+rn3_0	齿轮阁楼
+rn3_1	钟室
+rn3_2	旋转楼梯
+rn3_3	钟表匠工坊
+rn3_4	钟摆大厅
+rn3_5	表盘
+rn4_0	蕨类温房
+rn4_1	月光池塘
+rn4_2	兰花小径
+rn4_3	育苗棚
+rn4_4	雕像花园
+rn4_5	玻璃穹顶

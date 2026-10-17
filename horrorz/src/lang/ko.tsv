@@ -1,0 +1,331 @@
+play	플레이
+nightmare	악몽의 밤
+nightLocked	악몽: 1장을 클리어하세요
+chapter	{n}장
+locked	잠김 — 이전 장을 클리어하세요
+best	최고: {n}/10번 방
+cleared	클리어!
+newCh	새로움! 아직 안 해 봄
+upgrades	강화
+wardrobe	옷장
+missions	미션
+trophies	트로피
+ghostbook	유령 도감
+gift	선물
+settings	설정
+sound	효과음
+music	음악
+shake	화면 흔들림
+on	켜짐
+off	꺼짐
+language	언어
+resume	계속하기
+home	메뉴
+paused	일시정지
+levelUp	레벨 업!
+pickPower	능력을 고르세요
+reroll	다시 뽑기 ({n})
+adReroll	다시 뽑기
+room	{n}번 방
+roomOf	방 {n}/{m}
+roomClear	방 클리어!
+chooseDoor	문을 고르세요 — 뒤에 뭐가 있는지 보세요!
+bossAhead	보스가 다가온다!
+rest	잠깐의 휴식: 하트 +1
+bossTitle	보스
+miniTitle	미니 보스
+fainted	기절했어요!
+chClear	장 클리어!
+newRecord	신기록!
+nearBoss	보스까지 {n} 남았어요!
+nearEnd	아깝다! {n}개 방 남음
+nearBest	최고 기록까지 방 {n}개
+candyEarned	얻은 사탕
+revive	부활
+double	사탕 2배
+again	다시 하기
+next	다음 장
+pops	없앤 유령
+bestCombo	최고 콤보
+level	레벨
+toUnlock	{name}까지 {a}/{b}
+canBuy	새로운 걸 살 수 있어요!
+buy	구매
+equip	입기
+equipped	입는 중
+use	사용
+inUse	사용 중
+max	최대
+claim	받기
+claimed	완료
+day	{n}일차
+giftClaim	선물 열기
+giftDone	내일 다음 선물을 받으러 오세요!
+giftNote	하루 놓쳤나요? 괜찮아요 — 진행은 그대로예요.
+missionsAll	3개 모두 완료: 보너스 +60
+missionsReady	받을 수 있는 미션: {n}
+missionsNew	매일 새로운 미션
+costumes	의상
+beams	빛 색깔
+unknown	???
+popped	없앤 수: {n}
+trophyGet	트로피 획득
+tutMove	이동: WASD / 화살표 — 또는 화면을 드래그
+tutLight	손전등으로 유령을 비추세요!
+tutCandy	겁먹은 유령은 사탕이 돼요!
+tutDash	대시: 스페이스 / 클릭 — 또는 버튼. 대시 중에는 맞지 않아요!
+dash	대시
+boo	왁!
+close	아슬아슬!
+escaped	도망갔다…
+rw_card	능력
+rw_candy	사탕
+rw_heart	하트
+rw_chest	상자
+rw_mystery	비밀
+rw_boss	보스
+gotCandy	사탕 +{n}
+gotHeart	하트 +1
+jackpot	대박!
+goldenSpot	황금 반짝이! 잡으세요!
+revived	수호 정령이 당신을 구했어요!
+loading	불러오는 중…
+lv	Lv {n}
+rar0	일반
+rar1	희귀
+rar2	에픽
+newSkin	새 의상!
+unlockCh	새로운 장이 열렸어요!
+nightBest	최고: {n}번 방
+reachedNight	{n}번 방 도달
+viaTrophy	트로피: {t}
+viaGift	매일 선물 7일차
+bosses	물리친 보스: {n}
+noAd	지금은 볼 수 있는 영상이 없어요
+bonusPct	보너스 +{n}% 포함
+ch0	속삭임의 홀
+ch1	다락방
+ch2	지하 납골당
+ch3	시계탑
+ch4	달빛 온실
+cw0	오싹해!
+cw1	소름 돋아!
+cw2	유령 대박!
+cw3	공포의 밤!
+cw4	전설급!
+ab_wide	광각 렌즈
+abd_wide	빛 폭 +18%
+ab_long	장거리 빛
+abd_long	빛 거리 +15%
+ab_bright	밝은 전구
+abd_bright	빛의 힘 +18% (모든 능력 강화)
+ab_boots	빠른 운동화
+abd_boots	이동 속도 +9%
+ab_magnet	달콤한 자석
+abd_magnet	줍기 범위 +45%
+ab_heart	추가 하트
+abd_heart	최대 하트 +1, 1 회복
+ab_dashcd	날쌘 발
+abd_dashcd	대시 충전 18% 빨라짐
+ab_jump	깜짝 놀라기
+abd_jump	처음 비춰진 유령은 12% 줄어요
+ab_strobe	스트로브 플래시
+abd_strobe	주변을 모두 놀라게 하는 섬광
+ab_aura	수면등
+abd_aura	유령을 겁주는 빛이 주변을 감싸요
+ab_fire	반딧불이
+abd_fire	주위를 도는 반딧불이 +1
+ab_chill	차가운 빛
+abd_chill	비춰진 유령이 15% 느려져요
+ab_bomb	사탕 폭발
+abd_bomb	사라진 유령이 이웃 유령을 놀라게 해요
+ab_candle	양초 친구
+abd_candle	걸을 때 무서운 양초를 남겨요
+ab_salt	소금 대시
+abd_salt	대시하면 소금 자국이 남아요
+ab_sugar	슈가 러시
+abd_sugar	콤보 5 이상: 힘과 속도 증가
+ab_lucky	행운의 양말
+abd_lucky	사탕 +15%, 황금 반짝이 증가
+ab_twin	뒤쪽 빛
+abd_twin	뒤에서도 두 번째 빛이 비춰요
+ab_prism	프리즘
+abd_prism	빛이 세 갈래로 나뉘어요
+ab_angel	수호 정령
+abd_angel	한 판에 한 번: 기절을 막아 줘요
+ab_snack	사탕 주머니
+abd_snack	사탕 +25, 1 회복
+gh_wisp	도깨비불
+ghd_wisp	당신 쪽으로 둥둥 다가와요. 수줍지만 호기심 많아요.
+gh_sheet	이불 유령
+ghd_sheet	느리고 고집이 세요. 빛이 많이 필요해요.
+gh_flitter	팔랑이
+ghd_flitter	빠르게 지그재그로 날아요. 빛 안에 잡아 두기 어려워요.
+gh_peeker	까꿍이
+ghd_peeker	어둠 속에서 안 보여요. 가까이 순간이동해요.
+gh_moaner	신음 유령
+ghd_moaner	멀리서 끈적이를 뱉어요. 빛으로 녹일 수 있어요!
+gh_pumpkin	호박 유령
+ghd_pumpkin	사라지면 작은 도깨비불 두 개로 나뉘어요.
+gh_shade	그림자
+ghd_shade	조준한 뒤 곧장 달려들어요.
+gh_golden	황금 반짝이
+ghd_golden	드물고 빨라요. 잡으면 사탕 대박!
+sh_hearts	추가 하트
+shd_hearts	매 판 시작 시 하트 +1
+sh_power	더 밝은 전구
+shd_power	빛의 힘 +12%
+sh_range	긴 렌즈
+shd_range	빛 거리 +8%
+sh_speed	운동화
+shd_speed	이동 속도 +6%
+sh_bonus	단것 좋아
+shd_bonus	매 판 사탕 +10%
+sh_magnet	사탕 자석
+shd_magnet	줍기 범위 +25%
+sh_reroll	행운의 동전
+shd_reroll	매 판 무료 다시 뽑기 +1
+sk_lumi	비옷
+sk_pumpkin	호박
+sk_witch	꼬마 마녀
+sk_dino	공룡 후드티
+sk_astro	우주비행사
+sk_vamp	밤의 망토
+sk_skelly	뼈다귀 잠옷
+sk_golden	황금 영웅
+bm_warm	따뜻한 빛
+bm_mint	민트
+bm_pink	풍선껌
+bm_violet	보라
+bm_ice	얼음
+bm_gold	황금
+ms_pop	유령 {n}마리 없애기
+ms_room	한 판에 {n}번 방 도달
+ms_combo	{n} 콤보 달성
+ms_golden	황금 반짝이 잡기
+ms_boss	보스나 미니 보스 물리치기
+ms_dash	대시 {n}번 하기
+ms_cards	희귀 또는 에픽 능력 {n}개 고르기
+ms_candy	사탕 {n}개 모으기
+ms_clean	맞지 않고 방 {n}개 클리어
+tr_first	첫 번째 깜짝
+trd_first	첫 유령을 없애세요
+tr_pop100	사탕 수집가
+trd_pop100	유령 100마리 없애기
+tr_pop1000	빛의 전설
+trd_pop1000	유령 1,000마리 없애기
+tr_combo20	콤보 꼬마
+trd_combo20	20 콤보 달성
+tr_combo50	콤보 마스터
+trd_combo50	50 콤보 달성
+tr_ch1	홀 지킴이
+trd_ch1	속삭임의 홀 클리어
+tr_ch2	다락방 에이스
+trd_ch2	다락방 클리어
+tr_ch3	납골당 챔피언
+trd_ch3	지하 납골당 클리어
+tr_ch4	시간의 수호자
+trd_ch4	시계탑 클리어
+tr_ch5	달의 영웅
+trd_ch5	달빛 온실 클리어
+tr_golden1	행운의 포획
+trd_golden1	황금 반짝이 잡기
+tr_golden10	골드 러시
+trd_golden10	황금 반짝이 10번 잡기
+tr_flawless	상처 하나 없이
+trd_flawless	맞지 않고 보스 물리치기
+tr_night10	올빼미
+trd_night10	악몽의 밤에서 10번 방 도달
+tr_rich	사탕 산
+trd_rich	사탕 총 2,000개 벌기
+tr_maxed	완전 충전
+trd_maxed	한 판에 능력 하나를 최대로 강화
+rt_waves	유령 출몰
+rt_swarm	떼
+rt_ritual	의식
+rt_survive	버티기
+rt_hunt	반짝이 사냥
+rt_poltergeist	폴터가이스트
+rt_shrine	제단
+rw_shrine	제물
+tw_fog	안개
+tw_flicker	깜빡이는 손전등
+tw_storm	뇌우
+tw_haunt	떠도는 망자
+tw_cold	꽁꽁 추위
+tw_dark	칠흑 같은 어둠
+twd_fog	빛이 짧아져요
+twd_flicker	손전등이 자꾸 꺼져요
+twd_storm	번개가 모든 유령을 놀라게 해요
+twd_haunt	더 강한 유령, 사탕 +50%
+twd_cold	바닥이 미끄러워요
+twd_dark	양초가 하나도 없어요
+hRitual	양초 옆에 서서 불을 붙이세요
+hSurvive	시계가 울릴 때까지 버티세요
+hHunt	황금 반짝이가 사라지기 전에 잡으세요
+hPolter	흔들리는 가구를 비춰 영혼을 풀어 주세요
+hShrine	제단으로 가서 제물을 고르세요
+hSwarm	떼가 몰려와요 — 계속 움직이세요
+obRitual	켜진 양초: {a}/{b}
+obSurvive	버티기: {s}초
+obHunt	잡은 반짝이: {a}/{b}
+obPolter	풀려난 영혼: {a}/{b}
+obShrine	제단에서 제물을 고르세요
+ritualDone	의식이 끝났어요
+dawn	시계가 울린다
+freed	풀려났다!
+hushed	조용해졌다!
+enraged	화가 났다
+shrineTitle	오래된 제단
+of_power	피와 바꾼 힘
+ofd_power	하트 1개를 잃고 희귀·에픽 능력 중에서 고르기
+of_heal	따뜻한 빛
+ofd_heal	하트를 모두 회복
+of_candy	달콤한 공물
+ofd_candy	사탕을 한가득 받기
+of_luck	행운의 동전
+ofd_luck	이번 판 다시 뽑기 +2
+gh_mote	먼지 유령
+ghd_mote	늘 떼로 다니는 작은 나방 정령.
+gh_mimic	미믹
+ghd_mimic	양초인 척해요. 모든 양초를 비춰 보세요!
+gh_wailer	밴시
+ghd_wailer	소리의 고리를 내질러요. 대시로 통과하거나 비춰서 조용히 시키세요.
+gh_drinker	빛 먹보
+ghd_drinker	어둠의 구름. 가까이 있으면 손전등이 약해져요.
+ms_ritual	의식 {n}번 완료
+ms_kinds	한 판에 유령 {n}종류 없애기
+tr_allrooms	다 봤다
+trd_allrooms	모든 종류의 방 클리어
+tr_book	유령 박사
+trd_book	유령 도감 전부 채우기
+rn0_0	긴 복도
+rn0_1	식당
+rn0_2	서재
+rn0_3	음악실
+rn0_4	응접실
+rn0_5	아이 방
+rn1_0	먼지투성이 다락
+rn1_1	트렁크 방
+rn1_2	들보 아래
+rn1_3	바느질 구석
+rn1_4	낡은 놀이방
+rn1_5	비둘기 집
+rn2_0	와인 저장고
+rn2_1	무덤의 방
+rn2_2	물 떨어지는 터널
+rn2_3	뼈의 방
+rn2_4	잊힌 예배당
+rn2_5	우물의 방
+rn3_0	톱니바퀴 다락
+rn3_1	종의 방
+rn3_2	나선 계단
+rn3_3	시계공의 가게
+rn3_4	진자의 방
+rn3_5	시계 문자판
+rn4_0	고사리 집
+rn4_1	달빛 연못
+rn4_2	난초 길
+rn4_3	화분 창고
+rn4_4	조각상 정원
+rn4_5	유리 돔

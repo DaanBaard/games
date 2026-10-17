@@ -93,3 +93,6 @@ Feedback op v1.0: te eenzijdig, te cartoonesk, te veel herhaling. Wat er verande
 - **Lumi:** realistischere verhoudingen, regenjas met schaduw, metalen zaklamp.
 - **Interface:** serif-typografie, donkere panelen met dunne gouden lijnen, tarotkaart-stijl voor krachten, iconen in duotoon. Filmkorrel en vignet.
 - **Prestaties:** licht, mist en korrel draaien op lage resolutie; bij een trage telefoon schakelt de game automatisch naar lagere kwaliteit.
+
+# v2.1 — 14 talen
+Engels, Nederlands, Duits, Frans, Spaans, Portugees, Italiaans, Pools, Turks, Russisch, Indonesisch, Japans, Koreaans en Chinees (vereenvoudigd). De taal wordt automatisch gekozen via Poki (of de browsertaal) en is te wijzigen in Instellingen. Nieuwe talen staan als `src/lang/<code>.tsv` (sleutel⇥tekst); `build.py` bouwt ze in. Ontbrekende teksten vallen terug op Engels.

@@ -1,0 +1,331 @@
+play	MAIN
+nightmare	Malam Mimpi Buruk
+nightLocked	Mimpi Buruk: selesaikan bab 1
+chapter	Bab {n}
+locked	Terkunci — selesaikan bab sebelumnya
+best	Rekor: ruang {n}/10
+cleared	Selesai!
+newCh	Baru! Belum pernah dimainkan
+upgrades	Peningkatan
+wardrobe	Lemari
+missions	Misi
+trophies	Trofi
+ghostbook	Buku Hantu
+gift	Hadiah
+settings	Pengaturan
+sound	Suara
+music	Musik
+shake	Guncangan layar
+on	nyala
+off	mati
+language	Bahasa
+resume	LANJUT
+home	Menu
+paused	Jeda
+levelUp	Naik level!
+pickPower	Pilih kekuatan
+reroll	Acak ulang ({n})
+adReroll	Acak ulang
+room	Ruang {n}
+roomOf	Ruang {n}/{m}
+roomClear	Ruang bersih!
+chooseDoor	Pilih pintu — lihat apa di baliknya!
+bossAhead	Bos di depan!
+rest	Saat tenang: +1 hati
+bossTitle	BOS
+miniTitle	MINI-BOS
+fainted	Kamu pingsan!
+chClear	Bab selesai!
+newRecord	Rekor baru!
+nearBoss	Tinggal {n} lagi ke bos!
+nearEnd	Sedikit lagi! Tinggal {n} ruang
+nearBest	{n} ruang lagi untuk memecahkan rekor
+candyEarned	Permen didapat
+revive	Bangkit
+double	Permen ganda
+again	MAIN LAGI
+next	BAB BERIKUTNYA
+pops	Hantu diletuskan
+bestCombo	Kombo terbaik
+level	Level
+toUnlock	{a}/{b} untuk {name}
+canBuy	Kamu bisa membeli sesuatu yang baru!
+buy	Beli
+equip	Pakai
+equipped	Dipakai
+use	Gunakan
+inUse	Digunakan
+max	MAKS
+claim	Ambil
+claimed	Selesai
+day	Hari {n}
+giftClaim	Buka hadiah
+giftDone	Kembali besok untuk hadiah berikutnya!
+giftNote	Terlewat sehari? Tidak apa-apa — posisimu tetap.
+missionsAll	Ketiganya selesai: +60 bonus
+missionsReady	Misi siap diambil: {n}
+missionsNew	Misi baru setiap hari
+costumes	Kostum
+beams	Warna cahaya
+unknown	???
+popped	Diletuskan: {n}
+trophyGet	Trofi didapat
+tutMove	Gerak: WASD / panah — atau geser di layar
+tutLight	Sorotkan senter ke hantu-hantu!
+tutCandy	Hantu yang ketakutan berubah jadi permen!
+tutDash	Lesat: Spasi / klik — atau tombolnya. Saat melesat kamu tak bisa terkena!
+dash	LESAT
+boo	BAA!
+close	Nyaris!
+escaped	Kabur…
+rw_card	Kekuatan
+rw_candy	Permen
+rw_heart	Hati
+rw_chest	Peti
+rw_mystery	Misteri
+rw_boss	Bos
+gotCandy	+{n} permen
+gotHeart	+1 hati
+jackpot	JACKPOT!
+goldenSpot	Kilau Emas! Tangkap!
+revived	Roh Pelindung menyelamatkanmu!
+loading	Memuat…
+lv	Lv {n}
+rar0	Biasa
+rar1	Langka
+rar2	Epik
+newSkin	Kostum baru!
+unlockCh	Bab baru terbuka!
+nightBest	Rekor: ruang {n}
+reachedNight	Mencapai ruang {n}
+viaTrophy	Trofi: {t}
+viaGift	Hadiah harian, hari ke-7
+bosses	Bos dikalahkan: {n}
+noAd	Belum ada video saat ini
+bonusPct	termasuk bonus +{n}%
+ch0	Aula Bisikan
+ch1	Loteng
+ch2	Ruang Bawah Kripta
+ch3	Menara Jam
+ch4	Rumah Kaca Bulan
+cw0	Seram!
+cw1	Merinding!
+cw2	Hantu-tastis!
+cw3	Malam Ngeri!
+cw4	LEGENDARIS!
+ab_wide	Lensa Lebar
+abd_wide	+18% lebar sorotan
+ab_long	Sorotan Jauh
+abd_long	+15% jangkauan sorotan
+ab_bright	Bohlam Terang
+abd_bright	+18% kekuatan cahaya (menguatkan semua kekuatan)
+ab_boots	Sepatu Kilat
+abd_boots	+9% kecepatan gerak
+ab_magnet	Magnet Manis
+abd_magnet	+45% jangkauan ambil
+ab_heart	Hati Ekstra
+abd_heart	+1 hati maks. dan pulihkan 1
+ab_dashcd	Kaki Gesit
+abd_dashcd	Lesat terisi 18% lebih cepat
+ab_jump	Kejutan
+abd_jump	Hantu kehilangan 12% saat pertama disorot
+ab_strobe	Kilatan Strobo
+abd_strobe	Kilatan yang menakuti semua di dekatmu
+ab_aura	Lampu Tidur
+abd_aura	Cahaya di sekitarmu yang menakuti hantu
+ab_fire	Kunang-kunang
+abd_fire	+1 kunang-kunang yang mengitarimu
+ab_chill	Cahaya Dingin
+abd_chill	Hantu yang disorot 15% lebih lambat
+ab_bomb	Ledakan Permen
+abd_bomb	Hantu yang meletus menakuti tetangganya
+ab_candle	Teman Lilin
+abd_candle	Menjatuhkan lilin seram saat berjalan
+ab_salt	Lesat Garam
+abd_salt	Lesat meninggalkan jejak garam
+ab_sugar	Semangat Gula
+abd_sugar	Pada kombo 5+: lebih kuat dan cepat
+ab_lucky	Kaus Kaki Hoki
+abd_lucky	+15% permen, lebih banyak Kilau Emas
+ab_twin	Sorotan Belakang
+abd_twin	Sorotan kedua bersinar di belakangmu
+ab_prism	Prisma
+abd_prism	Sorotanmu terbagi tiga
+ab_angel	Roh Pelindung
+abd_angel	Sekali per permainan: mencegahmu pingsan
+ab_snack	Kantong Permen
+abd_snack	+25 permen dan pulihkan 1
+gh_wisp	Wisp
+ghd_wisp	Melayang ke arahmu. Pemalu, tapi penasaran.
+gh_sheet	Seprai
+ghd_sheet	Lambat dan keras kepala. Butuh banyak cahaya.
+gh_flitter	Kepak
+ghd_flitter	Berzigzag cepat. Sulit ditahan di sorotan.
+gh_peeker	Cilukba
+ghd_peeker	Tak terlihat dalam gelap. Berteleportasi mendekat.
+gh_moaner	Pengerang
+ghd_moaner	Menjaga jarak dan meludahkan lendir. Cahaya melelehkan lendir!
+gh_pumpkin	Hantu Labu
+ghd_pumpkin	Terbelah jadi dua wisp kecil saat meletus.
+gh_shade	Bayangan
+ghd_shade	Membidik, lalu menerjang lurus ke arahmu.
+gh_golden	Kilau Emas
+ghd_golden	Langka dan cepat. Tangkap untuk jackpot permen!
+sh_hearts	Hati Ekstra
+shd_hearts	+1 hati di awal setiap permainan
+sh_power	Bohlam Lebih Terang
+shd_power	+12% kekuatan cahaya
+sh_range	Lensa Panjang
+shd_range	+8% jangkauan sorotan
+sh_speed	Sepatu Kets
+shd_speed	+6% kecepatan gerak
+sh_bonus	Gigi Manis
+shd_bonus	+10% permen dari setiap permainan
+sh_magnet	Magnet Permen
+shd_magnet	+25% jangkauan ambil
+sh_reroll	Koin Hoki
+shd_reroll	+1 acak ulang gratis per permainan
+sk_lumi	Jas Hujan
+sk_pumpkin	Labu
+sk_witch	Penyihir Kecil
+sk_dino	Hoodie Dino
+sk_astro	Astronaut
+sk_vamp	Jubah Malam
+sk_skelly	Piyama Tulang
+sk_golden	Pahlawan Emas
+bm_warm	Hangat
+bm_mint	Mint
+bm_pink	Permen Karet
+bm_violet	Ungu
+bm_ice	Es
+bm_gold	Emas
+ms_pop	Letuskan {n} hantu
+ms_room	Capai ruang {n} dalam satu permainan
+ms_combo	Capai kombo {n}
+ms_golden	Tangkap Kilau Emas
+ms_boss	Kalahkan bos atau mini-bos
+ms_dash	Melesat {n} kali
+ms_cards	Pilih {n} kekuatan langka atau epik
+ms_candy	Kumpulkan {n} permen
+ms_clean	Selesaikan {n} ruang tanpa terkena
+tr_first	Kejutan Pertama
+trd_first	Letuskan hantu pertamamu
+tr_pop100	Kolektor Permen
+trd_pop100	Letuskan 100 hantu
+tr_pop1000	Legenda Cahaya
+trd_pop1000	Letuskan 1.000 hantu
+tr_combo20	Anak Kombo
+trd_combo20	Capai kombo 20
+tr_combo50	Master Kombo
+trd_combo50	Capai kombo 50
+tr_ch1	Penjaga Aula
+trd_ch1	Selesaikan Aula Bisikan
+tr_ch2	Jagoan Loteng
+trd_ch2	Selesaikan Loteng
+tr_ch3	Juara Kripta
+trd_ch3	Selesaikan Ruang Bawah Kripta
+tr_ch4	Penjaga Waktu
+trd_ch4	Selesaikan Menara Jam
+tr_ch5	Pahlawan Bulan
+trd_ch5	Selesaikan Rumah Kaca Bulan
+tr_golden1	Tangkapan Hoki
+trd_golden1	Tangkap Kilau Emas
+tr_golden10	Demam Emas
+trd_golden10	Tangkap 10 Kilau Emas
+tr_flawless	Tanpa Goresan
+trd_flawless	Kalahkan bos tanpa terkena
+tr_night10	Burung Hantu
+trd_night10	Capai ruang 10 di Malam Mimpi Buruk
+tr_rich	Gunung Permen
+trd_rich	Dapatkan total 2.000 permen
+tr_maxed	Daya Penuh
+trd_maxed	Maksimalkan satu kekuatan dalam satu permainan
+rt_waves	Hantu Bergentayangan
+rt_swarm	Kawanan
+rt_ritual	Ritual
+rt_survive	Bertahan
+rt_hunt	Berburu Kilau
+rt_poltergeist	Poltergeist
+rt_shrine	Altar
+rw_shrine	Persembahan
+tw_fog	Kabut
+tw_flicker	Senter berkedip
+tw_storm	Badai petir
+tw_haunt	Arwah gelisah
+tw_cold	Dingin membeku
+tw_dark	Gelap gulita
+twd_fog	sorotan lebih pendek
+twd_flicker	sentermu terus padam
+twd_storm	petir menakuti setiap hantu
+twd_haunt	hantu lebih kuat, +50% permen
+twd_cold	lantainya licin
+twd_dark	tanpa lilin sama sekali
+hRitual	Berdirilah di dekat setiap lilin untuk menyalakannya
+hSurvive	Bertahanlah sampai jam berdentang
+hHunt	Tangkap kilau emas sebelum memudar
+hPolter	Sorot perabot yang bergetar untuk membebaskan arwahnya
+hShrine	Jalan ke altar dan pilih persembahan
+hSwarm	Kawanan datang — terus bergerak
+obRitual	Lilin menyala: {a}/{b}
+obSurvive	Bertahan: {s} dtk
+obHunt	Kilau tertangkap: {a}/{b}
+obPolter	Arwah bebas: {a}/{b}
+obShrine	Pilih persembahan di altar
+ritualDone	Ritual selesai
+dawn	Jam berdentang
+freed	Bebas!
+hushed	Diam!
+enraged	Dia mulai marah
+shrineTitle	Altar tua
+of_power	Darah demi kekuatan
+ofd_power	Kehilangan 1 hati, pilih kekuatan langka & epik
+of_heal	Cahaya hangat
+ofd_heal	Pulihkan semua hatimu
+of_candy	Upeti manis
+ofd_candy	Ambil setumpuk permen
+of_luck	Koin hoki
+ofd_luck	+2 acak ulang untuk permainan ini
+gh_mote	Debu Arwah
+ghd_mote	Arwah ngengat mungil yang selalu datang berkawanan.
+gh_mimic	Peniru
+ghd_mimic	Menyamar jadi lilin. Sorot setiap lilin!
+gh_wailer	Banshee
+ghd_wailer	Menjeritkan cincin suara. Lesat melewatinya — atau sorot agar dia diam.
+gh_drinker	Pemakan Cahaya
+ghd_drinker	Awan kegelapan. Sentermu melemah di dekatnya.
+ms_ritual	Selesaikan {n} ritual
+ms_kinds	Letuskan {n} jenis hantu dalam satu permainan
+tr_allrooms	Sudah Lihat Semua
+trd_allrooms	Selesaikan setiap jenis ruang
+tr_book	Ahli Hantu
+trd_book	Lengkapi seluruh Buku Hantu
+rn0_0	Lorong Panjang
+rn0_1	Ruang Makan
+rn0_2	Perpustakaan
+rn0_3	Ruang Musik
+rn0_4	Ruang Tamu
+rn0_5	Kamar Anak
+rn1_0	Loteng Berdebu
+rn1_1	Kamar Koper
+rn1_2	Di Bawah Balok
+rn1_3	Pojok Menjahit
+rn1_4	Ruang Bermain Lama
+rn1_5	Kandang Merpati
+rn2_0	Gudang Anggur
+rn2_1	Aula Makam
+rn2_2	Terowongan Menetes
+rn2_3	Ruang Tulang
+rn2_4	Kapel Terlupakan
+rn2_5	Ruang Sumur
+rn3_0	Loteng Roda Gigi
+rn3_1	Ruang Lonceng
+rn3_2	Tangga Melingkar
+rn3_3	Bengkel Tukang Jam
+rn3_4	Aula Bandul
+rn3_5	Muka Jam
+rn4_0	Rumah Pakis
+rn4_1	Kolam Bersinar Bulan
+rn4_2	Deretan Anggrek
+rn4_3	Gudang Pot
+rn4_4	Taman Patung
+rn4_5	Kubah Kaca

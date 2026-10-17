@@ -1,6 +1,6 @@
 /* ---------- i18n: [en, nl, de, fr, es] ---------- */
-const LANGS=['en','nl','de','fr','es'];
-const LANG_NAMES=['English','Nederlands','Deutsch','Français','Español'];
+const LANGS=['en','nl','de','fr','es','pt','it','pl','tr','ru','id','ja','ko','zh'];
+const LANG_NAMES=['English','Nederlands','Deutsch','Français','Español','Português','Italiano','Polski','Türkçe','Русский','Bahasa Indonesia','日本語','한국어','中文'];
 let LI=0;
 const TR={
 play:['PLAY','SPELEN','SPIELEN','JOUER','JUGAR'],
@@ -343,5 +343,7 @@ rn4_3:['Potting Shed','Oppotschuur','Pflanzschuppen','Remise de rempotage','Cobe
 rn4_4:['Statue Garden','Beeldentuin','Statuengarten','Jardin des statues','Jardín de estatuas'],
 rn4_5:['The Glass Dome','De Glazen Koepel','Die Glaskuppel','Le Dôme de verre','La Cúpula de cristal'],
 };
-function t(k,v){const r=TR[k];let s=r?(r[LI]||r[0]):k;if(v)for(const x in v)s=s.split('{'+x+'}').join(v[x]);return s}
+function t(k,v){let s;if(LI<5){const r=TR[k];s=r?(r[LI]||r[0]):k}else{const X=TRX[LANGS[LI]];s=(X&&X[k])||(TR[k]&&TR[k][0])||k}if(v)for(const x in v)s=s.split('{'+x+'}').join(v[x]);return s}
 function setLang(code){LI=Math.max(0,LANGS.indexOf(code));document.documentElement.lang=LANGS[LI]}
+
+function up(s){try{return s.toLocaleUpperCase(LANGS[LI])}catch(e){return s.toUpperCase()}}

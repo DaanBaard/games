@@ -1,0 +1,331 @@
+play	OYNA
+nightmare	Kâbus Gecesi
+nightLocked	Kâbus: 1. bölümü bitir
+chapter	Bölüm {n}
+locked	Kilitli — önceki bölümü bitir
+best	Rekor: oda {n}/10
+cleared	Tamamlandı!
+newCh	Yeni! Hiç oynanmadı
+upgrades	Geliştirmeler
+wardrobe	Gardırop
+missions	Görevler
+trophies	Kupalar
+ghostbook	Hayalet Kitabı
+gift	Hediye
+settings	Ayarlar
+sound	Ses
+music	Müzik
+shake	Ekran sarsıntısı
+on	açık
+off	kapalı
+language	Dil
+resume	DEVAM
+home	Menü
+paused	Duraklatıldı
+levelUp	Seviye atladın!
+pickPower	Bir güç seç
+reroll	Yenile ({n})
+adReroll	Yenile
+room	Oda {n}
+roomOf	Oda {n}/{m}
+roomClear	Oda temizlendi!
+chooseDoor	Bir kapı seç — arkasında ne olduğuna bak!
+bossAhead	İleride boss var!
+rest	Sakin bir an: +1 kalp
+bossTitle	BOSS
+miniTitle	MİNİ BOSS
+fainted	Bayıldın!
+chClear	Bölüm tamamlandı!
+newRecord	Yeni rekor!
+nearBoss	Boss’a sadece {n} kaldı!
+nearEnd	Çok yakındın! {n} oda kaldı
+nearBest	Rekoru geçmek için {n} oda daha
+candyEarned	Kazanılan şeker
+revive	Canlan
+double	Çift şeker
+again	TEKRAR OYNA
+next	SONRAKİ BÖLÜM
+pops	Patlatılan hayalet
+bestCombo	En iyi kombo
+level	Seviye
+toUnlock	{name} için {a}/{b}
+canBuy	Yeni bir şey alabilirsin!
+buy	Satın al
+equip	Giy
+equipped	Giyildi
+use	Kullan
+inUse	Kullanımda
+max	MAKS
+claim	Al
+claimed	Tamam
+day	{n}. gün
+giftClaim	Hediyeyi aç
+giftDone	Sonraki hediye için yarın gel!
+giftNote	Bir gün mü kaçırdın? Sorun değil — yerini korursun.
+missionsAll	3’ü de tamam: +60 bonus
+missionsReady	Alınmaya hazır görevler: {n}
+missionsNew	Her gün yeni görevler
+costumes	Kostümler
+beams	Işık renkleri
+unknown	???
+popped	Patlatılan: {n}
+trophyGet	Kupa kazanıldı
+tutMove	Hareket: WASD / ok tuşları — ya da ekranda sürükle
+tutLight	El fenerini hayaletlere tut!
+tutCandy	Korkan hayaletler şekere dönüşür!
+tutDash	Atılma: Boşluk / tıkla — ya da düğme. Atılırken sana bir şey olmaz!
+dash	ATIL
+boo	BÖ!
+close	Kıl payı!
+escaped	Kaçtı…
+rw_card	Güç
+rw_candy	Şeker
+rw_heart	Kalp
+rw_chest	Sandık
+rw_mystery	Sürpriz
+rw_boss	Boss
+gotCandy	+{n} şeker
+gotHeart	+1 kalp
+jackpot	BÜYÜK İKRAMİYE!
+goldenSpot	Bir Altın Pırıltı! Yakala!
+revived	Koruyucu Ruh seni kurtarıyor!
+loading	Yükleniyor…
+lv	Sv {n}
+rar0	Sıradan
+rar1	Nadir
+rar2	Destansı
+newSkin	Yeni kostüm!
+unlockCh	Yeni bölüm açıldı!
+nightBest	Rekor: oda {n}
+reachedNight	{n}. odaya ulaştın
+viaTrophy	Kupa: {t}
+viaGift	Günlük hediye, 7. gün
+bosses	Yenilen boss: {n}
+noAd	Şu anda video yok
+bonusPct	+{n}% bonus dahil
+ch0	Fısıltı Salonu
+ch1	Tavan Arası
+ch2	Mahzen Bodrumu
+ch3	Saat Kulesi
+ch4	Ay Serası
+cw0	Ürkütücü!
+cw1	Tüyler diken!
+cw2	Hayaletsel!
+cw3	Korku Gecesi!
+cw4	EFSANEVİ!
+ab_wide	Geniş Mercek
+abd_wide	+%18 ışın genişliği
+ab_long	Uzun Işın
+abd_long	+%15 ışın menzili
+ab_bright	Parlak Ampul
+abd_bright	+%18 ışık gücü (tüm güçleri artırır)
+ab_boots	Hızlı Spor Ayakkabı
+abd_boots	+%9 hareket hızı
+ab_magnet	Tatlı Mıknatıs
+abd_magnet	+%45 toplama menzili
+ab_heart	Ekstra Kalp
+abd_heart	+1 maks. kalp ve 1 iyileşme
+ab_dashcd	Çevik Ayaklar
+abd_dashcd	Atılma %18 daha hızlı dolar
+ab_jump	Ani Korku
+abd_jump	Hayaletler ilk aydınlatıldığında %12 kaybeder
+ab_strobe	Flaş Patlaması
+abd_strobe	Yakındaki her şeyi korkutan bir flaş
+ab_aura	Gece Lambası
+abd_aura	Etrafında hayaletleri korkutan bir parıltı
+ab_fire	Ateş Böcekleri
+abd_fire	Etrafında dönen +1 ateş böceği
+ab_chill	Soğuk Işık
+abd_chill	Aydınlatılan hayaletler %15 daha yavaş
+ab_bomb	Şeker Patlaması
+abd_bomb	Patlayan hayaletler komşularını korkutur
+ab_candle	Mum Dostu
+abd_candle	Yürürken korkunç mumlar bırakırsın
+ab_salt	Tuz Atılışı
+abd_salt	Atılma tuz izi bırakır
+ab_sugar	Şeker Coşkusu
+abd_sugar	5+ komboda: daha çok güç ve hız
+ab_lucky	Şanslı Çoraplar
+abd_lucky	+%15 şeker, daha çok Altın Pırıltı
+ab_twin	Arka Işın
+abd_twin	Arkanda ikinci bir ışın parlar
+ab_prism	Prizma
+abd_prism	Işının üçe ayrılır
+ab_angel	Koruyucu Ruh
+abd_angel	Oyun başına bir kez: bayılmaktan kurtarır
+ab_snack	Şeker Kesesi
+abd_snack	+25 şeker ve 1 iyileşme
+gh_wisp	Işıltı
+ghd_wisp	Sana doğru süzülür. Utangaç ama meraklı.
+gh_sheet	Çarşaf
+ghd_sheet	Yavaş ve inatçı. Çok ışık ister.
+gh_flitter	Pırpır
+ghd_flitter	Hızla zikzak yapar. Işında tutmak zor.
+gh_peeker	Ce-ee
+ghd_peeker	Karanlıkta görünmez. Yakına ışınlanır.
+gh_moaner	İnleyen
+ghd_moaner	Uzak durur ve sümük tükürür. Işık sümüğü eritir!
+gh_pumpkin	Balkabağı Hayaleti
+ghd_pumpkin	Patlayınca iki küçük ışıltıya bölünür.
+gh_shade	Gölge
+ghd_shade	Nişan alır, sonra doğruca üstüne atılır.
+gh_golden	Altın Pırıltı
+ghd_golden	Nadir ve hızlı. Şeker ikramiyesi için yakala!
+sh_hearts	Ekstra Kalp
+shd_hearts	Her oyunun başında +1 kalp
+sh_power	Daha Parlak Ampul
+shd_power	+%12 ışık gücü
+sh_range	Uzun Mercek
+shd_range	+%8 ışın menzili
+sh_speed	Spor Ayakkabı
+shd_speed	+%6 hareket hızı
+sh_bonus	Tatlı Düşkünü
+shd_bonus	Her oyundan +%10 şeker
+sh_magnet	Şeker Mıknatısı
+shd_magnet	+%25 toplama menzili
+sh_reroll	Şanslı Para
+shd_reroll	Oyun başına +1 ücretsiz yenileme
+sk_lumi	Yağmurluk
+sk_pumpkin	Balkabağı
+sk_witch	Küçük Cadı
+sk_dino	Dino Kapüşonlu
+sk_astro	Astronot
+sk_vamp	Gece Pelerini
+sk_skelly	Kemik Tulum
+sk_golden	Altın Kahraman
+bm_warm	Sıcak
+bm_mint	Nane
+bm_pink	Sakız
+bm_violet	Mor
+bm_ice	Buz
+bm_gold	Altın
+ms_pop	{n} hayalet patlat
+ms_room	Bir oyunda {n}. odaya ulaş
+ms_combo	{n} kombo yap
+ms_golden	Bir Altın Pırıltı yakala
+ms_boss	Bir boss ya da mini boss yen
+ms_dash	{n} kez atıl
+ms_cards	{n} nadir ya da destansı güç seç
+ms_candy	{n} şeker topla
+ms_clean	Vurulmadan {n} oda geç
+tr_first	İlk Korku
+trd_first	İlk hayaletini patlat
+tr_pop100	Şeker Koleksiyoncusu
+trd_pop100	100 hayalet patlat
+tr_pop1000	Işık Efsanesi
+trd_pop1000	1.000 hayalet patlat
+tr_combo20	Kombo Çocuk
+trd_combo20	20 kombo yap
+tr_combo50	Kombo Ustası
+trd_combo50	50 kombo yap
+tr_ch1	Salon Bekçisi
+trd_ch1	Fısıltı Salonu’nu bitir
+tr_ch2	Tavan Arası Ası
+trd_ch2	Tavan Arası’nı bitir
+tr_ch3	Mahzen Şampiyonu
+trd_ch3	Mahzen Bodrumu’nu bitir
+tr_ch4	Zaman Bekçisi
+trd_ch4	Saat Kulesi’ni bitir
+tr_ch5	Ay Kahramanı
+trd_ch5	Ay Serası’nı bitir
+tr_golden1	Şanslı Yakalayış
+trd_golden1	Bir Altın Pırıltı yakala
+tr_golden10	Altına Hücum
+trd_golden10	10 Altın Pırıltı yakala
+tr_flawless	Tek Çizik Yok
+trd_flawless	Vurulmadan bir boss yen
+tr_night10	Gece Kuşu
+trd_night10	Kâbus Gecesi’nde 10. odaya ulaş
+tr_rich	Şeker Dağı
+trd_rich	Toplam 2.000 şeker kazan
+tr_maxed	Tam Şarj
+trd_maxed	Bir oyunda bir gücü maksimuma çıkar
+rt_waves	Musallat
+rt_swarm	Sürü
+rt_ritual	Ritüel
+rt_survive	Dayan
+rt_hunt	Pırıltı Avı
+rt_poltergeist	Poltergeist
+rt_shrine	Sunak
+rw_shrine	Adak
+tw_fog	Sis
+tw_flicker	Titreyen fener
+tw_storm	Fırtına
+tw_haunt	Huzursuz ölüler
+tw_cold	Buz gibi
+tw_dark	Zifiri karanlık
+twd_fog	daha kısa ışın
+twd_flicker	fenerin sürekli sönüyor
+twd_storm	şimşek her hayaleti korkutur
+twd_haunt	daha güçlü hayaletler, +%50 şeker
+twd_cold	zemin kaygan
+twd_dark	hiç mum yok
+hRitual	Yakmak için her mumun yanında dur
+hSurvive	Saat çalana kadar dayan
+hHunt	Altın pırıltıları kaybolmadan yakala
+hPolter	Ruhları kurtarmak için titreyen eşyalara ışık tut
+hShrine	Sunağa yürü ve bir adak seç
+hSwarm	Bir sürü geliyor — durmadan hareket et
+obRitual	Yanan mumlar: {a}/{b}
+obSurvive	Dayan: {s} sn
+obHunt	Yakalanan pırıltı: {a}/{b}
+obPolter	Kurtarılan ruh: {a}/{b}
+obShrine	Sunakta bir adak seç
+ritualDone	Ritüel tamamlandı
+dawn	Saat çalıyor
+freed	Kurtuldu!
+hushed	Sustu!
+enraged	Öfkeleniyor
+shrineTitle	Eski bir sunak
+of_power	Güç için kan
+ofd_power	1 kalp kaybet, nadir ve destansı güçlerden seç
+of_heal	Sıcak ışık
+ofd_heal	Tüm kalplerini doldur
+of_candy	Tatlı haraç
+ofd_candy	Bir yığın şeker al
+of_luck	Şanslı paralar
+ofd_luck	Bu oyun için +2 yenileme
+gh_mote	Toz Ruhları
+ghd_mote	Hep sürü halinde gelen minik güve ruhları.
+gh_mimic	Taklitçi
+ghd_mimic	Mum taklidi yapar. Her muma ışık tut!
+gh_wailer	Banşi
+ghd_wailer	Bir ses halkası haykırır. Atılarak içinden geç — ya da susturmak için ışık tut.
+gh_drinker	Işık Yiyen
+ghd_drinker	Bir karanlık bulutu. Yanında fenerin zayıflar.
+ms_ritual	{n} ritüel tamamla
+ms_kinds	Bir oyunda {n} tür hayalet patlat
+tr_allrooms	Her Şeyi Gördüm
+trd_allrooms	Her oda türünü bitir
+tr_book	Hayalet Uzmanı
+trd_book	Hayalet Kitabı’nın tamamını doldur
+rn0_0	Uzun Koridor
+rn0_1	Yemek Odası
+rn0_2	Kütüphane
+rn0_3	Müzik Odası
+rn0_4	Oturma Odası
+rn0_5	Çocuk Odası
+rn1_0	Tozlu Çatı Katı
+rn1_1	Sandık Odası
+rn1_2	Kirişlerin Altında
+rn1_3	Dikiş Köşesi
+rn1_4	Eski Oyun Odası
+rn1_5	Güvercinlik
+rn2_0	Şarap Mahzeni
+rn2_1	Mezarlar Salonu
+rn2_2	Damlayan Tünel
+rn2_3	Kemik Odası
+rn2_4	Unutulmuş Şapel
+rn2_5	Kuyu Odası
+rn3_0	Dişli Katı
+rn3_1	Çan Odası
+rn3_2	Döner Merdiven
+rn3_3	Saatçi Dükkânı
+rn3_4	Sarkaç Salonu
+rn3_5	Kadran
+rn4_0	Eğrelti Evi
+rn4_1	Ay Işığında Gölet
+rn4_2	Orkide Sırası
+rn4_3	Fide Kulübesi
+rn4_4	Heykel Bahçesi
+rn4_5	Cam Kubbe

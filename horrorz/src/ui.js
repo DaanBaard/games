@@ -173,7 +173,7 @@ function showOver(win,firstClear){
     '<div class="big">'+(story?t('roomOf',{n:R.room,m:10}):t('reachedNight',{n:R.room}))+'</div>'+
     (rec?'<div class="rec">'+img('star')+' '+t('newRecord')+'</div>':'')+(near?'<div class="near">'+near+'</div>':'')+
     (win&&firstClear&&R.ch<4?'<div class="rec">'+t('unlockCh')+'</div>':'')+
-    '<div class="stats"><div class="st">'+t('pops')+'<b>'+R.pops+'</b></div><div class="st">'+t('bestCombo')+'<b>x'+R.maxCombo+'</b></div><div class="st">'+t('level')+'<b>'+R.lvl+'</b></div></div>'+
+    '<div class="stats"><div class="st">'+t('pops')+'<b>'+R.pops+'</b></div><div class="st">'+t('bestCombo')+'<b>×'+R.maxCombo+'</b></div><div class="st">'+t('level')+'<b>'+R.lvl+'</b></div></div>'+
     '<div class="sub">'+t('candyEarned')+'</div><div class="earn">'+img('candy')+' <span id="earnN">0</span></div>'+
     (P.candyMul>1.001?'<div class="sub" style="font-size:11px">'+t('bonusPct',{n:Math.round((P.candyMul-1)*100)})+'</div>':'')+
     goalH+(mDone?'<div class="goal rec">'+img('scroll')+' '+t('missionsReady',{n:mDone})+'</div>':'')+

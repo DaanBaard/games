@@ -1,0 +1,331 @@
+play	GRAJ
+nightmare	Noc koszmarów
+nightLocked	Koszmar: ukończ rozdział 1
+chapter	Rozdział {n}
+locked	Zablokowane — ukończ poprzedni rozdział
+best	Rekord: pokój {n}/10
+cleared	Ukończono!
+newCh	Nowość! Jeszcze nie grano
+upgrades	Ulepszenia
+wardrobe	Garderoba
+missions	Misje
+trophies	Trofea
+ghostbook	Księga duchów
+gift	Prezent
+settings	Ustawienia
+sound	Dźwięk
+music	Muzyka
+shake	Wstrząsy ekranu
+on	wł.
+off	wył.
+language	Język
+resume	WZNÓW
+home	Menu
+paused	Pauza
+levelUp	Nowy poziom!
+pickPower	Wybierz moc
+reroll	Losuj ponownie ({n})
+adReroll	Losuj ponownie
+room	Pokój {n}
+roomOf	Pokój {n}/{m}
+roomClear	Pokój czysty!
+chooseDoor	Wybierz drzwi — zobacz, co jest za nimi!
+bossAhead	Przed tobą boss!
+rest	Chwila spokoju: +1 serce
+bossTitle	BOSS
+miniTitle	MINIBOSS
+fainted	Zemdlałeś!
+chClear	Rozdział ukończony!
+newRecord	Nowy rekord!
+nearBoss	Jeszcze tylko {n} do bossa!
+nearEnd	Tak blisko! Zostało pokoi: {n}
+nearBest	Jeszcze {n} pokoi do rekordu
+candyEarned	Zdobyte cukierki
+revive	Wskrześ
+double	Podwójne cukierki
+again	ZAGRAJ PONOWNIE
+next	NASTĘPNY ROZDZIAŁ
+pops	Pękniętych duchów
+bestCombo	Najlepsze combo
+level	Poziom
+toUnlock	{a}/{b} do: {name}
+canBuy	Możesz kupić coś nowego!
+buy	Kup
+equip	Załóż
+equipped	Założone
+use	Użyj
+inUse	W użyciu
+max	MAKS
+claim	Odbierz
+claimed	Gotowe
+day	Dzień {n}
+giftClaim	Otwórz prezent
+giftDone	Wróć jutro po kolejny prezent!
+giftNote	Opuściłeś dzień? Nic nie szkodzi — zachowujesz swoje miejsce.
+missionsAll	Wszystkie 3 zrobione: +60 bonusu
+missionsReady	Misje do odebrania: {n}
+missionsNew	Nowe misje codziennie
+costumes	Stroje
+beams	Kolory światła
+unknown	???
+popped	Pękniętych: {n}
+trophyGet	Trofeum odblokowane
+tutMove	Ruch: WASD / strzałki — lub przeciągnij po ekranie
+tutLight	Świeć latarką na duchy!
+tutCandy	Przestraszone duchy zmieniają się w cukierki!
+tutDash	Zryw: spacja / klik — lub przycisk. Podczas zrywu nic cię nie trafi!
+dash	ZRYW
+boo	BU!
+close	O włos!
+escaped	Uciekł…
+rw_card	Moc
+rw_candy	Cukierki
+rw_heart	Serce
+rw_chest	Skrzynia
+rw_mystery	Niespodzianka
+rw_boss	Boss
+gotCandy	+{n} cukierków
+gotHeart	+1 serce
+jackpot	JACKPOT!
+goldenSpot	Złoty Błysk! Złap go!
+revived	Duch Strażnik cię ratuje!
+loading	Ładowanie…
+lv	Poz. {n}
+rar0	Zwykła
+rar1	Rzadka
+rar2	Epicka
+newSkin	Nowy strój!
+unlockCh	Odblokowano nowy rozdział!
+nightBest	Rekord: pokój {n}
+reachedNight	Dotarłeś do pokoju {n}
+viaTrophy	Trofeum: {t}
+viaGift	Dzienny prezent, dzień 7
+bosses	Pokonanych bossów: {n}
+noAd	Teraz brak dostępnego filmu
+bonusPct	w tym +{n}% bonusu
+ch0	Sala szeptów
+ch1	Strych
+ch2	Piwnica krypty
+ch3	Wieża zegarowa
+ch4	Księżycowa szklarnia
+cw0	Strasznie!
+cw1	Ciarki!
+cw2	Upiornie!
+cw3	Noc grozy!
+cw4	LEGENDARNIE!
+ab_wide	Szeroka soczewka
+abd_wide	+18% szerokości wiązki
+ab_long	Długa wiązka
+abd_long	+15% zasięgu wiązki
+ab_bright	Jasna żarówka
+abd_bright	+18% siły światła (wzmacnia wszystkie moce)
+ab_boots	Szybkie trampki
+abd_boots	+9% szybkości
+ab_magnet	Słodki magnes
+abd_magnet	+45% zasięgu zbierania
+ab_heart	Dodatkowe serce
+abd_heart	+1 maks. serce i leczy 1
+ab_dashcd	Lekkie stopy
+abd_dashcd	Zryw ładuje się 18% szybciej
+ab_jump	Straszak
+abd_jump	Duchy tracą 12% przy pierwszym oświetleniu
+ab_strobe	Stroboskop
+abd_strobe	Błysk, który straszy wszystko wokół
+ab_aura	Lampka nocna
+abd_aura	Poświata wokół ciebie, która straszy duchy
+ab_fire	Świetliki
+abd_fire	+1 świetlik krążący wokół ciebie
+ab_chill	Lodowate światło
+abd_chill	Oświetlone duchy są o 15% wolniejsze
+ab_bomb	Cukierkowy wybuch
+abd_bomb	Pęknięte duchy straszą sąsiadów
+ab_candle	Świeczka-przyjaciółka
+abd_candle	Zostawiasz po drodze straszne świeczki
+ab_salt	Solny zryw
+abd_salt	Zryw zostawia ślad soli
+ab_sugar	Cukrowy kop
+abd_sugar	Przy combo 5+: więcej mocy i szybkości
+ab_lucky	Szczęśliwe skarpetki
+abd_lucky	+15% cukierków, więcej Złotych Błysków
+ab_twin	Tylna wiązka
+abd_twin	Druga wiązka świeci za tobą
+ab_prism	Pryzmat
+abd_prism	Twoja wiązka dzieli się na trzy
+ab_angel	Duch Strażnik
+abd_angel	Raz na grę: ratuje cię przed omdleniem
+ab_snack	Woreczek cukierków
+abd_snack	+25 cukierków i leczy 1
+gh_wisp	Błędny ognik
+ghd_wisp	Płynie w twoją stronę. Nieśmiały, ale ciekawski.
+gh_sheet	Prześcieradło
+ghd_sheet	Wolne i uparte. Potrzeba dużo światła.
+gh_flitter	Fruwak
+ghd_flitter	Szybko kluczy. Trudno utrzymać go w wiązce.
+gh_peeker	A-kuku
+ghd_peeker	Niewidoczny w ciemności. Teleportuje się blisko.
+gh_moaner	Jęczydło
+ghd_moaner	Trzyma się z dala i pluje mazią. Światło topi maź!
+gh_pumpkin	Dyniowy duch
+ghd_pumpkin	Po pęknięciu dzieli się na dwa ogniki.
+gh_shade	Cień
+ghd_shade	Celuje, a potem rzuca się prosto na ciebie.
+gh_golden	Złoty Błysk
+ghd_golden	Rzadki i szybki. Złap go po cukierkowy jackpot!
+sh_hearts	Dodatkowe serce
+shd_hearts	+1 serce na początku każdej gry
+sh_power	Jaśniejsza żarówka
+shd_power	+12% siły światła
+sh_range	Długa soczewka
+shd_range	+8% zasięgu wiązki
+sh_speed	Trampki
+shd_speed	+6% szybkości
+sh_bonus	Łasuch
+shd_bonus	+10% cukierków z każdej gry
+sh_magnet	Magnes na cukierki
+shd_magnet	+25% zasięgu zbierania
+sh_reroll	Szczęśliwa moneta
+shd_reroll	+1 darmowe losowanie na grę
+sk_lumi	Płaszcz przeciwdeszczowy
+sk_pumpkin	Dynia
+sk_witch	Mała czarownica
+sk_dino	Bluza dinozaur
+sk_astro	Astronauta
+sk_vamp	Nocna peleryna
+sk_skelly	Piżama szkielet
+sk_golden	Złoty bohater
+bm_warm	Ciepłe
+bm_mint	Miętowe
+bm_pink	Gumowe
+bm_violet	Fioletowe
+bm_ice	Lodowe
+bm_gold	Złote
+ms_pop	Rozpęknij {n} duchów
+ms_room	Dotrzyj do pokoju {n} w jednej grze
+ms_combo	Zrób combo {n}
+ms_golden	Złap Złoty Błysk
+ms_boss	Pokonaj bossa lub minibossa
+ms_dash	Zrób {n} zrywów
+ms_cards	Wybierz {n} rzadkich lub epickich mocy
+ms_candy	Zbierz {n} cukierków
+ms_clean	Przejdź {n} pokoi bez trafienia
+tr_first	Pierwszy strach
+trd_first	Rozpęknij pierwszego ducha
+tr_pop100	Zbieracz cukierków
+trd_pop100	Rozpęknij 100 duchów
+tr_pop1000	Legenda światła
+trd_pop1000	Rozpęknij 1000 duchów
+tr_combo20	Combo-dzieciak
+trd_combo20	Zrób combo 20
+tr_combo50	Mistrz combo
+trd_combo50	Zrób combo 50
+tr_ch1	Strażnik sali
+trd_ch1	Ukończ Salę szeptów
+tr_ch2	As strychu
+trd_ch2	Ukończ Strych
+tr_ch3	Mistrz krypty
+trd_ch3	Ukończ Piwnicę krypty
+tr_ch4	Strażnik czasu
+trd_ch4	Ukończ Wieżę zegarową
+tr_ch5	Księżycowy bohater
+trd_ch5	Ukończ Księżycową szklarnię
+tr_golden1	Szczęśliwy chwyt
+trd_golden1	Złap Złoty Błysk
+tr_golden10	Gorączka złota
+trd_golden10	Złap 10 Złotych Błysków
+tr_flawless	Bez zadrapania
+trd_flawless	Pokonaj bossa bez trafienia
+tr_night10	Nocny marek
+trd_night10	Dotrzyj do pokoju 10 w Nocy koszmarów
+tr_rich	Góra cukierków
+trd_rich	Zdobądź łącznie 2000 cukierków
+tr_maxed	Pełna moc
+trd_maxed	Rozwiń moc na maksa w jednej grze
+rt_waves	Nawiedzenie
+rt_swarm	Rój
+rt_ritual	Rytuał
+rt_survive	Wytrzymaj
+rt_hunt	Łowy na błyski
+rt_poltergeist	Poltergeist
+rt_shrine	Ołtarz
+rw_shrine	Ofiara
+tw_fog	Mgła
+tw_flicker	Migająca latarka
+tw_storm	Burza
+tw_haunt	Niespokojni zmarli
+tw_cold	Lodowaty chłód
+tw_dark	Egipskie ciemności
+twd_fog	krótsza wiązka
+twd_flicker	latarka ciągle gaśnie
+twd_storm	błyskawice straszą każdego ducha
+twd_haunt	silniejsze duchy, +50% cukierków
+twd_cold	podłoga jest śliska
+twd_dark	ani jednej świeczki
+hRitual	Stań przy każdej świecy, aby ją zapalić
+hSurvive	Przetrwaj, aż wybije zegar
+hHunt	Złap złote błyski, zanim znikną
+hPolter	Świeć na drżące meble, by uwolnić duchy
+hShrine	Podejdź do ołtarza i wybierz ofiarę
+hSwarm	Nadlatuje rój — nie stój w miejscu
+obRitual	Zapalone świece: {a}/{b}
+obSurvive	Wytrzymaj: {s} s
+obHunt	Złapane błyski: {a}/{b}
+obPolter	Uwolnione duchy: {a}/{b}
+obShrine	Wybierz ofiarę przy ołtarzu
+ritualDone	Rytuał dopełniony
+dawn	Zegar wybija
+freed	Uwolniony!
+hushed	Uciszona!
+enraged	Wpada w gniew
+shrineTitle	Stary ołtarz
+of_power	Krew za moc
+ofd_power	Strać 1 serce, wybierz rzadką lub epicką moc
+of_heal	Ciepłe światło
+ofd_heal	Odnów wszystkie serca
+of_candy	Słodka danina
+ofd_candy	Weź stos cukierków
+of_luck	Szczęśliwe monety
+ofd_luck	+2 losowania w tej grze
+gh_mote	Pyłki
+ghd_mote	Malutkie duchy-ćmy, które zawsze latają rojem.
+gh_mimic	Mimik
+ghd_mimic	Udaje świecę. Świeć na każdą świecę!
+gh_wailer	Banshee
+ghd_wailer	Krzyczy pierścieniem dźwięku. Przejdź przez niego zrywem — albo oświetl ją, by ucichła.
+gh_drinker	Pożeracz światła
+ghd_drinker	Chmura ciemności. Przy nim latarka słabnie.
+ms_ritual	Ukończ rytuały: {n}
+ms_kinds	Rozpęknij {n} rodzajów duchów w jednej grze
+tr_allrooms	Wszystko widziałem
+trd_allrooms	Ukończ każdy rodzaj pokoju
+tr_book	Znawca duchów
+trd_book	Uzupełnij całą Księgę duchów
+rn0_0	Długi korytarz
+rn0_1	Jadalnia
+rn0_2	Biblioteka
+rn0_3	Pokój muzyczny
+rn0_4	Salonik
+rn0_5	Pokój dziecięcy
+rn1_0	Zakurzony stryszek
+rn1_1	Pokój kufrów
+rn1_2	Pod belkami
+rn1_3	Kącik krawiecki
+rn1_4	Stary pokój zabaw
+rn1_5	Gołębnik
+rn2_0	Piwnica z winem
+rn2_1	Sala grobowców
+rn2_2	Ociekający tunel
+rn2_3	Kostnica
+rn2_4	Zapomniana kaplica
+rn2_5	Komnata studni
+rn3_0	Strych zębatek
+rn3_1	Komnata dzwonów
+rn3_2	Kręte schody
+rn3_3	Warsztat zegarmistrza
+rn3_4	Sala wahadła
+rn3_5	Tarcza zegara
+rn4_0	Dom paproci
+rn4_1	Staw w blasku księżyca
+rn4_2	Rząd storczyków
+rn4_3	Szopa na sadzonki
+rn4_4	Ogród posągów
+rn4_5	Szklana kopuła

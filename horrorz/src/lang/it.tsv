@@ -1,0 +1,331 @@
+play	GIOCA
+nightmare	Notte da Incubo
+nightLocked	Incubo: completa il capitolo 1
+chapter	Capitolo {n}
+locked	Bloccato — completa il capitolo precedente
+best	Record: stanza {n}/10
+cleared	Completato!
+newCh	Nuovo! Mai giocato
+upgrades	Potenziamenti
+wardrobe	Guardaroba
+missions	Missioni
+trophies	Trofei
+ghostbook	Fantasmario
+gift	Regalo
+settings	Impostazioni
+sound	Suoni
+music	Musica
+shake	Tremolio schermo
+on	sì
+off	no
+language	Lingua
+resume	RIPRENDI
+home	Menu
+paused	Pausa
+levelUp	Livello superiore!
+pickPower	Scegli un potere
+reroll	Cambia ({n})
+adReroll	Cambia
+room	Stanza {n}
+roomOf	Stanza {n}/{m}
+roomClear	Stanza libera!
+chooseDoor	Scegli una porta — guarda cosa c’è dietro!
+bossAhead	Boss in arrivo!
+rest	Un attimo di calma: +1 cuore
+bossTitle	BOSS
+miniTitle	MINI-BOSS
+fainted	Sei svenuto!
+chClear	Capitolo completato!
+newRecord	Nuovo record!
+nearBoss	Ancora solo {n} fino al boss!
+nearEnd	Quasi! Mancano {n} stanza/e
+nearBest	Ancora {n} stanza/e per il record
+candyEarned	Caramelle guadagnate
+revive	Rianima
+double	Caramelle doppie
+again	GIOCA ANCORA
+next	PROSSIMO CAPITOLO
+pops	Fantasmi scoppiati
+bestCombo	Combo migliore
+level	Livello
+toUnlock	{a}/{b} per {name}
+canBuy	Puoi comprare qualcosa di nuovo!
+buy	Compra
+equip	Indossa
+equipped	Indossato
+use	Usa
+inUse	In uso
+max	MAX
+claim	Riscuoti
+claimed	Fatto
+day	Giorno {n}
+giftClaim	Apri il regalo
+giftDone	Torna domani per il prossimo regalo!
+giftNote	Hai saltato un giorno? Nessun problema — mantieni il tuo posto.
+missionsAll	Tutte e 3 fatte: +60 bonus
+missionsReady	Missioni da riscuotere: {n}
+missionsNew	Nuove missioni ogni giorno
+costumes	Costumi
+beams	Colori della luce
+unknown	???
+popped	Scoppiati: {n}
+trophyGet	Trofeo sbloccato
+tutMove	Muoviti: WASD / frecce — o trascina sullo schermo
+tutLight	Punta la torcia sui fantasmi!
+tutCandy	I fantasmi spaventati diventano caramelle!
+tutDash	Scatto: Spazio / clic — o il pulsante. Durante lo scatto sei intoccabile!
+dash	SCATTO
+boo	BUH!
+close	Per un pelo!
+escaped	È scappato…
+rw_card	Potere
+rw_candy	Caramelle
+rw_heart	Cuore
+rw_chest	Forziere
+rw_mystery	Mistero
+rw_boss	Boss
+gotCandy	+{n} caramelle
+gotHeart	+1 cuore
+jackpot	JACKPOT!
+goldenSpot	Un Bagliore Dorato! Prendilo!
+revived	Lo Spirito Guardiano ti salva!
+loading	Caricamento…
+lv	Liv {n}
+rar0	Comune
+rar1	Raro
+rar2	Epico
+newSkin	Nuovo costume!
+unlockCh	Nuovo capitolo sbloccato!
+nightBest	Record: stanza {n}
+reachedNight	Raggiunta la stanza {n}
+viaTrophy	Trofeo: {t}
+viaGift	Regalo del giorno, giorno 7
+bosses	Boss sconfitti: {n}
+noAd	Nessun video disponibile al momento
+bonusPct	incl. +{n}% di bonus
+ch0	Sala dei Sussurri
+ch1	La Soffitta
+ch2	Cantina della Cripta
+ch3	Torre dell’Orologio
+ch4	Serra della Luna
+cw0	Spaventoso!
+cw1	Da brividi!
+cw2	Spettacolare!
+cw3	Notte di terrore!
+cw4	LEGGENDARIO!
+ab_wide	Lente Larga
+abd_wide	+18% larghezza del fascio
+ab_long	Fascio Lungo
+abd_long	+15% portata del fascio
+ab_bright	Lampadina Potente
+abd_bright	+18% potenza della luce (potenzia tutto)
+ab_boots	Scarpe Veloci
+abd_boots	+9% velocità
+ab_magnet	Calamita Dolce
+abd_magnet	+45% raggio di raccolta
+ab_heart	Cuore Extra
+abd_heart	+1 cuore massimo e cura 1
+ab_dashcd	Piedi Rapidi
+abd_dashcd	Lo scatto si ricarica il 18% più in fretta
+ab_jump	Spavento
+abd_jump	I fantasmi perdono il 12% quando vengono illuminati la prima volta
+ab_strobe	Lampo Stroboscopico
+abd_strobe	Un lampo che spaventa tutto quello che è vicino
+ab_aura	Lucina Notturna
+abd_aura	Un bagliore intorno a te che spaventa i fantasmi
+ab_fire	Lucciole
+abd_fire	+1 lucciola che ti gira intorno
+ab_chill	Luce Gelida
+abd_chill	I fantasmi illuminati sono più lenti del 15%
+ab_bomb	Esplosione Dolce
+abd_bomb	I fantasmi scoppiati spaventano i vicini
+ab_candle	Candela Amica
+abd_candle	Lasci candele spaventose mentre cammini
+ab_salt	Scatto di Sale
+abd_salt	Lo scatto lascia una scia di sale
+ab_sugar	Carica di Zucchero
+abd_sugar	Con combo 5+: più potenza e velocità
+ab_lucky	Calzini Fortunati
+abd_lucky	+15% caramelle, più Bagliori Dorati
+ab_twin	Fascio Posteriore
+abd_twin	Un secondo fascio illumina dietro di te
+ab_prism	Prisma
+abd_prism	Il tuo fascio si divide in tre
+ab_angel	Spirito Guardiano
+abd_angel	Una volta per partita: ti salva dallo svenimento
+ab_snack	Sacchetto di Caramelle
+abd_snack	+25 caramelle e cura 1
+gh_wisp	Fuoco Fatuo
+ghd_wisp	Fluttua verso di te. Timido, ma curioso.
+gh_sheet	Lenzuolo
+ghd_sheet	Lento e testardo. Serve tanta luce.
+gh_flitter	Svolazzino
+ghd_flitter	Zigzaga veloce. Difficile da tenere nel fascio.
+gh_peeker	Cucù
+ghd_peeker	Invisibile al buio. Si teletrasporta vicino.
+gh_moaner	Lamentoso
+ghd_moaner	Sta a distanza e sputa melma. La luce la scioglie!
+gh_pumpkin	Zucca Fantasma
+ghd_pumpkin	Si divide in due fuochi fatui quando scoppia.
+gh_shade	Ombra
+ghd_shade	Prende la mira e poi ti carica dritto addosso.
+gh_golden	Bagliore Dorato
+ghd_golden	Raro e veloce. Prendilo per un jackpot di caramelle!
+sh_hearts	Cuore Extra
+shd_hearts	+1 cuore all’inizio di ogni partita
+sh_power	Lampadina Più Forte
+shd_power	+12% potenza della luce
+sh_range	Lente Lunga
+shd_range	+8% portata del fascio
+sh_speed	Scarpe da Ginnastica
+shd_speed	+6% velocità
+sh_bonus	Golosone
+shd_bonus	+10% caramelle da ogni partita
+sh_magnet	Calamita per Caramelle
+shd_magnet	+25% raggio di raccolta
+sh_reroll	Moneta Fortunata
+shd_reroll	+1 cambio gratis per partita
+sk_lumi	Impermeabile
+sk_pumpkin	Zucchetta
+sk_witch	Streghetta
+sk_dino	Felpa Dino
+sk_astro	Astronauta
+sk_vamp	Mantello Notturno
+sk_skelly	Tutina di Ossa
+sk_golden	Eroe Dorato
+bm_warm	Calda
+bm_mint	Menta
+bm_pink	Gomma da masticare
+bm_violet	Viola
+bm_ice	Ghiaccio
+bm_gold	Oro
+ms_pop	Fai scoppiare {n} fantasmi
+ms_room	Raggiungi la stanza {n} in una partita
+ms_combo	Fai una combo da {n}
+ms_golden	Prendi un Bagliore Dorato
+ms_boss	Sconfiggi un boss o mini-boss
+ms_dash	Scatta {n} volte
+ms_cards	Scegli {n} poteri rari o epici
+ms_candy	Raccogli {n} caramelle
+ms_clean	Completa {n} stanze senza essere colpito
+tr_first	Primo Spavento
+trd_first	Fai scoppiare il tuo primo fantasma
+tr_pop100	Collezionista di Caramelle
+trd_pop100	Fai scoppiare 100 fantasmi
+tr_pop1000	Leggenda della Luce
+trd_pop1000	Fai scoppiare 1.000 fantasmi
+tr_combo20	Re delle Combo
+trd_combo20	Fai una combo da 20
+tr_combo50	Maestro delle Combo
+trd_combo50	Fai una combo da 50
+tr_ch1	Guardiano della Sala
+trd_ch1	Completa la Sala dei Sussurri
+tr_ch2	Asso della Soffitta
+trd_ch2	Completa La Soffitta
+tr_ch3	Campione della Cripta
+trd_ch3	Completa la Cantina della Cripta
+tr_ch4	Custode del Tempo
+trd_ch4	Completa la Torre dell’Orologio
+tr_ch5	Eroe della Luna
+trd_ch5	Completa la Serra della Luna
+tr_golden1	Colpo di Fortuna
+trd_golden1	Prendi un Bagliore Dorato
+tr_golden10	Febbre dell’Oro
+trd_golden10	Prendi 10 Bagliori Dorati
+tr_flawless	Senza un Graffio
+trd_flawless	Sconfiggi un boss senza essere colpito
+tr_night10	Nottambulo
+trd_night10	Raggiungi la stanza 10 nella Notte da Incubo
+tr_rich	Montagna di Caramelle
+trd_rich	Guadagna 2.000 caramelle in totale
+tr_maxed	Carica Completa
+trd_maxed	Porta un potere al massimo in una partita
+rt_waves	Infestazione
+rt_swarm	Sciame
+rt_ritual	Rituale
+rt_survive	Resisti
+rt_hunt	Caccia ai Bagliori
+rt_poltergeist	Poltergeist
+rt_shrine	Altare
+rw_shrine	Offerta
+tw_fog	Nebbia
+tw_flicker	Lampada tremolante
+tw_storm	Temporale
+tw_haunt	Morti inquieti
+tw_cold	Gelo
+tw_dark	Buio pesto
+twd_fog	fascio più corto
+twd_flicker	la lampada continua a spegnersi
+twd_storm	i fulmini spaventano ogni fantasma
+twd_haunt	fantasmi più forti, +50% caramelle
+twd_cold	il pavimento è scivoloso
+twd_dark	nessuna candela
+hRitual	Resta vicino a ogni candela per accenderla
+hSurvive	Sopravvivi finché l’orologio non suona
+hHunt	Prendi i bagliori dorati prima che svaniscano
+hPolter	Illumina i mobili che tremano per liberare gli spiriti
+hShrine	Vai all’altare e scegli un’offerta
+hSwarm	Arriva uno sciame — continua a muoverti
+obRitual	Candele accese: {a}/{b}
+obSurvive	Resisti: {s}s
+obHunt	Bagliori presi: {a}/{b}
+obPolter	Spiriti liberati: {a}/{b}
+obShrine	Scegli un’offerta all’altare
+ritualDone	Il rituale è compiuto
+dawn	L’orologio suona
+freed	Liberato!
+hushed	Zittita!
+enraged	Si infuria
+shrineTitle	Un vecchio altare
+of_power	Sangue per potere
+ofd_power	Perdi 1 cuore, scegli tra poteri rari ed epici
+of_heal	Luce calda
+ofd_heal	Recupera tutti i cuori
+of_candy	Tributo dolce
+ofd_candy	Prendi un mucchio di caramelle
+of_luck	Monete fortunate
+ofd_luck	+2 cambi per questa partita
+gh_mote	Pulviscoli
+ghd_mote	Minuscoli spiriti-falena che arrivano sempre a sciami.
+gh_mimic	Mimo
+ghd_mimic	Finge di essere una candela. Illumina ogni candela!
+gh_wailer	Banshee
+ghd_wailer	Urla un anello di suono. Attraversalo con lo scatto — o illuminala per zittirla.
+gh_drinker	Mangialuce
+ghd_drinker	Una nube di oscurità. La tua lampada si indebolisce vicino a lei.
+ms_ritual	Completa {n} rituale/i
+ms_kinds	Fai scoppiare {n} tipi di fantasma in una partita
+tr_allrooms	Visto Tutto
+trd_allrooms	Completa ogni tipo di stanza
+tr_book	Esperto di Fantasmi
+trd_book	Completa tutto il Fantasmario
+rn0_0	Il Lungo Corridoio
+rn0_1	Sala da Pranzo
+rn0_2	Biblioteca
+rn0_3	Sala della Musica
+rn0_4	Salotto
+rn0_5	La Cameretta
+rn1_0	Soffitta Polverosa
+rn1_1	Stanza dei Bauli
+rn1_2	Sotto le Travi
+rn1_3	L’Angolo del Cucito
+rn1_4	Vecchia Stanza dei Giochi
+rn1_5	Piccionaia
+rn2_0	Cantina dei Vini
+rn2_1	Sala delle Tombe
+rn2_2	Tunnel Gocciolante
+rn2_3	L’Ossario
+rn2_4	Cappella Dimenticata
+rn2_5	Camera del Pozzo
+rn3_0	Soffitta degli Ingranaggi
+rn3_1	Camera delle Campane
+rn3_2	Scala a Chiocciola
+rn3_3	Bottega dell’Orologiaio
+rn3_4	Sala del Pendolo
+rn3_5	Il Quadrante
+rn4_0	Casa delle Felci
+rn4_1	Stagno al Chiaro di Luna
+rn4_2	Fila di Orchidee
+rn4_3	Capanno dei Vasi
+rn4_4	Giardino delle Statue
+rn4_5	La Cupola di Vetro

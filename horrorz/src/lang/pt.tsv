@@ -1,0 +1,331 @@
+play	JOGAR
+nightmare	Noite de Pesadelo
+nightLocked	Pesadelo: termine o capítulo 1
+chapter	Capítulo {n}
+locked	Bloqueado — termine o capítulo anterior
+best	Recorde: sala {n}/10
+cleared	Concluído!
+newCh	Novo! Nunca jogado
+upgrades	Melhorias
+wardrobe	Guarda-roupa
+missions	Missões
+trophies	Troféus
+ghostbook	Fantasmário
+gift	Presente
+settings	Configurações
+sound	Som
+music	Música
+shake	Tremor de tela
+on	ligado
+off	desligado
+language	Idioma
+resume	CONTINUAR
+home	Início
+paused	Pausado
+levelUp	Subiu de nível!
+pickPower	Escolha um poder
+reroll	Trocar ({n})
+adReroll	Trocar
+room	Sala {n}
+roomOf	Sala {n}/{m}
+roomClear	Sala limpa!
+chooseDoor	Escolha uma porta — veja o que há atrás!
+bossAhead	Chefe à frente!
+rest	Um momento de calma: +1 coração
+bossTitle	CHEFE
+miniTitle	MINICHEFE
+fainted	Você desmaiou!
+chClear	Capítulo concluído!
+newRecord	Novo recorde!
+nearBoss	Só faltam {n} até o chefe!
+nearEnd	Quase lá! Faltam {n} sala(s)
+nearBest	Mais {n} sala(s) para bater seu recorde
+candyEarned	Doces ganhos
+revive	Reviver
+double	Doces em dobro
+again	JOGAR DE NOVO
+next	PRÓXIMO CAPÍTULO
+pops	Fantasmas estourados
+bestCombo	Melhor combo
+level	Nível
+toUnlock	{a}/{b} para {name}
+canBuy	Você pode comprar algo novo!
+buy	Comprar
+equip	Vestir
+equipped	Vestindo
+use	Usar
+inUse	Em uso
+max	MÁX
+claim	Pegar
+claimed	Feito
+day	Dia {n}
+giftClaim	Abrir presente
+giftDone	Volte amanhã para o próximo presente!
+giftNote	Perdeu um dia? Sem problema — você mantém seu lugar.
+missionsAll	As 3 concluídas: +60 bônus
+missionsReady	Missões prontas para pegar: {n}
+missionsNew	Novas missões todo dia
+costumes	Fantasias
+beams	Cores de luz
+unknown	???
+popped	Estourados: {n}
+trophyGet	Troféu desbloqueado
+tutMove	Mover: WASD / setas — ou arraste na tela
+tutLight	Aponte a lanterna para os fantasmas!
+tutCandy	Fantasmas assustados viram doces!
+tutDash	Impulso: Espaço / clique — ou o botão. Durante o impulso você não pode ser atingido!
+dash	IMPULSO
+boo	BU!
+close	Por pouco!
+escaped	Escapou…
+rw_card	Poder
+rw_candy	Doces
+rw_heart	Coração
+rw_chest	Baú
+rw_mystery	Mistério
+rw_boss	Chefe
+gotCandy	+{n} doces
+gotHeart	+1 coração
+jackpot	JACKPOT!
+goldenSpot	Um Brilho Dourado! Pegue!
+revived	O Espírito Guardião te salva!
+loading	Carregando…
+lv	Nv {n}
+rar0	Comum
+rar1	Raro
+rar2	Épico
+newSkin	Nova fantasia!
+unlockCh	Novo capítulo desbloqueado!
+nightBest	Recorde: sala {n}
+reachedNight	Chegou à sala {n}
+viaTrophy	Troféu: {t}
+viaGift	Presente diário, dia 7
+bosses	Chefes derrotados: {n}
+noAd	Nenhum vídeo disponível agora
+bonusPct	incl. +{n}% de bônus
+ch0	Salão dos Sussurros
+ch1	O Sótão
+ch2	Porão da Cripta
+ch3	Torre do Relógio
+ch4	Estufa da Lua
+cw0	Assustador!
+cw1	Arrepiante!
+cw2	Espantástico!
+cw3	Noite de Terror!
+cw4	LENDÁRIO!
+ab_wide	Lente Larga
+abd_wide	+18% de largura do feixe
+ab_long	Feixe Longo
+abd_long	+15% de alcance do feixe
+ab_bright	Lâmpada Forte
+abd_bright	+18% de força da luz (melhora todos os poderes)
+ab_boots	Tênis Velozes
+abd_boots	+9% de velocidade
+ab_magnet	Ímã Doce
+abd_magnet	+45% de alcance de coleta
+ab_heart	Coração Extra
+abd_heart	+1 coração máximo e cura 1
+ab_dashcd	Pés Ligeiros
+abd_dashcd	O impulso recarrega 18% mais rápido
+ab_jump	Susto
+abd_jump	Fantasmas perdem 12% ao serem iluminados pela primeira vez
+ab_strobe	Flash Estroboscópico
+abd_strobe	Um flash que assusta tudo por perto
+ab_aura	Luz Noturna
+abd_aura	Um brilho ao seu redor que assusta fantasmas
+ab_fire	Vaga-lumes
+abd_fire	+1 vaga-lume voando ao seu redor
+ab_chill	Luz Gélida
+abd_chill	Fantasmas iluminados ficam 15% mais lentos
+ab_bomb	Explosão Doce
+abd_bomb	Fantasmas estourados assustam os vizinhos
+ab_candle	Vela Amiga
+abd_candle	Deixa velas assustadoras pelo caminho
+ab_salt	Impulso de Sal
+abd_salt	O impulso deixa um rastro de sal
+ab_sugar	Euforia de Açúcar
+abd_sugar	Com combo 5+: mais poder e velocidade
+ab_lucky	Meias da Sorte
+abd_lucky	+15% de doces, mais Brilhos Dourados
+ab_twin	Feixe Traseiro
+abd_twin	Um segundo feixe brilha atrás de você
+ab_prism	Prisma
+abd_prism	Seu feixe se divide em três
+ab_angel	Espírito Guardião
+abd_angel	Uma vez por partida: impede que você desmaie
+ab_snack	Saquinho de Doces
+abd_snack	+25 doces e cura 1
+gh_wisp	Fogo-fátuo
+ghd_wisp	Flutua até você. Tímido, mas curioso.
+gh_sheet	Lençol
+ghd_sheet	Lento e teimoso. Precisa de muita luz.
+gh_flitter	Esvoaçante
+ghd_flitter	Ziguezagueia rápido. Difícil de manter no feixe.
+gh_peeker	Esconde-esconde
+ghd_peeker	Invisível no escuro. Se teletransporta para perto.
+gh_moaner	Gemedor
+ghd_moaner	Fica longe e cospe gosma. A luz derrete a gosma!
+gh_pumpkin	Abóbora Fantasma
+ghd_pumpkin	Divide-se em dois fogos-fátuos ao estourar.
+gh_shade	Sombra
+ghd_shade	Mira e depois avança direto em você.
+gh_golden	Brilho Dourado
+ghd_golden	Raro e rápido. Pegue para um jackpot de doces!
+sh_hearts	Coração Extra
+shd_hearts	+1 coração no início de cada partida
+sh_power	Lâmpada Mais Forte
+shd_power	+12% de força da luz
+sh_range	Lente Longa
+shd_range	+8% de alcance do feixe
+sh_speed	Tênis
+shd_speed	+6% de velocidade
+sh_bonus	Formiguinha
+shd_bonus	+10% de doces em cada partida
+sh_magnet	Ímã de Doces
+shd_magnet	+25% de alcance de coleta
+sh_reroll	Moeda da Sorte
+shd_reroll	+1 troca grátis por partida
+sk_lumi	Capa de Chuva
+sk_pumpkin	Abóbora
+sk_witch	Bruxinha
+sk_dino	Moletom de Dino
+sk_astro	Astronauta
+sk_vamp	Capa Noturna
+sk_skelly	Pijama de Ossos
+sk_golden	Herói Dourado
+bm_warm	Quente
+bm_mint	Menta
+bm_pink	Chiclete
+bm_violet	Violeta
+bm_ice	Gelada
+bm_gold	Ouro
+ms_pop	Estoure {n} fantasmas
+ms_room	Chegue à sala {n} em uma partida
+ms_combo	Faça um combo de {n}
+ms_golden	Pegue um Brilho Dourado
+ms_boss	Derrote um chefe ou minichefe
+ms_dash	Use o impulso {n} vezes
+ms_cards	Escolha {n} poderes raros ou épicos
+ms_candy	Colete {n} doces
+ms_clean	Limpe {n} salas sem ser atingido
+tr_first	Primeiro Susto
+trd_first	Estoure seu primeiro fantasma
+tr_pop100	Colecionador de Doces
+trd_pop100	Estoure 100 fantasmas
+tr_pop1000	Lenda da Luz
+trd_pop1000	Estoure 1.000 fantasmas
+tr_combo20	Garoto Combo
+trd_combo20	Faça um combo de 20
+tr_combo50	Mestre do Combo
+trd_combo50	Faça um combo de 50
+tr_ch1	Guardião do Salão
+trd_ch1	Termine o Salão dos Sussurros
+tr_ch2	Ás do Sótão
+trd_ch2	Termine O Sótão
+tr_ch3	Campeão da Cripta
+trd_ch3	Termine o Porão da Cripta
+tr_ch4	Guardião do Tempo
+trd_ch4	Termine a Torre do Relógio
+tr_ch5	Herói da Lua
+trd_ch5	Termine a Estufa da Lua
+tr_golden1	Pegada de Sorte
+trd_golden1	Pegue um Brilho Dourado
+tr_golden10	Febre do Ouro
+trd_golden10	Pegue 10 Brilhos Dourados
+tr_flawless	Sem um Arranhão
+trd_flawless	Derrote um chefe sem ser atingido
+tr_night10	Coruja Noturna
+trd_night10	Chegue à sala 10 na Noite de Pesadelo
+tr_rich	Montanha de Doces
+trd_rich	Ganhe 2.000 doces no total
+tr_maxed	Carga Total
+trd_maxed	Maximize um poder em uma partida
+rt_waves	Assombração
+rt_swarm	Enxame
+rt_ritual	Ritual
+rt_survive	Resistir
+rt_hunt	Caça aos Brilhos
+rt_poltergeist	Poltergeist
+rt_shrine	Altar
+rw_shrine	Oferenda
+tw_fog	Névoa
+tw_flicker	Lanterna piscando
+tw_storm	Tempestade
+tw_haunt	Mortos inquietos
+tw_cold	Frio congelante
+tw_dark	Escuridão total
+twd_fog	feixe mais curto
+twd_flicker	sua lanterna fica apagando
+twd_storm	os raios assustam todos os fantasmas
+twd_haunt	fantasmas mais fortes, +50% de doces
+twd_cold	o chão está escorregadio
+twd_dark	nenhuma vela
+hRitual	Fique perto de cada vela para acendê-la
+hSurvive	Sobreviva até o relógio bater
+hHunt	Pegue os brilhos dourados antes que sumam
+hPolter	Ilumine os móveis que tremem para libertar os espíritos
+hShrine	Vá até o altar e escolha uma oferenda
+hSwarm	Um enxame está chegando — não pare de se mexer
+obRitual	Velas acesas: {a}/{b}
+obSurvive	Resista: {s}s
+obHunt	Brilhos pegos: {a}/{b}
+obPolter	Espíritos libertados: {a}/{b}
+obShrine	Escolha uma oferenda no altar
+ritualDone	O ritual está completo
+dawn	O relógio bate
+freed	Libertado!
+hushed	Silenciado!
+enraged	Ele fica furioso
+shrineTitle	Um velho altar
+of_power	Sangue por poder
+ofd_power	Perca 1 coração, escolha entre poderes raros e épicos
+of_heal	Luz quente
+ofd_heal	Recupere todos os seus corações
+of_candy	Tributo doce
+ofd_candy	Leve um monte de doces
+of_luck	Moedas da sorte
+ofd_luck	+2 trocas nesta partida
+gh_mote	Poeirinhas
+ghd_mote	Pequenos espíritos-mariposa que sempre vêm em enxames.
+gh_mimic	Imitador
+ghd_mimic	Finge ser uma vela. Ilumine todas as velas!
+gh_wailer	Banshee
+ghd_wailer	Grita um anel de som. Atravesse com impulso — ou ilumine para silenciá-la.
+gh_drinker	Come-Luz
+ghd_drinker	Uma nuvem de escuridão. Sua lanterna enfraquece perto dela.
+ms_ritual	Complete {n} ritual(is)
+ms_kinds	Estoure {n} tipos de fantasma em uma partida
+tr_allrooms	Já Vi de Tudo
+trd_allrooms	Termine todos os tipos de sala
+tr_book	Especialista em Fantasmas
+trd_book	Complete todo o Fantasmário
+rn0_0	O Longo Corredor
+rn0_1	Sala de Jantar
+rn0_2	Biblioteca
+rn0_3	Sala de Música
+rn0_4	Sala de Estar
+rn0_5	O Quarto das Crianças
+rn1_0	Sótão Empoeirado
+rn1_1	Quarto dos Baús
+rn1_2	Sob as Vigas
+rn1_3	O Canto da Costura
+rn1_4	Velha Sala de Brinquedos
+rn1_5	Pombal
+rn2_0	Adega
+rn2_1	Salão das Tumbas
+rn2_2	Túnel Gotejante
+rn2_3	O Ossuário
+rn2_4	Capela Esquecida
+rn2_5	Câmara do Poço
+rn3_0	Sótão das Engrenagens
+rn3_1	Câmara dos Sinos
+rn3_2	Escada em Caracol
+rn3_3	Oficina do Relojoeiro
+rn3_4	Salão do Pêndulo
+rn3_5	O Mostrador
+rn4_0	Casa das Samambaias
+rn4_1	Lago ao Luar
+rn4_2	Fileira de Orquídeas
+rn4_3	Galpão de Mudas
+rn4_4	Jardim de Estátuas
+rn4_5	A Cúpula de Vidro
