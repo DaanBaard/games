@@ -1,0 +1,197 @@
+<!doctype html>
+<!-- Privacyverklaring Daan's Games v1.0 -->
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Privacy · Daan's Games</title>
+<meta name="description" content="Privacyverklaring voor alle games op Daan's Games.">
+<style>
+  :root {
+    --bg: #12100e; --panel: #1c1916; --line: #2e2a25;
+    --ink: #f3ece2; --muted: #a39a8e; --accent: #ffb636; --accent-ink: #1a1305;
+    --radius: 14px;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: var(--bg); color: var(--ink); }
+  body {
+    font-family: "Bricolage Grotesque", system-ui, -apple-system, "Segoe UI", sans-serif;
+    line-height: 1.6;
+    background-image: radial-gradient(circle at 1px 1px, #ffffff0d 1px, transparent 0);
+    background-size: 22px 22px;
+  }
+  .wrap { max-width: 760px; margin: 0 auto; padding: 0 16px; }
+  header { padding: 48px 0 20px; }
+  .back { color: var(--muted); text-decoration: none; font-size: 14px; }
+  .back:hover { color: var(--accent); }
+  .eyebrow {
+    font-family: ui-monospace, "JetBrains Mono", monospace; font-size: 12px; letter-spacing: .14em;
+    text-transform: uppercase; color: var(--accent); margin-top: 28px;
+  }
+  h1 { font-size: clamp(36px, 7vw, 60px); font-weight: 800; line-height: 1; margin: 10px 0 12px; letter-spacing: -.02em; }
+  h2 { font-size: 22px; margin: 36px 0 8px; }
+  p, li { color: #ddd5ca; }
+  ul { padding-left: 20px; }
+  a { color: var(--accent); }
+  .meta { font-family: ui-monospace, "JetBrains Mono", monospace; font-size: 12px; color: var(--muted); }
+  .summary {
+    background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius);
+    padding: 16px 20px; margin: 24px 0 8px;
+  }
+  .summary p { margin: 0; color: var(--ink); }
+  .langs { display: flex; gap: 8px; margin-top: 18px; }
+  .langs button {
+    font: inherit; font-size: 14px; font-weight: 700; cursor: pointer;
+    background: var(--panel); color: var(--muted); border: 1px solid var(--line);
+    border-radius: 999px; padding: 6px 14px;
+  }
+  .langs button[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+  .table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 15px; }
+  .table th, .table td { text-align: left; vertical-align: top; padding: 10px 8px; border-bottom: 1px solid var(--line); }
+  .table th { color: var(--muted); font-weight: 700; font-size: 13px; }
+  .table td:first-child { white-space: nowrap; font-weight: 700; color: var(--ink); }
+  @media (max-width: 560px) {
+    .table, .table tbody, .table tr, .table td { display: block; width: 100%; }
+    .table thead { display: none; }
+    .table tr { border-bottom: 1px solid var(--line); padding: 8px 0; }
+    .table td { border: none; padding: 2px 0; white-space: normal; }
+  }
+  footer { border-top: 1px solid var(--line); margin-top: 48px; padding: 20px 0 40px; color: #776f64; font-size: 13px; }
+  [hidden] { display: none !important; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <a class="back" href="./">← Daan's Games</a>
+    <div class="langs" role="group" aria-label="Taal / Language">
+      <button type="button" data-lang="nl" aria-pressed="true">Nederlands</button>
+      <button type="button" data-lang="en" aria-pressed="false">English</button>
+    </div>
+  </header>
+
+  <!-- ===================== NEDERLANDS ===================== -->
+  <main id="nl" lang="nl">
+    <div class="eyebrow">Privacyverklaring</div>
+    <h1>Privacy</h1>
+    <p class="meta">Versie 1.0 · bijgewerkt op 17 oktober 2026</p>
+
+    <div class="summary">
+      <p><strong>Kort gezegd:</strong> je hebt geen account nodig, ik vraag geen persoonsgegevens en ik plaats zelf geen trackingcookies. Je voortgang wordt alleen in je eigen browser bewaard. Wel laden de site en sommige games onderdelen van externe diensten, die daarbij je IP-adres te zien krijgen.</p>
+    </div>
+
+    <p>Deze verklaring geldt voor de site <a href="https://daanbaard.github.io/games/">daanbaard.github.io/games</a> en alle games die daarop staan. De site en games zijn gemaakt door Daan (hierna: “ik”).</p>
+
+    <h2>Wat ik niet verzamel</h2>
+    <ul>
+      <li>Geen accounts, geen inlog, geen formulieren.</li>
+      <li>Geen naam, e-mailadres, leeftijd of andere persoonsgegevens.</li>
+      <li>Geen eigen analytics of trackingcookies.</li>
+    </ul>
+
+    <h2>Wat in je eigen browser wordt bewaard</h2>
+    <p>De games bewaren je voortgang en instellingen (zoals behaalde levels, munten, upgrades, taal en geluid aan/uit) in de lokale opslag van je browser (<em>localStorage</em>). Die gegevens blijven op je eigen apparaat en worden niet naar mij gestuurd. De overzichtspagina bewaart daar ook één markering dat je al bent meegeteld door de bezoekersteller.</p>
+    <p>Je wist deze gegevens door de site- of browsergegevens van <em>daanbaard.github.io</em> te verwijderen. Je voortgang in de games is dan ook weg.</p>
+
+    <h2>Externe diensten</h2>
+    <p>Om de site en games te laten werken, maakt je browser verbinding met de diensten hieronder. Daarbij ontvangen zij in ieder geval je IP-adres en technische gegevens zoals je browsertype. Wat zij daarmee doen, staat in hun eigen privacyverklaring.</p>
+    <table class="table">
+      <thead><tr><th>Dienst</th><th>Waarvoor</th><th>Meer informatie</th></tr></thead>
+      <tbody>
+        <tr><td>GitHub Pages</td><td>Hosting van de site en games. GitHub kan bezoeken loggen, bijvoorbeeld voor beveiliging.</td><td><a href="https://docs.github.com/site-policy/privacy-policies/github-general-privacy-statement" rel="noopener">GitHub privacyverklaring</a></td></tr>
+        <tr><td>Poki</td><td>Sommige games laden de Poki-SDK, omdat ze ook op Poki.com worden uitgebracht. Op deze site worden geen advertenties getoond.</td><td><a href="https://poki.com/en/c/privacy-statement" rel="noopener">Poki privacyverklaring</a></td></tr>
+        <tr><td>Google Fonts</td><td>Lettertypen op de overzichtspagina en in sommige games.</td><td><a href="https://policies.google.com/privacy" rel="noopener">Google privacybeleid</a></td></tr>
+        <tr><td>Abacus</td><td>De bezoekersteller op de overzichtspagina: telt elke browser één keer. Er wordt alleen een getal opgehoogd, zonder gegevens over jou.</td><td><a href="https://abacus.jasoncameron.dev" rel="noopener">abacus.jasoncameron.dev</a></td></tr>
+      </tbody>
+    </table>
+
+    <h2>Games spelen op Poki.com</h2>
+    <p>Speel je een van mijn games op <a href="https://poki.com" rel="noopener">Poki.com</a>, dan regelt Poki de advertenties, statistieken en eventuele cookies. Daarvoor geldt de privacyverklaring van Poki. Ik krijg van Poki alleen samengevoegde statistieken (zoals speeltijd en aantal spelers), geen gegevens over individuele spelers.</p>
+
+    <h2>Kinderen</h2>
+    <p>De games zijn geschikt voor alle leeftijden. Omdat ik zelf geen persoonsgegevens verzamel, worden er via mij ook geen gegevens van kinderen verwerkt.</p>
+
+    <h2>Je rechten</h2>
+    <p>Omdat ik geen persoonsgegevens over je opsla, is er bij mij niets om in te zien, aan te passen of te verwijderen. Voor gegevens bij de externe diensten kun je terecht bij die diensten zelf. Je kunt altijd een klacht indienen bij de <a href="https://autoriteitpersoonsgegevens.nl" rel="noopener">Autoriteit Persoonsgegevens</a>.</p>
+
+    <h2>Wijzigingen</h2>
+    <p>Verandert er iets aan de site of games waardoor deze verklaring niet meer klopt, dan pas ik haar aan en hoog ik het versienummer bovenaan op.</p>
+
+    <h2>Contact</h2>
+    <p>Vragen over deze verklaring? Stel ze via <a href="https://github.com/DaanBaard/games/issues" rel="noopener">GitHub</a>.</p>
+  </main>
+
+  <!-- ===================== ENGLISH ===================== -->
+  <main id="en" lang="en" hidden>
+    <div class="eyebrow">Privacy policy</div>
+    <h1>Privacy</h1>
+    <p class="meta">Version 1.0 · last updated 17 October 2026</p>
+
+    <div class="summary">
+      <p><strong>In short:</strong> you don't need an account, I don't ask for personal data and I don't set any tracking cookies myself. Your progress is stored only in your own browser. The site and some games do load parts from third-party services, which see your IP address when they do.</p>
+    </div>
+
+    <p>This policy applies to the website <a href="https://daanbaard.github.io/games/">daanbaard.github.io/games</a> and all games published on it. The site and games are made by Daan (“I”, “me”).</p>
+
+    <h2>What I don't collect</h2>
+    <ul>
+      <li>No accounts, no login, no forms.</li>
+      <li>No name, email address, age or other personal data.</li>
+      <li>No analytics or tracking cookies of my own.</li>
+    </ul>
+
+    <h2>What is stored in your browser</h2>
+    <p>The games save your progress and settings (such as completed levels, coins, upgrades, language and sound on/off) in your browser's local storage (<em>localStorage</em>). This data stays on your own device and is never sent to me. The home page also stores one flag there to remember that the visitor counter has already counted you.</p>
+    <p>You can delete this data by clearing the site or browser data for <em>daanbaard.github.io</em>. This also deletes your game progress.</p>
+
+    <h2>Third-party services</h2>
+    <p>To make the site and games work, your browser connects to the services below. They receive at least your IP address and technical data such as your browser type. What they do with it is described in their own privacy policies.</p>
+    <table class="table">
+      <thead><tr><th>Service</th><th>Purpose</th><th>More information</th></tr></thead>
+      <tbody>
+        <tr><td>GitHub Pages</td><td>Hosting of the site and games. GitHub may log visits, for example for security.</td><td><a href="https://docs.github.com/site-policy/privacy-policies/github-general-privacy-statement" rel="noopener">GitHub privacy statement</a></td></tr>
+        <tr><td>Poki</td><td>Some games load the Poki SDK because they are also released on Poki.com. No ads are shown on this site.</td><td><a href="https://poki.com/en/c/privacy-statement" rel="noopener">Poki privacy statement</a></td></tr>
+        <tr><td>Google Fonts</td><td>Typefaces on the home page and in some games.</td><td><a href="https://policies.google.com/privacy" rel="noopener">Google privacy policy</a></td></tr>
+        <tr><td>Abacus</td><td>The visitor counter on the home page: counts each browser once. Only a number is increased, with no data about you.</td><td><a href="https://abacus.jasoncameron.dev" rel="noopener">abacus.jasoncameron.dev</a></td></tr>
+      </tbody>
+    </table>
+
+    <h2>Playing on Poki.com</h2>
+    <p>When you play one of my games on <a href="https://poki.com" rel="noopener">Poki.com</a>, Poki handles ads, statistics and any cookies, and Poki's privacy statement applies. I only receive aggregated statistics from Poki (such as playtime and number of players), never data about individual players.</p>
+
+    <h2>Children</h2>
+    <p>The games are suitable for all ages. Because I don't collect any personal data myself, no data about children is processed by me.</p>
+
+    <h2>Your rights</h2>
+    <p>Because I don't store any personal data about you, there is nothing for me to show, correct or delete. For data held by the third-party services, please contact those services directly. You can always file a complaint with your local data protection authority (in the Netherlands: the <a href="https://autoriteitpersoonsgegevens.nl" rel="noopener">Autoriteit Persoonsgegevens</a>).</p>
+
+    <h2>Changes</h2>
+    <p>If the site or games change in a way that makes this policy inaccurate, I will update it and raise the version number at the top.</p>
+
+    <h2>Contact</h2>
+    <p>Questions about this policy? Ask them via <a href="https://github.com/DaanBaard/games/issues" rel="noopener">GitHub</a>.</p>
+  </main>
+
+  <footer>Daan's Games · privacy v1.0</footer>
+</div>
+<script>
+  (function () {
+    const btns = document.querySelectorAll(".langs button");
+    function set(l) {
+      document.getElementById("nl").hidden = l !== "nl";
+      document.getElementById("en").hidden = l !== "en";
+      document.documentElement.lang = l;
+      btns.forEach(b => b.setAttribute("aria-pressed", String(b.dataset.lang === l)));
+      document.title = (l === "en" ? "Privacy policy" : "Privacy") + " · Daan's Games";
+    }
+    btns.forEach(b => b.addEventListener("click", () => {
+      set(b.dataset.lang);
+      history.replaceState(null, "", "#" + b.dataset.lang);
+    }));
+    const h = location.hash.slice(1);
+    const nav = (navigator.language || "nl").slice(0, 2).toLowerCase();
+    set(h === "en" || h === "nl" ? h : (nav === "nl" ? "nl" : "en"));
+  })();
+</script>
+</body>
+</html>
