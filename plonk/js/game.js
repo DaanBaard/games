@@ -6,7 +6,7 @@
   const S = window.PlonkSim, LEVELS = window.PLONK_LEVELS, WORLDS = window.PLONK_WORLDS, SFX = window.SFX, Poki = window.Poki;
   const W = 1280, H = 720, GRID = 10, PLAY_TOP = 60, PLAY_BOTTOM = 600;
   const FONT = "'Baloo 2','Nunito','Arial Rounded MT Bold','Trebuchet MS',system-ui,sans-serif";
-  const VERSION = 'v1.3';
+  const VERSION = 'v1.4';
 
   const cv = document.getElementById('game');
   const ctx = cv.getContext('2d');
@@ -70,7 +70,22 @@
     butcher: { g: ['#FFE2B0', '#E8B878', '#B07A3C'], grain: '140,80,30', hi: 'rgba(255,248,225,.6)' },
     rustic: { g: ['#C4935F', '#8E5E36', '#563720'], grain: '50,25,10', hi: 'rgba(255,220,170,.35)' },
     metal: { g: ['#EEF2FB', '#A3AEC8', '#5B6688'], grain: null, hi: 'rgba(255,255,255,.7)' },
+    // v1.4: bouwmaterialen van wereld 6-10
+    candy: { g: ['#FFFFFF', '#FFE6EE', '#F4B8C8'], pattern: 'candy', hi: 'rgba(255,255,255,.8)' },        // zuurstok
+    neon: { g: ['#3A3F9A', '#1C1F5E', '#0C0E33'], pattern: 'neon', hi: 'rgba(120,240,255,.9)' },          // flipperkast-rail
+    stone: { g: ['#A7A0C6', '#76709A', '#46415F'], pattern: 'stone', hi: 'rgba(255,255,255,.35)' },        // kasteelsteen
+    coral: { g: ['#FFC0A8', '#FF8A78', '#C04A5C'], pattern: 'coral', hi: 'rgba(255,240,230,.55)' },       // koraal
+    circus: { g: ['#FFF0A0', '#FFC93C', '#D88A0E'], pattern: 'circus', hi: 'rgba(255,255,255,.6)' },     // kermisplank
   };
+  function shelfPattern(c, kind, L, T) {               // tekent het patroon in een liggende plank (lengte L, dikte T)
+    if (kind === 'candy') { c.fillStyle = '#F0344E'; for (let xx = -L / 2 - T; xx < L / 2 + T; xx += 22) { c.beginPath(); c.moveTo(xx, T / 2); c.lineTo(xx + T * 0.9, -T / 2); c.lineTo(xx + T * 0.9 + 9, -T / 2); c.lineTo(xx + 9, T / 2); c.fill(); } }
+    else if (kind === 'neon') { c.strokeStyle = 'rgba(80,230,255,.9)'; c.lineWidth = 2.5; c.strokeRect(-L / 2 + 4, -T / 2 + 4, L - 8, T - 8);
+      c.fillStyle = 'rgba(255,80,190,.9)'; for (let xx = -L / 2 + 16; xx < L / 2 - 8; xx += 28) { c.beginPath(); c.arc(xx, 0, 2.6, 0, 7); c.fill(); } }
+    else if (kind === 'stone') { c.strokeStyle = 'rgba(30,25,50,.45)'; c.lineWidth = 1.5; const bh = Math.max(8, T / Math.max(1, Math.round(T / 18)));
+      for (let yy = -T / 2, r = 0; yy < T / 2; yy += bh, r++) { c.beginPath(); c.moveTo(-L / 2, yy); c.lineTo(L / 2, yy); c.stroke(); for (let xx = -L / 2 + (r % 2) * 18; xx < L / 2; xx += 36) { c.beginPath(); c.moveTo(xx, yy); c.lineTo(xx, yy + bh); c.stroke(); } } }
+    else if (kind === 'coral') { seed = Math.floor(L * 3 + T); c.fillStyle = 'rgba(150,30,60,.35)'; for (let i = 0; i < L * T / 90; i++) { c.beginPath(); c.arc(-L / 2 + rnd() * L, -T / 2 + rnd() * T, 1.5 + rnd() * 2.2, 0, 7); c.fill(); } }
+    else if (kind === 'circus') { c.fillStyle = '#E8414F'; for (let xx = -L / 2; xx < L / 2; xx += 32) c.fillRect(xx, -T / 2, 16, T); c.fillStyle = 'rgba(255,255,255,.75)'; for (let xx = -L / 2 + 24; xx < L / 2; xx += 32) { c.beginPath(); c.arc(xx, 0, 2, 0, 7); c.fill(); } }
+  }
   function artShelf(w, h, mat = 'wood') {
     const M = MATS[mat];
     return c => {
@@ -82,7 +97,8 @@
       if (vert) c.rotate(Math.PI / 2);
       const L = vert ? h : w, T = vert ? w : h;
       seed = Math.floor(w * 13 + h * 7);
-      if (M.grain) {
+      if (M.pattern) shelfPattern(c, M.pattern, L, T);
+      else if (M.grain) {
         for (let i = 0; i < Math.max(3, T / 5); i++) {
           const yy = -T / 2 + rnd() * T; c.strokeStyle = `rgba(${M.grain},${0.12 + rnd() * 0.18})`; c.lineWidth = 0.8 + rnd() * 1.4;
           c.beginPath(); c.moveTo(-L / 2, yy);
@@ -237,6 +253,106 @@
     };
   }
 
+  // ---------- v1.4: nieuwe onderdelen ----------
+  function artSponge(c) {                               // marshmallow: zacht, roze-wit kussen met suikerkorrels
+    const { w, h } = S.PARTS.sponge;
+    rr(c, -w / 2, -h / 2, w, h, h / 2);
+    c.fillStyle = lg(c, 0, -h / 2, 0, h / 2, [[0, '#FFF4F8'], [0.45, '#FFC6DA'], [1, '#E8789F']]); c.fill();
+    c.save(); rr(c, -w / 2, -h / 2, w, h, h / 2); c.clip();
+    c.fillStyle = 'rgba(255,255,255,.75)'; rr(c, -w / 2 + 14, -h / 2 + 3, w - 28, 6, 3); c.fill();
+    c.fillStyle = 'rgba(255,170,205,.55)'; for (let k = -2; k <= 2; k++) { c.beginPath(); c.ellipse(k * 26, h / 2 - 2, 12, 5, 0, 0, 7); c.fill(); }
+    seed = 31; for (let i = 0; i < 26; i++) { c.fillStyle = i % 3 ? 'rgba(255,255,255,.9)' : 'rgba(255,140,190,.7)'; c.fillRect(-w / 2 + 10 + rnd() * (w - 20), -h / 2 + 6 + rnd() * (h - 12), 2.2, 2.2); }
+    c.restore();
+    rr(c, -w / 2, -h / 2, w, h, h / 2); c.strokeStyle = OUT; c.lineWidth = 3; c.stroke();
+  }
+  function artBumper(c) {                               // flipperkast-bumper: neonring met ster
+    const r = S.PARTS.bumper.w / 2 - 2;
+    c.beginPath(); c.arc(0, 0, r, 0, 7);
+    c.fillStyle = rg(c, -r * 0.3, -r * 0.35, 2, 0, 0, r, [[0, '#FF9BD0'], [0.55, '#FF3D8E'], [1, '#A3105A']]); c.fill();
+    c.lineWidth = 3; c.strokeStyle = OUT; c.stroke();
+    c.beginPath(); c.arc(0, 0, r - 8, 0, 7); c.strokeStyle = 'rgba(255,240,120,.9)'; c.lineWidth = 3.5; c.stroke();
+    c.beginPath(); c.arc(0, 0, r * 0.52, 0, 7);
+    c.fillStyle = rg(c, -4, -5, 1, 0, 0, r * 0.52, [[0, '#FFFFFF'], [0.6, '#FFF3B0'], [1, '#FFC93C']]); c.fill(); c.lineWidth = 2.5; c.strokeStyle = OUT; c.stroke();
+    star5(c, 0, 0, r * 0.32, 0.45); c.fillStyle = '#FF3D8E'; c.fill();
+    c.fillStyle = 'rgba(255,255,255,.55)'; c.beginPath(); c.ellipse(-r * 0.45, -r * 0.55, r * 0.22, r * 0.1, -0.7, 0, 7); c.fill();
+  }
+  function artPortalRim(col) {                          // vaste rand van het portaal; de draaikolk wordt live getekend
+    return c => {
+      c.beginPath(); c.arc(0, 0, 36, 0, 7); c.lineWidth = 9; c.strokeStyle = OUT; c.stroke();
+      c.beginPath(); c.arc(0, 0, 36, 0, 7); c.lineWidth = 6; c.strokeStyle = lg(c, -36, -36, 36, 36, [[0, col[0]], [0.5, col[1]], [1, col[2]]]); c.stroke();
+      for (let k = 0; k < 8; k++) { const a = k * Math.PI / 4; c.fillStyle = col[0]; c.beginPath(); c.arc(Math.cos(a) * 36, Math.sin(a) * 36, 2.6, 0, 7); c.fill(); }
+    };
+  }
+  const PORTAL_IN = ['#E8C8FF', '#B45CFF', '#5A1FA8'], PORTAL_OUT = ['#FFE0A8', '#FF9C3C', '#B84A00'];
+  function drawPortal(x, y, t, col, alpha = 1, out = false) {
+    ctx.save(); ctx.globalAlpha = alpha; ctx.translate(x, y);
+    ctx.fillStyle = rg(ctx, 0, 0, 4, 0, 0, 58, [[0, col[1] + 'AA'], [1, col[1] + '00']]); ctx.beginPath(); ctx.arc(0, 0, 58, 0, 7); ctx.fill();
+    ctx.beginPath(); ctx.arc(0, 0, 33, 0, 7); ctx.fillStyle = rg(ctx, 0, 0, 2, 0, 0, 33, [[0, '#FFFFFF'], [0.25, col[0]], [0.7, col[1]], [1, col[2]]]); ctx.fill();
+    ctx.save(); ctx.clip(); ctx.rotate((out ? -1 : 1) * t * 3);
+    ctx.strokeStyle = 'rgba(255,255,255,.55)'; ctx.lineWidth = 3; ctx.lineCap = 'round';
+    for (let k = 0; k < 3; k++) { ctx.rotate(Math.PI * 2 / 3); ctx.beginPath(); for (let i = 0; i <= 20; i++) { const rr2 = 4 + i * 1.5, a = i * 0.28; i ? ctx.lineTo(Math.cos(a) * rr2, Math.sin(a) * rr2) : ctx.moveTo(Math.cos(a) * rr2, Math.sin(a) * rr2); } ctx.stroke(); }
+    ctx.restore(); ctx.restore();
+    drawSprite(sprite(out ? 'portalOutRim' : 'portalRim', 80, 80, 4, artPortalRim(col)), x, y, 0, alpha, 1, 1, false);
+  }
+  function artPump(c) {                                 // bellenpomp: kastje met rooster en spuitmondjes
+    const { w, h } = S.PARTS.pump;
+    rr(c, -w / 2, -h / 2 + 6, w, h - 6, 9);
+    c.fillStyle = lg(c, 0, -h / 2, 0, h / 2, [[0, '#7FE3F0'], [0.4, '#2BA6C4'], [1, '#0F5577']]); c.fill();
+    c.strokeStyle = OUT; c.lineWidth = 3; c.stroke();
+    c.fillStyle = 'rgba(10,40,60,.6)'; for (let k = -3; k <= 3; k++) rr(c, k * 10 - 3, -2, 6, 13, 3), c.fill();
+    rr(c, -w / 2 + 10, -h / 2, w - 20, 9, 4); c.fillStyle = lg(c, 0, -h / 2, 0, -h / 2 + 9, [[0, '#FFFFFF'], [1, '#9FB6C8']]); c.fill(); c.lineWidth = 2.5; c.stroke();
+    c.fillStyle = '#123A55'; for (let k = -2; k <= 2; k++) { c.beginPath(); c.arc(k * 13, -h / 2 + 4.5, 2.4, 0, 7); c.fill(); }
+    c.fillStyle = '#FFC93C'; c.beginPath(); c.arc(w / 2 - 12, h / 2 - 9, 4, 0, 7); c.fill(); c.lineWidth = 1.5; c.stroke();
+  }
+  function drawBubbles(x, y, t, alpha) {               // de bellenstroom boven de pomp (alleen beeld; de werking zit in sim.js)
+    const top = y - S.PUMP_H, hw = S.PUMP_HW;
+    ctx.save(); ctx.globalAlpha = alpha * 0.5;
+    ctx.fillStyle = lg(ctx, 0, top, 0, y, [[0, 'rgba(140,230,255,0)'], [1, 'rgba(140,230,255,.28)']]); ctx.fillRect(x - hw, top, hw * 2, y - top - 14);
+    ctx.globalAlpha = alpha * 0.8; ctx.strokeStyle = 'rgba(220,250,255,.85)'; ctx.lineWidth = 1.6;
+    for (let i = 0; i < 16; i++) {
+      const sp = 50 + (i * 37) % 40, k = ((t * sp / (y - top) + i * 0.137) % 1), by = y - 18 - k * (y - top - 18);
+      const bx = x + Math.sin(i * 2.3 + t * 3 + k * 6) * (hw - 12) * ((i % 3) / 2.5 + 0.2), r = 2.5 + (i % 4) * 1.4;
+      ctx.globalAlpha = alpha * 0.85 * Math.min(1, (1 - k) * 4); ctx.beginPath(); ctx.arc(bx, by, r, 0, 7); ctx.stroke();
+    }
+    ctx.restore();
+  }
+  function artCannon(c) {                               // kermiskanon: loop naar rechts (+x), draaipunt in het midden
+    const { w, h } = S.PARTS.cannon;
+    c.beginPath(); c.moveTo(-w / 2 + 8, -h / 2 + 8); c.lineTo(w / 2 - 6, -h / 2 + 2); c.lineTo(w / 2 - 6, h / 2 - 2); c.lineTo(-w / 2 + 8, h / 2 - 8); c.closePath();
+    c.fillStyle = lg(c, 0, -h / 2, 0, h / 2, [[0, '#FF9A8E'], [0.4, '#E8414F'], [1, '#8E1530']]); c.fill(); c.lineJoin = 'round'; c.strokeStyle = OUT; c.lineWidth = 3; c.stroke();
+    c.save(); c.clip(); c.fillStyle = 'rgba(255,220,90,.95)'; for (const bx of [-18, 6]) c.fillRect(bx, -h / 2, 8, h); c.restore();
+    c.beginPath(); c.arc(-w / 2 + 8, 0, h / 2 - 8, Math.PI / 2, Math.PI * 1.5); c.fillStyle = '#8E1530'; c.fill(); c.stroke();
+    rr(c, w / 2 - 14, -h / 2 - 2, 16, h + 4, 6); c.fillStyle = lg(c, 0, -h / 2, 0, h / 2, [[0, '#FFF59A'], [0.5, '#FFC93C'], [1, '#B8740C']]); c.fill(); c.stroke();
+    c.beginPath(); c.ellipse(w / 2 + 2, 0, 4, h / 2 - 6, 0, 0, 7); c.fillStyle = '#2A0E1C'; c.fill();
+    c.fillStyle = 'rgba(255,255,255,.45)'; rr(c, -w / 2 + 14, -h / 2 + 8, w - 34, 4, 2); c.fill();
+    star5(c, -6, 6, 6, 0.45); c.fillStyle = '#FFFFFF'; c.fill();
+  }
+  function artCannonBase(c) {                           // onderstel met wiel (draait niet mee)
+    c.beginPath(); c.moveTo(-26, 26); c.lineTo(0, -4); c.lineTo(26, 26); c.closePath(); c.fillStyle = '#5A2A88'; c.fill(); c.strokeStyle = OUT; c.lineWidth = 3; c.lineJoin = 'round'; c.stroke();
+    c.beginPath(); c.arc(0, 18, 14, 0, 7); c.fillStyle = rg(c, -4, 14, 1, 0, 18, 14, [[0, '#FFE893'], [1, '#C98A1A']]); c.fill(); c.stroke();
+    c.strokeStyle = '#7A4A08'; c.lineWidth = 2; for (let k = 0; k < 4; k++) { const a = k * Math.PI / 4; c.beginPath(); c.moveTo(Math.cos(a) * 12, 18 + Math.sin(a) * 12); c.lineTo(-Math.cos(a) * 12, 18 - Math.sin(a) * 12); c.stroke(); }
+    c.beginPath(); c.arc(0, 18, 4, 0, 7); c.fillStyle = OUT; c.fill();
+  }
+  function drawButton(it, pressed, alpha = 1) {        // knop: grondplaat + rode dop (plat als hij ingedrukt is)
+    ctx.save(); ctx.globalAlpha = alpha; ctx.translate(it.x, it.y); ctx.rotate(rad(it.a || 0));
+    rr(ctx, -36, 0, 72, 9, 4); ctx.fillStyle = lg(ctx, 0, 0, 0, 9, [[0, '#D9D4EA'], [1, '#6E6890']]); ctx.fill(); ctx.strokeStyle = OUT; ctx.lineWidth = 2.5; ctx.stroke();
+    const hh = pressed ? 4 : 13;
+    ctx.beginPath(); ctx.moveTo(-24, 1); ctx.quadraticCurveTo(-24, -hh, 0, -hh); ctx.quadraticCurveTo(24, -hh, 24, 1); ctx.closePath();
+    ctx.fillStyle = pressed ? lg(ctx, 0, -hh, 0, 1, [[0, '#B6FF8A'], [1, '#3E9A1A']]) : lg(ctx, 0, -hh, 0, 1, [[0, '#FFB0A6'], [0.5, '#FF4F5E'], [1, '#B01E3A']]); ctx.fill(); ctx.stroke();
+    if (!pressed) { ctx.fillStyle = 'rgba(255,255,255,.6)'; ctx.beginPath(); ctx.ellipse(-8, -hh + 4, 7, 2.5, -0.2, 0, 7); ctx.fill(); }
+    ctx.restore();
+  }
+  function drawGate(it, alpha = 1, open = 0) {        // poort met tralies; schuift omhoog weg als hij opengaat
+    const w = it.w || 24, h = it.h || 160;
+    ctx.save(); ctx.globalAlpha = alpha * (1 - open); ctx.translate(it.x, it.y - open * h * 0.6);
+    ctx.fillStyle = rg(ctx, 0, 0, 4, 0, 0, h * 0.7, [[0, 'rgba(255,90,140,.35)'], [1, 'rgba(255,90,140,0)']]); ctx.fillRect(-60, -h / 2 - 20, 120, h + 40);
+    rr(ctx, -w / 2, -h / 2, w, h, 6); ctx.fillStyle = 'rgba(40,16,60,.85)'; ctx.fill();
+    for (const bx of [-w / 4, w / 4]) { rr(ctx, bx - 3, -h / 2 + 4, 6, h - 8, 3); ctx.fillStyle = lg(ctx, bx - 3, 0, bx + 3, 0, [[0, '#FFB3C4'], [0.5, '#FFFFFF'], [1, '#FF4F8E']]); ctx.fill(); }
+    for (let yy = -h / 2 + 22; yy < h / 2 - 10; yy += 44) { ctx.fillStyle = '#FFC93C'; rr(ctx, -w / 2 - 3, yy - 3, w + 6, 6, 3); ctx.fill(); }
+    rr(ctx, -w / 2, -h / 2, w, h, 6); ctx.strokeStyle = OUT; ctx.lineWidth = 3; ctx.stroke();
+    ctx.restore();
+  }
+
   function partSprite(type, it) {
     switch (type) {
       case 'shelf': { const w = it.w, h = it.h || 22, m = THEMES[curTheme()].shelf; return sprite(`shelf${w}x${h}${m}`, w, h, 6, artShelf(w, h, m)); }
@@ -248,6 +364,11 @@
       case 'fan': return sprite('fan', S.PARTS.fan.w + 10, S.PARTS.fan.h, 6, artFan);
       case 'marble': return sprite('marble', 40, 40, 4, artMarble);
       case 'heavy': return sprite('heavy', 60, 60, 4, artHeavy);
+      case 'sponge': return sprite('sponge', S.PARTS.sponge.w, S.PARTS.sponge.h, 6, artSponge);
+      case 'bumper': return sprite('bumper', S.PARTS.bumper.w, S.PARTS.bumper.h, 6, artBumper);
+      case 'portal': return sprite('portalRim', 80, 80, 4, artPortalRim(PORTAL_IN));
+      case 'pump': return sprite('pump', S.PARTS.pump.w, S.PARTS.pump.h, 6, artPump);
+      case 'cannon': return sprite('cannon', S.PARTS.cannon.w + 8, S.PARTS.cannon.h + 6, 6, artCannon);
     }
   }
 
@@ -258,6 +379,11 @@
     garden: { floor: ['#2F7A3E', '#1A4A26'], mote: 'rgba(220,255,140,.9)', moteKind: 'firefly', shelf: 'rustic', accent: '#8AE234', card: ['#9BDB5A', '#3D8A2A'] },
     lab: { floor: ['#2A3A5C', '#151F36'], mote: 'rgba(120,255,240,.6)', moteKind: 'bubble', shelf: 'metal', accent: '#4CC9F0', card: ['#5AA8F0', '#2A4FB0'] },
     space: { floor: ['#2A2440', '#120F24'], mote: 'rgba(255,255,255,.9)', moteKind: 'star', shelf: 'metal', accent: '#FF6B8A', card: ['#C77BE8', '#5A2A9A'] },
+    candy: { floor: ['#C2588F', '#7A2A5E'], mote: 'rgba(255,220,240,.8)', moteKind: 'dust', shelf: 'candy', accent: '#FF8AC0', card: ['#FF9CC8', '#C0407E'] },
+    pinball: { floor: ['#1C1F5E', '#0A0C2E'], mote: 'rgba(120,240,255,.9)', moteKind: 'star', shelf: 'neon', accent: '#FF3D8E', card: ['#6A7BFF', '#2A2A9A'] },
+    castle: { floor: ['#3A2E5C', '#1C1534'], mote: 'rgba(180,200,255,.8)', moteKind: 'firefly', shelf: 'stone', accent: '#B45CFF', card: ['#9A84D8', '#4A3A88'] },
+    deepsea: { floor: ['#0E3A5A', '#06182E'], mote: 'rgba(190,240,255,.7)', moteKind: 'bubble', shelf: 'coral', accent: '#4CC9F0', card: ['#4FC6E0', '#1A5F96'] },
+    fair: { floor: ['#6A2E5A', '#3A1636'], mote: 'rgba(255,230,150,.85)', moteKind: 'firefly', shelf: 'circus', accent: '#FFC93C', card: ['#FF9C6B', '#C0405E'] },
   };
   function curTheme() { const inLevel = G.level && !['title', 'levels', 'wardrobe'].includes(G.screen); return inLevel ? (WORLDS[G.level.world - 1] || WORLDS[0]).theme : (WORLDS[G.screen === 'levels' ? (G.world || 0) : 0] || WORLDS[0]).theme; }
   function window_(x, X, Y, w, h, sky, border, moon) {
@@ -363,16 +489,125 @@
     x.globalAlpha = 0.7; x.fillStyle = rg(x, 74, 452, 2, 80, 460, 22, [[0, '#E8E4FF'], [1, '#8A84C0']]); x.beginPath(); x.arc(80, 460, 18, 0, 7); x.fill();
     x.fillStyle = 'rgba(90,80,140,.5)'; x.beginPath(); x.arc(74, 455, 4, 0, 7); x.arc(86, 466, 3, 0, 7); x.fill(); x.globalAlpha = 1;
   }
+  // ---------- v1.4: achtergronden wereld 6-10 ----------
+  function bgCandy(x) {                                  // De Snoepfabriek: roze fabriekshal met lollies, zuurstokbuizen en snoep op een band
+    x.fillStyle = lg(x, 0, 0, 0, H, [[0, '#4A1F6E'], [0.55, '#8E3C9A'], [1, '#D46AA8']]); x.fillRect(0, 0, W, H);
+    x.fillStyle = rg(x, 640, 60, 0, 640, 60, 640, [[0, 'rgba(255,220,240,.35)'], [1, 'rgba(255,220,240,0)']]); x.fillRect(0, 0, W, H);
+    seed = 15; for (let i = 0; i < 70; i++) { x.fillStyle = ['rgba(255,255,255,.08)', 'rgba(255,200,230,.1)', 'rgba(255,240,150,.08)'][i % 3]; x.beginPath(); x.arc(rnd() * W, rnd() * 600, 6 + rnd() * 18, 0, 7); x.fill(); }
+    // zuurstokbuizen bovenin
+    for (const [px, ph] of [[90, 260], [1190, 200]]) {
+      x.save(); rr(x, px - 18, -10, 36, ph, 18); x.clip(); x.fillStyle = 'rgba(255,255,255,.22)'; x.fillRect(px - 18, -10, 36, ph);
+      x.fillStyle = 'rgba(255,80,120,.35)'; for (let yy = -40; yy < ph; yy += 28) { x.beginPath(); x.moveTo(px - 18, yy); x.lineTo(px + 18, yy - 18); x.lineTo(px + 18, yy - 4); x.lineTo(px - 18, yy + 14); x.fill(); } x.restore();
+    }
+    x.fillStyle = 'rgba(255,255,255,.18)'; rr(x, 70, 250, 160, 36, 18); x.fill();
+    // reuzenlollies op de achtergrond
+    for (const [lx, ly, r, c1] of [[300, 210, 64, '255,120,170'], [980, 160, 52, '120,220,255'], [720, 260, 40, '255,220,110']]) {
+      x.fillStyle = 'rgba(255,255,255,.14)'; x.fillRect(lx - 4, ly + r - 4, 8, 260);
+      x.fillStyle = `rgba(${c1},.32)`; x.beginPath(); x.arc(lx, ly, r, 0, 7); x.fill();
+      x.strokeStyle = 'rgba(255,255,255,.28)'; x.lineWidth = 7; x.beginPath(); for (let i = 0; i < 60; i++) { const a = i * 0.32, rr2 = i / 60 * (r - 6); i ? x.lineTo(lx + Math.cos(a) * rr2, ly + Math.sin(a) * rr2) : x.moveTo(lx, ly); } x.stroke();
+    }
+    // productieband met snoepjes langs de vloer
+    x.fillStyle = 'rgba(60,20,70,.55)'; rr(x, 0, 548, W, 26, 13); x.fill();
+    seed = 21; for (let xx = 30; xx < W; xx += 70) { x.fillStyle = ['rgba(255,140,190,.55)', 'rgba(140,230,255,.5)', 'rgba(255,230,120,.55)', 'rgba(180,255,160,.5)'][Math.floor(rnd() * 4)];
+      x.beginPath(); x.ellipse(xx, 538, 14, 10, 0, 0, 7); x.fill(); x.beginPath(); x.moveTo(xx - 14, 538); x.lineTo(xx - 24, 530); x.lineTo(xx - 24, 546); x.fill(); x.beginPath(); x.moveTo(xx + 14, 538); x.lineTo(xx + 24, 530); x.lineTo(xx + 24, 546); x.fill(); }
+  }
+  function bgPinball(x) {                                // De Flipperkast: donker speelveld met neonlijnen, lampjes en flippers
+    x.fillStyle = lg(x, 0, 0, 0, H, [[0, '#070B2A'], [0.6, '#10185A'], [1, '#1B1F70']]); x.fillRect(0, 0, W, H);
+    x.strokeStyle = 'rgba(80,140,255,.10)'; x.lineWidth = 1;
+    for (let xx = 0; xx <= W; xx += 48) { x.beginPath(); x.moveTo(xx, 0); x.lineTo(xx, 600); x.stroke(); }
+    for (let yy = 0; yy <= 600; yy += 48) { x.beginPath(); x.moveTo(0, yy); x.lineTo(W, yy); x.stroke(); }
+    const neon = (col, w, draw) => { x.save(); x.strokeStyle = col; x.shadowColor = col; x.shadowBlur = 18; x.lineWidth = w; x.lineCap = 'round'; x.beginPath(); draw(); x.stroke(); x.restore(); };
+    neon('rgba(255,60,160,.55)', 5, () => { x.arc(640, 640, 560, Math.PI * 1.08, Math.PI * 1.92); });
+    neon('rgba(60,230,255,.45)', 4, () => { x.moveTo(60, 120); x.quadraticCurveTo(60, 40, 140, 40); x.lineTo(1140, 40); x.quadraticCurveTo(1220, 40, 1220, 120); });
+    // rijen lampjes
+    for (const [cx, cy, n, col] of [[400, 120, 5, '255,220,80'], [880, 120, 5, '120,255,160']]) for (let i = 0; i < n; i++) {
+      const lx = cx + (i - 2) * 34; x.fillStyle = rg(x, lx, cy, 0, lx, cy, 20, [[0, `rgba(${col},.65)`], [1, `rgba(${col},0)`]]); x.fillRect(lx - 20, cy - 20, 40, 40);
+      x.fillStyle = `rgba(${col},.9)`; x.beginPath(); x.arc(lx, cy, 5, 0, 7); x.fill(); }
+    // pijlen in de banen
+    x.fillStyle = 'rgba(255,90,170,.28)';
+    for (const [ax, ay] of [[200, 300], [1080, 300], [640, 210]]) for (let k = 0; k < 3; k++) { x.beginPath(); x.moveTo(ax - 18, ay + k * 26); x.lineTo(ax, ay - 16 + k * 26); x.lineTo(ax + 18, ay + k * 26); x.lineTo(ax + 18, ay + 8 + k * 26); x.lineTo(ax, ay - 8 + k * 26); x.lineTo(ax - 18, ay + 8 + k * 26); x.fill(); }
+    // flippers onderin (decor)
+    x.fillStyle = 'rgba(255,255,255,.10)';
+    for (const [fx, dir] of [[520, 1], [760, -1]]) { x.save(); x.translate(fx, 560); x.rotate(dir * 0.35); rr(x, dir > 0 ? -10 : -110, -10, 120, 20, 10); x.fill(); x.restore(); }
+    x.fillStyle = 'rgba(255,255,255,.06)'; x.font = `900 120px ${FONT}`; x.textAlign = 'center'; x.fillText('★', 640, 420);
+  }
+  function bgCastle(x) {                                 // Het Spookslot: maanverlichte zaal met boogramen, banieren en kaarsen
+    x.fillStyle = lg(x, 0, 0, 0, H, [[0, '#0E0B26'], [0.55, '#211A48'], [1, '#2E2158']]); x.fillRect(0, 0, W, H);
+    // stenen muur
+    x.strokeStyle = 'rgba(160,150,220,.07)'; x.lineWidth = 2;
+    for (let yy = 0; yy < 600; yy += 40) for (let xx = (yy / 40 % 2) * 40 - 40; xx < W; xx += 80) x.strokeRect(xx + 2, yy + 2, 76, 36);
+    // boogramen met maanlicht
+    for (const wx of [250, 640, 1030]) {
+      x.save(); x.beginPath(); x.moveTo(wx - 70, 330); x.lineTo(wx - 70, 170); x.arc(wx, 170, 70, Math.PI, 0); x.lineTo(wx + 70, 330); x.closePath();
+      x.fillStyle = lg(x, 0, 100, 0, 330, [[0, '#2A3A7A'], [1, '#141A44']]); x.fill(); x.clip();
+      seed = wx; x.fillStyle = 'rgba(255,255,255,.7)'; for (let i = 0; i < 10; i++) { x.beginPath(); x.arc(wx - 60 + rnd() * 120, 110 + rnd() * 200, rnd() * 1.4 + 0.3, 0, 7); x.fill(); }
+      if (wx === 640) { x.fillStyle = rg(x, 670, 170, 0, 670, 170, 90, [[0, 'rgba(240,240,255,.5)'], [1, 'rgba(240,240,255,0)']]); x.fillRect(wx - 70, 100, 140, 230); x.fillStyle = '#ECEBFF'; x.beginPath(); x.arc(670, 170, 26, 0, 7); x.fill(); x.fillStyle = '#1A2050'; x.beginPath(); x.arc(682, 162, 22, 0, 7); x.fill(); }
+      x.restore();
+      x.strokeStyle = 'rgba(40,30,80,.95)'; x.lineWidth = 8; x.beginPath(); x.moveTo(wx - 70, 330); x.lineTo(wx - 70, 170); x.arc(wx, 170, 70, Math.PI, 0); x.lineTo(wx + 70, 330); x.stroke();
+      x.lineWidth = 5; x.beginPath(); x.moveTo(wx, 100); x.lineTo(wx, 330); x.moveTo(wx - 70, 220); x.lineTo(wx + 70, 220); x.stroke();
+      x.fillStyle = 'rgba(200,210,255,.05)'; x.beginPath(); x.moveTo(wx - 70, 330); x.lineTo(wx + 70, 330); x.lineTo(wx + 150, 600); x.lineTo(wx - 10, 600); x.closePath(); x.fill();
+    }
+    // banieren
+    for (const [bx, col] of [[445, '120,40,140'], [835, '40,90,140']]) { x.fillStyle = `rgba(${col},.75)`; x.beginPath(); x.moveTo(bx - 32, 60); x.lineTo(bx + 32, 60); x.lineTo(bx + 32, 230); x.lineTo(bx, 205); x.lineTo(bx - 32, 230); x.closePath(); x.fill();
+      x.fillStyle = 'rgba(255,210,90,.55)'; star5(x, bx, 120, 14, 0.45); x.fill(); x.fillStyle = 'rgba(30,20,60,.9)'; x.fillRect(bx - 40, 54, 80, 8); }
+    // kaarsen met gloed
+    for (const cx of [80, 1200]) { x.fillStyle = rg(x, cx, 380, 0, cx, 380, 120, [[0, 'rgba(255,190,90,.35)'], [1, 'rgba(255,190,90,0)']]); x.fillRect(cx - 120, 260, 240, 240);
+      x.fillStyle = 'rgba(30,20,60,.9)'; x.fillRect(cx - 22, 440, 44, 8); x.fillStyle = '#E8E0D0'; x.fillRect(cx - 7, 398, 14, 42); x.fillStyle = '#FFD27A'; x.beginPath(); x.ellipse(cx, 388, 5, 10, 0, 0, 7); x.fill(); }
+    // spinnenweb in de hoek
+    x.strokeStyle = 'rgba(220,220,255,.14)'; x.lineWidth = 1.2;
+    for (let k = 0; k < 6; k++) { const a = k * Math.PI / 10; x.beginPath(); x.moveTo(0, 0); x.lineTo(Math.cos(a) * 150, Math.sin(a) * 150); x.stroke(); }
+    for (let r = 30; r <= 150; r += 30) { x.beginPath(); for (let k = 0; k <= 5; k++) { const a = k * Math.PI / 10; k ? x.quadraticCurveTo(Math.cos(a - 0.15) * r * 0.85, Math.sin(a - 0.15) * r * 0.85, Math.cos(a) * r, Math.sin(a) * r) : x.moveTo(Math.cos(a) * r, Math.sin(a) * r); } x.stroke(); }
+  }
+  function bgDeepsea(x) {                                // De Diepzee: lichtbundels van boven, zeewier, rotsen en vissen
+    x.fillStyle = lg(x, 0, 0, 0, H, [[0, '#0A4A7A'], [0.5, '#06305A'], [1, '#041A38']]); x.fillRect(0, 0, W, H);
+    x.save(); x.globalAlpha = 0.12; x.fillStyle = '#BFEFFF';
+    for (const [rx, w2] of [[180, 70], [430, 50], [760, 90], [1050, 60]]) { x.beginPath(); x.moveTo(rx - w2 / 2, 0); x.lineTo(rx + w2 / 2, 0); x.lineTo(rx + w2 * 2 - 60, 600); x.lineTo(rx - 60, 600); x.closePath(); x.fill(); }
+    x.restore();
+    x.fillStyle = 'rgba(190,240,255,.12)'; x.fillRect(0, 0, W, 6);
+    // verre vissen
+    seed = 44; x.fillStyle = 'rgba(160,220,255,.16)';
+    for (let i = 0; i < 9; i++) { const fx = rnd() * W, fy = 80 + rnd() * 300, s = 0.6 + rnd() * 0.8, d = i % 2 ? 1 : -1;
+      x.beginPath(); x.ellipse(fx, fy, 18 * s, 8 * s, 0, 0, 7); x.fill(); x.beginPath(); x.moveTo(fx - d * 16 * s, fy); x.lineTo(fx - d * 28 * s, fy - 8 * s); x.lineTo(fx - d * 28 * s, fy + 8 * s); x.fill(); }
+    // rotsen en zeewier
+    x.fillStyle = 'rgba(8,24,50,.85)';
+    x.beginPath(); x.moveTo(0, 600); x.lineTo(0, 470); x.quadraticCurveTo(90, 430, 170, 500); x.quadraticCurveTo(230, 450, 300, 520); x.lineTo(320, 600); x.fill();
+    x.beginPath(); x.moveTo(W, 600); x.lineTo(W, 440); x.quadraticCurveTo(1180, 410, 1110, 480); x.quadraticCurveTo(1040, 450, 980, 530); x.lineTo(960, 600); x.fill();
+    for (const [sx, h2, col] of [[60, 220, '40,140,90'], [130, 160, '60,170,110'], [1150, 240, '40,140,90'], [1080, 170, '70,180,120'], [560, 120, '40,140,90'], [700, 150, '60,170,110']]) {
+      x.strokeStyle = `rgba(${col},.55)`; x.lineWidth = 9; x.lineCap = 'round'; x.beginPath(); x.moveTo(sx, 600);
+      for (let k = 1; k <= 8; k++) x.quadraticCurveTo(sx + Math.sin(k + sx) * 18, 600 - h2 * (k - 0.5) / 8, sx + Math.sin(k * 1.3 + sx) * 12, 600 - h2 * k / 8); x.stroke(); }
+    // koraal
+    for (const [cx, col] of [[260, '255,120,140'], [1000, '255,170,90']]) { x.strokeStyle = `rgba(${col},.4)`; x.lineWidth = 7; x.lineCap = 'round';
+      const br = (bx, by, a, l, d) => { if (d > 4) return; const ex = bx + Math.cos(a) * l, ey = by + Math.sin(a) * l; x.beginPath(); x.moveTo(bx, by); x.lineTo(ex, ey); x.stroke(); br(ex, ey, a - 0.45, l * 0.72, d + 1); br(ex, ey, a + 0.4, l * 0.7, d + 1); };
+      br(cx, 600, -Math.PI / 2, 40, 0); }
+  }
+  function bgFair(x) {                                   // De Kermis: avondlucht, reuzenrad, tent en lampjesslingers
+    x.fillStyle = lg(x, 0, 0, 0, 600, [[0, '#24144F'], [0.45, '#7A2E78'], [0.8, '#E0606E'], [1, '#FFAE6B']]); x.fillRect(0, 0, W, H);
+    seed = 61; x.fillStyle = 'rgba(255,255,255,.7)'; for (let i = 0; i < 40; i++) { x.globalAlpha = rnd() * 0.6; x.beginPath(); x.arc(rnd() * W, rnd() * 250, rnd() * 1.4 + 0.3, 0, 7); x.fill(); } x.globalAlpha = 1;
+    // reuzenrad
+    x.save(); x.translate(980, 330); x.strokeStyle = 'rgba(30,14,60,.7)'; x.lineWidth = 6;
+    x.beginPath(); x.arc(0, 0, 190, 0, 7); x.stroke(); x.lineWidth = 3; x.beginPath(); x.arc(0, 0, 175, 0, 7); x.stroke();
+    for (let k = 0; k < 12; k++) { const a = k * Math.PI / 6; x.beginPath(); x.moveTo(0, 0); x.lineTo(Math.cos(a) * 190, Math.sin(a) * 190); x.stroke();
+      x.fillStyle = ['rgba(255,90,110,.6)', 'rgba(255,210,90,.6)', 'rgba(110,200,255,.6)'][k % 3]; rr(x, Math.cos(a) * 190 - 14, Math.sin(a) * 190 - 4, 28, 22, 6); x.fill(); }
+    x.lineWidth = 8; x.beginPath(); x.moveTo(-80, 300); x.lineTo(0, 0); x.lineTo(80, 300); x.stroke(); x.restore();
+    // circustent
+    x.fillStyle = 'rgba(40,16,60,.75)'; x.beginPath(); x.moveTo(110, 600); x.lineTo(110, 440); x.quadraticCurveTo(260, 380, 300, 300); x.quadraticCurveTo(340, 380, 490, 440); x.lineTo(490, 600); x.fill();
+    x.save(); x.clip(); x.fillStyle = 'rgba(255,80,100,.35)'; for (let xx = 110; xx < 500; xx += 56) { x.beginPath(); x.moveTo(300, 300); x.lineTo(xx, 600); x.lineTo(xx + 28, 600); x.fill(); } x.restore();
+    x.fillStyle = 'rgba(255,210,90,.75)'; x.beginPath(); x.moveTo(300, 300); x.lineTo(300, 270); x.lineTo(326, 280); x.lineTo(300, 290); x.fill();
+    // lampjesslingers
+    for (const [y0, sag] of [[70, 50], [150, 40]]) { x.strokeStyle = 'rgba(30,14,60,.7)'; x.lineWidth = 2; x.beginPath(); x.moveTo(0, y0); x.quadraticCurveTo(W / 2, y0 + sag * 2, W, y0); x.stroke();
+      for (let i = 1; i < 26; i++) { const t = i / 26, lx = t * W, ly = (1 - t) * (1 - t) * y0 + 2 * (1 - t) * t * (y0 + sag * 2) + t * t * y0 + 6, col = ['255,220,90', '255,110,140', '120,220,255'][i % 3];
+        x.fillStyle = rg(x, lx, ly, 0, lx, ly, 14, [[0, `rgba(${col},.6)`], [1, `rgba(${col},0)`]]); x.fillRect(lx - 14, ly - 14, 28, 28); x.fillStyle = `rgb(${col})`; x.beginPath(); x.arc(lx, ly, 3.5, 0, 7); x.fill(); } }
+  }
   const bgCache = {};
   function buildBackground(theme) {
     const c = document.createElement('canvas'); c.width = W * RS; c.height = H * RS;
     const x = c.getContext('2d'); x.scale(RS, RS);
-    ({ playroom: bgPlayroom, kitchen: bgKitchen, garden: bgGarden, lab: bgLab, space: bgSpace })[theme](x);
+    ({ playroom: bgPlayroom, kitchen: bgKitchen, garden: bgGarden, lab: bgLab, space: bgSpace, candy: bgCandy, pinball: bgPinball, castle: bgCastle, deepsea: bgDeepsea, fair: bgFair })[theme](x);
     const T = THEMES[theme];
     // vloer
     x.fillStyle = lg(x, 0, 600, 0, H, [[0, T.floor[0]], [1, T.floor[1]]]); x.fillRect(0, 600, W, 120);
     x.fillStyle = 'rgba(255,240,220,.12)'; x.fillRect(0, 600, W, 2);
-    if (theme === 'lab' || theme === 'space') { x.fillStyle = 'rgba(255,200,60,.22)'; for (let xx = -20; xx < W; xx += 40) { x.beginPath(); x.moveTo(xx, 602); x.lineTo(xx + 20, 602); x.lineTo(xx + 10, 614); x.lineTo(xx - 10, 614); x.fill(); } }
+    if (theme === 'lab' || theme === 'space' || theme === 'pinball') { x.fillStyle = theme === 'pinball' ? 'rgba(255,60,160,.25)' : 'rgba(255,200,60,.22)'; for (let xx = -20; xx < W; xx += 40) { x.beginPath(); x.moveTo(xx, 602); x.lineTo(xx + 20, 602); x.lineTo(xx + 10, 614); x.lineTo(xx - 10, 614); x.fill(); } }
     else for (let xx = 0; xx < W; xx += 160) { x.fillStyle = 'rgba(0,0,0,.12)'; x.fillRect(xx, 602, 2, 118); }
     // vignet
     x.fillStyle = rg(x, W / 2, H * 0.45, H * 0.35, W / 2, H * 0.45, W * 0.75, [[0, 'rgba(10,5,30,0)'], [1, 'rgba(10,5,30,.55)']]); x.fillRect(0, 0, W, H);
@@ -581,6 +816,9 @@
     { id: 'goggles', name: 'Labbril', need: 34 },
     { id: 'helmet', name: 'Ruimtehelm', need: 48 },
     { id: 'crown', name: 'Gouden kroon', need: 66 },
+    { id: 'pirate', name: 'Piratenhoed', need: 84 },     // v1.4: drie outfits voor wereld 6-10
+    { id: 'wizard', name: 'Tovenaarshoed', need: 104 },
+    { id: 'tophat', name: 'Hoge hoed', need: 126 },
     { id: 'shades', name: 'Zonnebril', daily: 3 },
   ];
   const totalStars = () => LEVELS.reduce((a, L) => a + (save.stars[L.id] || 0), 0);
@@ -636,6 +874,25 @@
       ctx.beginPath(); ctx.moveTo(-R * 0.48, 0); ctx.lineTo(-R * 0.52, -R * 0.42); ctx.lineTo(-R * 0.24, -R * 0.2); ctx.lineTo(0, -R * 0.52); ctx.lineTo(R * 0.24, -R * 0.2); ctx.lineTo(R * 0.52, -R * 0.42); ctx.lineTo(R * 0.48, 0); ctx.closePath();
       ctx.fillStyle = lg(ctx, 0, -R * 0.5, 0, 0, [[0, '#FFF59A'], [0.5, '#FFC93C'], [1, '#D88A0E']]); ctx.fill(); ctx.strokeStyle = '#7A3A08'; ctx.lineWidth = 3; ctx.stroke();
       ctx.fillStyle = '#FF6B8A'; ctx.beginPath(); ctx.arc(0, -R * 0.16, 5, 0, 7); ctx.fill(); ctx.fillStyle = '#4CC9F0'; ctx.beginPath(); ctx.arc(-R * 0.28, -R * 0.1, 4, 0, 7); ctx.arc(R * 0.28, -R * 0.1, 4, 0, 7); ctx.fill();
+    } else if (id === 'pirate') {
+      ctx.translate(0, -R * 0.8);
+      ctx.beginPath(); ctx.moveTo(-R * 0.82, 0); ctx.quadraticCurveTo(-R * 0.5, -R * 0.2, -R * 0.42, -R * 0.62); ctx.quadraticCurveTo(0, -R * 0.82, R * 0.42, -R * 0.62); ctx.quadraticCurveTo(R * 0.5, -R * 0.2, R * 0.82, 0); ctx.quadraticCurveTo(0, -R * 0.26, -R * 0.82, 0); ctx.closePath();
+      ctx.fillStyle = lg(ctx, 0, -R * 0.8, 0, 0, [[0, '#4A3A6A'], [1, '#1A1030']]); ctx.fill(); ctx.strokeStyle = OUT; ctx.lineWidth = 3; ctx.stroke();
+      ctx.strokeStyle = '#FFC93C'; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(-R * 0.74, -R * 0.06); ctx.quadraticCurveTo(0, -R * 0.3, R * 0.74, -R * 0.06); ctx.stroke();
+      ctx.fillStyle = '#FFFFFF'; ctx.beginPath(); ctx.arc(0, -R * 0.44, R * 0.13, 0, 7); ctx.fill(); ctx.fillRect(-R * 0.08, -R * 0.36, R * 0.16, R * 0.08);
+      ctx.fillStyle = OUT; ctx.beginPath(); ctx.arc(-R * 0.05, -R * 0.46, 2.2, 0, 7); ctx.arc(R * 0.05, -R * 0.46, 2.2, 0, 7); ctx.fill();
+    } else if (id === 'wizard') {
+      ctx.translate(R * 0.08, -R * 0.78); ctx.rotate(0.12);
+      ctx.beginPath(); ctx.ellipse(0, 0, R * 0.7, R * 0.16, 0, 0, 7); ctx.fillStyle = '#3A1F7A'; ctx.fill(); ctx.strokeStyle = OUT; ctx.lineWidth = 3; ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(-R * 0.42, -R * 0.04); ctx.quadraticCurveTo(-R * 0.1, -R * 0.7, R * 0.18, -R * 1.25); ctx.quadraticCurveTo(R * 0.12, -R * 0.6, R * 0.42, -R * 0.04); ctx.closePath();
+      ctx.fillStyle = lg(ctx, 0, -R * 1.2, 0, 0, [[0, '#9B5DE5'], [1, '#4B2A98']]); ctx.fill(); ctx.stroke();
+      ctx.fillStyle = '#FFE66B'; for (const [sx, sy, r] of [[-R * 0.12, -R * 0.3, 6], [R * 0.1, -R * 0.62, 4.5], [R * 0.2, -R * 0.2, 3.5]]) { star5(ctx, sx, sy, r, 0.45); ctx.fill(); }
+    } else if (id === 'tophat') {
+      ctx.translate(0, -R * 0.84);
+      rr(ctx, -R * 0.62, -R * 0.08, R * 1.24, R * 0.16, 6); ctx.fillStyle = '#1A1030'; ctx.fill(); ctx.strokeStyle = OUT; ctx.lineWidth = 3; ctx.stroke();
+      rr(ctx, -R * 0.38, -R * 0.82, R * 0.76, R * 0.78, 6); ctx.fillStyle = lg(ctx, -R * 0.38, 0, R * 0.38, 0, [[0, '#3A2A5A'], [0.4, '#2A1A44'], [1, '#120A22']]); ctx.fill(); ctx.stroke();
+      ctx.fillStyle = '#E8414F'; ctx.fillRect(-R * 0.38, -R * 0.24, R * 0.76, R * 0.14);
+      ctx.fillStyle = 'rgba(255,255,255,.25)'; ctx.fillRect(-R * 0.28, -R * 0.76, R * 0.08, R * 0.5);
     } else if (id === 'shades') {
       ctx.fillStyle = '#1A1030'; ctx.strokeStyle = '#1A1030'; ctx.lineWidth = 4;
       for (const gx of [-R * 0.36, R * 0.36]) { rr(ctx, gx - R * 0.25, -R * 0.36, R * 0.5, R * 0.34, 10); ctx.fill(); }
@@ -663,7 +920,7 @@
   // eerste input, 'where' (waar is de speler na 1/3/5 min), terugkeer per dag en een funnel per versie (+ A/B-groep).
   // Volledige lijst: EVENTS.md
   const M = (c, w, a) => Poki.measure(c, w, a);
-  const GAME_VERSION = '13';
+  const GAME_VERSION = '14';
   const AB = (() => {                              // A/B-groep: ?ab=a of ?ab=b, anders opgeslagen; standaard 'a' (geen test actief)
     try { const q = new URLSearchParams(location.search).get('ab'); if (q === 'a' || q === 'b') { localStorage.setItem('plonk_ab', q); return q; } } catch (e) {}
     try { const g = localStorage.getItem('plonk_ab'); if (g === 'a' || g === 'b') return g; } catch (e) {}
@@ -678,7 +935,7 @@
   function attemptKey() { if (!G.level) return null; return G.daily ? ['daily', 'puzzle'] : ['level', String(G.level.id)]; }
   function trackStart() {
     const k = attemptKey(); if (!k || attempt) return;
-    if (k[0] === 'level' && ['5', '10', '15', '20', '25'].includes(k[1])) vMeasure('level' + k[1]); // eind van elke wereld
+    if (k[0] === 'level' && +k[1] % 5 === 0) vMeasure('level' + k[1]); // eind van elke wereld
     attempt = { c: k[0], w: k[1] }; M(k[0], k[1], 'start');
   }
   function trackEnd(how) {
@@ -729,7 +986,7 @@
     SFX.start();
     G.sim = S.createSim(G.level, G.placements);
     G.screen = 'play'; G.selected = -1; G.slow = 1; G.acc = 0; G.eaten = 0; G.toast = null;
-    G.trail = []; G.minDist = 1e9; G.chain = new Set(); G.chainShown = 0;
+    G.trail = []; G.minDist = 1e9; G.chain = new Set(); G.chainShown = 0; G.gateOpen = 0;
     G.attempts = G.attempts || 0;
     bobo.mood = 'idle';
     if (G.sim.fans.length) SFX.wind(true);
@@ -854,6 +1111,30 @@
         drawSprite(partSprite('bouncer'), x, y, a, alpha, 1 + sq * 0.08, 1 - sq * 0.35);
         return;
       }
+      // v1.4
+      case 'sponge': { const sq = opt.squash || 0; drawSprite(partSprite('sponge'), x, y, a, alpha, 1 + sq * 0.06, 1 - sq * 0.3); return; }
+      case 'bumper': {
+        const sq = opt.squash || 0;
+        if (sq > 0) { ctx.save(); ctx.globalAlpha = alpha * sq; ctx.fillStyle = rg(ctx, x, y, 10, x, y, 70, [[0, 'rgba(255,240,140,.9)'], [1, 'rgba(255,80,160,0)']]); ctx.beginPath(); ctx.arc(x, y, 70, 0, 7); ctx.fill(); ctx.restore(); }
+        drawSprite(partSprite('bumper'), x, y, 0, alpha, 1 + sq * 0.15, 1 + sq * 0.15);
+        return;
+      }
+      case 'portal': drawPortal(x, y, G.t, PORTAL_IN, alpha); return;
+      case 'portalOut': drawPortal(x, y, G.t, PORTAL_OUT, alpha, true); return;
+      case 'pump':
+        drawBubbles(x, y - S.PARTS.pump.h / 2, G.screen === 'play' ? G.t : G.t * 0.35, alpha * (G.screen === 'play' ? 1 : 0.6));
+        drawSprite(partSprite('pump'), x, y, 0, alpha);
+        return;
+      case 'cannon': {
+        const fx = it.flip ? -1 : 1, rec = opt.squash || 0;
+        drawSprite(sprite('cannonBase', 60, 50, 4, artCannonBase), x, y + 14, 0, alpha);
+        ctx.save(); ctx.translate(x, y); ctx.rotate(a); ctx.translate(-fx * rec * 10, 0);
+        drawSprite(partSprite('cannon'), 0, 0, 0, alpha, fx, 1, true, 7);
+        ctx.restore();
+        return;
+      }
+      case 'button': drawButton(it, !!opt.pressed, alpha); return;
+      case 'gate': drawGate(it, alpha, opt.open || 0); return;
       default:
         drawSprite(partSprite(it.type, it), x, y, a, alpha);
     }
@@ -893,7 +1174,8 @@
         const it = b.plonk.item;
         if (it.type === 'marble') { marblePos = b.position; continue; }
         if ((it.type === 'heavy') !== (pass === 1)) continue; // ballen bovenop tekenen
-        drawItem(it, b.position.x, b.position.y, b.angle, { squash: b.squash || 0 });
+        if (it.type === 'gate' && sim.gatesOpen) { G.gateOpen = Math.min(1, (G.gateOpen || 0) + dt * 2.5); drawItem(it, it.x, it.y, 0, { open: G.gateOpen }); continue; }
+        drawItem(it, b.position.x, b.position.y, b.angle, { squash: b.squash || 0, pressed: it.type === 'button' && sim.gatesOpen });
         if (b.squash) b.squash = Math.max(0, b.squash - dt * 4);
       }
     } else {
@@ -929,7 +1211,7 @@
     }
     // vallijnen: waar valt het als je op Start drukt?
     if (G.screen === 'build') {
-      const statics = L.items.concat(G.placements).filter(i => !['marble', 'heavy', 'bobo', 'domino', 'seesaw'].includes(i.type)).map(i => S.makeBody(i)).filter(Boolean);
+      const statics = L.items.concat(G.placements).filter(i => !['marble', 'heavy', 'bobo', 'domino', 'seesaw'].includes(i.type)).map(i => S.makeBody(i)).filter(b => b && !b.isSensor);
       for (const it of L.items) {
         if (it.type !== 'marble' && it.type !== 'heavy') continue;
         const r = it.type === 'marble' ? S.MARBLE_R : S.HEAVY_R;
@@ -961,7 +1243,7 @@
       const sp = G.placements[G.selected], SP = S.PARTS[sp.type];
       const pv = G.pressed || G.hover;
       if (pv === 'rotL' || pv === 'rotR' || pv === 'flip') {          // zo komt hij te staan
-        const nx = nextOrientation(sp, pv === 'rotL' ? -1 : 1);
+        const nx = nextOrientation(sp, pv === 'rotL' ? -1 : 1, pv === 'flip');
         if (nx) ghost(nx, '#FFE66B', 0.9);
         if (nx && pv === 'flip') {                                       // ventilator/band: laat de nieuwe richting zien
           const d = nx.flip ? -1 : 1, ax = nx.x + d * (SP.w / 2 + 30), ay = nx.y;
@@ -1132,6 +1414,7 @@
       if (s.type === 'seesaw') drawSprite(sprite('pivot', 76, 64, 6, artPivot), cx, cy + 28 * k, 0, ctx.globalAlpha, k, k, false);
       drawSprite(sp, cx, cy, s.type === 'plank' ? -0.15 : 0, ctx.globalAlpha, k, k, false);
       if (s.type === 'fan') drawSprite(sprite('blades', 46, 46, 3, artBlades), cx, cy, G.t * 2, ctx.globalAlpha, k, k, false);
+      if (s.type === 'portal') { ctx.save(); ctx.translate(cx, cy); ctx.scale(k, k); drawPortal(0, 0, G.t, PORTAL_IN, ctx.globalAlpha); ctx.restore(); }
       ctx.globalAlpha = 1;
       ctx.font = `800 15px ${FONT}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillStyle = n > 0 ? '#FFFFFF' : 'rgba(255,255,255,.4)';
       fillFit(pname(s.type), cx, s.y + 66, s.w - 8);
@@ -1195,7 +1478,11 @@
         const reach = P.rotStep ? Math.max(P.w, P.h) / 2 * 0.87 + 14 : Math.max(P.w, P.h) / 2 + 10;
         const bx = clamp(p.x, 90, W - 90), by = clamp(p.y - reach - 52, 66, 540);
         const bw = G.touch ? 72 : 60, bh = G.touch ? 64 : 54, by2 = by - (bh - 52);
-        if (P.rotStep) {
+        if (P.rotStep && P.flip) {                     // v1.4: kanon kan kantelen én omdraaien
+          button('rotL', bx - bw * 1.5 - 12, by2, bw, bh, { color: COL.blue, icon: icon.tiltL, fn: () => rotateSelected(-1) });
+          button('flip', bx - bw / 2, by2, bw, bh, { color: COL.purple, icon: icon.flip, fn: () => rotateSelected(1, true) });
+          button('rotR', bx + bw / 2 + 12, by2, bw, bh, { color: COL.blue, icon: icon.tiltR, fn: () => rotateSelected(1) });
+        } else if (P.rotStep) {
           button('rotL', bx - bw - 8, by2, bw, bh, { color: COL.blue, icon: icon.tiltL, fn: () => rotateSelected(-1) });
           button('rotR', bx + 8, by2, bw, bh, { color: COL.blue, icon: icon.tiltR, fn: () => rotateSelected(1) });
         } else if (P.flip) button('flip', bx - bw / 2, by2, bw, bh, { color: COL.blue, icon: icon.flip, fn: () => rotateSelected(1) });
@@ -1316,7 +1603,7 @@
     textOut(tr('world', { n: Wd.id }), W / 2, 62, 26, T.accent === '#FF6B8A' ? '#FFB3C4' : '#FFE66B', OUT, 5);
     textOut(wname(Wd), W / 2, 112, 54, '#FFFFFF', OUT, 9, 'center', 900);
     // wereld-stippen
-    WORLDS.forEach((w, k) => { ctx.beginPath(); ctx.arc(W / 2 - 60 + k * 30, 160, k === G.world ? 8 : 6, 0, 7); ctx.fillStyle = k === G.world ? '#FFFFFF' : (worldOpen(k) ? 'rgba(255,255,255,.45)' : 'rgba(255,255,255,.18)'); ctx.fill(); });
+    WORLDS.forEach((w, k) => { ctx.beginPath(); ctx.arc(W / 2 - (WORLDS.length - 1) * 13 + k * 26, 160, k === G.world ? 8 : 6, 0, 7); ctx.fillStyle = k === G.world ? '#FFFFFF' : (worldOpen(k) ? 'rgba(255,255,255,.45)' : 'rgba(255,255,255,.18)'); ctx.fill(); });
     const cw = 190, ch = 210, gap = 26, x0 = W / 2 - (wl.length * cw + (wl.length - 1) * gap) / 2;
     wl.forEach(({ L, i }, n) => {
       const x = x0 + n * (cw + gap), y = 220 + Math.sin(G.t * 2 + n) * 4, open = unlocked(i), hov = G.hover === 'lvl' + i;
@@ -1402,7 +1689,7 @@
     textOut(tr('wardrobeTitle'), W / 2, 70, 52, '#FFFFFF', OUT, 9, 'center', 900);
     ctx.font = `700 18px ${FONT}`; ctx.textAlign = 'center'; ctx.fillStyle = '#FFF4E0'; ctx.textBaseline = 'middle';
     fillFit(tr('wardrobeSub'), W / 2, 118, 1100);
-    const cw = 150, ch = 190, gap = 18, cols = 4, x0 = W / 2 - (cols * cw + (cols - 1) * gap) / 2;
+    const cw = 150, ch = 190, gap = 18, cols = OUTFITS.length > 8 ? 6 : 4, x0 = W / 2 - (cols * cw + (cols - 1) * gap) / 2;
     OUTFITS.forEach((o, i) => {
       const x = x0 + (i % cols) * (cw + gap), y = 150 + Math.floor(i / cols) * (ch + gap), open = outfitOpen(o), on = save.outfit === o.id;
       ctx.save();
@@ -1569,9 +1856,9 @@
     if (it.type === 'domino') { const st = S.settle(G.level, G.placements, it, ign); it.y = st.y; }
     return it;
   }
-  function nextOrientation(p, dir) {
+  function nextOrientation(p, dir, flipMode) {
     const P = S.PARTS[p.type], c = { ...p };
-    if (P.flip) { c.flip = !c.flip; return c; }
+    if (P.flip && (flipMode || !P.rotStep)) { c.flip = !c.flip; return c; }
     for (let k = 0; k < 9; k++) {
       c.a = (c.a || 0) + dir * P.rotStep; if (c.a > 60) c.a = -60; if (c.a < -60) c.a = 60;
       if (!S.overlaps(G.level, G.placements, c, G.selected)) return c;
@@ -1620,13 +1907,14 @@
     if (S.overlaps(G.level, G.placements, c, G.rot.index)) return;    // past niet: blijf staan
     pl.a = a; SFX.rotate();
   }
-  function rotateSelected(dir = 1) {
+  function rotateSelected(dir = 1, flipMode = false) {
     const p = G.placements[G.selected]; if (!p) return; const P = S.PARTS[p.type];
     const old = { a: p.a, flip: p.flip };
     const stepA = () => { p.a = (p.a || 0) + dir * P.rotStep; if (p.a > 60) p.a = -60; if (p.a < -60) p.a = 60; };
-    if (P.flip) p.flip = !p.flip; else stepA();
+    const doFlip = P.flip && (flipMode || !P.rotStep);
+    if (doFlip) p.flip = !p.flip; else if (P.rotStep) stepA(); else return;
     if (S.overlaps(G.level, G.placements, p, G.selected)) {
-      if (P.rotStep) for (let k = 0; k < 8 && S.overlaps(G.level, G.placements, p, G.selected); k++) stepA();
+      if (P.rotStep && !doFlip) for (let k = 0; k < 8 && S.overlaps(G.level, G.placements, p, G.selected); k++) stepA();
       if (S.overlaps(G.level, G.placements, p, G.selected)) { p.a = old.a; p.flip = old.flip; SFX.bad(); G.toast = { text: tr('noRoom'), t: 0, dur: 1.6 }; return; }
     }
     G.rotShow = G.t; once('help', 'rotate-part', 'interact');
@@ -1721,6 +2009,7 @@
       if (G.drag || G.rot || G.busy) return;         // niet draaien/verwijderen terwijl je sleept of tijdens een advertentie
       if ((e.key === 'r' || e.key === 'R') && G.selected >= 0) rotateSelected(e.shiftKey ? -1 : 1);
       if ((e.key === 'e' || e.key === 'E') && G.selected >= 0) rotateSelected(-1);
+      if ((e.key === 'f' || e.key === 'F') && G.selected >= 0) rotateSelected(1, true);   // v1.4: kanon omdraaien
       if ((e.key === 'Delete' || e.key === 'Backspace') && G.selected >= 0) deleteSelected();
       if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); if (G.intro) { G.intro.out = G.t; return; } play('key'); }
     } else if (G.screen === 'play' && !G.busy && (e.key === ' ' || e.key === 'Escape')) { e.preventDefault(); stopPlay(); }
@@ -1730,6 +2019,10 @@
   window.addEventListener('keydown', e => { if ([' ', 'ArrowUp', 'ArrowDown'].includes(e.key)) e.preventDefault(); });
 
   // ---------- sim tick + events ----------
+  function chainAdd(id, x, y) {                     // kettingreactie-teller ook voor marshmallow, bumper, portaal, kanon en knop
+    if (!G.chain || G.chain.has(id)) return; G.chain.add(id);
+    if (G.chain.size >= 2) { parts.push({ k: 'text', text: tr('chainShort', { n: G.chain.size }), x, y: y - 30, vx: 0, vy: -1.1, life: 1.1, t: 0, size: 22 + Math.min(10, G.chain.size * 2) }); SFX.star(Math.min(3, G.chain.size - 2)); }
+  }
   function tickSim(dt) {
     const sim = G.sim; if (!sim || sim.state !== 'running') return;
     // v1.3: geen slowmotion meer vlak voor de hap (voelde als vertraging); de simulatie loopt altijd op normale snelheid
@@ -1748,7 +2041,7 @@
       const ev = sim.events.shift();
       if (ev.kind === 'hit' || ev.kind === 'boing') {
         // kettingreactie-teller: elk onderdeel dat meedoet telt één keer (feedback die afhangt van wat de speler bouwde)
-        const CH = ['plank', 'bouncer', 'seesaw', 'domino', 'conveyor', 'heavy', 'fan'];
+        const CH = ['plank', 'bouncer', 'seesaw', 'domino', 'conveyor', 'heavy', 'fan', 'sponge', 'bumper'];
         const ids = ev.kind === 'boing' ? [[ev.body.id, 'bouncer']] : ev.ids.map((id, k) => [id, ev.types[k]]);
         for (const [id, ty] of ids) if (CH.includes(ty) && !G.chain.has(id)) {
           G.chain.add(id);
@@ -1760,6 +2053,12 @@
         SFX.hit(ev.speed, heavy); if (ev.speed > 3) puff(ev.x, ev.y, heavy ? 8 : 4);
         if (heavy && ev.speed > 4) G.shake = Math.max(G.shake, 0.15);
       } else if (ev.kind === 'boing') { SFX.boing(); ring(ev.x, ev.y + 10); ev.body.squash = 1; }
+      else if (ev.kind === 'squish') { SFX.squish(); puff(ev.x, ev.y, 6, 'rgba(255,200,225,.85)'); ev.body.squash = 1; chainAdd(ev.body.id, ev.x, ev.y); }
+      else if (ev.kind === 'bump') { SFX.bump(); ring(ev.x, ev.y, 'rgba(255,240,140,.95)'); sparkle(ev.x, ev.y, 5); ev.body.squash = 1; chainAdd(ev.body.id, ev.x, ev.y); }
+      else if (ev.kind === 'warp') { SFX.warp(); sparkle(ev.x, ev.y, 12); sparkle(ev.x2, ev.y2, 12); ring(ev.x2, ev.y2, 'rgba(255,190,110,.95)'); chainAdd('portal', ev.x, ev.y); }
+      else if (ev.kind === 'load') { SFX.load(); }
+      else if (ev.kind === 'fire') { SFX.fire(); puff(ev.x, ev.y, 10, 'rgba(255,240,220,.85)'); sparkle(ev.x, ev.y, 6); ev.body.squash = 1; G.shake = Math.max(G.shake, 0.12); chainAdd(ev.body.id, ev.x, ev.y); }
+      else if (ev.kind === 'click') { SFX.gate(); sparkle(ev.x, ev.y - 10, 14); chainAdd('button', ev.x, ev.y); G.toast = { text: tr('gateOpen'), t: 0, dur: 1.6 }; }
       else if (ev.kind === 'win') win();
       else if (ev.kind === 'lost') lose();
     }

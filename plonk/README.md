@@ -1,4 +1,4 @@
-# PLONK! — v1.3
+# PLONK! — v1.4
 
 Physics-puzzelgame met kettingreacties (geïnspireerd op het genre van The Incredible Machine), gebouwd voor Poki.
 Plaats onderdelen, druk op **Start** en laat de gouden knikker in de mond van **Bobo** belanden.
@@ -11,12 +11,31 @@ Open `index.html` in een browser (dubbelklikken werkt; een lokale server zoals `
 | Onderdeel plaatsen | Sleep vanuit de balk onderin | – |
 | Verplaatsen | Sleep een geplaatst onderdeel | – |
 | Kantelen | Knop met pijl links = linkerkant omlaag, pijl rechts = rechterkant omlaag; of sleep het blauwe bolletje aan het uiteinde rond; of scrollwiel | `E` (links omlaag) / `R` (rechts omlaag) |
-| Andere kant op (ventilator, band) | Blauwe knop met twee pijlen boven het onderdeel | `R` |
+| Andere kant op (ventilator, band, kanon) | Knop met twee pijlen boven het onderdeel | `R` (kanon: `F`) |
 | Verwijderen | Rode knop *Weghalen* linksonder, of terugslepen naar de balk | `Delete` |
 | Start / reset | Groene / rode knop rechtsonder, of tik op de gouden knikker | `Spatie` |
 | Taal kiezen | Wereldbolknop linksboven op het titelscherm | – |
 | Muziek aan/uit | Knop met muzieknoot (titelscherm en rechtsboven in een level) | – |
 | Geluidseffecten aan/uit | Knop met luidspreker (titelscherm en rechtsboven in een level) | – |
+
+## Nieuw in v1.4 (25 nieuwe levels in 5 nieuwe werelden)
+Het spel is verdubbeld naar **50 levels in 10 werelden**. Elke nieuwe wereld heeft een eigen thema, een eigen bouwmateriaal voor de vaste planken en een nieuw onderdeel:
+
+| Wereld | Thema en materiaal | Nieuw onderdeel | Wat het doet |
+|---|---|---|---|
+| 6 · De Snoepfabriek | lollies en snoepband · zuurstok | **Marshmallow** | Vangt alles zacht op: bijna alle vaart is weg. Kantelbaar |
+| 7 · De Flipperkast | neon speelveld · neonrail | **Bumper** | Kaatst alles met vaste snelheid weg, recht van zijn midden af |
+| 8 · Het Spookslot | maanlicht en banieren · kasteelsteen | **Portaal** | Wat in het paarse portaal valt, komt met dezelfde vaart uit de oranje uitgang |
+| 9 · De Diepzee (zwaartekracht 70%) | lichtbundels en zeewier · koraal | **Bellenpomp** | Alles boven de pomp stijgt rustig op, als een lift |
+| 10 · De Kermis | reuzenrad en circustent · kermisplank | **Kanon** | Vangt de knikker en schiet hem in de richting van de loop. Kantelen én omdraaien |
+
+- **Nieuw puzzel-element: knop + poort** (level 40, 48, 50). De poort gaat open zodra iets over de knop rolt of erop valt
+- **Kanon bedienen**: drie knoppen boven het kanon (links omlaag, omdraaien, rechts omlaag); toets `F` draait om
+- **Drie nieuwe outfits** voor Bobo: piratenhoed (84 sterren), tovenaarshoed (104) en hoge hoed (126); de kast toont nu 6 kolommen
+- Nieuwe geluidseffecten (marshmallow, bumper, portaal, kanon, poort) en kettingreactie-teller telt de nieuwe onderdelen mee
+- Alle nieuwe teksten in de 9 talen
+- Moeilijkheid gemeten met `tools/design.js` (kolom *ruimte*); krappe levels krijgen de gratis tip al na 2 mislukte pogingen
+- Events: `version/14a/…`, en `level50` als mijlpaal voor het einde van wereld 10
 
 ## Nieuw in v1.3 (geen vertraging bij de hap)
 - De slowmotion vlak voor Bobo is weg: die liet de knikker op de laatste 170 pixels tot 35% afremmen, wat als hapering voelde
@@ -165,4 +184,4 @@ EVENTS.md         alle Poki game events
 ```
 
 ## Volgende stappen (ideeën)
-Meer onderdelen (ballon, katrol, schakelaar + motor), verzamelbare outfits voor Bobo, animated thumbnail voor Poki.
+Meer onderdelen (ballon, katrol, schakelaar + motor), animated thumbnail voor Poki, per wereld eigen muziek.

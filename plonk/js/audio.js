@@ -131,6 +131,13 @@
       else { tone(700 + Math.random() * 300, 0.07, 'sine', 0.18 * v + 0.03, 400); noise(0.04, 0.1 * v, 2500); }
     },
     boing() { tone(220, 0.35, 'sine', 0.35, 660); tone(330, 0.3, 'triangle', 0.12, 990, 0.02); },
+    // v1.4: geluiden voor de nieuwe onderdelen
+    squish() { noise(0.12, 0.22, 600, 1.5, 0, 'lowpass'); tone(160, 0.16, 'sine', 0.22, 90); },
+    bump() { tone(1200, 0.07, 'square', 0.1, 600); tone(600, 0.12, 'triangle', 0.25, 1500, 0.01); },
+    warp() { tone(300, 0.35, 'sine', 0.22, 1400); tone(1400, 0.3, 'triangle', 0.08, 300, 0.12); },
+    load() { tone(180, 0.08, 'square', 0.08, 120); noise(0.05, 0.12, 900); },
+    fire() { noise(0.25, 0.45, 700, 1, 0, 'lowpass'); tone(90, 0.3, 'sine', 0.45, 40); },
+    gate() { [392, 523, 659].forEach((f, i) => tone(f, 0.12, 'triangle', 0.2, null, i * 0.07)); noise(0.2, 0.12, 2400, 1, 0.1); },
     chomp() { noise(0.06, 0.35, 900, 2, 0, 'bandpass'); noise(0.07, 0.35, 700, 2, 0.11, 'bandpass'); tone(300, 0.2, 'sine', 0.3, 140, 0.1); },
     win() { Music.duck(); [523, 659, 784, 1047].forEach((f, i) => tone(f, 0.22, 'triangle', 0.22, null, 0.18 + i * 0.09)); tone(1568, 0.5, 'sine', 0.12, null, 0.6); },
     star(i) { tone(880 * Math.pow(1.26, i), 0.18, 'triangle', 0.2, null); tone(1760 * Math.pow(1.26, i), 0.2, 'sine', 0.08, null, 0.03); },

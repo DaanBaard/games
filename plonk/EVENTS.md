@@ -14,7 +14,7 @@ het bereiken, maar ook hoeveel pogingen het kost.
 
 | Event | Wanneer |
 |---|---|
-| `level / <1-25> / start` | Level geopend, of na een mislukte poging (de volgende poging begint) |
+| `level / <1-50> / start` | Level geopend, of na een mislukte poging (de volgende poging begint) |
 | `level / <n> / complete` | Bobo heeft de knikker |
 | `level / <n> / fail` | De knikker mist, de speler drukt halverwege op Reset, slaat over, gaat naar het menu of kiest een ander level |
 | `daily / puzzle / start · complete · fail` | Hetzelfde, maar dan voor de dagpuzzel |
@@ -31,8 +31,8 @@ het bereiken, maar ook hoeveel pogingen het kost.
 | `session / return / sameday · day1 · day2-3 · day4-7 · day8plus` | Terugkerende speler, met het aantal dagen sinds het vorige bezoek |
 
 ## 3. Funnel per versie
-`version / <versie><groep> / <mijlpaal>`, bijvoorbeeld `version / 13a / 3min`. Elke mijlpaal wordt één keer per sessie verstuurd.
-Mijlpalen: `load`, `first-input`, `return`, `return-nextday`, `1min`, `3min`, `5min`, `12min`, `20min`, `level5`, `level10`, `level15`, `level20`, `level25`.
+`version / <versie><groep> / <mijlpaal>`, bijvoorbeeld `version / 14a / 3min`. Elke mijlpaal wordt één keer per sessie verstuurd.
+Mijlpalen: `load`, `first-input`, `return`, `return-nextday`, `1min`, `3min`, `5min`, `12min`, `20min`, `level5`, `level10`, `level15`, `level20`, `level25` … `level50` (elke vijfde level).
 De levelmijlpalen markeren het einde van elke wereld.
 
 **A/B-groep:** stel die in met `?ab=a` of `?ab=b`. De groep wordt onthouden, en de standaard is `a`. Er loopt nu nog geen test:
@@ -73,7 +73,7 @@ Advertenties (`commercialBreak`, `rewardedBreak`) meet Poki zelf.
 ## Handige vragen voor de export
 - **Hoe lang spelen mensen?** Bekijk het verloop van `session/played/<k>min`. Waar ze dan zitten, staat in `where/<k>min/*`.
 - **Welk level is te moeilijk?** Vergelijk het aantal `fail` met `complete` per level. Elke `start` is één poging.
-- **Is de nieuwe versie beter?** Vergelijk `version/13a/*` met de vorige versie, of `13a` met `13b` zodra er een test loopt.
+- **Is de nieuwe versie beter?** Vergelijk `version/14a/*` met de vorige versie (`13a`), of `14a` met `14b` zodra er een test loopt.
 - **Vinden spelers Start?** Vergelijk `help/press-start` en `help/place-first` met het aantal spelers in level 1-3, en de interacties van `start/marble` met `start/button`.
 - **Welke talen?** `settings/language/<code>` toont handmatige keuzes; Poki splitst de rest zelf per land.
 - **Komen spelers terug?** Bekijk `session/return/day1` ten opzichte van `session/new/visit`.

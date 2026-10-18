@@ -1,4 +1,4 @@
-/* PLONK! – 25 levels in 5 werelden. Opbouw: elk nieuw onderdeel eerst los en ruim, daarna combineren.
+/* PLONK! – 50 levels in 10 werelden (v1.4: wereld 6-10 met marshmallow, bumper, portaal, bellenpomp en kanon). Opbouw: elk nieuw onderdeel eerst los en ruim, daarna combineren.
    items: vaste objecten · inventory: onderdelen voor de speler · solution: geverifieerde oplossing (ook voor hints)
    Controle: node tools/design.js  ('ruimte' = aantal winnende posities, hoger = makkelijker) */
 (function (root) {
@@ -8,8 +8,14 @@
     { id: 3, name: 'De Tuin', theme: 'garden' },
     { id: 4, name: 'Het Lab', theme: 'lab' },
     { id: 5, name: 'De Ruimte', theme: 'space' },
+    { id: 6, name: 'De Snoepfabriek', theme: 'candy' },
+    { id: 7, name: 'De Flipperkast', theme: 'pinball' },
+    { id: 8, name: 'Het Spookslot', theme: 'castle' },
+    { id: 9, name: 'De Diepzee', theme: 'deepsea' },
+    { id: 10, name: 'De Kermis', theme: 'fair' },
   ];
   const P = (x, y) => [{ type: 'shelf', x, y: y + 72, w: 200 }, { type: 'bobo', x, y }]; // Bobo op een sokkel
+  const R = (x, y) => [{ type: 'shelf', x: x + 30, y: y + 130, w: 24, h: 150 }, { type: 'bobo', x, y }]; // Bobo op een paal (naast een bellenstroom)
 
   const LEVELS = [
     // ---------- Wereld 1: De Speelkamer ----------
@@ -103,11 +109,47 @@
     { id: 25, world: 5, name: 'Grote finale', gravity: 0.5, tip: 'Alles wat je geleerd hebt, in één machine.',
       items: [{ type: 'marble', x: 140, y: 100 }, { type: 'shelf', x: 640, y: 420, w: 30, h: 360 }, ...P(1100, 260)],
       inventory: { plank: 1, conveyor: 1, bouncer: 1, fan: 1 }, solution: [{ type: 'plank', x: 220, y: 260, a: 30 }, { type: 'bouncer', x: 400, y: 360, a: 15 }], par: 2 },
+
+    // ---------- Wereld 6: De Snoepfabriek (marshmallow) ----------
+    { id: 26, world: 6, name: 'Zachte landing', tip: 'Nieuw: de marshmallow! Alles wat hem raakt, verliest bijna al zijn vaart.', items: [{ type: 'marble', x: 200, y: 100 }, { type: 'bouncer', x: 200, y: 380, a: 30 }, ...P(640, 518)], inventory: { sponge: 1 }, solution: [{ type: 'sponge', x: 640, y: 200, a: 0 }], par: 1 },
+    { id: 27, world: 6, name: 'Pingpong', tip: 'De knikker kaatst heen en weer. Vang hem op het goede moment op.', items: [{ type: 'marble', x: 140, y: 290 }, { type: 'bouncer', x: 140, y: 380, a: 35 }, { type: 'bouncer', x: 820, y: 580, a: -30 }, ...P(520, 518)], inventory: { sponge: 1 }, solution: [{ type: 'sponge', x: 400, y: 440, a: 0 }], par: 1 },
+    { id: 28, world: 6, name: 'Onder het dak', tip: 'Bobo zit onder een dak. Laat de knikker eerst terugvallen op de trampoline.', items: [{ type: 'marble', x: 1080, y: 100 }, { type: 'bouncer', x: 1080, y: 420, a: -20 }, { type: 'shelf', x: 640, y: 200, w: 500, h: 22 }, ...P(330, 300)], inventory: { sponge: 1 }, solution: [{ type: 'sponge', x: 1120, y: 200, a: -30 }], par: 1 },
+    { id: 29, world: 6, name: 'Snoepband', tip: 'De band brengt de knikker naar de trampoline. Daarna gaat hij veel te hard…', items: [{ type: 'marble', x: 200, y: 100 }, { type: 'bouncer', x: 600, y: 560, a: 25 }, ...P(1000, 518)], inventory: { conveyor: 1, sponge: 1 }, solution: [{ type: 'conveyor', x: 280, y: 300 }, { type: 'sponge', x: 960, y: 400, a: 30 }], par: 2 },
+    { id: 30, world: 6, name: 'Snoepmachine', tip: 'Over de muur en zacht landen: trampoline en marshmallow werken samen.', items: [{ type: 'marble', x: 160, y: 100 }, { type: 'shelf', x: 640, y: 390, w: 30, h: 420 }, ...P(780, 518)], inventory: { bouncer: 1, sponge: 1, plank: 1 }, solution: [{ type: 'bouncer', x: 160, y: 240, a: 30 }, { type: 'sponge', x: 760, y: 160, a: 15 }], par: 2 },
+
+    // ---------- Wereld 7: De Flipperkast (bumper) ----------
+    { id: 31, world: 7, name: 'Bumper', tip: 'Nieuw: de bumper kaatst alles hard weg, recht van zijn midden af. Zet hem net naast de vallijn.', items: [{ type: 'marble', x: 300, y: 100 }, ...P(800, 518)], inventory: { bumper: 1 }, solution: [{ type: 'bumper', x: 280, y: 400 }], par: 1 },
+    { id: 32, world: 7, name: 'Hoge muur', tip: 'Hoe verder de bumper naast de vallijn staat, hoe platter de knikker wegschiet.', items: [{ type: 'marble', x: 200, y: 100 }, { type: 'shelf', x: 560, y: 460, w: 30, h: 280 }, ...P(840, 518)], inventory: { bumper: 1 }, solution: [{ type: 'bumper', x: 180, y: 300 }], par: 1 },
+    { id: 33, world: 7, name: 'Flipperveld', tip: 'Drie bumpers in het veld. Eén plank bepaalt waar de knikker heen stuitert.', items: [{ type: 'marble', x: 640, y: 90 }, { type: 'bumper', x: 640, y: 300 }, { type: 'bumper', x: 420, y: 420 }, { type: 'bumper', x: 860, y: 420 }, ...P(1120, 300)], inventory: { plank: 1, bumper: 1 }, solution: [{ type: 'plank', x: 480, y: 160, a: -15 }], par: 1 },
+    { id: 34, world: 7, name: 'Onderdoor', tip: 'Schiet de knikker onder de muur door en laat hem dan omhoog stuiteren.', items: [{ type: 'marble', x: 160, y: 100 }, { type: 'shelf', x: 640, y: 210, w: 30, h: 300 }, ...P(1060, 250)], inventory: { bumper: 1, bouncer: 1 }, solution: [{ type: 'bumper', x: 110, y: 400 }, { type: 'bouncer', x: 680, y: 520, a: 0 }], par: 2 },
+    { id: 35, world: 7, name: 'Tilt!', tip: 'Over de muur, zacht neer, en dan met de band onder het dak door.', items: [{ type: 'marble', x: 200, y: 100 }, { type: 'shelf', x: 600, y: 440, w: 30, h: 320 }, { type: 'shelf', x: 1100, y: 400, w: 240, h: 22 }, ...P(1100, 518)], inventory: { bumper: 1, sponge: 1, conveyor: 1 }, solution: [{ type: 'bumper', x: 170, y: 300 }, { type: 'sponge', x: 760, y: 340, a: -15 }, { type: 'conveyor', x: 800, y: 440 }], par: 3 },
+
+    // ---------- Wereld 8: Het Spookslot (portaal, knop + poort) ----------
+    { id: 36, world: 8, name: 'Spookdeur', tip: 'Nieuw: het portaal! Wat erin valt, komt bij de oranje uitgang weer tevoorschijn.', items: [{ type: 'marble', x: 240, y: 100 }, { type: 'shelf', x: 800, y: 380, w: 30, h: 440 }, { type: 'portalOut', x: 1040, y: 180 }, ...P(1040, 518)], inventory: { portal: 1 }, solution: [{ type: 'portal', x: 240, y: 360 }], par: 1 },
+    { id: 37, world: 8, name: 'Andere kant', tip: 'De knikker komt met dezelfde vaart uit het portaal. Vang hem op met een plank.', items: [{ type: 'marble', x: 1040, y: 100 }, { type: 'portalOut', x: 160, y: 140 }, { type: 'shelf', x: 640, y: 300, w: 30, h: 480 }, ...P(460, 518)], inventory: { portal: 1, plank: 1 }, solution: [{ type: 'portal', x: 1040, y: 320 }, { type: 'plank', x: 120, y: 320, a: 30 }], par: 2 },
+    { id: 38, world: 8, name: 'Spiegelzaal', tip: 'Vang de knikker in de vlucht. Hoe harder hij gaat, hoe verder hij uit de uitgang vliegt.', items: [{ type: 'marble', x: 160, y: 200 }, { type: 'conveyor', x: 240, y: 250 }, { type: 'portalOut', x: 60, y: 140 }, ...P(250, 518)], inventory: { portal: 1 }, solution: [{ type: 'portal', x: 500, y: 400 }], par: 1 },
+    { id: 39, world: 8, name: 'Spookwind', tip: 'Hoe hoger het portaal, hoe langzamer de knikker eruit komt. Dan heeft de wind meer tijd.', items: [{ type: 'marble', x: 200, y: 100 }, { type: 'portalOut', x: 860, y: 140 }, { type: 'shelf', x: 640, y: 380, w: 30, h: 440 }, ...P(1120, 518)], inventory: { portal: 1, fan: 1 }, solution: [{ type: 'portal', x: 200, y: 170 }, { type: 'fan', x: 760, y: 200 }], par: 2 },
+    { id: 40, world: 8, name: 'De poort', tip: 'De poort gaat open als iets op de knop drukt. Stuur de zware bal er via het portaal heen.', items: [{ type: 'marble', x: 90, y: 150 }, { type: 'shelf', x: 520, y: 320, w: 920, a: 17 }, { type: 'heavy', x: 760, y: 100 }, { type: 'gate', x: 990, y: 440, w: 24, h: 280 }, { type: 'shelf', x: 300, y: 600, w: 160 }, { type: 'button', x: 300, y: 580 }, { type: 'portalOut', x: 300, y: 470 }, ...P(1110, 518)], inventory: { portal: 1 }, solution: [{ type: 'portal', x: 760, y: 240 }], par: 1 },
+
+    // ---------- Wereld 9: De Diepzee (bellenpomp, zwaartekracht 70%) ----------
+    { id: 41, world: 9, name: 'Bellenlift', tip: 'Nieuw: de bellenpomp! Alles boven de pomp stijgt rustig op.', gravity: 0.7, items: [{ type: 'marble', x: 100, y: 380 }, { type: 'shelf', x: 240, y: 460, w: 360, a: 12 }, ...R(520, 240)], inventory: { pump: 1 }, solution: [{ type: 'pump', x: 420, y: 560 }], par: 1 },
+    { id: 42, world: 9, name: 'Bubbelwind', tip: 'Breng de knikker met de bellen omhoog naar de ventilator.', gravity: 0.7, items: [{ type: 'marble', x: 1096, y: 290 }, { type: 'shelf', x: 1100, y: 330, w: 60, h: 16, a: 25 }, { type: 'fan', x: 1210, y: 120, flip: true }, { type: 'shelf', x: 640, y: 400, w: 30, h: 400 }, ...P(170, 518)], inventory: { pump: 1 }, solution: [{ type: 'pump', x: 1120, y: 500 }], par: 1 },
+    { id: 43, world: 9, name: 'Lift en wind', tip: 'Eerst omhoog met de bellen, dan blaast de ventilator hem over de muur.', gravity: 0.7, items: [{ type: 'marble', x: 200, y: 400 }, { type: 'shelf', x: 230, y: 470, w: 200, a: 20 }, { type: 'shelf', x: 760, y: 420, w: 30, h: 360 }, ...P(1040, 518)], inventory: { pump: 1, fan: 1 }, solution: [{ type: 'pump', x: 380, y: 580 }, { type: 'fan', x: 200, y: 140 }], par: 2 },
+    { id: 44, world: 9, name: 'Twee liften', tip: 'De band bovenin neemt de knikker mee. Daarna heb je nog een lift nodig.', gravity: 0.7, items: [{ type: 'marble', x: 200, y: 400 }, { type: 'shelf', x: 230, y: 470, w: 200, a: 20 }, { type: 'conveyor', x: 480, y: 180 }, { type: 'shelf', x: 620, y: 520, w: 30, h: 160 }, ...R(800, 200)], inventory: { pump: 2 }, solution: [{ type: 'pump', x: 380, y: 580 }, { type: 'pump', x: 720, y: 540 }], par: 2 },
+    { id: 45, world: 9, name: 'Diepzeemachine', tip: 'Het portaal brengt de knikker naar de trog. Hoe komt hij daar weer uit?', gravity: 0.7, items: [{ type: 'marble', x: 150, y: 100 }, { type: 'portalOut', x: 840, y: 420 }, { type: 'shelf', x: 840, y: 600, w: 240, h: 22 }, { type: 'shelf', x: 710, y: 520, w: 22, h: 140 }, { type: 'shelf', x: 970, y: 520, w: 22, h: 140 }, { type: 'shelf', x: 480, y: 300, w: 22, h: 480 }, ...R(920, 170)], inventory: { portal: 1, pump: 1, bumper: 1 }, solution: [{ type: 'portal', x: 150, y: 300 }, { type: 'pump', x: 860, y: 520 }], par: 2 },
+
+    // ---------- Wereld 10: De Kermis (kanon) ----------
+    { id: 46, world: 10, name: 'Kanonskogel', tip: 'Nieuw: het kanon! Het vangt de knikker en schiet hem in de richting van de loop.', items: [{ type: 'marble', x: 200, y: 100 }, ...P(1000, 518)], inventory: { cannon: 1 }, solution: [{ type: 'cannon', x: 200, y: 280, a: 0 }], par: 1 },
+    { id: 47, world: 10, name: 'Over de muur', tip: 'Draai het kanon om met de blauwe knop en richt hoog.', items: [{ type: 'marble', x: 1080, y: 100 }, { type: 'shelf', x: 640, y: 360, w: 30, h: 480 }, ...P(260, 518)], inventory: { cannon: 1 }, solution: [{ type: 'cannon', x: 1080, y: 420, a: 60, flip: true }], par: 1 },
+    { id: 48, world: 10, name: 'Knop en hek', tip: 'Het hek gaat open als de knikker over de knop rolt.', items: [{ type: 'marble', x: 200, y: 100 }, { type: 'shelf', x: 700, y: 300, w: 360, a: 10 }, { type: 'button', x: 620, y: 271, a: 10 }, { type: 'shelf', x: 930, y: 420, w: 160, a: 14 }, { type: 'gate', x: 1000, y: 470, w: 24, h: 200 }, ...P(1120, 518)], inventory: { cannon: 1 }, solution: [{ type: 'cannon', x: 200, y: 300, a: -60 }], par: 1 },
+    { id: 49, world: 10, name: 'Dubbel kanon', tip: 'Eén kanon schiet over het dak, het andere terug naar Bobo.', items: [{ type: 'marble', x: 160, y: 100 }, { type: 'shelf', x: 420, y: 410, w: 300, h: 22 }, { type: 'shelf', x: 262, y: 500, w: 22, h: 160 }, ...P(420, 518)], inventory: { cannon: 2 }, solution: [{ type: 'cannon', x: 160, y: 240, a: -30 }, { type: 'cannon', x: 960, y: 180, a: -30, flip: true }], par: 2 },
+    { id: 50, world: 10, name: 'Kermisfinale', tip: 'Het tentdak zit in de weg. Twee kanonnen, één knop, en dan naar Bobo!', items: [{ type: 'marble', x: 140, y: 100 }, { type: 'shelf', x: 600, y: 150, w: 600, h: 22 }, { type: 'shelf', x: 1000, y: 260, w: 320, a: -16 }, { type: 'button', x: 1060, y: 232, a: -16 }, { type: 'shelf', x: 780, y: 470, w: 400, a: 16 }, { type: 'gate', x: 990, y: 500, w: 24, h: 180 }, { type: 'shelf', x: 1110, y: 400, w: 240, h: 22 }, ...P(1110, 518)], inventory: { cannon: 2, sponge: 1, bumper: 1 }, solution: [{ type: 'cannon', x: 140, y: 420, a: -15 }, { type: 'cannon', x: 700, y: 380, a: -60 }], par: 2 },
   ];
   LEVELS.forEach((l, i) => { l.id = i + 1; }); // doorlopende nummering
   // v1.2: levels waar spelers in de Poki-data vaak vastliepen (≥ 3 mislukte pogingen per oplossing, of weinig ruimte):
   // daar komt de gratis tip al na 2 mislukte pogingen in plaats van 3
-  const HARD = ['Domino-effect', 'Dominorij', 'Tuinslang', 'Wippen', 'Wipwap', 'Kettingreactie', 'Sterrensprong', 'Meteoor'];
+  const HARD = ['Domino-effect', 'Dominorij', 'Tuinslang', 'Wippen', 'Wipwap', 'Kettingreactie', 'Sterrensprong', 'Meteoor',
+    'Onder het dak', 'Spiegelzaal', 'Spookwind', 'De poort', 'Lift en wind', 'Diepzeemachine', 'Over de muur', 'Knop en hek', 'Kermisfinale']; // v1.4: krappe nieuwe levels
   LEVELS.forEach(l => { if (HARD.includes(l.name)) l.hard = true; });
   root.PLONK_WORLDS = WORLDS;
   root.PLONK_LEVELS = LEVELS;
