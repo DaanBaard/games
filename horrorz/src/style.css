@@ -172,3 +172,7 @@ h2{font-family:var(--serif);font-weight:700;letter-spacing:.08em}
 .thumb .topbar,.thumb .chapSel,.thumb .playRow,.thumb #nightBtn,.thumb .nav,.thumb .ver,.thumb #hudBtns{display:none!important}
 .thumb #home{justify-content:flex-start;padding-top:4%}
 .thumb .logo{font-size:min(13vw,104px)}
+
+.thumb .logo{animation:none}
+.thumb.sq #home{padding-top:5.5%}
+.thumb.sq .logo{font-size:14.5vw}

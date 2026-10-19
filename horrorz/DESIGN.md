@@ -96,3 +96,9 @@ Feedback op v1.0: te eenzijdig, te cartoonesk, te veel herhaling. Wat er verande
 
 # v2.1 — 14 talen
 Engels, Nederlands, Duits, Frans, Spaans, Portugees, Italiaans, Pools, Turks, Russisch, Indonesisch, Japans, Koreaans en Chinees (vereenvoudigd). De taal wordt automatisch gekozen via Poki (of de browsertaal) en is te wijzigen in Instellingen. Nieuwe talen staan als `src/lang/<code>.tsv` (sleutel⇥tekst); `build.py` bouwt ze in. Ontbrekende teksten vallen terug op Engels.
+
+## v2.2 — Poki-thumbnails
+- `?thumb=sq` rendert een vierkante thumbnailscène (deterministisch, seed 424242): Lumi schijnt op een grote bange laken-geest, twee kleinere geesten, snoep, titel bovenin.
+- `poki/horrorz_thumb_1080.png`: statische 1080×1080, full-bleed, geen afgeronde hoeken, één focuspunt, hoog contrast, geen #83FFE7.
+- `poki/horrorz_thumb_anim_1080.mp4`: 1080×1080, 60 fps, 5 s, H.264 zonder audio; begint op het statische beeld, 3 scènes (grote geest knalt → twee kleine geesten → nieuwe geesten verschijnen), naadloze loop.
+- Specs: https://sdk.poki.com/thumbnail.html en https://sdk.poki.com/animated-thumbnails

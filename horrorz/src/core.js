@@ -13,7 +13,7 @@ function wpick(list){let s=0;for(const e of list)s+=Math.max(0,e[1]);let r=Math.
 function todayKey(){const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
 function hashStr(s){let h=2166136261;for(let i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,16777619)}return h>>>0}
 function srng(seed){let s=(seed>>>0)||1;return()=>{s=(Math.imul(s,1664525)+1013904223)>>>0;return s/4294967296}}
-const TEST=/[?&]test=1/.test(location.search), THUMB=/[?&]thumb=1/.test(location.search);
+const TEST=/[?&]test=1/.test(location.search), THUMB=/[?&]thumb=/.test(location.search);
 
 /* ---------- Poki SDK (with offline fallback) ---------- */
 const SDK_STUB={init:()=>Promise.resolve(),gameLoadingFinished(){},gameplayStart(){},gameplayStop(){},commercialBreak:()=>Promise.resolve(),rewardedBreak:()=>new Promise(r=>setTimeout(()=>r(true),500))};

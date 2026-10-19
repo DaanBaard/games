@@ -175,7 +175,7 @@ function renderDark(tt){
   for(const b of BURSTS){const p=b.t/b.dur;cut(b.x,b.y,b.r*(.5+.5*p),.9*(1-p))}
   if(room.phase==='clear')for(const d of room.doors)cut(d.x,30,110,.8);
   if(room.chest)cut(room.chest.x,room.chest.y,70,.7);
-  for(const g of G){if(g.tp==='golden')cut(g.x,g.y,60,.75);else if(g.hidden)cut(g.x,g.y-10,80,.8);else if(g.tp==='pumpkin')cut(g.x,g.y-g.r*.4,g.r*2.2,.45)}
+  for(const g of G){if(window.__tglow)cut(g.x,g.y-g.r*.2,g.r*(g.lit?3.2:2.6),g.alpha*(g.lit?.7:.55));if(g.tp==='golden')cut(g.x,g.y,60,.75);else if(g.hidden)cut(g.x,g.y-10,80,.8);else if(g.tp==='pumpkin')cut(g.x,g.y-g.r*.4,g.r*2.2,.45)}
   for(const d of DROPS)if(d.kind==='big'||d.kind==='soul')cut(d.x,d.y,20,.35);
   c.globalCompositeOperation='source-over';
   if(room.tw==='fog'||room.vis===2){c.globalAlpha=room.tw==='fog'?.16:.07;const fp=pat(c,fogTex(),3);if(fp.setTransform){try{fp.setTransform(new DOMMatrix([3,0,0,3,(tt*14)%768,(tt*5)%768]))}catch(e){}}c.fillStyle=fp;c.fillRect(-WALL,-WALLT,ROOM_W+WALL*2,ROOM_H+WALL+WALLT);c.globalAlpha=1}

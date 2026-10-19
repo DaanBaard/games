@@ -261,6 +261,7 @@ addEventListener('wheel',e=>{if(state==='run')e.preventDefault()},{passive:false
 /* ---- main loop ---- */
 let lastT=0,hudOn=null,perfT=0,perfN=0;
 function frame(ts){
+  if(window.__hold){requestAnimationFrame(frame);return}
   const raw=Math.max(0,(ts-lastT)/1000)||0;const dt=Math.min(.05,raw);lastT=ts;
   if(!window.LOWQ&&(state==='run'||state==='home')&&raw<.5){perfT+=raw;perfN++;if(perfT>4){if(perfT/perfN>.034){window.LOWQ=true;resize();if(room)room.cv=null}perfT=0;perfN=0}}
   if(!inAd){
@@ -276,7 +277,41 @@ function frame(ts){
 }
 
 /* ---- boot ---- */
+function thumbSquare(){
+  Math.random=srng(424242);
+  document.body.classList.add('thumb','sq');setupDemo(0);state='home';show('home');
+  const cx=ROOM_W/2,cy=ROOM_H/2+30;
+  room.furn=room.furn.filter(f=>Math.hypot(f.x+f.w/2-cx,f.y+f.h/2-cy)>270&&f.y>cy-60);room.cv=null;room.chand=null;
+  k=W/430;camX=cx;camY=cy-35;P.x=cx-100;P.y=cy+108;window.__tglow=1;P.t=0;
+  const BIG={x:cx+55,y:cy+8},WA={x:cx-135,y:cy-55},WB={x:cx+150,y:cy+95};
+  const mk=(tp,p,r)=>{const g=mkGhost(tp,p.x,p.y,{spawnT:0});g.alpha=1;g.hp=100;g.spd=0;g.r=r||g.r;g.ph=p.x%6;g.tr=[];return g};
+  let big,wa,wb;const reset=()=>{big=mk('sheet',BIG,48);big.fear=60;wa=mk('wisp',WA,19);wb=mk('flitter',WB,17);G=[big,wa,wb]};reset();
+  const floor=[];for(let i=0;i<6;i++){const a=i*1.05+.3,d=26+i*7;floor.push({kind:i%3?'candy':'big',x:BIG.x-30+Math.cos(a)*d*1.6,y:BIG.y+92+Math.sin(a)*d*.5,vx:0,vy:0,z:0,vz:0,val:1,t:0,mag:false,col:CANDYCOLS[i%6],rot:i,still:true})}
+  DROPS=floor.slice();
+  const pop=g=>{g.dead=true;shake(5);BURSTS.push({x:g.x,y:g.y,r:g.r*4+60,t:0,dur:.5,col:hexRgb(g.eye).join(',')});sparks(g.x,g.y,g.eye,14,300);wisps(g.x,g.y,'#e8eef8',10);puff(g.x,g.y,g.r,'#9a96a8',5);
+    for(let i=0;i<(g===big?12:6);i++){const a=Math.random()*TAU,sp=120+Math.random()*160;DROPS.push({kind:i%4?'candy':'big',x:g.x,y:g.y,vx:Math.cos(a)*sp,vy:Math.sin(a)*sp,z:4,vz:180+Math.random()*120,val:1,t:0,mag:false,col:CANDYCOLS[i%6],rot:i})}};
+  const keys=[[0,BIG],[.85,BIG],[1.3,WA],[2.05,WA],[2.45,WB],[2.95,WB],[3.7,BIG],[5,BIG]];
+  const tgt=t=>{for(let i=0;i<keys.length-1;i++){const [t0,a]=keys[i],[t1,b]=keys[i+1];if(t<=t1){let u=(t-t0)/(t1-t0);u=u*u*(3-2*u);return{x:lerp(a.x,b.x,u),y:lerp(a.y,b.y,u)}}}return BIG};
+  const TL={t:0,f:{}};
+  window.TH={rewind(){TL.t=0;TL.f={};reset();DROPS=floor.slice();FX=[];BURSTS=[];TH.step(0)},step(dt){TL.t+=dt;if(TL.t>=5){TL.t-=5;TL.f={};reset();DROPS=floor.slice();FX=[];BURSTS=[]}const t=TL.t;gtime+=dt;
+    const p=tgt(t);P.aim=Math.atan2(p.y-P.y,p.x-P.x);R={beams:[{a:P.aim,len:340,ang:.33,dps:0,main:true}],ab:{},combo:0,lamp:1,drain:0};
+    for(const g of G){g.lit=!g.dead&&!!inBeam(R.beams[0],g.x,g.y,g.r);g.life+=dt;g.hitT=0}
+    if(t<.8)big.fear=60+t/.8*40;else if(!TL.f.b1){TL.f.b1=1;pop(big)}
+    if(t>1.3&&t<2.0)wa.fear=(t-1.3)/.7*100;else if(t>=2.0&&!TL.f.a){TL.f.a=1;pop(wa)}
+    if(t>2.45&&t<2.9)wb.fear=(t-2.45)/.45*100;else if(t>=2.9&&!TL.f.w){TL.f.w=1;pop(wb)}
+    if(t>=3.0&&!TL.f.r){TL.f.r=1;big=mk('sheet',BIG,48);big.alpha=0;wa=mk('wisp',WA,19);wa.alpha=0;wb=mk('flitter',WB,17);wb.alpha=0;G=[big,wa,wb]}
+    if(TL.f.r){big.alpha=clamp((t-3.0)/.8,0,1);wa.alpha=wb.alpha=clamp((t-3.6)/.9,0,1);big.fear=t<3.8?0:(t-3.8)/1.2*60}
+    G=G.filter(g=>!g.dead);
+    for(const g of G){g.trT-=dt;if(g.trT<=0){g.trT=.06;g.tr.push([g.x,g.y]);if(g.tr.length>5)g.tr.shift()}}
+    for(const d of DROPS){if(d.still)continue;d.t+=dt;d.rot+=dt*3;if(d.t<.7){d.x+=d.vx*dt;d.y+=d.vy*dt;d.vx*=.95;d.vy*=.95;d.vz-=600*dt;d.z=Math.max(0,d.z+d.vz*dt);if(d.z===0)d.vz=-d.vz*.4}
+      else{const dx=P.x-d.x,dy=P.y-d.y,dd=Math.hypot(dx,dy)||1,sp=300+d.t*600;d.x+=dx/dd*sp*dt;d.y+=dy/dd*sp*dt;if(dd<20)d.dead=true}}
+    DROPS=DROPS.filter(d=>!d.dead);
+    for(const f of FX){f.t+=dt;f.x+=f.vx*dt;f.y+=f.vy*dt;f.vx*=.94;f.vy*=.94}FX=FX.filter(f=>f.t<f.dur);
+    for(const b of BURSTS)b.t+=dt;BURSTS=BURSTS.filter(b=>b.t<b.dur);camX=cx;camY=cy-35}};
+  updDemo=function(dt){if(!window.__hold)TH.step(dt)};TH.step(0);
+}
 function thumbSetup(){
+  if(/thumb=sq/.test(location.search)){thumbSquare();return}
   document.body.classList.add('thumb');setupDemo(0);state='home';show('home');
   P.x=430;P.y=430;demo.t=0;k=W/640;camX=560;camY=300;
   G=[];const tps=['sheet','wisp','flitter','pumpkin','wisp','sheet'];const pos=[[650,330],[730,390],[600,250],[800,260],[420,250],[330,330]];
