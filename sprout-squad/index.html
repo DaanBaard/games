@@ -1,5 +1,5 @@
 <!doctype html>
-<!-- Sprout Squad v0.12 -->
+<!-- Sprout Squad v0.13 -->
 <html lang="en">
 <head>
 <meta charset="utf-8">
@@ -37,10 +37,14 @@ canvas#c{position:fixed;inset:0;width:100%;height:100%;display:block}
 .btn.ad::before{content:"";display:inline-block;width:22px;height:16px;margin-right:8px;vertical-align:-2px;border-radius:4px;background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 22 16'%3E%3Cpath d='M8 4l7 4-7 4z' fill='%233db3ff'/%3E%3C/svg%3E") center/contain no-repeat}
 .badge{position:absolute;top:-8px;right:-8px;background:#ff3d5a;color:#fff;border-radius:50%;width:24px;height:24px;font-size:15px;line-height:24px;display:none;animation:pulse 1s infinite}
 @keyframes pulse{50%{transform:scale(1.2)}}
-.panel{background:var(--card);border-radius:22px;padding:18px;box-shadow:0 8px 0 rgba(0,0,0,.2);max-width:520px;width:100%;text-align:center;max-height:calc(100% - 16px);overflow:auto;display:flex;flex-direction:column;gap:12px;align-items:center}
+.panel{background:var(--card);border-radius:22px;padding:18px;box-shadow:0 8px 0 rgba(0,0,0,.2);max-width:520px;width:100%;text-align:center;display:flex;flex-direction:column;gap:12px;align-items:center}
 .panel h2{font-size:32px}
 .panel{border:4px solid #fff;background:radial-gradient(circle at 50% 0,#fffef8,#fff1d6)}
 #levelup{overflow:hidden}
+.screen>.fit,.screen>.panel{flex-shrink:0;transform-origin:50% 50%}
+#home>.fit{width:auto;max-width:100%}
+@media (max-aspect-ratio:1/1){#home{padding-top:64px}}
+@media (max-height:520px) and (min-aspect-ratio:4/3){#home>.fit{display:grid;grid-template-columns:auto auto;column-gap:28px;row-gap:10px;justify-items:center;align-items:center;max-width:none}#home>.fit>*{grid-column:1}#home>.fit>.mlist{grid-column:2;grid-row:1/span 5;align-self:center;width:300px}}
 #levelup::before{content:"";position:absolute;left:50%;top:45%;width:170vmax;height:170vmax;margin:-85vmax 0 0 -85vmax;background:repeating-conic-gradient(rgba(255,230,120,.14) 0 9deg,transparent 9deg 18deg);animation:spin 40s linear infinite;pointer-events:none;z-index:-1}
 @keyframes spin{to{transform:rotate(360deg)}}
 .card.newc{background:linear-gradient(#fffaf0,#fff0c2);box-shadow:0 6px 0 rgba(0,0,0,.22),inset 0 0 0 3px #ffd23f}
@@ -130,15 +134,17 @@ canvas#c{position:fixed;inset:0;width:100%;height:100%;display:block}
 
 <div id="home" class="screen">
   <div class="coinpill">🪙 <b id="hCoins">0</b></div>
+  <div class="fit col">
   <div class="logo"><span class="l1">Sprout</span><span class="l2">Squad</span></div>
   <canvas id="hPrev" width="260" height="260"></canvas>
   <div class="stagebox"><button class="arrow" id="sPrev">◀</button><div class="stagename"><small id="sNum">Stage 1</small><b id="sName">Backyard</b></div><button class="arrow" id="sNext">▶</button></div>
   <button class="btn big green" id="playBtn" data-primary data-i18n="play">PLAY</button>
   <div class="row"><button class="btn blue" id="upBtn">💪 <span data-i18n="upgrades">Upgrades</span><span class="badge" id="upBadge">!</span></button><button class="btn purple" id="frBtn">🌱 <span data-i18n="friends">Friends</span><span class="badge" id="frBadge">!</span></button><button class="btn gray" id="langBtn" aria-label="Language">🌐 <span id="langCode">EN</span></button></div>
   <div class="mlist" id="hMissions"></div>
+  </div>
 </div>
 
-<div id="levelup" class="screen dim"><div class="title" data-i18n="levelUp">Level Up!</div><div class="sub" data-i18n="pick">Pick a power</div><div class="cards" id="cards"></div></div>
+<div id="levelup" class="screen dim"><div class="fit col"><div class="title" data-i18n="levelUp">Level Up!</div><div class="sub" data-i18n="pick">Pick a power</div><div class="cards" id="cards"></div></div></div>
 
 <div id="pause" class="screen dim"><div class="panel"><h2 data-i18n="paused">Paused</h2><button class="btn big green" id="resBtn" data-primary data-i18n="resume">Resume</button><button class="btn gray" id="quitBtn" data-i18n="home">Home</button></div></div>
 
@@ -170,7 +176,7 @@ canvas#c{position:fixed;inset:0;width:100%;height:100%;display:block}
 
 <script>
 'use strict';
-const VERSION='0.12';
+const VERSION='0.13';
 const $=id=>document.getElementById(id);
 const cv=$('c'),ctx=cv.getContext('2d');
 const rand=(a,b)=>a+Math.random()*(b-a),clamp=(v,a,b)=>v<a?a:v>b?b:v,TAU=Math.PI*2;
@@ -305,7 +311,13 @@ let state='loading',R=null,P=null,enemies=[],bullets=[],gems=[],parts=[],texts=[
 let homeCam=0,anim=0;
 const keys={};let joy=null;
 
-function show(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('on'));if(id)$(id).classList.add('on');$('ver').hidden=!id||id==='levelup'||id==='revive'}
+function show(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('on'));if(id)$(id).classList.add('on');$('ver').hidden=!id||id==='levelup'||id==='revive';fitScreens()}
+/* Menu's en panelen schalen mee met het venster (bijv. het Poki-iframe) i.p.v. af te snijden of een schuifbalk te tonen. */
+function fitScreens(){document.querySelectorAll('.screen.on>.fit,.screen.on>.panel').forEach(el=>{const sc=el.parentElement,cs=getComputedStyle(sc);
+  const aw=sc.clientWidth-parseFloat(cs.paddingLeft)-parseFloat(cs.paddingRight),ah=sc.clientHeight-parseFloat(cs.paddingTop)-parseFloat(cs.paddingBottom);
+  const k=Math.min(1,aw/Math.max(1,el.offsetWidth),ah/Math.max(1,el.offsetHeight));el.style.transform=k<.999?'scale('+k.toFixed(3)+')':''})}
+if(window.ResizeObserver){const ro=new ResizeObserver(()=>fitScreens());document.querySelectorAll('.screen,.screen>.fit,.screen>.panel').forEach(e=>ro.observe(e))}
+addEventListener('resize',fitScreens);
 function banner(t){const b=$('banner');b.textContent=t;b.classList.remove('go');void b.offsetWidth;b.classList.add('go')}
 function shake(a){if(R)R.shake=Math.max(R.shake,a)}
 function stats(){const sk=SKINS[S.skin],p=R.p;return{dmg:(1+.12*(p.power||0))*(1+.1*S.upg.power)*(sk.bonus||1),cd:1/(1+.1*(p.quick||0))*(R.sunT>0?.6:1),spd:175*(1+.08*(p.speed||0))*(1+.05*S.upg.speed),mag:75*(1+.3*(p.magnet||0))*(1+.15*S.upg.magnet),luck:1+.15*S.upg.luck}}
