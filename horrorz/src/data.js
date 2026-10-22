@@ -117,5 +117,5 @@ function ensureDaily(){
 function mProg(id,v,mode){if(!S.daily.list)return;for(const m of S.daily.list){if(m.id!==id||m.c)continue;if(mode==='max')m.p=Math.max(m.p,v);else m.p+=v;if(m.p>=m.n&&!m.ready){m.ready=true;missionReadyFx(m)}}}
 function missionsClaimable(){ensureDaily();let n=S.daily.list.filter(m=>m.p>=m.n&&!m.c).length;if(!S.daily.bonus&&S.daily.list.every(m=>m.c))n++;return n}
 function giftReady(){return S.gift.last!==todayKey()}
-function checkTrophies(){for(const tr of TROPHIES){if(!S.trophies[tr.id]&&tr.ok()){S.trophies[tr.id]=1;toast('trophy',t('trophyGet'),t('tr_'+tr.id));
+function checkTrophies(){for(const tr of TROPHIES){if(!S.trophies[tr.id]&&tr.ok()){S.trophies[tr.id]=1;measure('trophy',tr.id,'reached');toast('trophy',t('trophyGet'),t('tr_'+tr.id));
   const sk=SKINS.find(s=>s.tr===tr.id);if(sk)setTimeout(()=>toast('sk_'+sk.id,t('newSkin'),t('sk_'+sk.id)),900);save()}}}

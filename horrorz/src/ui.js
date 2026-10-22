@@ -11,6 +11,7 @@ function missionReadyFx(m){toast('scroll',t('missions'),missionText(m))}
 
 /* ---- home ---- */
 function goHome(){
+  if(R&&(state==='run'||state==='pause'))measure('run',runKey(),'quit');
   state='home';gpStop();MUS.mode='calm';trans=null;banner=null;hint=null;
   setupDemo(S.selCh);buildHome();show('home');
 }
@@ -37,7 +38,7 @@ function changeCh(d){const n=clamp(S.selCh+d,0,4);if(n===S.selCh)return;S.selCh=
 
 /* ---- panels ---- */
 let panelKind=null;
-function openPanel(kind){panelKind=kind;renderPanel();show('panel')}
+function openPanel(kind){panelKind=kind;measure('menu',kind,'open');renderPanel();show('panel')}
 function closePanel(){panelKind=null;buildHome();show('home')}
 function candyLine(){return '<div class="sec" style="display:flex;justify-content:space-between"><span></span><span style="color:#ffcf3a;font-size:18px">'+img('candy')+' '+S.candy+'</span></div>'}
 function renderPanel(){
@@ -77,16 +78,16 @@ function renderPanel(){
       h+='<div class="sec" style="margin-top:18px;opacity:.5">Horrorz v'+VERSION+'</div>';break}
   }
   b.innerHTML=h;
-  b.querySelectorAll('[data-buy]').forEach(el=>el.onclick=()=>{const it=SHOP.find(x=>x.id===el.dataset.buy),lv=S.shop[it.id],cost=it.cost[lv];if(lv>=it.max||S.candy<cost)return;S.candy-=cost;S.shop[it.id]++;save();SFX.coin();renderPanel()});
-  b.querySelectorAll('[data-skin]').forEach(el=>el.onclick=()=>{const sk=SKIN[el.dataset.skin];if(skinOwned(sk)){S.skin=sk.id;SFX.click()}else if(sk.cost&&S.candy>=sk.cost){S.candy-=sk.cost;S.skins.push(sk.id);S.skin=sk.id;SFX.coin()}else return;save();renderPanel()});
-  b.querySelectorAll('[data-beam]').forEach(el=>el.onclick=()=>{const bm=BEAMS.find(x=>x.id===el.dataset.beam);if(beamOwned(bm)){S.beam=bm.id;SFX.click()}else if(bm.cost&&S.candy>=bm.cost){S.candy-=bm.cost;S.beams.push(bm.id);S.beam=bm.id;SFX.coin()}else return;save();renderPanel()});
-  b.querySelectorAll('[data-claim]').forEach(el=>el.onclick=()=>{const m=S.daily.list[+el.dataset.claim];if(m.c||m.p<m.n)return;m.c=true;addCandy(m.rw);SFX.coin();save();renderPanel()});
-  b.querySelectorAll('[data-bonus]').forEach(el=>el.onclick=()=>{if(S.daily.bonus)return;S.daily.bonus=true;addCandy(60);SFX.jackpot();save();renderPanel()});
-  b.querySelectorAll('[data-gift]').forEach(el=>el.onclick=()=>{if(!giftReady())return;const g=GIFTS[S.gift.n%7];
+  b.querySelectorAll('[data-buy]').forEach(el=>el.onclick=()=>{const it=SHOP.find(x=>x.id===el.dataset.buy),lv=S.shop[it.id],cost=it.cost[lv];if(lv>=it.max||S.candy<cost)return;S.candy-=cost;S.shop[it.id]++;measure('shop',it.id+'-'+(lv+1),'bought');save();SFX.coin();renderPanel()});
+  b.querySelectorAll('[data-skin]').forEach(el=>el.onclick=()=>{const sk=SKIN[el.dataset.skin];if(skinOwned(sk)){S.skin=sk.id;SFX.click();measure('skin',sk.id,'equipped')}else if(sk.cost&&S.candy>=sk.cost){S.candy-=sk.cost;S.skins.push(sk.id);S.skin=sk.id;SFX.coin();measure('skin',sk.id,'bought')}else return;save();renderPanel()});
+  b.querySelectorAll('[data-beam]').forEach(el=>el.onclick=()=>{const bm=BEAMS.find(x=>x.id===el.dataset.beam);if(beamOwned(bm)){S.beam=bm.id;SFX.click();measure('beam',bm.id,'equipped')}else if(bm.cost&&S.candy>=bm.cost){S.candy-=bm.cost;S.beams.push(bm.id);S.beam=bm.id;SFX.coin();measure('beam',bm.id,'bought')}else return;save();renderPanel()});
+  b.querySelectorAll('[data-claim]').forEach(el=>el.onclick=()=>{const m=S.daily.list[+el.dataset.claim];if(m.c||m.p<m.n)return;m.c=true;measure('mission',m.id,'claimed');addCandy(m.rw);SFX.coin();save();renderPanel()});
+  b.querySelectorAll('[data-bonus]').forEach(el=>el.onclick=()=>{if(S.daily.bonus)return;S.daily.bonus=true;measure('mission','all-daily','claimed');addCandy(60);SFX.jackpot();save();renderPanel()});
+  b.querySelectorAll('[data-gift]').forEach(el=>el.onclick=()=>{if(!giftReady())return;const g=GIFTS[S.gift.n%7];measure('gift','day'+(S.gift.n%7+1),'claimed');
     if(typeof g==='number'){addCandy(g);toast('gift',t('gift'),t('gotCandy',{n:g}))}else{if(!S.skins.includes(g)){S.skins.push(g);toast('sk_'+g,t('newSkin'),t('sk_'+g))}else{addCandy(150);toast('gift',t('gift'),t('gotCandy',{n:150}))}}
     S.gift.n++;S.gift.last=todayKey();SFX.jackpot();save();renderPanel()});
   b.querySelectorAll('[data-tog]').forEach(el=>el.onclick=()=>{const k2=el.dataset.tog;S[k2]=!S[k2];save();applyVolume();updMuteBtn();renderPanel()});
-  b.querySelectorAll('[data-lang]').forEach(el=>el.onclick=()=>{S.lang=el.dataset.lang;setLang(S.lang);save();applyTexts();renderPanel()});
+  b.querySelectorAll('[data-lang]').forEach(el=>el.onclick=()=>{S.lang=el.dataset.lang;setLang(S.lang);measure('lang',S.lang,'selected');save();applyTexts();renderPanel()});
 }
 function addCandy(n){S.candy+=n;S.total+=n;checkTrophies()}
 
@@ -101,7 +102,8 @@ function rollCards(boost){
   return out}
 function openCards(){
   state='cards';R.pendingCards=Math.max(0,R.pendingCards-1);R.cardTitle=R.cardBoost>0?'pickPower':'levelUp';
-  cardList=rollCards(R.cardBoost);R.cardBoost=0;renderCards();show('cards');SFX.card();cardsAt=performance.now();
+  cardList=rollCards(R.cardBoost);R.cardBoost=0;renderCards();show('cards');SFX.card();cardsAt=performance.now();if(R.lvl<=25&&R.lvEv!==R.lvl){R.lvEv=R.lvl;measure('levelup','level'+R.lvl,'show')}
+  if(R.adReroll)measure('button','reward-reroll','visible');
   stick.on=false;for(const kk in KEY)KEY[kk]=false;
 }
 function openShrine(){
@@ -120,6 +122,7 @@ function renderCards(){
 }
 function pickCard(i){
   if(state!=='cards'||performance.now()-cardsAt<280)return;const a=cardList[i];if(!a)return;
+  measure(a.offer?'shrine':'card',a.id,'picked');
   if(a.offer){SFX.pick();BURSTS.push({x:P.x,y:P.y,r:200,t:0,dur:.6,col:'255,210,150'});
     if(a.id==='power'){P.hearts=Math.max(1,P.hearts-1);flash(160,20,30,.3);R.pendingCards++;R.cardBoost=1}
     else if(a.id==='heal'){P.hearts=P.maxH}
@@ -134,7 +137,7 @@ function pickCard(i){
 }
 
 /* ---- pause ---- */
-function pauseGame(){if(state!=='run')return;state='pause';gpStop();buildPause();show('pause')}
+function pauseGame(){if(state!=='run')return;measure('button','pause','interact');state='pause';gpStop();buildPause();show('pause')}
 function resumeGame(){if(state!=='pause')return;state='run';show(null);gpStart();lastT=performance.now()}
 function buildPause(){
   $('paTitle').textContent=t('paused');$('resumeBtn').textContent=t('resume');$('quitBtn').textContent=t('home');
@@ -185,12 +188,13 @@ function showOver(win,firstClear){
     '</div>';
   show('over');
   countUp($('earnN'),R.banked);
-  const rv=$('revBtn');if(rv)rv.onclick=()=>{rv.disabled=true;rewarded().then(ok=>{if(!ok){toast('heart',t('revive'),t('noAd'));rv.disabled=false;return}
+  if($('revBtn'))measure('button','reward-revive','visible');if($('dblBtn'))measure('button','reward-double','visible');
+  const rv=$('revBtn');if(rv)rv.onclick=()=>{rv.disabled=true;measure('button','reward-revive','interact');rewarded().then(ok=>{if(ok)measure('reward','revive','granted');if(!ok){toast('heart',t('revive'),t('noAd'));rv.disabled=false;return}
     R.revived=true;P.hearts=P.maxH;P.inv=2.5;slowT=0;freezeT=0;state='run';show(null);scareAll(320,1);gpStart();lastT=performance.now()})};
-  const db=$('dblBtn');if(db)db.onclick=()=>{db.disabled=true;rewarded().then(ok=>{if(!ok){toast('candy',t('double'),t('noAd'));db.disabled=false;return}
+  const db=$('dblBtn');if(db)db.onclick=()=>{db.disabled=true;measure('button','reward-double','interact');rewarded().then(ok=>{if(ok)measure('reward','double','granted');if(!ok){toast('candy',t('double'),t('noAd'));db.disabled=false;return}
     R.doubled=true;addCandy(R.banked);R.banked*=2;save();SFX.jackpot();countUp($('earnN'),R.banked);db.remove()})};
-  $('overMain').onclick=()=>{if(win&&R.ch<4&&R.mode==='story'){S.selCh=R.ch+1;save();startFlow('story',R.ch+1)}else startFlow(R.mode,R.ch)};
-  $('overHome').onclick=()=>{SFX.click();goHome()};
+  $('overMain').onclick=()=>{measure('button',win&&R.ch<4&&R.mode==='story'?'next-chapter':'play-again','interact');if(win&&R.ch<4&&R.mode==='story'){S.selCh=R.ch+1;save();startFlow('story',R.ch+1)}else startFlow(R.mode,R.ch)};
+  $('overHome').onclick=()=>{measure('button','over-home','interact');SFX.click();goHome()};
 }
 function countUp(el,to){if(!el)return;const from=+el.textContent||0,t0=performance.now();const step=()=>{const p=Math.min(1,(performance.now()-t0)/700);el.textContent=Math.round(from+(to-from)*(1-Math.pow(1-p,3)));if(p<1)requestAnimationFrame(step)};step()}
 
@@ -213,13 +217,13 @@ function bindUI(){
   $('pClose').onclick=()=>{SFX.click();closePanel()};
   $('panel').addEventListener('pointerdown',e=>{if(e.target===$('panel'))closePanel()});
   $('pauseBtn').onclick=()=>pauseGame();
-  $('muteBtn').onclick=()=>{initAudio();S.muted=!S.muted;save();applyVolume();updMuteBtn()};
+  $('muteBtn').onclick=()=>{initAudio();S.muted=!S.muted;save();measure('button',S.muted?'mute':'unmute','interact');applyVolume();updMuteBtn()};
   $('resumeBtn').onclick=()=>resumeGame();
   $('quitBtn').onclick=()=>{bankCandy();save();goHome()};
   $('sndToggle').onclick=()=>{S.muted=!S.muted;save();applyVolume();updMuteBtn();buildPause()};
   $('musToggle').onclick=()=>{S.music=!S.music;save();applyVolume();buildPause()};
-  $('rerollBtn').onclick=()=>{if(R.rerolls<=0)return;R.rerolls--;cardList=rollCards(0);SFX.card();renderCards();cardsAt=performance.now()-200};
-  $('adRerollBtn').onclick=()=>{if(!R.adReroll)return;$('adRerollBtn').disabled=true;rewarded().then(ok=>{$('adRerollBtn').disabled=false;if(!ok){toast('reroll',t('adReroll'),t('noAd'));return}R.adReroll=false;cardList=rollCards(.3);SFX.card();renderCards();cardsAt=performance.now()-200})};
+  $('rerollBtn').onclick=()=>{if(R.rerolls<=0)return;R.rerolls--;measure('button','reroll','interact');cardList=rollCards(0);SFX.card();renderCards();cardsAt=performance.now()-200};
+  $('adRerollBtn').onclick=()=>{if(!R.adReroll)return;$('adRerollBtn').disabled=true;measure('button','reward-reroll','interact');rewarded().then(ok=>{if(ok)measure('reward','reroll','granted');$('adRerollBtn').disabled=false;if(!ok){toast('reroll',t('adReroll'),t('noAd'));return}R.adReroll=false;cardList=rollCards(.3);SFX.card();renderCards();cardsAt=performance.now()-200})};
   document.querySelectorAll('img[data-icon]').forEach(el=>el.src=iconURL(el.dataset.icon));
 }
 
@@ -323,9 +327,10 @@ function thumbSetup(){
 }
 function boot(){
   loadSave();setLang(S.lang||detectLang());resize();
+  if(!THUMB){measure('player',S.st&&S.st.runs>0?'returning':'new','session');measure('lang',LANGS[LI],'session')}
   buildLogo($('logo'));buildLogo($('logoL'));bindUI();updMuteBtn();
   $('lfill').style.width='55%';
-  if(TEST)window.T={get R(){return R},openShrine,get P(){return P},get G(){return G},get state(){return state},get room(){return room},get S(){return S},startFlow,pickCard,goHome,openPanel,showOver,update,hurtPlayer,popGhost,setSkip:v=>{window.__skip=v}};
+  if(TEST)window.T={get R(){return R},openShrine,get P(){return P},get G(){return G},get state(){return state},get room(){return room},get S(){return S},EV:EVLOG,startFlow,pickCard,goHome,openPanel,showOver,update,hurtPlayer,popGhost,setSkip:v=>{window.__skip=v}};
   Promise.resolve(window.__pokiReady).catch(()=>{}).then(()=>{if(window.PokiSDK)SDK=window.PokiSDK;return SDK.init()}).catch(()=>{}).then(()=>{
     if(!S.lang){setLang(detectLang())}
     $('lfill').style.width='100%';try{SDK.gameLoadingFinished()}catch(e){}

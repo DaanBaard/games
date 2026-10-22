@@ -21,7 +21,13 @@ let SDK=window.PokiSDK||SDK_STUB;
 let gpOn=false,inAd=false,adMuted=false;
 function gpStart(){if(!gpOn){gpOn=true;try{SDK.gameplayStart()}catch(e){}}}
 function gpStop(){if(gpOn){gpOn=false;try{SDK.gameplayStop()}catch(e){}}}
-function measure(c,w,a){try{if(window.PokiSDK&&PokiSDK.measure)PokiSDK.measure(c,w,a)}catch(e){}}
+/* Poki game events: measure(category, what, action). start/complete/fail = progress funnel, visible/interact = interaction. */
+const EVLOG=[];
+function measure(c,w,a){c=String(c);w=String(w);a=String(a);if(TEST)EVLOG.push(c+'|'+w+'|'+a);try{if(window.PokiSDK&&PokiSDK.measure)PokiSDK.measure(c,w,a)}catch(e){}}
+const EV1={};function measure1(c,w,a){const k=c+'|'+w+'|'+a;if(EV1[k])return;EV1[k]=1;measure(c,w,a)}
+/* actieve speeltijd per sessie (alleen tijdens gameplay) */
+let playSec=0;const PLAY_MS=[1,2,3,5,7,10,15,20,30,45,60];
+setInterval(()=>{if(!gpOn||inAd||document.hidden)return;playSec++;for(const m of PLAY_MS)if(playSec===m*60)measure('playtime','session','m'+m)},1000);
 function setAdMute(b){adMuted=b;applyVolume()}
 function commercial(){gpStop();inAd=true;setAdMute(true);let p;try{p=SDK.commercialBreak(()=>setAdMute(true))}catch(e){p=null}
   return Promise.resolve(p).catch(()=>{}).then(()=>{inAd=false;setAdMute(false)})}

@@ -102,3 +102,37 @@ Engels, Nederlands, Duits, Frans, Spaans, Portugees, Italiaans, Pools, Turks, Ru
 - `poki/horrorz_thumb_1080.png`: statische 1080×1080, full-bleed, geen afgeronde hoeken, één focuspunt, hoog contrast, geen #83FFE7.
 - `poki/horrorz_thumb_anim_1080.mp4`: 1080×1080, 60 fps, 5 s, H.264 zonder audio; begint op het statische beeld, 3 scènes (grote geest knalt → twee kleine geesten → nieuwe geesten verschijnen), naadloze loop.
 - Specs: https://sdk.poki.com/thumbnail.html en https://sdk.poki.com/animated-thumbnails
+
+## v2.3 — Poki game events (`PokiSDK.measure(category, what, action)`)
+Zelfde aanpak als Sprout Squad; namen blijven stabiel tussen versies. Volgens https://sdk.poki.com/game-events: `start/complete/fail` = funnel, `visible/interact` = interactie, overige acties = % gameplays dat het bereikt. Advertenties meet Poki zelf.
+
+| category | what | action | wanneer |
+|---|---|---|---|
+| run | ch1–ch5 / night | start, complete, fail, quit | run begint / hoofdstuk gehaald / flauwgevallen / via pauze naar home |
+| level | ch1-r1 … ch5-r10 / night-r1 … night-r60 | start, complete, fail | elke kamer (funnel per kamer) |
+| roomtype | waves, swarm, ritual, survive, hunt, poltergeist, shrine, mini, boss | start, complete, fail | welke kamertypes spelers laten afhaken |
+| twist | fog, flicker, storm, haunt, cold, dark | start, complete, fail | idem voor twists |
+| death | ch1… / night | r<kamer>-w<golf> of r<kamer>-boss/mini | precies waar spelers sneuvelen |
+| tutorial | intro / move / first-pop | start, complete, fail | eerste run hoofdstuk 1 |
+| runtime | ch1… / night | s60, s120, s180, s300, s420, s600, s900 | speelduur binnen één run |
+| playtime | session | m1, m2, m3, m5, m7, m10, m15, m20, m30, m45, m60 | actieve speeltijd per sessie (doel ≥ 7 min) |
+| milestone | run1–run10, clear-ch1… | reached | hoeveelste run, eerste keer hoofdstuk gehaald |
+| levelup | level2–level25 | show | XP-niveau in een run |
+| card / shrine | id van kaart/offer | picked | welke upgrades gekozen worden |
+| door | card, chest, candy, heart, boss, shrine | picked | deurkeuze na een kamer |
+| combo | x5, x10, x20, x35, x50 | reached | 1× per sessie |
+| flawless | kamertype | reached | kamer zonder schade |
+| perk | angel | used | |
+| trophy | trophy-id | reached | |
+| button | reward-revive, reward-double, reward-reroll | visible, interact | rewarded-knoppen |
+| reward | revive, double, reroll | granted | rewarded ad afgekeken |
+| button | reroll, pause, play-again, next-chapter, over-home, mute, unmute | interact | |
+| menu | shop, wardrobe, missions, gift, trophies, book, settings | open | |
+| shop | <upgrade>-<niveau> | bought | |
+| skin / beam | id | bought, equipped | |
+| mission | id / all-daily | claimed | |
+| gift | day1–day7 | claimed | |
+| player | new / returning | session | bij opstarten |
+| lang | taalcode | session, selected | gedetecteerde / gekozen taal |
+
+Testen: `?test=1` → `T.EV` bevat alle events van de sessie.
