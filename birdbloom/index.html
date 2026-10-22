@@ -43,7 +43,20 @@ function mixHex(a, b, t) {
 }
 
 // ---------- language
-const LANG = (navigator.language || 'en').toLowerCase().startsWith('nl') ? 'nl' : 'en';
+const LANGS = { en: 'English', pt: 'Português', es: 'Español', fr: 'Français', de: 'Deutsch', it: 'Italiano', tr: 'Türkçe', ru: 'Русский', pl: 'Polski', nl: 'Nederlands', ja: '日本語', ko: '한국어', zh: '中文' };
+const LANG_KEY = 'birdbloom_lang';
+function detectLang() {
+  const list = (navigator.languages && navigator.languages.length ? navigator.languages : [navigator.language || 'en']);
+  for (const l of list) { const c = String(l || '').slice(0, 2).toLowerCase(); if (LANGS[c]) return c; }
+  return 'en';
+}
+let LANG = (() => { try { const l = localStorage.getItem(LANG_KEY); if (l && LANGS[l]) return l; } catch (e) {} return detectLang(); })();
+function setLang(l) {
+  if (!LANGS[l]) return; LANG = l; document.documentElement.lang = l;
+  try { localStorage.setItem(LANG_KEY, l); } catch (e) {}
+}
+function nextLang() { const ks = Object.keys(LANGS); return ks[(ks.indexOf(LANG) + 1) % ks.length]; }
+document.documentElement.lang = LANG;
 const STR = {
   en: {
     catch: 'Catch the little clouds!', rain: 'Float over the dry field', harvest: 'Harvest the crops!', build: 'Build',
@@ -68,6 +81,147 @@ const STR = {
     f_blueberry: 'Bosbessenveld', f_melon: 'Meloenveld', f_tulip: 'Regenboogtulpen',
     p_cap: 'Extra wolkplek', p_speed: 'Snellere wind', p_spring: 'Mistbron', p_bee: 'Hulpbij', p_bridge: 'Brug', p_fountain: 'Regenboogfontein',
     z0: 'Weide-eiland', z1: 'Boomgaard-eiland', z2: 'Bessenheuvels', z3: 'Regenboogtop', slot: '+1 wolkplek', fast: 'Sneller!', golden: 'Gouden wolk!'
+  },
+  fr: {
+    catch: "Attrape les petits nuages !", rain: "Survole le champ sec", harvest: "Récolte les cultures !",
+    build: "Construire", full: "PLEIN !", paused: "Pause", resume: "Reprendre", sound: "Son", music: "Musique",
+    on: "OUI", off: "NON", newIsland: "Nouvelle île !", cont: "Continuer", bonus: "Bonus", x2title: "Pièces doublées !",
+    x2sub: "pendant 90 secondes", nothanks: "Non merci", watch: "Voir la vidéo", drag: "Glisse pour voler",
+    keys: "ou utilise", lucky: "CHANCE !", combo: "COMBO", welcome: "Bon retour !",
+    bigger: "Les nuages peuvent grandir !", collectHive: "Récupère les pièces de tes abeilles !",
+    restored: "Le ciel est restauré !", thanks: "Merci d'avoir joué à cette première version !",
+    f_carrot: "Champ de carottes", f_sunflower: "Champ de tournesols", f_strawberry: "Champ de fraises",
+    f_pumpkin: "Champ de citrouilles", f_blueberry: "Champ de myrtilles", f_melon: "Champ de melons",
+    f_tulip: "Tulipes arc-en-ciel", p_cap: "Place de nuage en plus", p_speed: "Vent plus rapide",
+    p_spring: "Source de brume", p_bee: "Abeille assistante", p_bridge: "Pont", p_fountain: "Fontaine arc-en-ciel",
+    z0: "Île des Prés", z1: "Île du Verger", z2: "Collines aux Baies", z3: "Pic Arc-en-ciel", slot: "+1 place de nuage",
+    fast: "Plus vite !", golden: "Nuage doré !"
+  },
+  de: {
+    catch: "Fang die Wölkchen!", rain: "Schwebe über das trockene Feld", harvest: "Ernte die Pflanzen!", build: "Bauen",
+    full: "VOLL!", paused: "Pause", resume: "Weiter", sound: "Sound", music: "Musik", on: "AN", off: "AUS",
+    newIsland: "Neue Insel!", cont: "Weiter", bonus: "Bonus", x2title: "Doppelte Münzen!", x2sub: "90 Sekunden lang",
+    nothanks: "Nein, danke", watch: "Video ansehen", drag: "Ziehen zum Fliegen", keys: "oder nutze", lucky: "GLÜCK!",
+    combo: "KOMBO", welcome: "Willkommen zurück!", bigger: "Wolken können größer werden!",
+    collectHive: "Hol dir die Münzen deiner Bienen!", restored: "Der Himmel ist wiederhergestellt!",
+    thanks: "Danke fürs Spielen dieser ersten Version!", f_carrot: "Karottenfeld", f_sunflower: "Sonnenblumenfeld",
+    f_strawberry: "Erdbeerfeld", f_pumpkin: "Kürbisfeld", f_blueberry: "Blaubeerfeld", f_melon: "Melonenfeld",
+    f_tulip: "Regenbogentulpen", p_cap: "Extra Wolkenplatz", p_speed: "Schnellerer Wind", p_spring: "Nebelquelle",
+    p_bee: "Helferbiene", p_bridge: "Brücke", p_fountain: "Regenbogenbrunnen", z0: "Wieseninsel", z1: "Obstgarteninsel",
+    z2: "Beerenhügel", z3: "Regenbogengipfel", slot: "+1 Wolkenplatz", fast: "Schneller!", golden: "Goldene Wolke!"
+  },
+  es: {
+    catch: "¡Atrapa las nubecitas!", rain: "Vuela sobre el campo seco", harvest: "¡Cosecha los cultivos!",
+    build: "Construir", full: "¡LLENO!", paused: "Pausa", resume: "Continuar", sound: "Sonido", music: "Música",
+    on: "SÍ", off: "NO", newIsland: "¡Nueva isla!", cont: "Continuar", bonus: "Bonus", x2title: "¡Monedas dobles!",
+    x2sub: "durante 90 segundos", nothanks: "No, gracias", watch: "Ver video", drag: "Arrastra para volar",
+    keys: "o usa", lucky: "¡SUERTE!", combo: "COMBO", welcome: "¡Bienvenido de nuevo!",
+    bigger: "¡Las nubes pueden crecer más!", collectHive: "¡Recoge las monedas de tus abejas!",
+    restored: "¡El cielo está restaurado!", thanks: "¡Gracias por jugar esta primera versión!",
+    f_carrot: "Campo de zanahorias", f_sunflower: "Campo de girasoles", f_strawberry: "Campo de fresas",
+    f_pumpkin: "Campo de calabazas", f_blueberry: "Campo de arándanos", f_melon: "Campo de melones",
+    f_tulip: "Tulipanes arcoíris", p_cap: "Hueco extra de nube", p_speed: "Viento más rápido",
+    p_spring: "Fuente de niebla", p_bee: "Abeja ayudante", p_bridge: "Puente", p_fountain: "Fuente arcoíris",
+    z0: "Isla Pradera", z1: "Isla Huerto", z2: "Colinas de Bayas", z3: "Cima Arcoíris", slot: "+1 hueco de nube",
+    fast: "¡Más rápido!", golden: "¡Nube dorada!"
+  },
+  it: {
+    catch: "Acchiappa le nuvolette!", rain: "Vola sopra il campo secco", harvest: "Fai il raccolto!",
+    build: "Costruisci", full: "PIENO!", paused: "Pausa", resume: "Riprendi", sound: "Suoni", music: "Musica", on: "SÌ",
+    off: "NO", newIsland: "Nuova isola!", cont: "Continua", bonus: "Bonus", x2title: "Monete doppie!",
+    x2sub: "per 90 secondi", nothanks: "No, grazie", watch: "Guarda video", drag: "Trascina per volare",
+    keys: "oppure usa", lucky: "FORTUNA!", combo: "COMBO", welcome: "Bentornato!", bigger: "Le nuvole possono crescere!",
+    collectHive: "Raccogli le monete delle api!", restored: "Il cielo è tornato!",
+    thanks: "Grazie per aver giocato a questa prima versione!", f_carrot: "Campo di carote",
+    f_sunflower: "Campo di girasoli", f_strawberry: "Campo di fragole", f_pumpkin: "Campo di zucche",
+    f_blueberry: "Campo di mirtilli", f_melon: "Campo di meloni", f_tulip: "Tulipani arcobaleno",
+    p_cap: "Posto nuvola extra", p_speed: "Vento più veloce", p_spring: "Sorgente di nebbia", p_bee: "Ape aiutante",
+    p_bridge: "Ponte", p_fountain: "Fontana arcobaleno", z0: "Isola dei Prati", z1: "Isola del Frutteto",
+    z2: "Colline dei Frutti", z3: "Vetta Arcobaleno", slot: "+1 posto nuvola", fast: "Più veloce!",
+    golden: "Nuvola d'oro!"
+  },
+  pt: {
+    catch: "Pegue as nuvenzinhas!", rain: "Voe sobre o campo seco", harvest: "Colha as plantações!", build: "Construir",
+    full: "CHEIO!", paused: "Pausado", resume: "Continuar", sound: "Som", music: "Música", on: "SIM", off: "NÃO",
+    newIsland: "Nova ilha!", cont: "Continuar", bonus: "Bônus", x2title: "Moedas em dobro!", x2sub: "por 90 segundos",
+    nothanks: "Não, obrigado", watch: "Ver vídeo", drag: "Arraste para voar", keys: "ou use", lucky: "SORTE!",
+    combo: "COMBO", welcome: "Bem-vindo de volta!", bigger: "As nuvens podem ficar maiores!",
+    collectHive: "Pegue as moedas das suas abelhas!", restored: "O céu foi restaurado!",
+    thanks: "Obrigado por jogar esta primeira versão!", f_carrot: "Campo de cenouras", f_sunflower: "Campo de girassóis",
+    f_strawberry: "Campo de morangos", f_pumpkin: "Campo de abóboras", f_blueberry: "Campo de mirtilos",
+    f_melon: "Campo de melões", f_tulip: "Tulipas arco-íris", p_cap: "Vaga extra de nuvem", p_speed: "Vento mais rápido",
+    p_spring: "Fonte de névoa", p_bee: "Abelha ajudante", p_bridge: "Ponte", p_fountain: "Fonte arco-íris",
+    z0: "Ilha do Prado", z1: "Ilha do Pomar", z2: "Colinas das Frutinhas", z3: "Pico Arco-íris",
+    slot: "+1 vaga de nuvem", fast: "Mais rápido!", golden: "Nuvem dourada!"
+  },
+  tr: {
+    catch: "Küçük bulutları yakala!", rain: "Kuru tarlanın üstünden uç", harvest: "Ürünleri hasat et!", build: "İnşa et",
+    full: "DOLU!", paused: "Duraklatıldı", resume: "Devam", sound: "Ses", music: "Müzik", on: "AÇIK", off: "KAPALI",
+    newIsland: "Yeni ada!", cont: "Devam", bonus: "Bonus", x2title: "İki kat para!", x2sub: "90 saniye boyunca",
+    nothanks: "Hayır, teşekkürler", watch: "Video izle", drag: "Uçmak için sürükle", keys: "ya da kullan",
+    lucky: "ŞANS!", combo: "KOMBO", welcome: "Tekrar hoş geldin!", bigger: "Bulutlar daha da büyüyebilir!",
+    collectHive: "Arılarının paralarını topla!", restored: "Gökyüzü kurtarıldı!",
+    thanks: "Bu ilk sürümü oynadığın için teşekkürler!", f_carrot: "Havuç tarlası", f_sunflower: "Ayçiçeği tarlası",
+    f_strawberry: "Çilek tarlası", f_pumpkin: "Balkabağı tarlası", f_blueberry: "Yaban mersini tarlası",
+    f_melon: "Kavun tarlası", f_tulip: "Gökkuşağı laleleri", p_cap: "Ekstra bulut yeri", p_speed: "Daha hızlı rüzgâr",
+    p_spring: "Sis kaynağı", p_bee: "Yardımcı arı", p_bridge: "Köprü", p_fountain: "Gökkuşağı çeşmesi",
+    z0: "Çayır Adası", z1: "Meyve Bahçesi Adası", z2: "Böğürtlen Tepeleri", z3: "Gökkuşağı Zirvesi",
+    slot: "+1 bulut yeri", fast: "Daha hızlı!", golden: "Altın bulut!"
+  },
+  ru: {
+    catch: "Лови облачка!", rain: "Пролети над сухим полем", harvest: "Собери урожай!", build: "Построить",
+    full: "ПОЛНО!", paused: "Пауза", resume: "Продолжить", sound: "Звук", music: "Музыка", on: "ВКЛ", off: "ВЫКЛ",
+    newIsland: "Новый остров!", cont: "Дальше", bonus: "Бонус", x2title: "Двойные монеты!", x2sub: "на 90 секунд",
+    nothanks: "Нет, спасибо", watch: "Смотреть видео", drag: "Тяни, чтобы лететь", keys: "или используй",
+    lucky: "УДАЧА!", combo: "КОМБО", welcome: "С возвращением!", bigger: "Облака могут стать больше!",
+    collectHive: "Забери монеты пчёл!", restored: "Небо восстановлено!", thanks: "Спасибо, что сыграл в первую версию!",
+    f_carrot: "Морковное поле", f_sunflower: "Поле подсолнухов", f_strawberry: "Клубничное поле",
+    f_pumpkin: "Тыквенное поле", f_blueberry: "Черничное поле", f_melon: "Дынное поле", f_tulip: "Радужные тюльпаны",
+    p_cap: "Ещё место для облака", p_speed: "Быстрый ветер", p_spring: "Источник тумана", p_bee: "Пчела-помощник",
+    p_bridge: "Мост", p_fountain: "Радужный фонтан", z0: "Луговой остров", z1: "Садовый остров", z2: "Ягодные холмы",
+    z3: "Радужная вершина", slot: "+1 место для облака", fast: "Быстрее!", golden: "Золотое облако!"
+  },
+  pl: {
+    catch: "Łap chmurki!", rain: "Przeleć nad suchym polem", harvest: "Zbierz plony!", build: "Zbuduj", full: "PEŁNO!",
+    paused: "Pauza", resume: "Wznów", sound: "Dźwięk", music: "Muzyka", on: "WŁ", off: "WYŁ", newIsland: "Nowa wyspa!",
+    cont: "Dalej", bonus: "Bonus", x2title: "Podwójne monety!", x2sub: "przez 90 sekund", nothanks: "Nie, dzięki",
+    watch: "Obejrzyj wideo", drag: "Przeciągnij, aby latać", keys: "lub użyj", lucky: "SZCZĘŚCIE!", combo: "KOMBO",
+    welcome: "Witaj ponownie!", bigger: "Chmury mogą rosnąć!", collectHive: "Odbierz monety od pszczół!",
+    restored: "Niebo odnowione!", thanks: "Dzięki za grę w tę pierwszą wersję!", f_carrot: "Pole marchewek",
+    f_sunflower: "Pole słoneczników", f_strawberry: "Pole truskawek", f_pumpkin: "Pole dyń", f_blueberry: "Pole borówek",
+    f_melon: "Pole melonów", f_tulip: "Tęczowe tulipany", p_cap: "Dodatkowe miejsce na chmurę", p_speed: "Szybszy wiatr",
+    p_spring: "Źródło mgły", p_bee: "Pszczoła pomocnica", p_bridge: "Most", p_fountain: "Tęczowa fontanna",
+    z0: "Wyspa Łąk", z1: "Wyspa Sadów", z2: "Jagodowe Wzgórza", z3: "Tęczowy Szczyt", slot: "+1 miejsce na chmurę",
+    fast: "Szybciej!", golden: "Złota chmura!"
+  },
+  ja: {
+    catch: "小さな雲をつかまえよう！", rain: "かわいた畑の上を飛ぼう", harvest: "作物を収穫しよう！", build: "建てる", full: "いっぱい！", paused: "ポーズ",
+    resume: "再開", sound: "効果音", music: "音楽", on: "オン", off: "オフ", newIsland: "新しい島！", cont: "次へ", bonus: "ボーナス",
+    x2title: "コイン2倍！", x2sub: "90秒間", nothanks: "けっこうです", watch: "動画を見る", drag: "ドラッグで飛ぶ", keys: "またはキーボード",
+    lucky: "ラッキー！", combo: "コンボ", welcome: "おかえり！", bigger: "雲はもっと大きくなる！", collectHive: "ハチのコインを集めよう！",
+    restored: "空がよみがえった！", thanks: "最初のバージョンを遊んでくれてありがとう！", f_carrot: "ニンジン畑", f_sunflower: "ヒマワリ畑",
+    f_strawberry: "イチゴ畑", f_pumpkin: "カボチャ畑", f_blueberry: "ブルーベリー畑", f_melon: "メロン畑", f_tulip: "にじいろチューリップ",
+    p_cap: "雲の枠を追加", p_speed: "風をはやく", p_spring: "霧の泉", p_bee: "おてつだいバチ", p_bridge: "橋", p_fountain: "にじの噴水", z0: "草原の島",
+    z1: "果樹園の島", z2: "ベリーの丘", z3: "にじの頂", slot: "雲の枠 +1", fast: "はやくなった！", golden: "金色の雲！"
+  },
+  ko: {
+    catch: "작은 구름을 잡아요!", rain: "마른 밭 위로 날아가요", harvest: "작물을 수확해요!", build: "건설", full: "가득!", paused: "일시정지",
+    resume: "계속하기", sound: "효과음", music: "음악", on: "켬", off: "끔", newIsland: "새로운 섬!", cont: "계속", bonus: "보너스",
+    x2title: "코인 2배!", x2sub: "90초 동안", nothanks: "괜찮아요", watch: "영상 보기", drag: "드래그해서 날기", keys: "또는 키보드", lucky: "럭키!",
+    combo: "콤보", welcome: "다시 왔군요!", bigger: "구름이 더 커질 수 있어요!", collectHive: "벌들이 모은 코인을 받아요!", restored: "하늘이 되살아났어요!",
+    thanks: "첫 번째 버전을 플레이해 줘서 고마워요!", f_carrot: "당근 밭", f_sunflower: "해바라기 밭", f_strawberry: "딸기 밭", f_pumpkin: "호박 밭",
+    f_blueberry: "블루베리 밭", f_melon: "멜론 밭", f_tulip: "무지개 튤립", p_cap: "구름 칸 추가", p_speed: "더 빠른 바람", p_spring: "안개 샘",
+    p_bee: "도우미 벌", p_bridge: "다리", p_fountain: "무지개 분수", z0: "초원 섬", z1: "과수원 섬", z2: "베리 언덕", z3: "무지개 봉우리",
+    slot: "구름 칸 +1", fast: "더 빠르게!", golden: "황금 구름!"
+  },
+  zh: {
+    catch: "抓住小云朵！", rain: "飞过干旱的田地", harvest: "收获作物！", build: "建造", full: "满了！", paused: "暂停", resume: "继续",
+    sound: "音效", music: "音乐", on: "开", off: "关", newIsland: "新岛屿！", cont: "继续", bonus: "奖励", x2title: "双倍金币！",
+    x2sub: "持续90秒", nothanks: "不用了", watch: "看视频", drag: "拖动来飞行", keys: "或使用键盘", lucky: "幸运！", combo: "连击",
+    welcome: "欢迎回来！", bigger: "云朵可以变得更大！", collectHive: "收取蜜蜂的金币！", restored: "天空恢复了！", thanks: "感谢游玩第一个版本！",
+    f_carrot: "胡萝卜田", f_sunflower: "向日葵田", f_strawberry: "草莓田", f_pumpkin: "南瓜田", f_blueberry: "蓝莓田", f_melon: "甜瓜田",
+    f_tulip: "彩虹郁金香", p_cap: "额外云朵位", p_speed: "更快的风", p_spring: "雾泉", p_bee: "助手蜜蜂", p_bridge: "桥", p_fountain: "彩虹喷泉",
+    z0: "草地岛", z1: "果园岛", z2: "浆果丘陵", z3: "彩虹峰", slot: "云朵位 +1", fast: "更快了！", golden: "金色云朵！"
   }
 };
 const T = k => (STR[LANG][k] !== undefined ? STR[LANG][k] : (STR.en[k] !== undefined ? STR.en[k] : k));
@@ -158,7 +312,7 @@ const FIELD_W = 124, FIELD_H = 86;
 const BASE_SPEED = 250;
 const SPRING_EVERY = 2.0, SPRING_MAX = 5, PUFF_MAX = 42;
 const SKEY = 'drizzlings_save_v1'; // old key kept on purpose so existing progress survives the rename
-const VERSION = '0.3';
+const VERSION = '0.4';
 
 const fullW = t => Math.pow(2, t - 1);
 const cloudR = w => 18 + 7 * (Math.log2(Math.max(w, 0.2)) + 1);
@@ -1488,8 +1642,9 @@ function arrowDown(x, y, s) {
 }
 
 // ---------- text & UI helpers
-function txt(s, x, y, size, col, align, stroke, sw) {
+function txt(s, x, y, size, col, align, stroke, sw, maxW) {
   ctx.font = '700 ' + Math.round(size) + 'px Fredoka, "Arial Rounded MT Bold", sans-serif';
+  if (maxW) { const w = ctx.measureText(s).width; if (w > maxW) { size *= maxW / w; ctx.font = '700 ' + Math.round(size) + 'px Fredoka, "Arial Rounded MT Bold", sans-serif'; } }
   ctx.textAlign = align || 'center'; ctx.textBaseline = 'middle'; ctx.lineJoin = 'round';
   if (stroke !== null) { ctx.lineWidth = sw || size * 0.24; ctx.strokeStyle = stroke || NAVY; ctx.strokeText(s, x, y + size * 0.04); ctx.strokeText(s, x, y); }
   ctx.fillStyle = col || '#fff'; ctx.fillText(s, x, y);
@@ -1506,7 +1661,7 @@ function button(x, y, w, h, label, col, lip, fn, opts) {
   ctx.fillStyle = 'rgba(255,255,255,0.3)'; roundRectPath(ctx, x + 10 * uiS, y + oy + 6 * uiS, w - 20 * uiS, (h - lipH) * 0.3, 8 * uiS); ctx.fill();
   let tx = x + w / 2;
   if (opts.video) { const ix = x + h * 0.55; clapper(ix, y + oy + h * 0.45, h * 0.42); tx += h * 0.22; }
-  txt(label, tx, y + oy + h * 0.46, opts.size || h * 0.42, '#fff');
+  txt(label, tx, y + oy + h * 0.46, opts.size || h * 0.42, '#fff', 'center', undefined, undefined, w - 32 * uiS - (tx - x - w / 2) * 2);
   ctx.restore();
   uiBtns.push({ x, y, w, h: h + lipH, fn, label, down: false });
 }
@@ -1626,9 +1781,9 @@ function drawHUD() {
       const t = (time % 1.6) / 1.6, hx = W / 2 + Math.sin(t * TAU) * 70 * u;
       ctx.fillStyle = 'rgba(255,255,255,0.35)'; ctx.beginPath(); ctx.arc(W / 2, ty, 62 * u, 0, TAU); ctx.fill(); ctx.lineWidth = 4 * u; ctx.strokeStyle = 'rgba(38,49,89,0.5)'; ctx.stroke();
       ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.arc(hx, ty, 24 * u, 0, TAU); ctx.fill(); ctx.lineWidth = 5 * u; ctx.strokeStyle = NAVY; ctx.stroke();
-      txt(T('drag'), W / 2, ty - 100 * u, 34 * u, '#fff');
+      txt(T('drag'), W / 2, ty - 100 * u, 34 * u, '#fff', 'center', undefined, undefined, W - 40 * u);
     } else {
-      txt(T('drag') + '  ' + T('keys'), W / 2, ty - 70 * u, 30 * u, '#fff');
+      txt(T('drag') + '  ' + T('keys'), W / 2, ty - 70 * u, 30 * u, '#fff', 'center', undefined, undefined, W - 40 * u);
       const ks = [['W', 0, -1], ['A', -1, 0], ['S', 0, 0], ['D', 1, 0]], kw = 50 * u;
       ks.forEach(k => { const x = W / 2 + k[1] * (kw + 8 * u) - kw / 2, y = ty + k[2] * (kw + 8 * u); roundRectPath(ctx, x, y + 6 * u, kw, kw, 10 * u); ctx.fillStyle = NAVY; ctx.fill(); roundRectPath(ctx, x, y, kw, kw, 10 * u); ctx.fillStyle = '#fff'; ctx.fill(); ctx.lineWidth = 4 * u; ctx.strokeStyle = NAVY; ctx.stroke(); txt(k[0], x + kw / 2, y + kw / 2, 26 * u, NAVY, 'center', null); });
     }
@@ -1663,7 +1818,7 @@ function resumeFromPause() { closeModal(); SDK.commercial().then(() => SDK.start
 function drawModal() {
   const u = uiS, a = outBack(clamp(modal.t / 0.3, 0, 1));
   ctx.fillStyle = 'rgba(20,28,60,' + (0.5 * clamp(modal.t / 0.2, 0, 1)) + ')'; ctx.fillRect(0, 0, W, H);
-  const pw = Math.min(W - 40 * u, 520 * u), ph = modal.type === 'pause' ? 400 * u : modal.type === 'boost' ? 420 * u : 470 * u;
+  const pw = Math.min(W - 40 * u, 520 * u), ph = modal.type === 'pause' ? 485 * u : modal.type === 'boost' ? 420 * u : 470 * u;
   const px = W / 2 - pw / 2, py = H / 2 - ph / 2;
   ctx.save(); ctx.translate(W / 2, H / 2); ctx.scale(a, a); ctx.translate(-W / 2, -H / 2);
   roundRectPath(ctx, px, py + 10 * u, pw, ph, 34 * u); ctx.fillStyle = NAVY; ctx.fill();
@@ -1672,18 +1827,19 @@ function drawModal() {
   const hcol = modal.type === 'boost' ? COL.purple : modal.type === 'pause' ? COL.blue : COL.orange;
   roundRectPath(ctx, px + 24 * u, py - 30 * u, pw - 48 * u, 70 * u, 26 * u); ctx.fillStyle = hcol; ctx.fill(); ctx.lineWidth = 6 * u; ctx.stroke();
   const title = modal.type === 'pause' ? T('paused') : modal.type === 'boost' ? T('x2title') : modal.type === 'final' ? T('restored') : T('newIsland');
-  txt(title, W / 2, py + 4 * u, 40 * u, '#fff');
+  txt(title, W / 2, py + 4 * u, 40 * u, '#fff', 'center', undefined, undefined, pw - 90 * u);
   const bw = pw - 90 * u, bh = 70 * u, bx = W / 2 - bw / 2;
   if (modal.type === 'pause') {
     button(bx, py + 80 * u, bw, bh, T('resume'), COL.orange, COL.orangeLip, () => resumeFromPause());
     button(bx, py + 175 * u, bw, bh * 0.85, T('sound') + ': ' + (AU.on ? T('on') : T('off')), COL.blue, COL.blueLip, () => { AU.on = !AU.on; AU.apply(); saveSettings(); ev('settings', 'sound', AU.on ? 'on' : 'off'); }, { size: 26 * u });
     button(bx, py + 260 * u, bw, bh * 0.85, T('music') + ': ' + (AU.music ? T('on') : T('off')), COL.blue, COL.blueLip, () => { AU.music = !AU.music; AU.apply(); saveSettings(); ev('settings', 'music', AU.music ? 'on' : 'off'); }, { size: 26 * u });
+    button(bx, py + 345 * u, bw, bh * 0.85, '🌐 ' + LANGS[LANG], COL.blue, COL.blueLip, () => { setLang(nextLang()); ev('settings', 'language', LANG); }, { size: 26 * u });
     modal.def = () => resumeFromPause();
     txt('BirdBloom v' + VERSION, W / 2, py + ph - 26 * u, 18 * u, 'rgba(38,49,89,0.5)', 'center', null);
   } else if (modal.type === 'boost') {
     ctx.save(); ctx.translate(W / 2, py + 120 * u); const s = 1 + Math.sin(time * 4) * 0.05; ctx.scale(s, s);
     drawCoin(-34 * u, 0, 34 * u); drawCoin(34 * u, 0, 34 * u); txt('x2', 0, 44 * u, 44 * u, '#ffe36b'); ctx.restore();
-    txt(T('x2sub'), W / 2, py + 190 * u, 26 * u, NAVY, 'center', null);
+    txt(T('x2sub'), W / 2, py + 190 * u, 26 * u, NAVY, 'center', null, undefined, pw - 60 * u);
     // standard option first (equal size, above), rewarded below, never green
     button(bx, py + 230 * u, bw, bh, T('nothanks'), COL.blue, COL.blueLip, () => { closeModal(); SDK.start(); });
     button(bx, py + 320 * u, bw, bh, T('watch'), COL.purple, COL.purpleLip, () => {
@@ -1693,10 +1849,10 @@ function drawModal() {
     modal.def = () => { closeModal(); SDK.start(); };
   } else if (modal.type === 'zone') {
     const z = modal.zone;
-    txt(T('z' + z), W / 2, py + 82 * u, 38 * u, COL.orange);
+    txt(T('z' + z), W / 2, py + 82 * u, 38 * u, COL.orange, 'center', undefined, undefined, pw - 60 * u);
     ZONES[z].crops.forEach((c, i) => { ctx.save(); ctx.translate(W / 2 + (i - 0.5) * 110 * u, py + 165 * u + Math.sin(time * 4 + i) * 5 * u); ctx.scale(u * 2.2, u * 2.2); drawCrop(c, 2 + i, true); ctx.restore(); });
     const sp = cloudSprite(Math.min(6, ZONES[z].tierCap)); ctx.drawImage(sp.c, W / 2 - pw / 2 + 40 * u, py + 205 * u, 70 * u, 70 * u);
-    txt(T('bigger'), W / 2 + 30 * u, py + 242 * u, 24 * u, NAVY, 'center', null);
+    txt(T('bigger'), W / 2 + 30 * u, py + 242 * u, 24 * u, NAVY, 'center', null, undefined, pw - 180 * u);
     button(bx, py + 290 * u, bw, bh, T('cont'), COL.orange, COL.orangeLip, () => { closeModal(); SDK.commercial().then(() => SDK.start()); });
     button(bx + bw * 0.08, py + 375 * u, bw * 0.84, bh * 0.82, T('bonus') + ' +' + fmt(modal.bonus), COL.purple, COL.purpleLip, () => {
       const b = modal.bonus; ev('rewarded', 'island-bonus', 'interact');
@@ -1705,7 +1861,7 @@ function drawModal() {
     modal.def = () => { closeModal(); SDK.commercial().then(() => SDK.start()); };
   } else if (modal.type === 'final') {
     ctx.save(); ctx.translate(W / 2, py + 150 * u); ctx.scale(u * 2, u * 2); rainbowIcon(); ctx.restore();
-    txt(T('thanks'), W / 2, py + 250 * u, 22 * u, NAVY, 'center', null);
+    txt(T('thanks'), W / 2, py + 250 * u, 22 * u, NAVY, 'center', null, undefined, pw - 50 * u);
     button(bx, py + 330 * u, bw, bh, T('cont'), COL.orange, COL.orangeLip, () => { closeModal(); SDK.commercial().then(() => SDK.start()); });
     modal.def = () => { closeModal(); SDK.commercial().then(() => SDK.start()); };
   }
