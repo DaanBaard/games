@@ -30,7 +30,7 @@ function chap(){return room?room.c:0}
 function startRun(mode,ch){
   R={mode,ch,room:0,lvl:1,xp:0,need:xpNeed(1),candy:0,earned:0,pops:0,combo:0,comboT:0,maxCombo:0,comboTier:-1,ab:{},
     rerolls:1+S.shop.reroll,adReroll:true,revived:false,angelUsed:false,dd:1,hitsRoom:0,dashes:0,time:0,golden:0,bossKills:0,
-    pendingCards:0,cardBoost:0,wantCards:false,strobeT:2.5,candleT:3,flawlessBoss:true,doubled:false,tut:(mode==='story'&&ch===0&&S.tut<1)?1:0,tutMoved:0,dashHinted:false,newRecord:false,
+    pendingCards:0,cardBoost:0,wantCards:false,strobeT:2.5,candleT:3,flawlessBoss:true,doubled:false,tut:(mode==='story'&&ch===0&&S.tut<1)?1:0,tutMoved:0,tutMv:false,tutPop:false,tutCandyT:0,dashHinted:false,newRecord:false,
     hist:{rt:[],lay:[],tw:[]},names:[],kinds:{},drain:0,lamp:1,ambT:rand(4,9),lastShrine:-9};
   P={x:500,y:550,vx:0,vy:0,r:14,aim:-Math.PI/2,hearts:3,inv:0,dash:0,dashCd:0,dvx:0,dvy:0,t:0,mv:false,saltT:0};
   FIREF=[];calcStats();P.hearts=P.maxH;
@@ -66,6 +66,7 @@ function makeRoom(n,info,opt){
     seed:(rnd()*1e9)|0,golden:false,goldenT:rand(5,14),clearT:0,dark:ch.dark,windows:[],frames:[],bossSpawned:false,bossT:1.2,lastPat:null,candyMul:1,light:0};
   if(info.final&&!opt.demo)rm.doorXs=[];
   if(rm.tw==='dark')rm.dark=.975;
+  if(R&&R.tut&&n===1&&!opt.demo)rm.dark=.8;
   const r=srng(rm.seed);
   // wall decoration
   for(let x=110;x<ROOM_W-80;x+=200+r()*60){if(rm.doorXs.some(d=>Math.abs(d-x)<100))continue;const k=r();
@@ -115,7 +116,7 @@ function poolFor(rm){const pool=[];const n=rm.n,c=rm.c;
   if(R.mode==='story')addPool(c);else for(let i=0;i<=c;i++)addPool(i);return pool}
 function buildWaves(rm,swarm){
   const n=rm.n,c=rm.c;
-  if(R.tut&&n===1){rm.waves=[{pat:'edges',e:[{tp:'wisp',slow:true},{tp:'wisp',slow:true},{tp:'wisp',slow:true}]},{pat:'doors',e:[{tp:'wisp'},{tp:'wisp'},{tp:'wisp'},{tp:'wisp'}]},{pat:'surround',e:[{tp:'wisp'},{tp:'sheet'},{tp:'wisp'},{tp:'wisp'},{tp:'wisp'}]}];rm.tut=true;return}
+  if(R.tut&&n===1){rm.waves=[{pat:'front',e:[{tp:'wisp',slow:true}]},{pat:'edges',e:[{tp:'wisp',slow:true},{tp:'wisp',slow:true},{tp:'wisp',slow:true},{tp:'wisp',slow:true},{tp:'wisp',slow:true}]}];rm.waveDelay=.3;rm.tut=true;return}
   let budget=R.mode==='story'?(6+n*1.7+c*2.8)*R.dd:(7+n*1.5+Math.pow(n,1.25)*.4)*R.dd*(1+n*.025);
   let pool=poolFor(rm);
   if(swarm){pool=[['mote',6],['flitter',3],['wisp',2]];budget*=1.12}
@@ -246,9 +247,9 @@ function spawnWave(w){
   let delay=0;const n=w.e.length;
   w.e.forEach((e,i)=>{
     if(e.tp==='mimic'){const p=patPoint('floor',i,n,ctx);const g=spawnGhost('mimic',p.x,p.y,{elite:e.elite,spawnT:0});g.hidden=true;g.alpha=1;g.hideT=0;g.litAcc=0;return}
-    const p=patPoint(pat,i,n,ctx);
+    const p=pat==='front'?{x:P.x+rand(-20,20),y:Math.max(60,P.y-170)}:patPoint(pat,i,n,ctx);
     const grp=GT[e.tp].group||1;
-    for(let j=0;j<grp;j++){spawnGhost(e.tp,clamp(p.x+(grp>1?rand(-26,26):0),20,ROOM_W-20),clamp(p.y+(grp>1?rand(-26,26):0),20,ROOM_H-20),{elite:e.elite&&grp===1,slow:e.slow,spawnT:.9+delay});delay+=grp>1?.03:.07}
+    for(let j=0;j<grp;j++){spawnGhost(e.tp,clamp(p.x+(grp>1?rand(-26,26):0),20,ROOM_W-20),clamp(p.y+(grp>1?rand(-26,26):0),20,ROOM_H-20),{elite:e.elite&&grp===1,slow:e.slow,spawnT:(pat==='front'?.5:.9)+delay});delay+=grp>1?.03:.07}
   });
   SFX.tele();
 }
@@ -292,7 +293,7 @@ function collideRect(o,f){
 function updPlayer(dt){
   const [mx,my,m]=moveInput();
   P.mv=m>.1||P.dash>0;
-  if(R&&R.tut===1&&m>.1){R.tutMoved+=dt;if(R.tutMoved>.7){R.tut=2;measure('tutorial','move','complete')}}
+  if(R&&R.tut&&!R.tutMv&&m>.1){R.tutMoved+=dt;if(R.tutMoved>.7){R.tutMv=true;measure('tutorial','move','complete');measure('tutorial','move-after',R.time<3?'s0-3':R.time<8?'s3-8':R.time<20?'s8-20':'s20+')}}
   const sug=(L('sugar')&&R.combo>=5)?1+.1*L('sugar'):1;
   if(P.dash>0){P.dash-=dt;P.x+=P.dvx*dt;P.y+=P.dvy*dt;
     if(L('salt')){P.saltT-=dt;if(P.saltT<=0){P.saltT=.025;HZ.push({k:'salt',x:P.x+rand(-6,6),y:P.y+8+rand(-4,4),t:0,dur:2.6,dps:(10+6*L('salt'))*P.pw})}}
@@ -322,6 +323,7 @@ function hurtPlayer(){
   shake(10);freezeT=Math.max(freezeT,.08);flash(160,20,30,.35);SFX.hurt();
   if(R.combo>=5)floatText(P.x,P.y-40,'×'+R.combo,'#8a8094',16);R.combo=0;R.comboT=0;
   for(const g of G){if(g.dead||g.boss||g.hidden)continue;const dx=g.x-P.x,dy=g.y-P.y,d=Math.hypot(dx,dy)||1;if(d<130){g.x+=dx/d*70;g.y+=dy/d*70;g.vx=dx/d*120;g.vy=dy/d*120}}
+  if(room.tut&&P.hearts<1)P.hearts=1;
   if(P.hearts<=0)faint();
 }
 function faint(){
@@ -385,7 +387,7 @@ function popGhost(g){
   R.combo++;R.comboT=2.3;if(R.combo>R.maxCombo){R.maxCombo=R.combo;if(R.combo>S.st.maxCombo)S.st.maxCombo=R.combo}mProg('combo',R.combo,'max');
   const tiers=[5,10,20,35,50],ti=tiers.filter(x=>R.combo>=x).length-1;
   if(ti>R.comboTier&&ti>=0){R.comboTier=ti;measure1('combo','x'+tiers[ti],'reached');floatText(P.x,P.y-56,t('cw'+ti),['#a8d8c0','#a8c0e0','#c8a0e8','#e0a070','#f0d48a'][ti],20+ti*2);SFX.combo(ti);if(ti>=2)shake(4+ti)}
-  if(R.tut===2){R.tut=3;R.tutT=3.2;measure('tutorial','first-pop','complete')}
+  if(R.tut&&!R.tutPop){R.tutPop=true;R.tutCandyT=2.6;measure('tutorial','first-pop','complete');measure('tutorial','first-pop-after',R.time<3?'s0-3':R.time<8?'s3-8':R.time<20?'s8-20':'s20+')}
   const big=g.r>20||g.elite;
   freezeT=Math.max(freezeT,big?.07:.03);shake(big?5:2);
   BURSTS.push({x:g.x,y:g.y,r:g.r*3.5+40,t:0,dur:.4,col:hexRgb(g.eye).join(',')});
@@ -495,12 +497,13 @@ function updRoomType(dt){
     case 'waves':case 'swarm':case 'hunt':case 'poltergeist':{
       if(room.wave<room.waves.length){
         if(room.wave===0){room.waveDelay-=dt;if(room.waveDelay<=0){spawnWave(room.waves[0]);room.wave=1;room.waveClock=0}}
-        else{room.waveClock+=dt;const prev=room.waves[room.wave-1].e.length*(GT[room.waves[room.wave-1].e[0].tp].group||1);if(live<=Math.max(1,Math.floor(prev*.3))||room.waveClock>13){spawnWave(room.waves[room.wave]);room.wave++;room.waveClock=0;
-          if(R.room===1&&R.ch===0&&R.mode==='story'&&!R.dashHinted&&room.wave===3){R.dashHinted=true;hint={text:t('tutDash'),t:0,dur:4.5}}}}
+        else{room.waveClock+=dt;const prev=room.waves[room.wave-1].e.length*(GT[room.waves[room.wave-1].e[0].tp].group||1);if(room.tut&&!R.tutPop&&room.waveClock<8){}else if(live<=Math.max(room.tut?0:1,Math.floor(prev*.3))||room.waveClock>13){spawnWave(room.waves[room.wave]);room.wave++;room.waveClock=0;
+          if(room.tut)measure('tutorial','wave'+room.wave,'reached');
+          if(R.room===2&&R.ch===0&&R.mode==='story'&&!R.dashHinted&&room.wave===2){R.dashHinted=true;hint={text:t('tutDash'),t:0,dur:4.5}}}}
       }else room.waveClock+=dt;
       if(room.rt==='waves'&&!room.golden&&room.wave>0){room.goldenT-=dt;if(room.goldenT<=0){room.golden=true;if(Math.random()<.07+.03*L('lucky')+(R.room===3&&S.st.golden===0?.4:0))spawnGolden()}}
       if(room.wave>=room.waves.length&&room.waveClock>40)for(const g of G)if(!g.dead&&g.spawnT<=0&&g.tp!=='golden'){g.hidden=false;hurtGhost(g,g.hp*.05*dt,true)}
-      let done=room.wave>=room.waves.length&&live===0;
+      let done=room.wave>=room.waves.length&&!G.some(g=>!g.dead&&g.tp!=='golden');
       if(room.rt==='hunt'){const runner=G.some(g=>g.hunt&&!g.dead);if(!runner&&room.huntLeft>0){room.huntT-=dt;if(room.huntT<=0){room.huntLeft--;spawnGolden(true);room.huntT=1.1;SFX.chime()}}done=done&&room.huntLeft===0&&!runner}
       if(room.rt==='poltergeist'){for(const f of room.furn){const p=f.poss;if(!p||p.done)continue;if(room.waveClock>25){p.fear+=p.hp*.025*dt;if(p.fear>=p.hp){exorcise(f);continue}}p.throwT-=dt*(p.lit?.5:1);if(p.throwT<=0){const fx=f.x+f.w/2,fy=f.y+f.h/2;fireOrb(fx,fy,Math.atan2(P.y-fy,P.x-fx)+rand(-.12,.12),210+c*12,pick(['book','plate','book']));p.throwT=rand(1.9,3)/(1+c*.08);SFX.whoosh()}}
         done=done&&room.furn.every(f=>!f.poss||f.poss.done)}
@@ -550,6 +553,7 @@ function update(dt){
   if(room.phase==='clear'){room.clearT+=dt;
     if(room.final&&room.clearT>2.2&&state==='run'){chapterWin();return}
     if(!room.final)for(const d of room.doors)if(Math.abs(P.x-d.x)<40&&P.y<-6&&!trans){enterDoor(d);break}
+    if(room.tut&&!room.final&&room.clearT>6&&!trans&&!R.wantCards&&room.doors.length){const d=nearestDoor();measure('tutorial','door','auto');enterDoor(d)}
   }
   for(const g of G)updGhost(g,dt);
   applyLight(dt);
@@ -581,7 +585,7 @@ function update(dt){
   for(const x of TXT){x.t+=dt;x.y-=dt*30}TXT=TXT.filter(x=>x.t<x.dur);
   if(R.comboT>0){R.comboT-=dt;if(R.comboT<=0){if(R.combo>=8){floatText(P.x,P.y-50,t('bestCombo')+' ×'+R.combo,'#8a8094',14)}R.combo=0;R.comboTier=-1}}
   if(R.candyChainT>0){R.candyChainT-=dt;if(R.candyChainT<=0)R.candyChain=0}
-  if(R.tut===3){R.tutT-=dt;if(R.tutT<=0)R.tut=4}
+  if(R.tutCandyT>0)R.tutCandyT-=dt;
   R.ambT-=dt;if(R.ambT<=0){R.ambT=rand(6,14);SFX.amb(room.ch.amb)}
   updCam(dt);
   if(R.wantCards&&state==='run'&&!trans){R.wantCards=false;if(R.pendingCards>0)openCards()}
@@ -603,7 +607,7 @@ function openChest(c){
   else{for(let i=0;i<28;i++)addDrop('big',c.x,c.y,5);confetti(c.x,c.y,60);showBanner(t('jackpot'),'',1.2,'#f0d48a');SFX.jackpot()}
 }
 function roomCleared(){
-  room.phase='clear';room.clearT=0;SFX.clear();roomEv('complete');if(!R.hitsRoom)measure('flawless',rtKey(),'reached');
+  room.phase='clear';room.clearT=0;SFX.clear();if(room.tut)room.light=.35;roomEv('complete');if(!R.hitsRoom)measure('flawless',rtKey(),'reached');
   S.st.rtypes=S.st.rtypes||{};if(room.type==='normal')S.st.rtypes[room.rt]=1;
   if(!room.final){setupDoors();showBanner(t('roomClear'),R.room===1&&R.ch===0&&R.mode==='story'?t('chooseDoor'):(room.pre?t('bossAhead'):''),1.5,'#a8d8c0')}
   else showBanner(t('chClear'),'',2,'#f0d48a');
@@ -611,7 +615,8 @@ function roomCleared(){
   for(const o of ORBS)o.dead=true;
   checkTrophies();
 }
-function enterDoor(d){SFX.door();trans={t:0,dur:.7,mid:()=>nextRoom(d),fired:false}}
+function nearestDoor(){let b=null,bd=1e9;for(const d of room.doors){const dd=Math.abs(P.x-d.x)+P.y*.2;if(dd<bd){bd=dd;b=d}}return b}
+function enterDoor(d){if(room.tut)measure('tutorial','door','complete');SFX.door();trans={t:0,dur:.7,mid:()=>nextRoom(d),fired:false}}
 function chapterWin(){
   state='over';gpStop();MUS.mode='calm';
   const first=!S.clear[R.ch];S.clear[R.ch]=1;

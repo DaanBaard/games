@@ -136,3 +136,24 @@ Zelfde aanpak als Sprout Squad; namen blijven stabiel tussen versies. Volgens ht
 | lang | taalcode | session, selected | gedetecteerde / gekozen taal |
 
 Testen: `?test=1` → `T.EV` bevat alle events van de sessie.
+
+## v2.4 — de eerste minuut
+Aanleiding: de events van v2.3 (568 gameplays) lieten zien dat 57% binnen 1 minuut afhaakt, 22% nooit beweegt, ~120 spelers midden in de tutorial vertrekken en 52 spelers kwijtraken tussen kamer 1 en 2.
+
+- **Eerst belonen, dan uitleggen:** de tutorial-kamer begint met één spook dat recht vóór de lamp verschijnt (na ±1 s). Door de automatische richting popt het zonder dat de speler iets hoeft te doen.
+- **Bewegingshint:** na de eerste pop (of na 5 s) een geanimeerde hint: een sleepbeweging op touchscreens, oplichtende WASD-toetsen op pc. Verdwijnt zodra de speler beweegt.
+- **Kortere tutorial:** 2 golven (1 + 5 trage spoken, samen precies genoeg XP voor de eerste level-up) in plaats van 3 golven met 12 spoken. Golf 2 komt pas na de eerste pop. De dash-uitleg is verhuisd naar kamer 2.
+- **Niet flauwvallen in de tutorial:** je houdt altijd minstens 1 hartje.
+- **Lichtere eerste kamer:** duisternis 0,80 in plaats van 0,93, en de kamer licht op bij het opruimen.
+- **Weg naar de deur:** na het opruimen van elke kamer loopt een pad van licht naar de dichtstbijzijnde deur. In de tutorial-kamer gaat de speler na 6 s vanzelf door die deur.
+- **Fix:** een kamer kon als opgeruimd gelden op het moment dat de laatste golf verscheen, als er toevallig 0 spoken leefden.
+
+Nieuwe events:
+
+| category | what | action | wanneer |
+|---|---|---|---|
+| tutorial | move-after / first-pop-after | s0-3, s3-8, s8-20, s20+ | hoe snel na de start iemand beweegt / het eerste spook popt |
+| tutorial | wave2 | reached | tweede tutorial-golf begonnen |
+| tutorial | door | complete, auto | door een deur na de tutorial-kamer (zelf of automatisch) |
+
+`tutorial / move` en `tutorial / first-pop` worden nu los van elkaar gemeten (eerder kon first-pop pas na move).

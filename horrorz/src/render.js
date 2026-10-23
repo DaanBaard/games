@@ -89,6 +89,8 @@ function render(dt){
   for(const h of HZ)if(h.k==='wail'){const a=(1-h.r/h.max);ctx.strokeStyle='rgba(200,230,255,'+(.55*a)+')';ctx.lineWidth=10;ctx.beginPath();ctx.arc(h.x,h.y,h.r,0,TAU);ctx.stroke();ctx.strokeStyle='rgba(255,255,255,'+(.5*a)+')';ctx.lineWidth=2;ctx.stroke()}
   for(const o of ORBS)drawOrb(ctx,o,tt);
   if(room.chand)drawChandelier(ctx,room.chand,tt);
+  // path of light to the nearest door
+  if(room.phase==='clear'&&!room.final&&room.doors.length&&room.clearT>.8&&state==='run')drawDoorPath(ctx,tt);
   // door plaques
   if(room.phase==='clear')for(const d of room.doors)drawPlaque(ctx,d,tt);
   // floating texts
@@ -137,6 +139,21 @@ function drawChandelier(c,ch,tt){const x=ch.x+Math.sin(tt*.6)*10,y=ch.y-60+Math.
   c.globalAlpha=.85;c.strokeStyle='#120e0a';c.lineWidth=5;c.beginPath();c.ellipse(x,y,64,22,0,0,TAU);c.stroke();c.lineWidth=3;for(let i=0;i<6;i++){const a=i*TAU/6;c.beginPath();c.moveTo(x,y-30);c.lineTo(x+Math.cos(a)*64,y+Math.sin(a)*22);c.stroke()}
   c.beginPath();c.moveTo(x,y-30);c.lineTo(x,y-200);c.stroke();c.globalAlpha=1;
   for(let i=0;i<6;i++){const a=i*TAU/6;drawFlame(c,x+Math.cos(a)*64,y+Math.sin(a)*22-6,tt,i,.8)}c.restore()}
+function drawDoorPath(c,tt){const d=nearestDoor();if(!d)return;const tx=d.x,ty=-10,dx=tx-P.x,dy=ty-P.y,L2=Math.hypot(dx,dy);if(L2<50)return;
+  const a0=clamp((room.clearT-.8)/.8,0,1);c.save();c.globalCompositeOperation='lighter';
+  for(let s=40;s<L2-10;s+=34){const p=s/L2,x=P.x+dx*p,y=P.y+dy*p,w=.5+.5*Math.sin(tt*5-s*.06),al=a0*(.25+.45*w)*(room.tut?1:.6);
+    c.fillStyle=rad(c,x,y,0,13,[[0,'rgba(255,225,160,'+al+')'],[1,'rgba(255,225,160,0)']]);c.beginPath();c.arc(x,y,13,0,TAU);c.fill()}
+  c.restore()}
+// animated 'how to move' hint: a finger dragging on touch screens, arrow keys on desktop
+const COARSE=(()=>{try{return matchMedia('(pointer:coarse)').matches}catch(e){return false}})();
+function drawMoveHint(c,tt){const cx=W/2,cy=H*.8-62,ph=(tt*.7)%1;c.save();c.globalAlpha=.9;
+  if(touchMode||COARSE){const ox=Math.sin(ph*TAU)*48,oy=Math.sin(ph*TAU*2)*10;c.strokeStyle='rgba(239,230,210,.25)';c.lineWidth=2;c.beginPath();c.arc(cx,cy,40,0,TAU);c.stroke();
+    c.fillStyle='rgba(239,230,210,.18)';c.beginPath();c.arc(cx+ox*.5,cy+oy*.5,18,0,TAU);c.fill();
+    c.strokeStyle='rgba(239,230,210,.7)';c.lineWidth=3;for(const sg of[-1,1]){c.beginPath();c.moveTo(cx+sg*58,cy-9);c.lineTo(cx+sg*68,cy);c.lineTo(cx+sg*58,cy+9);c.stroke()}
+    c.strokeStyle='rgba(239,230,210,'+(.6*(1-((tt*2)%1)))+')';c.lineWidth=2;c.beginPath();c.arc(cx+ox,cy+oy,14+((tt*2)%1)*14,0,TAU);c.stroke();circ(c,cx+ox,cy+oy,12,'#efe6d2')}
+  else{const keys=[[0,-1,'W'],[-1,0,'A'],[0,0,'S'],[1,0,'D']],act=Math.floor(tt*1.6)%4,sz=30;c.font='700 15px Georgia,"Times New Roman",serif';c.textAlign='center';c.textBaseline='middle';
+    keys.forEach(([kx,ky,l],i)=>{const x=cx+kx*(sz+6),y=cy+ky*(sz+6)+10,on=[0,3,2,1][act]===i;c.fillStyle=on?'rgba(239,230,210,.9)':'rgba(8,6,10,.75)';c.fillRect(x-sz/2,y-sz/2,sz,sz);c.strokeStyle='rgba(216,200,160,.6)';c.lineWidth=1;c.strokeRect(x-sz/2+.5,y-sz/2+.5,sz-1,sz-1);c.fillStyle=on?'#0a080c':'#efe6d2';c.fillText(l,x,y+1)})}
+  c.restore()}
 function drawPlaque(c,d,tt){const py=64+Math.sin(tt*2.4+d.x)*2,boss=d.rw==='boss',col=boss?'#e0a070':'#d8c8a0';c.save();c.translate(d.x,py);
   c.fillStyle='rgba(8,6,10,.82)';rr(c,-48,-30,96,62,6);c.fill();c.strokeStyle=hexA(col,.7);c.lineWidth=1.2;rr(c,-45,-27,90,56,4);c.stroke();
   c.save();c.translate(-34,-24);c.scale(.3,.3);drawIcon(c,boss?'rt_boss':'rt_'+(d.rt||'waves'));c.restore();
@@ -228,7 +245,8 @@ function drawHUD(tt,dt){
     const db=dashBtn();const rdy=P.dashCd<=0;circ(c,db.x,db.y,db.r,rdy?'rgba(168,216,192,.18)':'rgba(255,255,255,.05)');c.strokeStyle=rdy?'rgba(168,216,192,.8)':'rgba(255,255,255,.25)';c.lineWidth=1.5;c.beginPath();c.arc(db.x,db.y,db.r,0,TAU);c.stroke();
     if(!rdy){c.strokeStyle='#a8d8c0';c.lineWidth=3;c.beginPath();c.arc(db.x,db.y,db.r-5,-Math.PI/2,-Math.PI/2+TAU*(1-P.dashCd/P.dashCdMax));c.stroke()}
     c.font='700 13px '+SERIF;c.textAlign='center';c.fillStyle='#efe6d2';c.fillText(t('dash'),db.x,db.y)}
-  let ht=null;if(R.tut===1)ht=t('tutMove');else if(R.tut===2)ht=t('tutLight');else if(R.tut===3)ht=t('tutCandy');
+  let ht=null;if(R.tut&&room.tut&&room.phase==='fight'){if(!R.tutPop)ht=t('tutLight');else if(R.tutCandyT>0)ht=t('tutCandy');else if(!R.tutMv)ht=t('tutMove')}
+  if(R.tut&&room.tut&&room.phase==='fight'&&!R.tutMv&&(R.tutPop&&R.tutCandyT<=0||R.time>5))drawMoveHint(c,tt);
   if(hint){hint.t+=dt;if(hint.t>hint.dur)hint=null;else if(!ht)ht=hint.text}
   if(ht){c.font='italic '+Math.min(17,W/32)+'px '+SERIF;c.textAlign='center';const w=c.measureText(ht).width+34,y=H*.8;
     c.fillStyle='rgba(8,6,10,.78)';c.fillRect(W/2-w/2,y-17,w,34);c.strokeStyle='rgba(216,200,160,.45)';c.lineWidth=1;c.strokeRect(W/2-w/2+.5,y-16.5,w-1,33);c.fillStyle='#efe6d2';c.fillText(ht,W/2,y+1)}
