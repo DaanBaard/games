@@ -273,15 +273,15 @@ const BASE_SPRINGS = [
 ];
 const START_FIELD = { id: 'f0', x: -190, y: -170, crop: 'carrot' };
 const PADS = [
-  { id: 'f1', z: 0, x: -50, y: -170, cost: 8, type: 'field', crop: 'carrot', req: ['harvest'] },
-  { id: 'cap1', z: 0, x: 200, y: 30, cost: 20, type: 'cap', req: ['f1'] },
-  { id: 'f2', z: 0, x: 90, y: -170, cost: 35, type: 'field', crop: 'sunflower', req: ['f1'] },
+  { id: 'f1', z: 0, x: -50, y: -170, cost: 5, type: 'field', crop: 'carrot', req: ['harvest'] },
+  { id: 'cap1', z: 0, x: 200, y: 30, cost: 15, type: 'cap', req: ['f1'] },
+  { id: 'f2', z: 0, x: 90, y: -170, cost: 25, type: 'field', crop: 'sunflower', req: ['f1'] },
   { id: 'spd1', z: 0, x: -230, y: 40, cost: 45, type: 'speed', req: ['f2', 'cap1'] },
   { id: 'f3', z: 0, x: -190, y: 170, cost: 55, type: 'field', crop: 'carrot', req: ['f2'] },
   { id: 'sp1', z: 0, x: 330, y: 210, cost: 70, type: 'spring', req: ['f3'] },
   { id: 'bee1', z: 0, x: 110, y: 180, cost: 90, type: 'bee', req: ['sp1'] },
   { id: 'f4', z: 0, x: -50, y: 170, cost: 100, type: 'field', crop: 'sunflower', req: ['f3', 'sp1'] },
-  { id: 'br1', z: 0, x: 440, y: 40, cost: 150, type: 'bridge', to: 1, req: ['f3'] },
+  { id: 'br1', z: 0, x: 440, y: 40, cost: 100, type: 'bridge', to: 1, req: ['f3'] },
 
   { id: 'z1f0', z: 1, x: 1060, y: -110, cost: 90, type: 'field', crop: 'strawberry', req: ['br1'] },
   { id: 'z1f1', z: 1, x: 1200, y: -110, cost: 150, type: 'field', crop: 'pumpkin', req: ['z1f0'] },
@@ -321,7 +321,7 @@ const FIELD_W = 124, FIELD_H = 86;
 const BASE_SPEED = 250;
 const SPRING_EVERY = 2.0, SPRING_MAX = 5, PUFF_MAX = 42;
 const SKEY = 'drizzlings_save_v1'; // old key kept on purpose so existing progress survives the rename
-const VERSION = '0.5';
+const VERSION = '0.6';
 
 const fullW = t => Math.pow(2, t - 1);
 const cloudR = w => 18 + 7 * (Math.log2(Math.max(w, 0.2)) + 1);
@@ -337,7 +337,7 @@ let started = false, modal = null, saveT = 0, shakeT = 0, shakeA = 0, incomeRate
 let hudCoinBump = 0, hudCapFlash = 0, tutFade = 1, movedDist = 0, padTick = 0, rainLevel = 0;
 let time = 0;
 
-const cap = () => 3 + ['cap1', 'cap2', 'cap3', 'cap4'].filter(i => S.built.has(i)).length;
+const cap = () => 4 + ['cap1', 'cap2', 'cap3', 'cap4'].filter(i => S.built.has(i)).length;
 const speedMul = () => Math.pow(1.15, ['spd1', 'spd2', 'spd3'].filter(i => S.built.has(i)).length);
 const tierCap = () => ZONES[S.zone].tierCap;
 
@@ -783,7 +783,7 @@ function resolveMerges() {
 function tryPickup(p) {
   if (p.gold) { catchGolden(p); return; }
   if (!canAdd(p.tier)) {
-    if (P.fullCd <= 0) { floater(P.x, P.y - 80, T('full'), COL.red, 30); AU.bonk(); P.fullCd = 1.4; hudCapFlash = 1; evOnce('herd', 'full', 'cap' + cap()); }
+    if (P.fullCd <= 0) { floater(P.x, P.y - 80, T('full'), COL.red, 30); AU.bonk(); P.fullCd = 1.4; hudCapFlash = 1; herdWasFull = true; evOnce('herd', 'full', 'cap' + cap()); }
     const a = Math.atan2(p.y - P.y, p.x - P.x); p.vx = Math.cos(a) * 160; p.vy = Math.sin(a) * 160;
     return;
   }
@@ -1155,6 +1155,7 @@ function updateParts(dt) {
 
 // ---------- goals / guidance
 function nearest(list, fn) { let b = null, bd = 1e12; for (const o of list) { if (fn && !fn(o)) continue; const dd = d2(o.x, o.y, P.x, P.y); if (dd < bd) { bd = dd; b = o; } } return b; }
+let herdWasFull = false; // once the herd has been full, the guide points to cloud slots first
 function currentGoal() {
   if (!S.flags.collected) return { icon: 'cloud', text: T('catch'), tgt: nearest(puffs, p => !p.gold) };
   if (!S.flags.rained) return { icon: 'drop', text: T('rain'), tgt: trail.length ? nearest(fields, f => f.state === 'dry') : nearest(puffs, p => !p.gold) };
@@ -1170,10 +1171,12 @@ function currentGoal() {
   if (!vis.length) return hv ? { icon: 'coin', text: T('collectHive'), tgt: hv } : null;
   const br = vis.find(p => p.type === 'bridge');
   if (br && S.coins + br.paid >= br.cost - 1e-6) return { icon: 'pad', pad: br, text: T('build') + ': ' + padName(br), tgt: br };
+  const capPad = herdWasFull ? vis.find(p => p.type === 'cap') : null;
+  if (capPad && S.coins + capPad.paid >= capPad.cost - 1e-6) return { icon: 'pad', pad: capPad, text: T('build') + ': ' + padName(capPad), tgt: capPad };
   const aff = vis.find(p => p !== br && S.coins + p.paid >= p.cost - 1e-6);
   if (aff) return { icon: 'pad', pad: aff, text: T('build') + ': ' + padName(aff), tgt: aff };
   if (hv && hv.stash >= (vis[0].cost - vis[0].paid) * 0.3) return { icon: 'coin', text: T('collectHive'), tgt: hv };
-  const c = br || vis[0];
+  const c = br || capPad || vis[0];
   return { icon: 'pad', pad: c, text: padName(c), prog: (S.coins + c.paid) / c.cost, need: c.cost - c.paid - S.coins, tgt: null };
 }
 
