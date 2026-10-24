@@ -10,7 +10,8 @@
 window.__pokiReady = new Promise(function (res) {
   if (/(^|\.)github\.io$/i.test(location.hostname)) { res(false); return; }
   var s = document.createElement('script'); s.src = 'https://game-cdn.poki.com/scripts/v2/poki-sdk.js'; s.async = true;
-  s.onload = function () { res(true); }; s.onerror = function () { res(false); }; setTimeout(function () { res(false); }, 6000);
+  // no time-out here: the game starts after 4 s anyway and hooks the SDK up as soon as it arrives, even late
+  s.onload = function () { res(true); }; s.onerror = function () { res(false); };
   document.head.appendChild(s);
 });
 </script>
@@ -364,31 +365,31 @@ const speedMul = () => Math.pow(1.15, ['spd1', 'spd2', 'spd3'].filter(i => S.bui
 const tierCap = () => ZONES[S.zone].tierCap;
 
 // ---------- Poki SDK wrapper
-function sdkFallback() {
-  if (window.PokiSDK) return;
-  // SDK could not load (offline / ad blocker / own site). Keep the game fully playable, never grant rewards.
-  window.PokiSDK = {
-    init: () => Promise.resolve(), gameLoadingFinished() {}, gameplayStart() {}, gameplayStop() {},
-    commercialBreak: () => Promise.resolve(), rewardedBreak: () => Promise.resolve(false), measure() {}
-  };
-}
+// Until the real SDK has loaded and run init(), calls go to this stub. The stub is never put on window.PokiSDK:
+// in v0.6 a slow SDK (> 4 s, e.g. on mobile) got replaced by the stub, so gameLoadingFinished/gameplayStart never reached Poki.
+const SDK_STUB = {
+  init: () => Promise.resolve(), gameLoadingFinished() {}, gameplayStart() {}, gameplayStop() {},
+  commercialBreak: () => Promise.resolve(), rewardedBreak: () => Promise.resolve(false), measure() {}
+};
+let pokiLive = false;
+const poki = () => (pokiLive && window.PokiSDK) || SDK_STUB;
 const SDK = {
   playing: false, ad: false,
-  start() { if (this.playing || this.ad || !started) return; this.playing = true; try { PokiSDK.gameplayStart(); } catch (e) {} },
-  stop() { if (!this.playing) return; this.playing = false; try { PokiSDK.gameplayStop(); } catch (e) {} },
+  start() { if (this.playing || this.ad || !started) return; this.playing = true; try { poki().gameplayStart(); } catch (e) {} },
+  stop() { if (!this.playing) return; this.playing = false; try { poki().gameplayStop(); } catch (e) {} },
   breakBegin() { this.stop(); this.ad = true; AU.setAdMute(true); keys.clear(); joy.active = false; },
   breakEnd() { this.ad = false; AU.setAdMute(false); },
   commercial() {
     this.breakBegin();
-    let p; try { p = PokiSDK.commercialBreak(() => AU.setAdMute(true)); } catch (e) { p = null; }
+    let p; try { p = poki().commercialBreak(() => AU.setAdMute(true)); } catch (e) { p = null; }
     return Promise.resolve(p).catch(() => {}).then(() => this.breakEnd());
   },
   rewarded() {
     this.breakBegin();
-    let p; try { p = PokiSDK.rewardedBreak(() => AU.setAdMute(true)); } catch (e) { p = null; }
+    let p; try { p = poki().rewardedBreak(() => AU.setAdMute(true)); } catch (e) { p = null; }
     return Promise.resolve(p).catch(() => false).then(ok => { this.breakEnd(); return !!ok; });
   },
-  measure(c, w, a) { try { if (PokiSDK.measure) PokiSDK.measure(c, w, a); } catch (e) {} }
+  measure(c, w, a) { try { const k = poki(); if (k.measure) k.measure(c, w, a); } catch (e) {} }
 };
 
 // ---------- Game Events (Poki measure) — same approach as Sprout Squad:
@@ -686,6 +687,7 @@ cv.addEventListener('pointerdown', e => {
     if (px >= b.x && px <= b.x + b.w && py >= b.y && py <= b.y + b.h) { pressedBtn = b; b.down = true; AU.click(); b.fn(); return; }
   }
   if (modal) return;
+  onFirstInput(); // a tap already counts as the start of gameplay
   joy.active = true; joy.id = e.pointerId; joy.ox = joy.x = px; joy.oy = joy.y = py; joy.vx = joy.vy = 0;
   try { cv.setPointerCapture(e.pointerId); } catch (err) {}
 });
@@ -714,7 +716,7 @@ function readInput() {
   return { x, y };
 }
 function onFirstInput() {
-  if (started) return;
+  if (started || !bootDone) return;
   started = true; SDK.start();
   ev('session', EV.isNew ? 'new' : 'returning', 'start');
   tutStep('start');
@@ -2070,7 +2072,7 @@ function startGame() {
   if (bootDone) return; bootDone = true;
   boot();
   const bar = document.querySelector('#bar i'); if (bar) bar.style.width = '100%';
-  try { PokiSDK.gameLoadingFinished(); } catch (e) {}
+  try { poki().gameLoadingFinished(); } catch (e) {}
   const ld = document.getElementById('load');
   setTimeout(() => { ld.style.opacity = '0'; setTimeout(() => ld.remove(), 400); }, 150);
   cv.focus();
@@ -2088,14 +2090,19 @@ function startGame() {
     [1, 4, 2].forEach(t => { const sp = cloudSprite(t), c = document.createElement('canvas'); c.width = c.height = sp.SZ; c.getContext('2d').drawImage(sp.c, 0, 0); art.appendChild(c); });
   } catch (e) {}
   const fontReady = (document.fonts && document.fonts.load) ? document.fonts.load('700 40px Fredoka').catch(() => {}) : Promise.resolve();
-  const sdkReady = Promise.resolve(window.__pokiReady).then(() => {
-    sdkFallback();
-    try { return Promise.resolve(PokiSDK.init()).catch(() => {}); } catch (e) {}
+  const sdkReady = Promise.resolve(window.__pokiReady).then(ok => {
+    if (!ok || !window.PokiSDK) return; // offline, ad blocker or own site: the game stays fully playable, rewards are never granted
+    let p; try { p = PokiSDK.init(); } catch (e) { p = null; }
+    return Promise.resolve(p).catch(() => {}).then(() => {
+      pokiLive = true;
+      // SDK arrived after the game had already started: report what it missed
+      if (bootDone) { try { PokiSDK.gameLoadingFinished(); if (SDK.playing) PokiSDK.gameplayStart(); } catch (e) {} }
+    });
   });
   // keep the bar moving while the SDK loads, so a slow connection never looks frozen
   let pct = 35; const creep = setInterval(() => { if (bootDone) return clearInterval(creep); pct += (78 - pct) * 0.15; if (bar) bar.style.width = pct + '%'; }, 200);
   const timeout = new Promise(r => setTimeout(r, 4000));
-  Promise.race([Promise.all([fontReady, sdkReady]), timeout]).then(() => { sdkFallback(); if (bar) bar.style.width = '80%'; startGame(); });
+  Promise.race([Promise.all([fontReady, sdkReady]), timeout]).then(() => { if (bar) bar.style.width = '80%'; startGame(); });
 })();
 </script>
 </body>
