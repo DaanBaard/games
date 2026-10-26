@@ -256,6 +256,80 @@ const STR_07 = {
   zh: { praise: '太棒了！|真厉害！|好极了！|漂亮！', islandDone: '岛屿完成！', thanks: '继续种植你的天空农场吧！', missionDone: '任务完成！', newHat: '新帽子！', p_upgrade: '丰收升级' }
 };
 Object.keys(STR_07).forEach(l => Object.assign(STR[l], STR_07[l]));
+// v0.9: space and jungle worlds. Order per language: 11 island names (z4–z14), 8 crops, 5 builds, 6 power-ups, 5 lines.
+const STR_09_KEYS = ['z4', 'z5', 'z6', 'z7', 'z8', 'z9', 'z10', 'z11', 'z12', 'z13', 'z14',
+  'f_saturnip', 'f_starfruit', 'f_moonshroom', 'f_crystal', 'f_banana', 'f_cacao', 'f_dragonfruit', 'f_orchid',
+  'p_ufo', 'p_monkey', 'p_toucan', 'p_gate', 'p_tree',
+  'pw_magnet', 'pw_rocket', 'pw_comet', 'pw_grow', 'pw_frenzy', 'pw_giant',
+  'power', 'toSpace', 'toJungle', 'newWorld', 'allBloom'];
+const STR_09 = {
+  en: ['Moon Meadow', 'Crater Cove', 'Comet Ridge', 'Nebula Garden', 'Starlight Peak', 'Banana Bay', 'Parrot Grove', 'Waterfall Wilds', 'Monkey Canopy', 'Orchid Valley', 'Ancient Grove',
+    'Saturnip field', 'Starfruit field', 'Moonshrooms', 'Crystal garden', 'Banana grove', 'Cacao field', 'Dragon fruit field', 'Orchid garden',
+    'Rain UFO', 'Helper monkey', 'Rain toucan', 'Star gate', 'Tree of Life',
+    'Cloud magnet', 'Rocket wings', 'Comet rain', 'Growth burst', 'Coin frenzy', 'Giant Pip',
+    'Power-up!', 'To space!', 'Off to the jungle!', 'New world!', 'All worlds are blooming!'],
+  nl: ['Maanweide', 'Kraterbaai', 'Komeetrug', 'Nevelhof', 'Sterrentop', 'Bananenbaai', 'Papegaaienbos', 'Watervalwildernis', 'Apenkruinen', 'Orchideeëndal', 'Oeroud woud',
+    'Ringraapveld', 'Stervruchtveld', 'Maanpaddenstoelen', 'Kristaltuin', 'Bananenveld', 'Cacaoveld', 'Drakenvruchtveld', 'Orchideeëntuin',
+    'Regen-ufo', 'Hulpaapje', 'Regentoekan', 'Sterrenpoort', 'Levensboom',
+    'Wolkenmagneet', 'Raketvleugels', 'Komeetregen', 'Groeispurt', 'Muntenkoorts', 'Reuzen-Pip',
+    'Power-up!', 'Naar het heelal!', 'Op naar de jungle!', 'Nieuwe wereld!', 'Alle werelden bloeien!'],
+  fr: ['Prairie Lunaire', 'Crique des Cratères', 'Crête des Comètes', 'Jardin Nébuleuse', 'Pic Étoilé', 'Baie des Bananes', 'Bosquet des Perroquets', 'Cascades Sauvages', 'Canopée des Singes', 'Vallée des Orchidées', 'Bois Ancien',
+    'Champ de navets à anneaux', 'Champ de caramboles', 'Champignons lunaires', 'Jardin de cristaux', 'Bananeraie', 'Champ de cacao', 'Champ de fruits du dragon', "Jardin d'orchidées",
+    'OVNI de pluie', 'Singe assistant', 'Toucan de pluie', 'Porte des étoiles', 'Arbre de vie',
+    'Aimant à nuages', 'Ailes-fusées', 'Pluie de comètes', 'Poussée de croissance', 'Folie des pièces', 'Pip géant',
+    'Bonus !', "Vers l'espace !", 'Cap sur la jungle !', 'Nouveau monde !', 'Tous les mondes fleurissent !'],
+  de: ['Mondwiese', 'Kraterbucht', 'Kometengrat', 'Nebelgarten', 'Sternengipfel', 'Bananenbucht', 'Papageienhain', 'Wasserfallwildnis', 'Affenwipfel', 'Orchideental', 'Uralter Hain',
+    'Ringrübenfeld', 'Sternfruchtfeld', 'Mondpilze', 'Kristallgarten', 'Bananenhain', 'Kakaofeld', 'Drachenfruchtfeld', 'Orchideengarten',
+    'Regen-UFO', 'Helferaffe', 'Regentukan', 'Sternentor', 'Baum des Lebens',
+    'Wolkenmagnet', 'Raketenflügel', 'Kometenregen', 'Wachstumsschub', 'Münzrausch', 'Riesen-Pip',
+    'Power-up!', 'Ab ins All!', 'Auf in den Dschungel!', 'Neue Welt!', 'Alle Welten blühen!'],
+  es: ['Pradera Lunar', 'Cala del Cráter', 'Cresta de Cometas', 'Jardín Nebulosa', 'Pico Estelar', 'Bahía Banana', 'Arboleda de Loros', 'Cascadas Salvajes', 'Copa de los Monos', 'Valle de Orquídeas', 'Bosque Ancestral',
+    'Campo de nabos anillados', 'Campo de carambolas', 'Setas lunares', 'Jardín de cristales', 'Platanar', 'Campo de cacao', 'Campo de pitayas', 'Jardín de orquídeas',
+    'OVNI de lluvia', 'Mono ayudante', 'Tucán de lluvia', 'Portal estelar', 'Árbol de la vida',
+    'Imán de nubes', 'Alas cohete', 'Lluvia de cometas', 'Estirón', 'Fiebre de monedas', 'Pip gigante',
+    '¡Potenciador!', '¡Al espacio!', '¡A la jungla!', '¡Nuevo mundo!', '¡Todos los mundos florecen!'],
+  it: ['Prato Lunare', 'Baia dei Crateri', 'Cresta delle Comete', 'Giardino Nebulosa', 'Picco Stellato', 'Baia delle Banane', 'Boschetto dei Pappagalli', 'Cascate Selvagge', 'Chiome delle Scimmie', 'Valle delle Orchidee', 'Bosco Antico',
+    'Campo di rape ad anelli', 'Campo di carambole', 'Funghi lunari', 'Giardino di cristalli', 'Bananeto', 'Campo di cacao', 'Campo di pitaya', 'Giardino di orchidee',
+    'UFO della pioggia', 'Scimmia aiutante', 'Tucano della pioggia', 'Portale stellare', 'Albero della vita',
+    'Calamita di nuvole', 'Ali a razzo', 'Pioggia di comete', 'Crescita turbo', 'Febbre da monete', 'Pip gigante',
+    'Potenziamento!', 'Verso lo spazio!', 'Si va nella giungla!', 'Nuovo mondo!', 'Tutti i mondi fioriscono!'],
+  pt: ['Prado Lunar', 'Enseada da Cratera', 'Serra dos Cometas', 'Jardim Nebulosa', 'Pico Estelar', 'Baía das Bananas', 'Bosque dos Papagaios', 'Cachoeiras Selvagens', 'Copa dos Macacos', 'Vale das Orquídeas', 'Bosque Ancestral',
+    'Campo de nabos-anel', 'Campo de carambolas', 'Cogumelos lunares', 'Jardim de cristais', 'Bananal', 'Campo de cacau', 'Campo de pitayas', 'Jardim de orquídeas',
+    'OVNI da chuva', 'Macaco ajudante', 'Tucano da chuva', 'Portal estelar', 'Árvore da vida',
+    'Ímã de nuvens', 'Asas-foguete', 'Chuva de cometas', 'Crescimento turbo', 'Febre de moedas', 'Pip gigante',
+    'Power-up!', 'Para o espaço!', 'Rumo à selva!', 'Novo mundo!', 'Todos os mundos florescem!'],
+  tr: ['Ay Çayırı', 'Krater Koyu', 'Kuyrukluyıldız Sırtı', 'Bulutsu Bahçesi', 'Yıldız Tepesi', 'Muz Koyu', 'Papağan Korusu', 'Vahşi Şelaleler', 'Maymun Ağaçları', 'Orkide Vadisi', 'Kadim Koru',
+    'Halkalı şalgam tarlası', 'Yıldız meyvesi tarlası', 'Ay mantarları', 'Kristal bahçesi', 'Muz bahçesi', 'Kakao tarlası', 'Ejder meyvesi tarlası', 'Orkide bahçesi',
+    "Yağmur UFO'su", 'Yardımcı maymun', 'Yağmur tukanı', 'Yıldız kapısı', 'Hayat ağacı',
+    'Bulut mıknatısı', 'Roket kanatlar', 'Kuyrukluyıldız yağmuru', 'Büyüme atağı', 'Altın çılgınlığı', 'Dev Pip',
+    'Güçlendirme!', 'Uzaya!', 'Ormana doğru!', 'Yeni dünya!', 'Tüm dünyalar çiçek açtı!'],
+  ru: ['Лунный луг', 'Кратерная бухта', 'Кометный хребет', 'Сад туманностей', 'Звёздный пик', 'Банановая бухта', 'Попугаева роща', 'Дикие водопады', 'Обезьяньи кроны', 'Долина орхидей', 'Древняя роща',
+    'Поле кольцерепы', 'Поле карамболы', 'Лунные грибы', 'Хрустальный сад', 'Банановая роща', 'Поле какао', 'Поле питахайи', 'Сад орхидей',
+    'Дождевое НЛО', 'Обезьянка-помощник', 'Дождевой тукан', 'Звёздные врата', 'Древо жизни',
+    'Магнит облаков', 'Ракетные крылья', 'Кометный дождь', 'Рывок роста', 'Монетная лихорадка', 'Гигантский Пип',
+    'Бонус!', 'В космос!', 'Вперёд в джунгли!', 'Новый мир!', 'Все миры цветут!'],
+  pl: ['Księżycowa Łąka', 'Zatoka Kraterów', 'Grzbiet Komet', 'Ogród Mgławic', 'Gwiezdny Szczyt', 'Bananowa Zatoka', 'Papuzi Gaj', 'Dzikie Wodospady', 'Małpie Korony', 'Dolina Orchidei', 'Pradawny Gaj',
+    'Pole rzepy z pierścieniem', 'Pole karamboli', 'Księżycowe grzyby', 'Kryształowy ogród', 'Gaj bananowy', 'Pole kakao', 'Pole pitai', 'Ogród orchidei',
+    'Deszczowe UFO', 'Małpka pomocnik', 'Deszczowy tukan', 'Gwiezdna brama', 'Drzewo życia',
+    'Magnes chmur', 'Rakietowe skrzydła', 'Deszcz komet', 'Zryw wzrostu', 'Monetowe szaleństwo', 'Olbrzymi Pip',
+    'Wzmocnienie!', 'W kosmos!', 'Do dżungli!', 'Nowy świat!', 'Wszystkie światy kwitną!'],
+  ja: ['月の草原', 'クレーター湾', 'すい星の尾根', '星雲ガーデン', '星明かりの峰', 'バナナ湾', 'オウムの森', '滝のジャングル', 'おさるの木の上', 'ランの谷', 'いにしえの森',
+    '輪っかカブ畑', 'スターフルーツ畑', '月キノコ', 'クリスタル庭園', 'バナナ畑', 'カカオ畑', 'ドラゴンフルーツ畑', 'ランの庭',
+    '雨UFO', 'お手伝いザル', '雨オオハシ', '星のゲート', '命の木',
+    '雲マグネット', 'ロケットのつばさ', 'すい星の雨', 'ぐんぐん成長', 'コインフィーバー', 'ジャイアントPip',
+    'パワーアップ！', 'うちゅうへ！', 'ジャングルへ！', '新しい世界！', 'すべての世界に花がさいた！'],
+  ko: ['달 초원', '크레이터 만', '혜성 능선', '성운 정원', '별빛 봉우리', '바나나 만', '앵무새 숲', '폭포 정글', '원숭이 나무 위', '난초 계곡', '고대 숲',
+    '고리 순무 밭', '스타프루트 밭', '달 버섯', '수정 정원', '바나나 밭', '카카오 밭', '용과 밭', '난초 정원',
+    '비 UFO', '도우미 원숭이', '비 투칸', '별의 문', '생명의 나무',
+    '구름 자석', '로켓 날개', '혜성 비', '쑥쑥 성장', '코인 열풍', '거대 Pip',
+    '파워업!', '우주로!', '정글로!', '새로운 세계!', '모든 세계에 꽃이 피었어요!'],
+  zh: ['月亮草地', '陨石坑湾', '彗星山脊', '星云花园', '星光峰', '香蕉湾', '鹦鹉林', '瀑布丛林', '猴子树冠', '兰花谷', '远古森林',
+    '光环萝卜田', '杨桃田', '月亮蘑菇', '水晶花园', '香蕉园', '可可田', '火龙果田', '兰花园',
+    '降雨飞碟', '小猴帮手', '降雨巨嘴鸟', '星际之门', '生命之树',
+    '云朵磁铁', '火箭翅膀', '彗星雨', '快速生长', '金币狂潮', '巨型Pip',
+    '强化道具！', '飞向太空！', '前往丛林！', '新世界！', '所有世界都开花了！']
+};
+Object.keys(STR_09).forEach(l => STR_09_KEYS.forEach((k, i) => { STR[l][k] = STR_09[l][i]; }));
 const T = k => (STR[LANG][k] !== undefined ? STR[LANG][k] : (STR.en[k] !== undefined ? STR.en[k] : k));
 
 // ---------- palette
@@ -275,14 +349,44 @@ const CROPS = {
   pumpkin: { need: 16, grow: 7, coins: 50 },
   blueberry: { need: 24, grow: 6, coins: 80 },
   melon: { need: 40, grow: 9, coins: 150 },
-  tulip: { need: 64, grow: 8, coins: 280 }
+  tulip: { need: 64, grow: 8, coins: 280 },
+  // v0.9 space
+  saturnip: { need: 90, grow: 8, coins: 1000 },
+  starfruit: { need: 120, grow: 9, coins: 1600 },
+  moonshroom: { need: 160, grow: 10, coins: 2500 },
+  crystal: { need: 220, grow: 11, coins: 4000 },
+  // v0.9 jungle
+  banana: { need: 260, grow: 10, coins: 7000 },
+  cacao: { need: 340, grow: 11, coins: 11000 },
+  dragonfruit: { need: 440, grow: 12, coins: 17000 },
+  orchid: { need: 560, grow: 13, coins: 26000 }
 };
+// v0.9: three worlds. Every zone (island) belongs to one world (w); S.zone counts on across worlds (sky 0–3, space 4–8, jungle 9–14).
+// The worlds lie far apart in the same plane; you travel between them with the finale build of a world.
 const ZONES = [
   { cx: 0, cy: 0, rx: 520, ry: 400, seed: 11, tierCap: 3, grass: ['#6fcf4f', '#97e46a'], crops: ['carrot', 'sunflower'] },
   { cx: 1250, cy: 60, rx: 480, ry: 380, seed: 23, tierCap: 4, grass: ['#8ccc45', '#b8e46a'], crops: ['strawberry', 'pumpkin'] },
   { cx: 1250, cy: -1000, rx: 500, ry: 370, seed: 37, tierCap: 5, grass: ['#5fc995', '#93e6b4'], crops: ['blueberry', 'melon'] },
-  { cx: 0, cy: -1000, rx: 480, ry: 360, seed: 51, tierCap: 6, grass: ['#a98cf0', '#cdbbff'], crops: ['tulip', 'melon'] }
+  { cx: 0, cy: -1000, rx: 480, ry: 360, seed: 51, tierCap: 6, grass: ['#a98cf0', '#cdbbff'], crops: ['tulip', 'melon'] },
+  // space
+  { w: 1, cx: 0, cy: -6000, seed: 61, tierCap: 6, pt: [2, 3, 4], grass: ['#8f7fe0', '#bcaeff'], crops: ['saturnip', 'starfruit'] },
+  { w: 1, cx: 1400, cy: -6000, seed: 67, tierCap: 6, pt: [3, 4, 5], grass: ['#5fb8d6', '#a3e6f5'], crops: ['starfruit', 'moonshroom'] },
+  { w: 1, cx: 1400, cy: -7150, seed: 71, tierCap: 7, pt: [3, 4, 5], grass: ['#d07fd9', '#f2b3f0'], crops: ['moonshroom', 'crystal'] },
+  { w: 1, cx: 0, cy: -7150, seed: 79, tierCap: 7, pt: [4, 5, 6], grass: ['#6f8ff0', '#a9c0ff'], crops: ['crystal', 'starfruit'] },
+  { w: 1, cx: -1400, cy: -7150, seed: 83, tierCap: 7, pt: [4, 5, 6], grass: ['#9a86e8', '#d6c9ff'], crops: ['crystal', 'moonshroom'] },
+  // jungle
+  { w: 2, cx: 0, cy: -12000, seed: 89, tierCap: 7, pt: [4, 5, 6], grass: ['#3fae4f', '#73d466'], crops: ['banana', 'cacao'] },
+  { w: 2, cx: 1400, cy: -12000, seed: 97, tierCap: 7, pt: [5, 6, 7], grass: ['#4bb35a', '#8cdc6a'], crops: ['cacao', 'banana'] },
+  { w: 2, cx: 2800, cy: -12000, seed: 101, tierCap: 8, pt: [5, 6, 7], grass: ['#2fa56a', '#62d38f'], crops: ['dragonfruit', 'cacao'] },
+  { w: 2, cx: 2800, cy: -13150, seed: 103, tierCap: 8, pt: [5, 6, 7], grass: ['#5aae3a', '#9ad45a'], crops: ['dragonfruit', 'orchid'] },
+  { w: 2, cx: 1400, cy: -13150, seed: 107, tierCap: 8, pt: [6, 7, 8], grass: ['#3aa889', '#74d9b4'], crops: ['orchid', 'dragonfruit'] },
+  { w: 2, cx: 0, cy: -13150, seed: 109, tierCap: 8, pt: [6, 7, 8], grass: ['#47b04e', '#86dc78'], crops: ['orchid', 'banana'] }
 ];
+ZONES.forEach(z => { z.w = z.w || 0; if (!z.rx) { z.rx = 540; z.ry = 400; } });
+// first zone of each world, and where Pip lands there
+const WORLDS = [{ id: 'sky', z0: 0 }, { id: 'space', z0: 4 }, { id: 'jungle', z0: 9 }];
+const worldOf = z => ZONES[clamp(z, 0, ZONES.length - 1)].w;
+const worldStart = w => { const z = ZONES[WORLDS[w].z0]; return w ? { x: z.cx, y: z.cy - 55 } : { x: 0, y: 30 }; };
 const BRIDGES = [
   { x1: 465, y1: 40, x2: 825, y2: 60, to: 1 },
   { x1: 1250, y1: -275, x2: 1250, y2: -685, to: 2 },
@@ -336,7 +440,7 @@ const PADS = [
   { id: 'sp4', z: 3, x: -260, y: -850, cost: 1690, type: 'spring', req: ['z3f2'] },
   { id: 'z3f3', z: 3, x: -210, y: -1140, cost: 1820, type: 'field', crop: 'tulip', req: ['z3f2', 'bee4'] },
   { id: 'z3f4', z: 3, x: -50, y: -850, cost: 2210, type: 'field', crop: 'tulip', req: ['z3f3', 'sp4'] },
-  { id: 'fount', z: 3, x: 110, y: -920, cost: 3120, type: 'fountain', req: ['z3f4', 'cap4'] },
+  { id: 'fount', z: 3, x: 110, y: -920, cost: 3120, type: 'fountain', to: 4, req: ['z3f4', 'cap4'] },
   // v0.8: harvest upgrades (Monkey Mart style), three levels per island on one spot, each +50% coins for that island's fields
   { id: 'up0a', z: 0, x: -330, y: 150, cost: 40, type: 'upgrade', req: ['f2'] },
   { id: 'up0b', z: 0, x: -330, y: 150, cost: 90, type: 'upgrade', req: ['up0a', 'f3'] },
@@ -351,14 +455,88 @@ const PADS = [
   { id: 'up3b', z: 3, x: -50, y: -1000, cost: 1300, type: 'upgrade', req: ['up3a', 'z3f2'] },
   { id: 'up3c', z: 3, x: -50, y: -1000, cost: 2000, type: 'upgrade', req: ['up3b', 'z3f3'] }
 ];
+// v0.9 islands (space z4–z8, jungle z9–z14) share one layout of slots, relative to the island centre:
+// T = top row of fields, M = middle row of buildings, B = bottom row of fields, R/L/U/D = bridge exits.
+const SLOT = {
+  T0: [-230, -150], T1: [-80, -150], T2: [80, -150], T3: [230, -150],
+  M0: [-300, 40], M1: [-150, 40], M2: [0, 40], M3: [150, 40], M4: [300, 40],
+  B0: [-230, 200], B1: [-80, 200], B2: [80, 200], B3: [230, 200],
+  R: [445, 20], L: [-445, 20], U: [0, -310]
+};
+const ISLE_SPRINGS = [[-390, -120], [390, -120]], ISLE_BUSHES = [[-350, 190], [350, 190]];
+// [id, slot, type, cost multiplier (x the island's first crop), req, crop or bridge target]
+// every island has one upgrade spot (M2) with three levels; upgrades are added by isle() itself
+const ISLES = {
+  4: [['z4s', 'T1', 'field', 0, ['fount'], 'saturnip'], ['z4f1', 'T2', 'field', 1.6, ['z4s'], 'saturnip'], ['ufo1', 'M1', 'ufo', 2.4, ['z4f1']],
+    ['z4f2', 'T0', 'field', 3.2, ['z4f1'], 'starfruit'], ['cap5', 'M3', 'cap', 3.6, ['z4f2']], ['z4f3', 'B1', 'field', 4.6, ['z4f2'], 'saturnip'],
+    ['z4f4', 'B2', 'field', 6, ['z4f3', 'cap5'], 'starfruit'], ['br4', 'R', 'bridge', 8, ['z4f4', 'ufo1'], 5]],
+  5: [['z5f0', 'T0', 'field', 2.4, ['br4'], 'starfruit'], ['z5f1', 'T1', 'field', 3.2, ['z5f0'], 'starfruit'], ['bee5', 'M0', 'bee', 3.6, ['z5f0']],
+    ['z5f2', 'T2', 'field', 4.4, ['z5f1'], 'moonshroom'], ['spd4', 'M4', 'speed', 4.4, ['z5f1']], ['z5f3', 'B1', 'field', 5.6, ['z5f2'], 'moonshroom'],
+    ['ufo2', 'M3', 'ufo', 6, ['z5f2']], ['z5f4', 'B2', 'field', 7.4, ['z5f3', 'bee5'], 'starfruit'], ['br5', 'U', 'bridge', 9.5, ['z5f4', 'spd4'], 6]],
+  6: [['z6f0', 'T1', 'field', 2.4, ['br5'], 'moonshroom'], ['z6f1', 'T2', 'field', 3.2, ['z6f0'], 'moonshroom'], ['cap6', 'M1', 'cap', 3.6, ['z6f0']],
+    ['z6f2', 'B1', 'field', 4.4, ['z6f1'], 'crystal'], ['sp6', 'M3', 'spring', 5, ['z6f2']], ['z6f3', 'B2', 'field', 5.8, ['z6f2'], 'crystal'],
+    ['ufo3', 'M0', 'ufo', 6.2, ['z6f3']], ['z6f4', 'T0', 'field', 7.4, ['z6f3', 'sp6'], 'moonshroom'], ['br6', 'L', 'bridge', 9.5, ['z6f4', 'cap6'], 7]],
+  7: [['z7f0', 'T2', 'field', 2.4, ['br6'], 'crystal'], ['z7f1', 'T1', 'field', 3.2, ['z7f0'], 'crystal'], ['bee7', 'M3', 'bee', 3.6, ['z7f0']],
+    ['z7f2', 'T0', 'field', 4.4, ['z7f1'], 'starfruit'], ['sp7', 'M1', 'spring', 5, ['z7f2']], ['z7f3', 'B2', 'field', 5.8, ['z7f2'], 'crystal'],
+    ['ufo4', 'M4', 'ufo', 6.2, ['z7f3']], ['z7f4', 'B1', 'field', 7.4, ['z7f3', 'bee7'], 'starfruit'], ['br7', 'L', 'bridge', 9.5, ['z7f4', 'sp7'], 8]],
+  8: [['z8f0', 'T3', 'field', 2.4, ['br7'], 'crystal'], ['z8f1', 'T2', 'field', 3.2, ['z8f0'], 'crystal'], ['ufo5', 'M3', 'ufo', 3.6, ['z8f0']],
+    ['z8f2', 'B2', 'field', 4.4, ['z8f1'], 'moonshroom'], ['bee8', 'M1', 'bee', 5, ['z8f2']], ['z8f3', 'B1', 'field', 5.8, ['z8f2'], 'crystal'],
+    ['z8f4', 'T1', 'field', 7, ['z8f3', 'bee8'], 'crystal'], ['z8f5', 'T0', 'field', 8.2, ['z8f4'], 'moonshroom'],
+    ['gate', 'U', 'gate', 13, ['z8f5', 'ufo5'], 9]],
+  9: [['z9s', 'T1', 'field', 0, ['gate'], 'banana'], ['z9f1', 'T2', 'field', 1.6, ['z9s'], 'banana'], ['monk1', 'M1', 'monkey', 2.4, ['z9f1']],
+    ['z9f2', 'T0', 'field', 3.2, ['z9f1'], 'cacao'], ['cap7', 'M3', 'cap', 3.6, ['z9f2']], ['z9f3', 'B1', 'field', 4.6, ['z9f2'], 'banana'],
+    ['z9f4', 'B2', 'field', 6, ['z9f3', 'cap7'], 'cacao'], ['br9', 'R', 'bridge', 8, ['z9f4', 'monk1'], 10]],
+  10: [['z10f0', 'T0', 'field', 2.4, ['br9'], 'cacao'], ['z10f1', 'T1', 'field', 3.2, ['z10f0'], 'cacao'], ['tou1', 'M0', 'toucan', 3.6, ['z10f0']],
+    ['z10f2', 'T2', 'field', 4.4, ['z10f1'], 'banana'], ['spd5', 'M4', 'speed', 4.4, ['z10f1']], ['z10f3', 'B1', 'field', 5.6, ['z10f2'], 'cacao'],
+    ['monk2', 'M3', 'monkey', 6, ['z10f2']], ['z10f4', 'B2', 'field', 7.4, ['z10f3', 'tou1'], 'banana'], ['br10', 'R', 'bridge', 9.5, ['z10f4', 'spd5'], 11]],
+  11: [['z11f0', 'T0', 'field', 2.4, ['br10'], 'dragonfruit'], ['z11f1', 'T1', 'field', 3.2, ['z11f0'], 'dragonfruit'], ['cap8', 'M1', 'cap', 3.6, ['z11f0']],
+    ['z11f2', 'B1', 'field', 4.4, ['z11f1'], 'cacao'], ['sp11', 'M3', 'spring', 5, ['z11f2']], ['z11f3', 'B2', 'field', 5.8, ['z11f2'], 'dragonfruit'],
+    ['tou2', 'M0', 'toucan', 6.2, ['z11f3']], ['z11f4', 'T2', 'field', 7.4, ['z11f3', 'sp11'], 'cacao'], ['br11', 'U', 'bridge', 9.5, ['z11f4', 'cap8'], 12]],
+  12: [['z12f0', 'T1', 'field', 2.4, ['br11'], 'dragonfruit'], ['z12f1', 'T2', 'field', 3.2, ['z12f0'], 'dragonfruit'], ['monk3', 'M1', 'monkey', 3.6, ['z12f0']],
+    ['z12f2', 'B1', 'field', 4.4, ['z12f1'], 'orchid'], ['bee12', 'M3', 'bee', 5, ['z12f2']], ['z12f3', 'B2', 'field', 5.8, ['z12f2'], 'orchid'],
+    ['tou3', 'M0', 'toucan', 6.2, ['z12f3']], ['z12f4', 'T0', 'field', 7.4, ['z12f3', 'monk3'], 'dragonfruit'], ['br12', 'L', 'bridge', 9.5, ['z12f4', 'bee12'], 13]],
+  13: [['z13f0', 'T2', 'field', 2.4, ['br12'], 'orchid'], ['z13f1', 'T1', 'field', 3.2, ['z13f0'], 'orchid'], ['monk4', 'M3', 'monkey', 3.6, ['z13f0']],
+    ['z13f2', 'T0', 'field', 4.4, ['z13f1'], 'dragonfruit'], ['sp13', 'M1', 'spring', 5, ['z13f2']], ['z13f3', 'B2', 'field', 5.8, ['z13f2'], 'orchid'],
+    ['tou4', 'M4', 'toucan', 6.2, ['z13f3']], ['z13f4', 'B1', 'field', 7.4, ['z13f3', 'sp13'], 'dragonfruit'], ['br13', 'L', 'bridge', 9.5, ['z13f4', 'monk4'], 14]],
+  14: [['z14f0', 'T3', 'field', 2.4, ['br13'], 'orchid'], ['z14f1', 'T2', 'field', 3.2, ['z14f0'], 'orchid'], ['tou5', 'M3', 'toucan', 3.6, ['z14f0']],
+    ['z14f2', 'B2', 'field', 4.4, ['z14f1'], 'banana'], ['monk5', 'M1', 'monkey', 5, ['z14f2']], ['z14f3', 'B1', 'field', 5.8, ['z14f2'], 'orchid'],
+    ['z14f4', 'T1', 'field', 7, ['z14f3', 'monk5'], 'orchid'], ['z14f5', 'T0', 'field', 8.2, ['z14f4'], 'banana'],
+    ['tree', 'U', 'tree', 13, ['z14f5', 'tou5'], -1]]
+};
+const ISLE_COST = 2.3; // tuned with the bot: about 4–6 minutes per island for a quick player
+Object.keys(ISLES).forEach(k => {
+  const z = +k, Z = ZONES[z], V = CROPS[Z.crops[0]].coins * ISLE_COST, at = sl => ({ x: Z.cx + SLOT[sl][0], y: Z.cy + SLOT[sl][1] });
+  const ids = ISLES[k].map(e => e[0]);
+  ISLES[k].forEach(([id, sl, type, m, req, extra]) => {
+    const p = Object.assign({ id, z, cost: Math.round(V * m / 10) * 10, type, req }, at(sl));
+    if (type === 'field') p.crop = extra; else if (extra !== undefined) p.to = extra;
+    if (m === 0) p.free = true; // the starter field of a world is a gift on arrival
+    PADS.push(p);
+  });
+  // harvest upgrades, like on the sky islands
+  const f = ids.filter(i => /f\d$/.test(i));
+  [['a', 3, f[1]], ['b', 6, f[2]], ['c', 10, f[3]]].forEach(([l, m, r], i) =>
+    PADS.push(Object.assign({ id: 'up' + z + l, z, cost: Math.round(V * m / 10) * 10, type: 'upgrade', req: i ? ['up' + z + 'abc'[i - 1], r] : [r] }, at('M2'))));
+  ISLE_SPRINGS.forEach(q => BASE_SPRINGS.push({ z, x: Z.cx + q[0], y: Z.cy + q[1] }));
+});
+// bridges between consecutive v0.9 islands: straight, from rim to rim
+for (let z = 5; z < ZONES.length; z++) {
+  if (z === 9) continue; // the jungle is reached through the star gate, not a bridge
+  const A = ZONES[z - 1], B = ZONES[z], dx = Math.sign(B.cx - A.cx), dy = Math.sign(B.cy - A.cy);
+  BRIDGES.push(dx ? { x1: A.cx + dx * A.rx * 0.89, y1: A.cy, x2: B.cx - dx * B.rx * 0.89, y2: B.cy, to: z }
+    : { x1: A.cx, y1: A.cy + dy * A.ry * 0.89, x2: B.cx, y2: B.cy - dy * B.ry * 0.89, to: z });
+}
+// shake bushes in the jungle (v0.9): coins and sometimes a power-up, then they regrow
+const BUSHES = [];
+for (let z = 9; z < ZONES.length; z++) ISLE_BUSHES.forEach(q => BUSHES.push({ x: ZONES[z].cx + q[0], y: ZONES[z].cy + q[1], z, t: 0, shake: 0 }));
 const fieldMul = z => 1 + 0.5 * ['a', 'b', 'c'].filter(l => S.built.has('up' + z + l)).length;
 const PAD_BY_ID = {}; PADS.forEach(p => { PAD_BY_ID[p.id] = p; p.paid = 0; p.appear = -1; });
-const EFF = [0, 1, 1.1, 1.25, 1.45, 1.7, 2.0];
+const EFF = [0, 1, 1.1, 1.25, 1.45, 1.7, 2.0, 2.4, 2.9];
 const FIELD_W = 124, FIELD_H = 86;
 const BASE_SPEED = 250;
 const SPRING_EVERY = 2.0, SPRING_MAX = 5, PUFF_MAX = 42;
 const SKEY = 'drizzlings_save_v1'; // old key kept on purpose so existing progress survives the rename
-const VERSION = '0.8';
+const VERSION = '0.9';
 
 const fullW = t => Math.pow(2, t - 1);
 const cloudR = w => 18 + 7 * (Math.log2(Math.max(w, 0.2)) + 1);
@@ -366,16 +544,18 @@ const tierOf = w => Math.max(1, Math.ceil(Math.log2(Math.max(w, 1e-6)) - 1e-6) +
 const isFull = c => c.water >= fullW(c.tier) - 1e-6;
 
 // ---------- state
-const S = { coins: 0, built: new Set(), flags: { collected: 0, rained: 0, harvested: 0, merged: 0 }, zone: 0, time: 0, boost: 0, goldT: 55, stash: {}, miss: [], mi: 0, stars: 0, hat: -1 };
+const S = { coins: 0, built: new Set(), flags: { collected: 0, rained: 0, harvested: 0, merged: 0 }, zone: 0, time: 0, boost: 0, goldT: 55, stash: {}, miss: [], mi: 0, stars: 0, hat: -1, w: 0, pw: {}, orbT: 0 };
 const P = { x: 0, y: 30, vx: 0, vy: 0, r: 26, look: 0, squash: 0, hover: 0, fullCd: 0, face: 1, flap: 0, blink: 0, nextBlink: 2 };
 let fields = [], springs = [], puffs = [], trail = [], bees = [], hives = [], parts = [], floaters = [], coinFx = [], toasts = [];
+let rainers = [], homes = [], orbs = []; // v0.9: rain helpers (UFO, toucan), helper homes, power-up orbs
 let hist = [];
 let started = false, modal = null, saveT = 0, shakeT = 0, shakeA = 0, incomeRate = 0, incomeAcc = 0, incomeT = 0;
 let hudCoinBump = 0, hudCapFlash = 0, tutFade = 1, movedDist = 0, padTick = 0, rainLevel = 0;
 let time = 0;
 
-const cap = () => 4 + ['cap1', 'cap2', 'cap3', 'cap4'].filter(i => S.built.has(i)).length;
-const speedMul = () => Math.pow(1.15, ['spd1', 'spd2', 'spd3'].filter(i => S.built.has(i)).length);
+let capN = 0, spdN = 0; // counted in applyBuild
+const cap = () => 4 + capN;
+const speedMul = () => Math.pow(1.15, spdN) * (S.pw.rocket > 0 ? 1.6 : 1);
 const tierCap = () => ZONES[S.zone].tierCap;
 
 // ---------- Poki SDK wrapper
@@ -389,7 +569,7 @@ let pokiLive = false;
 const poki = () => (pokiLive && window.PokiSDK) || SDK_STUB;
 const SDK = {
   playing: false, ad: false,
-  start() { if (this.playing || this.ad || !started) return; this.playing = true; try { poki().gameplayStart(); } catch (e) {} },
+  start() { if (this.playing || this.ad || !started || trans) return; this.playing = true; try { poki().gameplayStart(); } catch (e) {} },
   stop() { if (!this.playing) return; this.playing = false; try { poki().gameplayStop(); } catch (e) {} },
   breakBegin() { this.stop(); this.ad = true; AU.setAdMute(true); keys.clear(); joy.active = false; },
   breakEnd() { this.ad = false; AU.setAdMute(false); },
@@ -411,7 +591,7 @@ const SDK = {
 // visible/interact pairs per feature, and one-off "reached" milestones.
 const EV = { once: new Set(), sessT: 0, mi: 0, isNew: true };
 const islandKey = z => 'island' + (z + 1);
-const TIME_MARKS = [1, 2, 3, 4, 5, 7, 10, 15, 20, 30, 45, 60];
+const TIME_MARKS = [1, 2, 3, 4, 5, 7, 10, 15, 20, 30, 45, 60, 90, 120];
 function ev(c, w, a) { SDK.measure(c, w, a); }
 function evOnce(c, w, a) { const k = c + '|' + w + '|' + a; if (EV.once.has(k)) return; EV.once.add(k); SDK.measure(c, w, a); }
 function trackTime(dt) {
@@ -422,7 +602,7 @@ function trackTime(dt) {
     EV.mi++;
     ev('time', EV.isNew ? 'new' : 'returning', 'm' + m);      // playtime histogram, first visit vs. returning
     ev('progress', 'm' + m, islandKey(S.zone));                 // which island players are on at minute m
-    ev('builds', 'm' + m, 'b' + Math.min(S.built.size, 40));    // how far they built by minute m
+    ev('builds', 'm' + m, 'b' + Math.min(S.built.size, 150));    // how far they built by minute m
   }
 }
 function tutStep(step) {
@@ -432,6 +612,11 @@ function tutStep(step) {
 }
 
 // ---------- audio (all synthesized, no external files)
+const MUS = [
+  { spb: 0.3, scale: [0, 2, 4, 7, 9, 12, 14, 16], prog: [0, -3, 5, 7], mel: 'triangle', md: 0.28, mv: 0.07, busy: 0.55 },
+  { spb: 0.36, scale: [0, 2, 4, 6, 7, 11, 12, 14], prog: [0, 4, -3, 2], mel: 'sine', md: 0.7, mv: 0.08, busy: 0.45 },
+  { spb: 0.24, scale: [0, 3, 5, 7, 10, 12, 15, 17], prog: [0, 5, -2, 3], mel: 'triangle', md: 0.13, mv: 0.09, busy: 0.6, shaker: true }
+];
 const AU = {
   ctx: null, master: null, sfx: null, mus: null, rainG: null, on: true, music: true, adMute: false, last: {}, step: 0, nextT: 0,
   init() {
@@ -471,14 +656,20 @@ const AU = {
     g.gain.exponentialRampToValueAtTime(0.0001, t + d);
     o.connect(g); g.connect(dest || this.sfx); o.start(t); o.stop(t + d + 0.02);
   },
-  noise(d, f, v, delay) {
+  noise(d, f, v, delay, dest) {
     if (!this.ctx) return;
     const c = this.ctx, t = c.currentTime + (delay || 0);
     const s = c.createBufferSource(); s.buffer = this.noiseBuf;
     const fl = c.createBiquadFilter(); fl.type = 'bandpass'; fl.frequency.setValueAtTime(f, t); fl.frequency.exponentialRampToValueAtTime(f * 3, t + d);
     const g = c.createGain(); g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(v, t + 0.03); g.gain.exponentialRampToValueAtTime(0.0001, t + d);
-    s.connect(fl); fl.connect(g); g.connect(this.sfx); s.start(t, Math.random()); s.stop(t + d + 0.05);
+    s.connect(fl); fl.connect(g); g.connect(dest || this.sfx); s.start(t, Math.random()); s.stop(t + d + 0.05);
   },
+  // v0.9
+  power() { [0, 4, 7, 11, 14, 19].forEach((s, i) => this.tone(587 * Math.pow(2, s / 12), 0.22, 'sine', 0.13, 0, i * 0.04)); this.tone(1760, 0.5, 'triangle', 0.05, 600, 0.2); },
+  whoosh() { this.noise(0.5, 400, 0.14); this.tone(180, 0.5, 'sine', 0.12, 500); },
+  launch() { this.noise(2.6, 200, 0.18); this.tone(110, 2.8, 'sawtooth', 0.05, 1200); this.tone(220, 2.8, 'sine', 0.1, 1600); [0, 4, 7, 12, 16, 19, 24].forEach((s, i) => this.tone(392 * Math.pow(2, s / 12), 0.4, 'triangle', 0.1, 0, 0.3 + i * 0.12)); },
+  land() { this.tone(160, 0.3, 'sine', 0.25, -80); this.noise(0.3, 300, 0.12); [0, 4, 7, 12].forEach((s, i) => this.tone(659 * Math.pow(2, s / 12), 0.3, 'triangle', 0.12, 0, 0.15 + i * 0.07)); },
+  shake() { if (this.throttle('bush', 200)) return; this.noise(0.25, 1800, 0.1); this.tone(520, 0.1, 'triangle', 0.08, 300); },
   pop(t) { this.tone(420 + t * 70, 0.13, 'sine', 0.28, 380); this.tone(900 + t * 90, 0.07, 'triangle', 0.07); },
   merge(chain, tier) {
     const base = 392 * Math.pow(2, (Math.min(chain, 6) * 2 + tier) / 12);
@@ -495,18 +686,20 @@ const AU = {
   click() { this.tone(700, 0.06, 'triangle', 0.12, 120); },
   grow() { if (this.throttle('grow', 150)) return; this.tone(330, 0.2, 'sine', 0.1, 330); },
   setRain(l) { if (!this.ctx) return; this.rainG.gain.setTargetAtTime(Math.min(1, l) * 0.16, this.ctx.currentTime, 0.2); },
+  world: 0,
   schedule() {
     if (!this.ctx || !this.music) return;
-    const c = this.ctx, spb = 0.3;
+    // each world has its own tune: sky (bright), space (slow, dreamy lydian), jungle (quick marimba with shaker)
+    const c = this.ctx, M = MUS[this.world] || MUS[0], spb = M.spb;
     if (this.nextT < c.currentTime) this.nextT = c.currentTime + 0.05;
-    const scale = [0, 2, 4, 7, 9, 12, 14, 16];
-    const prog = [0, -3, 5, 7];
+    const scale = M.scale, prog = M.prog;
     while (this.nextT < c.currentTime + 0.25) {
       const s = this.step, bar = ((s / 8) | 0) % 4, root = prog[bar], when = this.nextT - c.currentTime;
       if (s % 8 === 0) { this.tone(130.8 * Math.pow(2, root / 12), 1.1, 'sine', 0.22, 0, when, this.mus); this.tone(196 * Math.pow(2, root / 12), 1.0, 'triangle', 0.05, 0, when, this.mus); }
       if (s % 8 === 4) this.tone(164.8 * Math.pow(2, root / 12), 0.8, 'sine', 0.12, 0, when, this.mus);
       const r = seeded(s * 7 + 3)();
-      if (r < 0.55) { const n = scale[(seeded(s * 13 + 1)() * scale.length) | 0]; this.tone(523.25 * Math.pow(2, (n + (root > 4 ? 0 : 0)) / 12), 0.28, 'triangle', 0.07, 0, when, this.mus); }
+      if (r < M.busy) { const n = scale[(seeded(s * 13 + 1)() * scale.length) | 0]; this.tone(523.25 * Math.pow(2, n / 12), M.md, M.mel, M.mv, 0, when, this.mus); }
+      if (M.shaker && s % 2) this.noise(0.06, 6000, 0.03, when, this.mus);
       this.step = (s + 1) % 64; this.nextT += spb;
     }
   }
@@ -584,13 +777,18 @@ const ISL = ZONES.map((z, zi) => {
   const blockers = PADS.filter(p => p.z === zi).map(p => [p.x - z.cx, p.y - z.cy]).concat(BASE_SPRINGS.filter(s => s.z === zi).map(s => [s.x - z.cx, s.y - z.cy]));
   if (zi === 0) blockers.push([START_FIELD.x, START_FIELD.y], [0, 30]);
   BRIDGES.forEach(b => { blockers.push([b.x1 - z.cx, b.y1 - z.cy], [b.x2 - z.cx, b.y2 - z.cy]); });
-  const deco = [];
+  BUSHES.forEach(b => { if (b.z === zi) blockers.push([b.x - z.cx, b.y - z.cy]); });
+  const deco = [], kinds = [['tuft', 'flower', 'stone'], ['crater', 'crystal', 'rock'], ['fern', 'flower', 'shroom']][z.w];
+  const cols = [['#ff6fa8', '#ffd23f', '#ffffff', '#ff8a3d', '#b58cff'], ['#7ff3ff', '#ff8af0', '#c8b8ff', '#9dffcf'], ['#ff5d8f', '#ffd23f', '#ff8a3d', '#ff6fd8', '#ffffff']][z.w];
   for (let i = 0; i < 70 && deco.length < 34; i++) {
     const a = r() * TAU, rr = Math.sqrt(r()) * 0.82, x = Math.cos(a) * z.rx * rr, y = Math.sin(a) * z.ry * rr;
     if (blockers.some(b => d2(x, y, b[0], b[1]) < 105 * 105)) continue;
-    deco.push({ x, y, k: r() < 0.45 ? 'tuft' : r() < 0.7 ? 'flower' : 'stone', c: pick(['#ff6fa8', '#ffd23f', '#ffffff', '#ff8a3d', '#b58cff']), s: 0.8 + r() * 0.5 });
+    deco.push({ x, y, k: r() < 0.45 ? kinds[0] : r() < 0.7 ? kinds[1] : kinds[2], c: pick(cols), s: 0.8 + r() * 0.5, a: r() * TAU });
   }
-  return { top, inner, rocks, deco };
+  // jungle: vines hanging from the rim
+  const vines = [];
+  if (z.w === 2) for (let i = 0; i < 9; i++) vines.push({ x: (r() - 0.5) * z.rx * 1.6, l: 60 + r() * 120 });
+  return { top, inner, rocks, deco, vines };
 });
 
 // background clouds (parallax)
@@ -605,7 +803,8 @@ function roundRectPath(c, x, y, w, h, r) {
 }
 const CLOUD_COLS = [null,
   ['#ffffff', '#d9efff'], ['#f2fbff', '#a9ddff'], ['#d8efff', '#7cc5ff'],
-  ['#d6dcff', '#8a9cff'], ['#e3d3ff', '#9d78ff'], ['#c8b8ff', '#6a52d8']];
+  ['#d6dcff', '#8a9cff'], ['#e3d3ff', '#9d78ff'], ['#c8b8ff', '#6a52d8'],
+  ['#ffd9f2', '#ff6fc8'], ['#d6fff2', '#1fb89a']]; // v0.9: tier 7 cosmic storm, tier 8 jungle monsoon
 const GOLD_COLS = ['#fff6c2', '#ffbf2e'];
 const BUMPS = [[0, 0.18, 0.95], [-0.62, 0.3, 0.62], [0.64, 0.3, 0.6], [-0.3, -0.32, 0.62], [0.3, -0.26, 0.72]];
 const spriteCache = {};
@@ -640,6 +839,7 @@ function cloudSprite(tier, gold) {
   g.beginPath(); g.arc(0, 0.24 * R, 0.08 * R, 0.15 * Math.PI, 0.85 * Math.PI); g.stroke();
   if (tier >= 5 && !gold) { g.beginPath(); g.moveTo(-0.38 * R, -0.08 * R); g.lineTo(-0.16 * R, -0.02 * R); g.moveTo(0.38 * R, -0.08 * R); g.lineTo(0.16 * R, -0.02 * R); g.stroke(); }
   if (gold) { g.fillStyle = '#fff'; star(g, 0.5 * R, -0.5 * R, 0.14 * R); star(g, -0.62 * R, 0.0, 0.08 * R); }
+  if (tier >= 7 && !gold) { g.fillStyle = tier === 7 ? '#fff6c2' : '#eaffd0'; star(g, 0.55 * R, -0.45 * R, 0.13 * R); star(g, -0.6 * R, -0.2 * R, 0.09 * R); star(g, 0.1 * R, -0.7 * R, 0.07 * R); }
   return (spriteCache[key] = { c, R, SZ });
 }
 function star(g, x, y, r) {
@@ -657,11 +857,19 @@ function bgCloud() {
 }
 
 // ---------- entities
-function makeField(id, x, y, crop) { return { id, x, y, crop, need: CROPS[crop].need, prog: 0, state: 'dry', t: 0, claimed: null, bump: 0, appear: 0, wet: 0 }; }
+const wAt = (x, y) => ZONES[Math.max(0, zoneAt(x, y))].w;
+function makeField(id, x, y, crop) { return { id, x, y, crop, need: CROPS[crop].need, prog: 0, state: 'dry', t: 0, claimed: null, rc: null, bump: 0, appear: 0, wet: 0, w: wAt(x, y) }; }
 function addSpring(x, y, z, fresh) { springs.push({ x, y, z, t: rand(0.2, 1.2), n: 0, appear: fresh ? 0 : 1, puffAnim: 0 }); }
 function addHive(id, x, y, fresh) {
-  const h = { id, x, y, stash: S.stash[id] || 0, appear: fresh ? 0 : 1, bump: 0 }; hives.push(h);
-  bees.push({ x: x + 20, y: y - 20, hive: h, tgt: null, t: rand(0, 6), carry: 0, vx: 0, vy: 0 });
+  const h = { id, x, y, stash: S.stash[id] || 0, appear: fresh ? 0 : 1, bump: 0, w: wAt(x, y) }; hives.push(h);
+  bees.push({ x: x + 20, y: y - 20, hive: h, tgt: null, t: rand(0, 6), carry: 0, vx: 0, vy: 0, w: h.w });
+}
+// v0.9 helpers. A home is the spot where a helper lives (UFO pad, toucan nest, monkey hut).
+// UFO and toucan rain on dry fields by themselves; the monkey harvests and throws the coins straight to you.
+function addHelper(id, x, y, kind, fresh) {
+  const h = { id, x, y, kind, appear: fresh ? 0 : 1, bump: 0, w: wAt(x, y) }; homes.push(h);
+  if (kind === 'monkey') bees.push({ x: x + 20, y: y - 10, home: h, kind, tgt: null, t: rand(0, 6), vx: 0, vy: 0, w: h.w });
+  else rainers.push({ x, y: y - 10, home: h, kind, z: zoneAt(x, y), tgt: null, t: rand(0, 6), vx: 0, vy: 0, w: h.w, raining: false, rate: kind === 'ufo' ? 7 : 18 });
 }
 function spawnPuff(x, y, tier, opts) {
   const p = Object.assign({ x, y, tier, water: fullW(tier), a: rand(0, TAU), t: 0, s: 0, vx: 0, vy: 0, gold: false, life: 0, origin: null, bob: rand(0, TAU) }, opts || {});
@@ -671,7 +879,7 @@ function spawnPuff(x, y, tier, opts) {
 function resetWorld() {
   fields = [makeField(START_FIELD.id, START_FIELD.x, START_FIELD.y, START_FIELD.crop)];
   fields[0].appear = 1;
-  springs = []; hives = []; bees = []; puffs = []; trail = [];
+  springs = []; hives = []; bees = []; puffs = []; trail = []; rainers = []; homes = []; orbs = []; capN = spdN = 0;
   BASE_SPRINGS.forEach(s => { if (s.z <= S.zone) addSpring(s.x, s.y, s.z, false); });
   hist = [{ x: P.x, y: P.y }];
 }
@@ -685,7 +893,7 @@ window.addEventListener('keydown', e => {
   if (SDK.ad) return;
   AU.init();
   const k = e.key.toLowerCase();
-  if (k === 'escape' || k === 'p') { if (!modal && started) openModal('pause'); else if (modal && modal.type === 'pause') resumeFromPause(); return; }
+  if (k === 'escape' || k === 'p') { if (trans && !modal) return; if (!modal && started) openModal('pause'); else if (modal && modal.type === 'pause') resumeFromPause(); return; }
   if (modal) { modalKey(k); return; }
   keys.add(k);
 });
@@ -856,9 +1064,13 @@ function catchGolden(p) {
   ev('golden', 'cloud', 'interact'); mTrack('golden', 1);
 }
 function harvest(f, bee) {
-  const mul = S.boost > 0 ? 2 : 1, v = Math.round(CROPS[f.crop].coins * mul * fieldMul(Math.max(0, zoneAt(f.x, f.y))));
+  const mul = (S.boost > 0 ? 2 : 1) * (S.pw.frenzy > 0 ? 3 : 1), v = Math.round(CROPS[f.crop].coins * mul * fieldMul(Math.max(0, zoneAt(f.x, f.y))));
   f.state = 'dry'; f.prog = 0; f.t = 0; f.claimed = null; f.bump = 1;
-  if (bee) { bee.hive.stash += v; S.stash[bee.hive.id] = bee.hive.stash; bee.hive.bump = 1; burst(f.x, f.y, 6, 'leaf', ['#7ee26b', '#4fae43'], 160, 0.7); }
+  if (bee && bee.kind === 'monkey') {
+    // the monkey throws the coins straight to you
+    spawnCoins(f.x, f.y, v, 'player'); floater(f.x, f.y - 60, '+' + fmt(v), '#ffe36b', 28);
+    burst(f.x, f.y, 8, 'leaf', ['#7ee26b', '#4fae43', '#ffd23f'], 180, 0.7); bee.home.bump = 1; bee.hop = 1;
+  } else if (bee) { bee.hive.stash += v; S.stash[bee.hive.id] = bee.hive.stash; bee.hive.bump = 1; burst(f.x, f.y, 6, 'leaf', ['#7ee26b', '#4fae43'], 160, 0.7); }
   else {
     spawnCoins(f.x, f.y, v, 'player');
     floater(f.x, f.y - 60, '+' + fmt(v), '#ffe36b', 32);
@@ -871,7 +1083,7 @@ function harvest(f, bee) {
   S.flags.harvested++;
 }
 function padVisible(p) {
-  if (S.built.has(p.id) || p.z > S.zone) return false;
+  if (p.free || S.built.has(p.id) || p.z > S.zone || ZONES[p.z].w !== S.w) return false;
   return p.req.every(r => r === 'harvest' ? S.flags.harvested > 0 : S.built.has(r));
 }
 function applyBuild(p, fresh) {
@@ -880,7 +1092,11 @@ function applyBuild(p, fresh) {
     case 'field': { const f = makeField(p.id, p.x, p.y, p.crop); f.appear = fresh ? 0 : 1; fields.push(f); break; }
     case 'spring': addSpring(p.x, p.y, p.z, fresh); break;
     case 'bee': addHive(p.id, p.x, p.y, fresh); break;
-    case 'bridge': {
+    case 'ufo': case 'toucan': case 'monkey': addHelper(p.id, p.x, p.y, p.type, fresh); break;
+    case 'cap': capN++; break;
+    case 'speed': spdN++; break;
+    // a bridge opens the next island; the fountain and the star gate open the next world (Pip travels there in startTrans)
+    case 'bridge': case 'fountain': case 'gate': {
       S.zone = Math.max(S.zone, p.to);
       BASE_SPRINGS.forEach(s => { if (s.z === p.to) addSpring(s.x, s.y, s.z, fresh); });
       break;
@@ -904,7 +1120,12 @@ function build(p) {
     ev('island', islandKey(p.to), 'start');
     setTimeout(() => { if (!modal) openModal('zone', { zone: p.to }); else pendingZone = p.to; }, 1100);
   }
-  if (p.type === 'fountain') { ev('island', islandKey(p.z), 'complete'); ev('milestone', 'fountain', 'reached'); setTimeout(() => openModal('final'), 1200); }
+  if (p.type === 'fountain' || p.type === 'gate') {
+    // world finale: after the cheer Pip launches to the next world
+    ev('island', islandKey(p.z), 'complete'); ev('milestone', p.type, 'reached');
+    pendingTrans = worldOf(p.to); transAt = S.time + 1.6;
+  }
+  if (p.type === 'tree') { ev('island', islandKey(p.z), 'complete'); ev('milestone', 'tree', 'reached'); setTimeout(() => openModal('final'), 1200); }
   save();
 }
 let pendingZone = -1;
@@ -916,21 +1137,24 @@ function padName(p) {
 
 // ---------- missions & hats (v0.8): three small goals of about a minute each, every one pays coins and a star;
 // stars unlock hats for Pip. Icons and numbers only, so they need no translation.
-const HATS = [{ id: 'straw', at: 1 }, { id: 'flower', at: 3 }, { id: 'party', at: 5 }, { id: 'propeller', at: 8 }, { id: 'crown', at: 12 }, { id: 'rainbow', at: 16 }];
+const HATS = [{ id: 'straw', at: 1 }, { id: 'flower', at: 3 }, { id: 'party', at: 5 }, { id: 'propeller', at: 8 }, { id: 'crown', at: 12 }, { id: 'rainbow', at: 16 },
+  { id: 'astro', at: 22 }, { id: 'explorer', at: 30 }]; // v0.9: space helmet and jungle explorer hat
 const M_CYCLE = ['harvest', 'rain', 'tier', 'coins', 'harvest', 'golden', 'rain', 'tier', 'coins'];
+const M_TYPES = M_CYCLE.concat(['power']);
 const hatsOwned = () => HATS.filter(h => S.stars >= h.at).length;
 const missionsOn = () => S.built.size >= 1;
 function makeMission(i) {
-  const z = S.zone;
+  const z = S.zone, lv = clamp(z - WORLDS[S.w].z0 + S.w, 0, 4); // how far into the game, capped so goals stay about a minute
   let t = M_CYCLE[i % M_CYCLE.length];
   if (t === 'golden' && i < 5) t = 'rain';
+  if (t === 'golden' && S.w >= 1 && i % 2) t = 'power'; // catch a power-up (space and jungle)
   const m = { t, c: 0, n: 1 };
   if (t === 'harvest') {
     // a crop from the newest island the player farms on
-    const crops = fields.filter(f => zoneAt(f.x, f.y) === z).map(f => f.crop);
-    m.k = crops.length ? pick(crops) : fields[0].crop;
-    m.n = Math.max(4, Math.round(9 - CROPS[m.k].grow * 0.5 + z));
-  } else if (t === 'rain') m.n = 6 + z * 2;
+    const mine = fields.filter(f => f.w === S.w), crops = mine.filter(f => zoneAt(f.x, f.y) === z).map(f => f.crop);
+    m.k = crops.length ? pick(crops) : (mine[0] || fields[0]).crop;
+    m.n = Math.max(4, Math.round(9 - CROPS[m.k].grow * 0.5 + lv));
+  } else if (t === 'rain') m.n = 6 + lv * 2;
   else if (t === 'tier') { m.k = Math.min(tierCap(), 2 + z + (i % 2)); m.n = 1; }
   else if (t === 'coins') m.n = Math.max(30, Math.round(Math.max(30, incomeRate * 55) / 10) * 10);
   return m;
@@ -970,6 +1194,54 @@ function completeMission(m) {
   save();
 }
 
+// ---------- world travel (v0.9): the world's finale build shoots a beam up, Pip and the herd ride it,
+// warp through space (or a leafy wormhole) and drop onto the first island of the next world.
+let trans = null, pendingTrans = -1, transAt = 0, liftZ = 0;
+const TR = { up: 1.2, warp: 3.9, land: 5.0, end: 6.0 };
+const outBounce = t => { const n = 7.5625, d = 2.75; if (t < 1 / d) return n * t * t; if (t < 2 / d) return n * (t -= 1.5 / d) * t + 0.75; if (t < 2.5 / d) return n * (t -= 2.25 / d) * t + 0.9375; return n * (t -= 2.625 / d) * t + 0.984375; };
+function startTrans(to) {
+  const src = PADS.find(p => (p.type === 'fountain' || p.type === 'gate') && p.to === WORLDS[to].z0);
+  const near = src && d2(src.x, src.y, P.x, P.y) < 500 * 500;
+  trans = { t: 0, to, from: S.w, sx: near ? src.x : P.x, sy: near ? src.y : P.y, moved: false, landed: false };
+  SDK.stop(); keys.clear(); joy.active = false; AU.launch(); shake(6);
+  ev('world', WORLDS[to].id, 'start');
+}
+function updateTrans(dt) {
+  const tr = trans; tr.t += dt;
+  P.flap += dt * 24; P.vx *= 0.9; P.vy *= 0.9;
+  if (!tr.moved) {
+    liftZ = Math.pow(clamp((tr.t - 0.25) / TR.up, 0, 1), 2) * 1000;
+    if (tr.t < TR.up + 0.3) { shakeA = Math.max(shakeA, 3 * DPR); shakeT = 0.1; if (Math.random() < dt * 40) addPart({ type: 'spark', x: tr.sx + rand(-40, 40), y: tr.sy, z: rand(0, 300), vx: 0, vy: 0, vz: rand(200, 500), t: 0, life: 0.8, c: pick(PARTY), s: rand(6, 11), r: 0, vr: 3 }); }
+    if (tr.t >= TR.warp) { tr.moved = true; arrive(tr.to); }
+  } else {
+    const k = clamp((tr.t - TR.warp) / (TR.land - TR.warp), 0, 1);
+    liftZ = (1 - outBounce(k)) * 800;
+    if (!tr.landed && k >= 0.37) {
+      tr.landed = true; AU.land(); shake(12);
+      burst(P.x, P.y, 50, 'confetti', PARTY, 380, 1.5); puffBurst(P.x, P.y, 16, 1.6);
+      burst(P.x, P.y, 20, tr.to === 2 ? 'leaf' : 'spark', tr.to === 2 ? ['#7ee26b', '#4fae43', '#ff5d8f'] : ['#ffffff', '#fff6c2', '#bfe9ff'], 300, 1.2);
+    }
+  }
+  updateParts(dt);
+  if (tr.t >= TR.end) { trans = null; liftZ = 0; openModal('zone', { zone: WORLDS[tr.to].z0, world: true }); }
+}
+function arrive(w) {
+  S.w = w; AU.world = w;
+  const st = worldStart(w); P.x = st.x; P.y = st.y; P.vx = P.vy = 0; P.face = 1;
+  hist = [{ x: P.x, y: P.y }];
+  trail.forEach((c, i) => { c.x = P.x - 40 * (i + 1); c.y = P.y + 10; c.raining = false; });
+  cam.x = P.x; cam.y = P.y - 40;
+  puffs = []; orbs = []; parts = []; springs.forEach(s => { s.n = 0; });
+  coinFx.forEach(c => { if (c.to === 'player') addCoins(c.val, c.reward); }); coinFx = [];
+  const gift = PADS.find(p => p.free && ZONES[p.z].w === w);
+  if (gift && !S.built.has(gift.id)) { applyBuild(gift, false); burst(gift.x, gift.y, 24, 'confetti', PARTY, 260, 1.2); }
+  S.orbT = S.time + 16; S.goldT = Math.max(S.goldT, S.time + 40);
+  // harvest goals for crops of the old world can't be done here any more
+  S.miss = S.miss.map(m => (m && !m.done && m.t === 'harvest' ? null : m));
+  trimIslands(); preloadIslands();
+  save();
+}
+
 // ---------- update
 function step(dt) {
   time += dt;
@@ -977,7 +1249,7 @@ function step(dt) {
   if (hudCapFlash > 0) hudCapFlash = Math.max(0, hudCapFlash - dt * 1.5);
   toasts.forEach(t => t.t += dt); toasts = toasts.filter(t => t.t < t.life);
   if (modal) modal.t += dt;
-  if (!modal && !SDK.ad) simulate(dt);
+  if (!modal && !SDK.ad) { if (trans) updateTrans(dt); else simulate(dt); }
   // camera
   const k = 1 - Math.exp(-dt * 6);
   cam.x += (P.x - cam.x) * k; cam.y += (P.y - 40 - cam.y) * k;
@@ -987,7 +1259,9 @@ function step(dt) {
 
 function simulate(dt) {
   S.time += dt; trackTime(dt);
+  if (pendingTrans >= 0 && started && S.time >= transAt) { const w = pendingTrans; pendingTrans = -1; startTrans(w); return; }
   if (S.boost > 0) S.boost = Math.max(0, S.boost - dt);
+  for (const k in S.pw) if (S.pw[k] > 0) S.pw[k] = Math.max(0, S.pw[k] - dt);
   P.fullCd -= dt;
   updatePlayer(dt);
   updateSprings(dt);
@@ -996,8 +1270,11 @@ function simulate(dt) {
   updateFields(dt);
   updatePads(dt);
   updateBees(dt);
+  updateRainers(dt);
   updateHives(dt);
   updateGolden(dt);
+  updateOrbs(dt);
+  updateBushes(dt);
   updateCoins(dt);
   updateParts(dt);
   updateMissions();
@@ -1024,11 +1301,12 @@ function updatePlayer(dt) {
   P.squash = lerp(P.squash, clamp(spd / 700, 0, 0.18), 1 - Math.exp(-dt * 8));
   const lh = hist[hist.length - 1];
   if (!lh || d2(lh.x, lh.y, P.x, P.y) > 25) { hist.push({ x: P.x, y: P.y }); if (hist.length > 700) hist.shift(); }
+  if (S.pw.rocket > 0 && spd > 120 && Math.random() < dt * 30) addPart({ type: 'spark', x: P.x - P.vx * 0.1 + rand(-10, 10), y: P.y - P.vy * 0.1, z: 30 + rand(-6, 6), vx: -P.vx * 0.3, vy: -P.vy * 0.3, vz: 0, t: 0, life: 0.45, c: pick(['#ffd23f', '#ff8a3d', '#ff5d6c']), s: rand(5, 9), r: 0, vr: 4 });
   if (spd > 120 && Math.random() < dt * 14) addPart({ type: 'wind', x: P.x - P.vx * 0.12 + rand(-14, 14), y: P.y - P.vy * 0.12 + rand(-10, 10), z: 26 + rand(-8, 8), vx: -P.vx * 0.2, vy: -P.vy * 0.2, vz: 0, t: 0, life: 0.35, a: Math.atan2(P.vy, P.vx), s: rand(14, 24) });
   // pickups
   for (let i = puffs.length - 1; i >= 0; i--) {
     const p = puffs[i]; if (p.s < 0.6) continue;
-    const r = cloudR(p.water) * 0.8 + P.r;
+    const r = cloudR(p.water) * 0.8 + P.r * giantK();
     if (d2(p.x, p.y, P.x, P.y) < r * r) tryPickup(p);
   }
 }
@@ -1038,6 +1316,7 @@ function updateSprings(dt) {
   for (const s of springs) {
     if (s.appear < 1) s.appear = Math.min(1, s.appear + dt * 2);
     s.puffAnim = Math.max(0, s.puffAnim - dt * 3);
+    if (ZONES[s.z].w !== S.w) continue; // springs of the worlds you left stay quiet
     s.t -= dt * rateMul;
     if (s.t <= 0) {
       s.t = SPRING_EVERY * rand(0.8, 1.2);
@@ -1047,6 +1326,7 @@ function updateSprings(dt) {
         if (z === 1) tier = r < 0.4 ? 2 : 1;
         else if (z === 2) tier = r < 0.25 ? 3 : r < 0.7 ? 2 : 1;
         else if (z === 3) tier = r < 0.2 ? 4 : r < 0.6 ? 3 : 2;
+        else if (ZONES[z].pt) { const pt = ZONES[z].pt; tier = r < 0.2 ? pt[2] : r < 0.6 ? pt[1] : pt[0]; }
         const a = rand(0, TAU);
         const p = spawnPuff(s.x, s.y, tier, { origin: s, vx: Math.cos(a) * 120, vy: Math.sin(a) * 120 });
         p.a = a; s.n++; s.puffAnim = 1;
@@ -1056,10 +1336,16 @@ function updateSprings(dt) {
 }
 
 function updatePuffs(dt) {
+  const mag = S.pw.magnet > 0;
   for (const p of puffs) {
     p.t += dt; p.bob += dt * 2.2;
     if (p.s < 1) p.s = Math.min(1, p.s + dt * 2.5);
     if (p.gold) continue;
+    if (mag && p.s >= 1) {
+      // cloud magnet: clouds nearby glide to Pip (only while there is room in the herd)
+      const dd = Math.sqrt(d2(p.x, p.y, P.x, P.y));
+      if (dd < MAGNET_R && (trail.length < cap() || canAdd(p.tier))) { const k = Math.min(1, 460 * dt / (dd || 1)); p.x += (P.x - p.x) * k; p.y += (P.y - p.y) * k; continue; }
+    }
     p.a += rand(-1, 1) * dt * 1.6;
     const sp = 20;
     p.vx *= Math.exp(-dt * 2.5); p.vy *= Math.exp(-dt * 2.5);
@@ -1106,9 +1392,10 @@ function updateTrail(dt) {
       if (f.state !== 'dry' || f.appear < 1) continue;
       if (rectDist2(c.x, c.y, f) > rr * rr) continue;
       const rate = 1.1 + 0.9 * c.tier, give = Math.min(rate * dt, c.water, (f.need - f.prog) / EFF[c.tier] + 1e-4);
-      f.prog += give * EFF[c.tier]; c.water -= give; c.raining = true; f.wet = 1;
+      if (!(S.pw.comet > 0)) c.water -= give; // comet rain: the herd rains without running dry
+      c.raining = true;
       if (!S.flags.rained) { S.flags.rained = 1; tutStep('rain'); celebrate(); }
-      if (f.prog >= f.need - 1e-3) { f.prog = f.need; f.state = 'grow'; f.t = 0; f.bump = 1; AU.grow(); tutStep('grow'); mTrack('rain', 1); burst(f.x, f.y, 8, 'spark', ['#bfe9ff', '#ffffff'], 140, 0.6); }
+      waterField(f, give * EFF[c.tier], true);
       if (c.water <= 0.01) break;
     }
     if (c.raining) {
@@ -1127,17 +1414,27 @@ function updateTrail(dt) {
   if (!raining && trail.some(c => !isFull(c))) resolveMerges();
 }
 
+// rain on a dry field, from the herd or from a rain helper; the last drop makes it sprout
+function waterField(f, amt, byPlayer) {
+  f.prog = Math.min(f.need, f.prog + amt); f.wet = 1;
+  if (f.prog >= f.need - 1e-3) {
+    f.prog = f.need; f.state = 'grow'; f.t = 0; f.bump = 1; f.rc = null; AU.grow();
+    burst(f.x, f.y, 8, 'spark', ['#bfe9ff', '#ffffff'], 140, 0.6);
+    if (byPlayer) { tutStep('grow'); mTrack('rain', 1); }
+  }
+}
 function updateFields(dt) {
+  const growK = S.pw.grow > 0 ? 4 : 1, reach = S.pw.giant > 0 ? 60 : 14;
   for (const f of fields) {
     if (f.appear < 1) f.appear = Math.min(1, f.appear + dt * 2.2);
     if (f.bump > 0) f.bump = Math.max(0, f.bump - dt * 3);
     if (f.wet > 0) f.wet = Math.max(0, f.wet - dt * 2);
     if (f.state === 'grow') {
-      f.t += dt;
+      f.t += dt * growK;
       if (f.t >= CROPS[f.crop].grow) { f.state = 'ripe'; f.t = 0; f.bump = 1; AU.ripe(); burst(f.x, f.y, 8, 'spark', ['#ffe36b', '#ffffff'], 160, 0.7); }
     } else if (f.state === 'ripe') {
       f.t += dt;
-      if (Math.abs(P.x - f.x) < FIELD_W / 2 + 14 && Math.abs(P.y - f.y) < FIELD_H / 2 + 14) harvest(f, null);
+      if (Math.abs(P.x - f.x) < FIELD_W / 2 + reach && Math.abs(P.y - f.y) < FIELD_H / 2 + reach) harvest(f, null);
     }
   }
 }
@@ -1164,16 +1461,18 @@ function updatePads(dt) {
 
 function updateBees(dt) {
   for (const b of bees) {
-    b.t += dt;
+    if (b.w !== S.w) continue;
+    b.t += dt; if (b.hop) b.hop = Math.max(0, b.hop - dt * 3);
     if (b.tgt && (b.tgt.state !== 'ripe' || b.tgt.claimed !== b)) b.tgt = null;
     if (!b.tgt) {
       let best = null, bd = 1e12;
-      for (const f of fields) if (f.state === 'ripe' && !f.claimed && f.t > 0.6) { const dd = d2(b.x, b.y, f.x, f.y); if (dd < bd) { bd = dd; best = f; } }
+      for (const f of fields) if (f.w === b.w && f.state === 'ripe' && !f.claimed && f.t > 0.6) { const dd = d2(b.x, b.y, f.x, f.y); if (dd < bd) { bd = dd; best = f; } }
       if (best) { b.tgt = best; best.claimed = b; }
     }
     let tx, ty, sp;
-    if (b.tgt) { tx = b.tgt.x; ty = b.tgt.y; sp = 190; }
-    else { tx = b.hive.x + Math.cos(b.t * 1.3) * 50; ty = b.hive.y - 20 + Math.sin(b.t * 2.1) * 26; sp = 90; }
+    const h = b.hive || b.home;
+    if (b.tgt) { tx = b.tgt.x; ty = b.tgt.y; sp = b.kind === 'monkey' ? 260 : 190; }
+    else { tx = h.x + Math.cos(b.t * 1.3) * 50; ty = h.y - 20 + Math.sin(b.t * 2.1) * 26; sp = 90; }
     const dx = tx - b.x, dy = ty - b.y, dd = Math.hypot(dx, dy);
     if (dd > 1) { const k = 1 - Math.exp(-dt * 5); b.vx += (dx / dd * sp - b.vx) * k; b.vy += (dy / dd * sp - b.vy) * k; }
     b.x += b.vx * dt; b.y += b.vy * dt;
@@ -1181,12 +1480,42 @@ function updateBees(dt) {
   }
 }
 
+function updateRainers(dt) {
+  for (const r of rainers) {
+    if (r.w !== S.w) continue;
+    r.t += dt; r.raining = false;
+    if (r.tgt && (r.tgt.state !== 'dry' || r.tgt.rc !== r)) r.tgt = null;
+    if (!r.tgt) {
+      // nearest dry field, own island first; never two helpers on one field
+      let best = null, bd = 1e12;
+      for (const f of fields) {
+        if (f.w !== r.w || f.state !== 'dry' || f.appear < 1 || (f.rc && f.rc !== r && f.rc.tgt === f)) continue;
+        const dd = d2(r.x, r.y, f.x, f.y) + (zoneAt(f.x, f.y) === r.z ? 0 : 4e6);
+        if (dd < bd) { bd = dd; best = f; }
+      }
+      if (best) { r.tgt = best; best.rc = r; }
+    }
+    let tx, ty, sp;
+    if (r.tgt) { tx = r.tgt.x; ty = r.tgt.y; sp = r.kind === 'ufo' ? 170 : 240; }
+    else { tx = r.home.x + Math.cos(r.t * 0.9) * 40; ty = r.home.y - 10 + Math.sin(r.t * 1.4) * 20; sp = 70; }
+    const dx = tx - r.x, dy = ty - r.y, dd = Math.hypot(dx, dy), v = Math.min(sp, dd * 3);
+    if (dd > 1) { const k = 1 - Math.exp(-dt * 4); r.vx += (dx / dd * v - r.vx) * k; r.vy += (dy / dd * v - r.vy) * k; }
+    r.x += r.vx * dt; r.y += r.vy * dt;
+    if (r.tgt && dd < 34) {
+      r.raining = true;
+      waterField(r.tgt, r.rate * dt, false);
+      if (Math.random() < dt * 16) addPart({ type: 'rain', x: r.x + rand(-22, 22), y: r.y + rand(-4, 8), z: 60, vx: 0, vy: 0, vz: -rand(380, 520), t: 0, life: 1, s: rand(10, 16) });
+    }
+  }
+}
+
 function updateHives(dt) {
   for (const h of hives) {
+    if (h.w !== S.w) continue;
     if (h.appear < 1) h.appear = Math.min(1, h.appear + dt * 2.2);
     if (h.bump > 0) h.bump = Math.max(0, h.bump - dt * 3);
     if (h.stash >= 1) evOnce('hive', 'collect', 'visible');
-    if (h.stash >= 1 && d2(P.x, P.y, h.x, h.y) < 70 * 70) {
+    if (h.stash >= 1 && d2(P.x, P.y, h.x, h.y) < (S.pw.giant > 0 ? 120 : 70) ** 2) {
       evOnce('hive', 'collect', 'interact');
       spawnCoins(h.x, h.y - 20, h.stash, 'player');
       floater(h.x, h.y - 80, '+' + fmt(h.stash), '#ffe36b', 32);
@@ -1199,7 +1528,7 @@ function updateGolden(dt) {
   if (S.time > S.goldT && !puffs.some(p => p.gold) && started) {
     S.goldT = S.time + rand(55, 85);
     for (let i = 0; i < 30; i++) {
-      const z = ZONES[(Math.random() * (S.zone + 1)) | 0], a = rand(0, TAU), rr = Math.sqrt(Math.random()) * 0.75;
+      const z = ZONES[pick(zonesOpen())], a = rand(0, TAU), rr = Math.sqrt(Math.random()) * 0.75;
       const x = z.cx + Math.cos(a) * z.rx * rr, y = z.cy + Math.sin(a) * z.ry * rr;
       if (d2(x, y, P.x, P.y) > 300 * 300 && puffArea(x, y) >= 0) { spawnPuff(x, y, 2, { gold: true, life: 24 }); toast(T('golden'), '', '#ffbf2e'); ev('golden', 'cloud', 'visible'); break; }
     }
@@ -1210,7 +1539,8 @@ function updateGolden(dt) {
     if (p.life <= 0) { puffs.splice(i, 1); puffBurst(p.x, p.y, 8, 1); ev('golden', 'cloud', 'missed'); continue; }
     const dd = Math.sqrt(d2(p.x, p.y, P.x, P.y));
     let ax = 0, ay = 0;
-    if (dd < 260) { ax = (p.x - P.x) / (dd || 1); ay = (p.y - P.y) / (dd || 1); }
+    if (S.pw.magnet > 0 && dd < MAGNET_R) { ax = (P.x - p.x) / (dd || 1) * 1.6; ay = (P.y - p.y) / (dd || 1) * 1.6; }
+    else if (dd < 260) { ax = (p.x - P.x) / (dd || 1); ay = (p.y - P.y) / (dd || 1); }
     else { p.a += rand(-1, 1) * dt * 2; ax = Math.cos(p.a) * 0.3; ay = Math.sin(p.a) * 0.3; }
     const sp = BASE_SPEED * 0.72;
     const nx = p.x + ax * sp * dt, ny = p.y + ay * sp * dt;
@@ -1221,6 +1551,75 @@ function updateGolden(dt) {
       if (puffArea(sx, sy) >= 0) { p.x = sx; p.y = sy; } else { p.a += Math.PI; }
     }
     if (Math.random() < dt * 12) addPart({ type: 'spark', x: p.x + rand(-20, 20), y: p.y, z: 30 + rand(-10, 20), vx: 0, vy: 0, vz: rand(20, 80), t: 0, life: 0.6, c: '#ffe36b', s: rand(4, 8), r: 0, vr: 3 });
+  }
+}
+
+// ---------- power-ups (v0.9): an orb drops onto the island every ~45 s (a shooting star in space, a seed pod in the jungle)
+// or pops out of a jungle bush. Catch it for 20 s of power.
+const POWERS = {
+  magnet: { w: 1, col: '#ff5d6c' }, rocket: { w: 1, col: '#ff8a3d' }, comet: { w: 1, col: '#4cc3ff' },
+  grow: { w: 2, col: '#7ee26b' }, frenzy: { w: 2, col: '#ffd23f' }, giant: { w: 2, col: '#b58cff' }
+};
+const PW_TIME = 20, MAGNET_R = 480;
+const giantK = () => S.pw.giant > 0 ? 2.2 : 1;
+function zonesOpen() { const a = []; for (let i = WORLDS[S.w].z0; i <= S.zone && i < ZONES.length && ZONES[i].w === S.w; i++) a.push(i); return a; }
+function pickPower() {
+  // the newest world's power-ups come up twice as often
+  const pool = []; Object.keys(POWERS).forEach(k => { if (POWERS[k].w <= S.w) { pool.push(k); if (POWERS[k].w === S.w) pool.push(k); } });
+  return pick(pool);
+}
+function spawnOrb(x, y, id, pop) {
+  orbs.push({ x, y, id, t: 0, life: 24, z: pop ? 20 : 1100, vz: pop ? 620 : -500, landed: false, bob: 0 });
+  toast(T('power'), T('pw_' + id), POWERS[id].col); ev('power', id, 'visible'); AU.whoosh();
+}
+function updateOrbs(dt) {
+  if (S.w >= 1 && started && S.time > S.orbT && !orbs.length) {
+    S.orbT = S.time + rand(38, 52);
+    for (let i = 0; i < 40; i++) {
+      const z = ZONES[pick(zonesOpen())], a = rand(0, TAU), rr = Math.sqrt(Math.random()) * 0.7;
+      const x = z.cx + Math.cos(a) * z.rx * rr, y = z.cy + Math.sin(a) * z.ry * rr, dd = d2(x, y, P.x, P.y);
+      if (dd > 220 * 220 && dd < 750 * 750 && puffArea(x, y) >= 0) { spawnOrb(x, y, pickPower(), false); break; }
+    }
+  }
+  for (let i = orbs.length - 1; i >= 0; i--) {
+    const o = orbs[i]; o.t += dt; o.bob += dt * 3;
+    if (!o.landed) {
+      o.vz -= 1300 * dt; o.z += o.vz * dt;
+      if (Math.random() < dt * 50) addPart(S.w === 2 ? { type: 'leaf', x: o.x + rand(-8, 8), y: o.y, z: o.z + 20, vx: rand(-60, 60), vy: 0, vz: rand(-40, 60), t: 0, life: 0.8, c: pick(['#7ee26b', '#4fae43']), s: rand(6, 10), r: rand(0, TAU), vr: rand(-6, 6) }
+        : { type: 'spark', x: o.x + rand(-6, 6), y: o.y, z: o.z + 30, vx: 0, vy: 0, vz: 0, t: 0, life: 0.6, c: pick(['#fff6c2', '#ffd23f', '#ffffff', POWERS[o.id].col]), s: rand(5, 10), r: 0, vr: 3 });
+      if (o.z <= 0) { o.z = 0; o.landed = true; burst(o.x, o.y, 16, 'spark', ['#ffffff', '#ffe36b', POWERS[o.id].col], 220, 0.7); puffBurst(o.x, o.y, 6, 0.8); }
+      continue;
+    }
+    o.life -= dt;
+    if (o.life <= 0) { orbs.splice(i, 1); puffBurst(o.x, o.y, 8, 1); ev('power', o.id, 'missed'); continue; }
+    const dd = Math.sqrt(d2(o.x, o.y, P.x, P.y));
+    if (S.pw.magnet > 0 && dd < MAGNET_R) { const k = Math.min(1, 500 * dt / (dd || 1)); o.x += (P.x - o.x) * k; o.y += (P.y - o.y) * k; }
+    if (dd < 52 + P.r * giantK()) { orbs.splice(i, 1); activatePower(o); }
+  }
+}
+function activatePower(o) {
+  const id = o.id, c = POWERS[id].col;
+  S.pw[id] = (S.pw[id] || 0) + PW_TIME;
+  burst(o.x, o.y, 36, 'confetti', [c, '#ffffff', '#ffe36b'], 340, 1.3); shake(5);
+  AU.power(); toast(T('pw_' + id), PW_TIME + 's', c);
+  ev('power', id, 'interact'); mTrack('power', 1);
+  if (id === 'giant') P.squash = -0.3;
+}
+// jungle bushes: fly through a bush with berries to shake out coins (and sometimes a power-up); it regrows in 45 s
+function updateBushes(dt) {
+  if (S.w !== 2) return;
+  for (const b of BUSHES) {
+    if (b.z > S.zone) continue;
+    if (b.t > 0) b.t -= dt;
+    if (b.shake > 0) b.shake = Math.max(0, b.shake - dt * 2.5);
+    if (b.t <= 0 && d2(P.x, P.y, b.x, b.y) < (60 + P.r * giantK()) ** 2) {
+      b.t = 45; b.shake = 1;
+      const v = Math.round(Math.max(incomeRate * 6, CROPS[ZONES[b.z].crops[0]].coins * 0.4) / 10) * 10;
+      spawnCoins(b.x, b.y - 20, v, 'player'); floater(b.x, b.y - 80, '+' + fmt(v), '#ffe36b', 32);
+      burst(b.x, b.y - 10, 18, 'leaf', ['#7ee26b', '#4fae43', '#2f8a3a', '#ff5d8f'], 260, 1);
+      AU.shake(); evOnce('bush', 'shake', 'interact');
+      if (!orbs.length && Math.random() < 0.3) spawnOrb(b.x, b.y, pickPower(), true);
+    }
   }
 }
 
@@ -1264,8 +1663,10 @@ function updateParts(dt) {
 
 // ---------- goals / guidance
 function nearest(list, fn) { let b = null, bd = 1e12; for (const o of list) { if (fn && !fn(o)) continue; const dd = d2(o.x, o.y, P.x, P.y); if (dd < bd) { bd = dd; b = o; } } return b; }
+const myFields = () => fields.filter(f => f.w === S.w), myHives = () => hives.filter(h => h.w === S.w);
 let herdWasFull = false; // once the herd has been full, the guide points to cloud slots first
 function currentGoal() {
+  const fields = myFields(), hives = myHives();
   if (!S.flags.collected) return { icon: 'cloud', text: T('catch'), tgt: nearest(puffs, p => !p.gold) };
   if (!S.flags.rained) return { icon: 'drop', text: T('rain'), tgt: trail.length ? nearest(fields, f => f.state === 'dry') : nearest(puffs, p => !p.gold) };
   if (!S.flags.harvested) {
@@ -1278,7 +1679,7 @@ function currentGoal() {
   const hv = hives.find(h => h.stash >= 30 && !bees.some(b => b.tgt));
   const vis = PADS.filter(padVisible).sort((a, b) => (a.cost - a.paid) - (b.cost - b.paid));
   if (!vis.length) return hv ? { icon: 'coin', text: T('collectHive'), tgt: hv } : null;
-  const br = vis.find(p => p.type === 'bridge');
+  const br = vis.find(p => ['bridge', 'fountain', 'gate', 'tree'].includes(p.type));
   if (br && S.coins + br.paid >= br.cost - 1e-6) return { icon: 'pad', pad: br, text: T('build') + ': ' + padName(br), tgt: br };
   const capPad = herdWasFull ? vis.find(p => p.type === 'cap') : null;
   if (capPad && S.coins + capPad.paid >= capPad.cost - 1e-6) return { icon: 'pad', pad: capPad, text: T('build') + ': ' + padName(capPad), tgt: capPad };
@@ -1297,12 +1698,16 @@ function currentGoal() {
 function render() {
   uiBtns = [];
   const sx = shakeA > 0 ? rand(-shakeA, shakeA) * DPR : 0, sy = shakeA > 0 ? rand(-shakeA, shakeA) * DPR : 0;
-  // sky
-  const g = ctx.createLinearGradient(0, 0, 0, H); g.addColorStop(0, COL.skyTop); g.addColorStop(1, COL.skyBot);
-  ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+  const cover = trans ? travelCover(trans.t) : 0;
+  if (cover < 1) drawWorld(sx, sy);
+  if (trans) drawTravel(cover); else drawHUD();
+  if (modal) drawModal();
+}
+function drawWorld(sx, sy) {
+  drawBackdrop();
   ctx.save();
   ctx.translate(W / 2 + sx, H / 2 + sy); ctx.scale(zoom, zoom); ctx.translate(-cam.x, -cam.y);
-  drawBgClouds();
+  if (S.w === 0) drawBgClouds();
   const order = ZONES.map((z, i) => i).sort((a, b) => ZONES[a].cy - ZONES[b].cy);
   order.forEach(i => drawIsland(i, sx, sy));
   order.forEach(i => drawIslandLive(i));
@@ -1311,13 +1716,19 @@ function render() {
   for (const f of fields) drawField(f);
   for (const p of PADS) if (padVisible(p) && p.appear >= 0) drawPad(p);
   if (S.built.has('fount')) drawFountain(PAD_BY_ID.fount);
+  if (S.built.has('gate')) drawGate(PAD_BY_ID.gate);
+  if (S.built.has('tree')) drawTree(PAD_BY_ID.tree);
   for (const h of hives) drawHive(h);
+  for (const h of homes) drawHome(h);
+  if (S.w === 2) drawBushes();
   // shadows
   ctx.fillStyle = 'rgba(38,49,89,0.16)'; ctx.beginPath();
   for (const p of puffs) shadow(p.x, p.y, cloudR(p.water) * p.s);
-  for (const c of trail) shadow(c.x, c.y, cloudR(c.water));
+  for (const c of trail) shadow(c.x, c.y, cloudR(c.water) * (liftZ ? 0.5 : 1));
   for (const b of bees) shadow(b.x, b.y, 10);
-  shadow(P.x, P.y, P.r);
+  for (const r of rainers) shadow(r.x, r.y, 22);
+  for (const o of orbs) shadow(o.x, o.y, 22 * clamp(1 - o.z / 900, 0.3, 1));
+  shadow(P.x, P.y, P.r * giantK() * (liftZ ? 0.5 : 1));
   for (const c of coinFx) shadow(c.x, c.y, 8);
   ctx.fill();
   drawParts('ground');
@@ -1326,17 +1737,198 @@ function render() {
   for (const p of puffs) ents.push([p.y, 0, p]);
   for (const c of trail) ents.push([c.y, 1, c]);
   for (const b of bees) ents.push([b.y, 2, b]);
+  for (const r of rainers) ents.push([r.y, 4, r]);
+  for (const o of orbs) ents.push([o.y, 5, o]);
   ents.push([P.y, 3, P]);
   ents.sort((a, b) => a[0] - b[0]);
   drawParts('rain');
-  for (const e of ents) { if (e[1] === 0) drawPuff(e[2]); else if (e[1] === 1) drawTrailCloud(e[2]); else if (e[1] === 2) drawBee(e[2]); else drawPlayer(); }
+  for (const e of ents) { const k = e[1]; if (k === 0) drawPuff(e[2]); else if (k === 1) drawTrailCloud(e[2]); else if (k === 2) drawBee(e[2]); else if (k === 4) drawRainer(e[2]); else if (k === 5) drawOrb(e[2]); else drawPlayer(); }
   for (const c of coinFx) drawCoin(c.x, c.y - c.z, 11);
   drawParts('air');
   for (const f of floaters) { const a = 1 - Math.max(0, (f.t - f.life * 0.6) / (f.life * 0.4)); ctx.globalAlpha = a; const s = f.size * (f.t < 0.15 ? outBack(f.t / 0.15) : 1); txt(f.text, f.x, f.y, s, f.col); ctx.globalAlpha = 1; }
-  drawWorldGuide();
+  if (trans && !trans.moved) drawBeam(trans);
+  if (!trans) drawWorldGuide();
   ctx.restore();
-  drawHUD();
-  if (modal) drawModal();
+}
+
+// ---------- backdrops (v0.9): sky, space (tiled stars, planets, twinkles) and jungle (canopy, light rays, fireflies)
+const BACK = [[COL.skyTop, COL.skyBot], ['#0a0f33', '#3b1d6e'], ['#1d7560', '#b6eaae']];
+// Space and jungle backdrops (gradient + tiled pattern) are painted at CSS resolution into an offscreen canvas with
+// a margin, and blitted with a small shift; repainted only when the slow parallax has used up the margin.
+// One opaque blit per frame costs the same as the sky's gradient fill.
+const bgc = { c: null, key: '', px: 0, py: 0, M: 0 };
+function drawBackdrop() {
+  const c = BACK[S.w];
+  if (!S.w) { const g = ctx.createLinearGradient(0, 0, 0, H); g.addColorStop(0, c[0]); g.addColorStop(1, c[1]); ctx.fillStyle = g; ctx.fillRect(0, 0, W, H); return; }
+  const par = S.w === 1 ? 0.12 : 0.15, px = cam.x * zoom * par, py = cam.y * zoom * par;
+  const key = S.w + ':' + W + 'x' + H, M = bgc.M;
+  if (bgc.key !== key || Math.abs(px - bgc.px) > M * 0.9 || Math.abs(py - bgc.py) > M * 0.9) paintBackdrop(key, px, py, c);
+  ctx.drawImage(bgc.c, -bgc.M - (px - bgc.px), -bgc.M - (py - bgc.py), W + 2 * bgc.M, H + 2 * bgc.M);
+  if (S.w === 1) drawSpaceBack(); else drawJungleBack();
+}
+function paintBackdrop(key, px, py, c) {
+  const M = Math.round(Math.min(W, H) * 0.25), sc = 1 / DPR, cw = W + 2 * M, ch = H + 2 * M;
+  const cnv = bgc.c || document.createElement('canvas');
+  cnv.width = Math.ceil(cw * sc); cnv.height = Math.ceil(ch * sc);
+  const g = cnv.getContext('2d'); g.setTransform(sc, 0, 0, sc, 0, 0);
+  const gr = g.createLinearGradient(0, M, 0, M + H); gr.addColorStop(0, c[0]); gr.addColorStop(1, c[1]);
+  g.fillStyle = gr; g.fillRect(0, 0, cw, ch);
+  const tile = S.w === 1 ? spaceTile() : jungleTile(), T = Math.round(384 * DPR);
+  const ox = ((M - px) % T + T) % T - T, oy = ((M - py) % T + T) % T - T;
+  for (let x = ox; x < cw; x += T) for (let y = oy; y < ch; y += T) g.drawImage(tile, x, y, T, T);
+  if (S.w === 2) {
+    // soft light rays through the canopy
+    g.fillStyle = 'rgba(255,255,215,0.08)';
+    for (let i = 0; i < 3; i++) {
+      const x = M + W * (0.2 + i * 0.3), w0 = 30 * DPR, w1 = 160 * DPR;
+      g.beginPath(); g.moveTo(x - w0, 0); g.lineTo(x + w0, 0); g.lineTo(x + w1 - 120 * DPR, ch); g.lineTo(x - w1 - 120 * DPR, ch); g.closePath(); g.fill();
+    }
+  }
+  Object.assign(bgc, { c: cnv, key, px, py, M });
+}
+// a 512 px tile, painted once; wrap() draws a shape on all sides so the tile repeats without seams
+function makeTile(paint) {
+  const c = document.createElement('canvas'); c.width = c.height = 512; const g = c.getContext('2d');
+  const wrap = f => { for (const ox of [-512, 0, 512]) for (const oy of [-512, 0, 512]) { g.save(); g.translate(ox, oy); f(); g.restore(); } };
+  paint(g, wrap, seeded(5)); return c;
+}
+const TILES = {};
+const TW = []; { const r = seeded(31); for (let i = 0; i < 34; i++) TW.push({ x: r(), y: r(), s: 2 + r() * 4, ph: r() * TAU, sp: 1 + r() * 2 }); }
+function spaceTile() {
+  return TILES.star || (TILES.star = makeTile((g, wrap, r) => {
+    for (let i = 0; i < 6; i++) {
+      const x = r() * 512, y = r() * 512, rad = 90 + r() * 140, col = ['255,111,200', '111,160,255', '170,120,255'][i % 3];
+      wrap(() => { const gr = g.createRadialGradient(x, y, 0, x, y, rad); gr.addColorStop(0, 'rgba(' + col + ',0.17)'); gr.addColorStop(1, 'rgba(' + col + ',0)'); g.fillStyle = gr; g.fillRect(x - rad, y - rad, rad * 2, rad * 2); });
+    }
+    for (let i = 0; i < 170; i++) { g.fillStyle = ['#ffffff', '#cfe0ff', '#fff3c4', '#ffd0f0'][i % 4]; g.globalAlpha = 0.35 + r() * 0.65; g.beginPath(); g.arc(r() * 512, r() * 512, 0.6 + r() * 1.5, 0, TAU); g.fill(); }
+    g.globalAlpha = 1;
+  }));
+}
+function drawSpaceBack() {
+  // planets drift slowly with the camera
+  const ref = ZONES[6], px = (cam.x - ref.cx) * zoom * 0.05, py = (cam.y - (ref.cy + 575)) * zoom * 0.05;
+  ctx.drawImage(planetSprite(0), W * 0.82 - px - 130 * zoom, H * 0.22 - py - 130 * zoom, 260 * zoom, 260 * zoom);
+  ctx.drawImage(planetSprite(1), W * 0.12 - px * 1.6 - 60 * zoom, H * 0.78 - py * 1.6 - 60 * zoom, 120 * zoom, 120 * zoom);
+  // twinkling stars
+  ctx.fillStyle = '#fff';
+  const BW = W + 80 * DPR, BH = H + 80 * DPR;
+  for (const t of TW) {
+    const x = ((t.x * BW - cam.x * zoom * 0.22) % BW + BW) % BW - 40 * DPR, y = ((t.y * BH - cam.y * zoom * 0.22) % BH + BH) % BH - 40 * DPR;
+    ctx.globalAlpha = 0.35 + 0.65 * Math.abs(Math.sin(time * t.sp + t.ph)); star(ctx, x, y, t.s * DPR);
+  }
+  ctx.globalAlpha = 1;
+}
+const planetCache = [];
+function planetSprite(k) {
+  if (planetCache[k]) return planetCache[k];
+  const c = document.createElement('canvas'); c.width = c.height = 260; const g = c.getContext('2d'); g.translate(130, 130); g.lineJoin = 'round';
+  if (k === 0) {
+    const ring = (front) => { g.save(); g.rotate(-0.35); g.beginPath(); g.ellipse(0, 0, 118, 30, 0, front ? 0 : Math.PI, front ? Math.PI : TAU); g.lineWidth = 14; g.strokeStyle = NAVY; g.stroke(); g.lineWidth = 7; g.strokeStyle = '#ffd98a'; g.stroke(); g.restore(); };
+    ring(false);
+    const gr = g.createLinearGradient(0, -70, 0, 70); gr.addColorStop(0, '#ffc07a'); gr.addColorStop(1, '#e8613f');
+    g.fillStyle = gr; g.strokeStyle = NAVY; g.lineWidth = 7; g.beginPath(); g.arc(0, 0, 70, 0, TAU); g.fill(); g.stroke();
+    g.save(); g.beginPath(); g.arc(0, 0, 66, 0, TAU); g.clip(); g.fillStyle = 'rgba(255,255,255,0.22)'; g.fillRect(-80, -30, 160, 14); g.fillRect(-80, 10, 160, 9); g.restore();
+    g.fillStyle = 'rgba(255,255,255,0.5)'; g.beginPath(); g.ellipse(-26, -36, 18, 9, -0.5, 0, TAU); g.fill();
+    ring(true);
+  } else {
+    g.fillStyle = '#b9c3ff'; g.strokeStyle = NAVY; g.lineWidth = 7; g.beginPath(); g.arc(0, 0, 80, 0, TAU); g.fill(); g.stroke();
+    g.fillStyle = 'rgba(38,49,89,0.2)'; [[-28, -18, 18], [24, 10, 24], [-6, 40, 12], [34, -38, 10]].forEach(q => { g.beginPath(); g.arc(q[0], q[1], q[2], 0, TAU); g.fill(); });
+    g.fillStyle = 'rgba(255,255,255,0.5)'; g.beginPath(); g.ellipse(-30, -44, 20, 9, -0.5, 0, TAU); g.fill();
+  }
+  return (planetCache[k] = c);
+}
+const FF = []; { const r = seeded(43); for (let i = 0; i < 26; i++) FF.push({ x: r(), y: r(), ph: r() * TAU, sp: 0.5 + r() }); }
+function jungleTile() {
+  return TILES.leaf || (TILES.leaf = makeTile((g, wrap, r) => {
+    for (let i = 0; i < 18; i++) {
+      const x = r() * 512, y = r() * 512, a = r() * TAU, l = 60 + r() * 90, col = i % 2 ? 'rgba(12,74,52,0.32)' : 'rgba(30,110,70,0.25)';
+      wrap(() => {
+        g.save(); g.translate(x, y); g.rotate(a); g.fillStyle = col;
+        g.beginPath(); g.moveTo(0, 0); g.quadraticCurveTo(l * 0.5, -l * 0.32, l, 0); g.quadraticCurveTo(l * 0.5, l * 0.32, 0, 0); g.fill();
+        g.strokeStyle = 'rgba(255,255,255,0.06)'; g.lineWidth = 3; g.beginPath(); g.moveTo(4, 0); g.lineTo(l - 6, 0); g.stroke(); g.restore();
+      });
+    }
+  }));
+}
+function drawJungleBack() {
+  // fireflies
+  const BW = W + 60 * DPR, BH = H + 60 * DPR;
+  for (const f of FF) {
+    const x = ((f.x * BW + Math.sin(time * f.sp + f.ph) * 40 * DPR - cam.x * zoom * 0.3) % BW + BW) % BW - 30 * DPR;
+    const y = ((f.y * BH + Math.cos(time * f.sp * 0.8 + f.ph) * 30 * DPR - cam.y * zoom * 0.3) % BH + BH) % BH - 30 * DPR;
+    const a = 0.4 + 0.6 * Math.abs(Math.sin(time * 2 + f.ph));
+    ctx.globalAlpha = a * 0.25; ctx.fillStyle = '#fff7a8'; ctx.beginPath(); ctx.arc(x, y, 9 * DPR, 0, TAU); ctx.fill();
+    ctx.globalAlpha = a; ctx.beginPath(); ctx.arc(x, y, 3 * DPR, 0, TAU); ctx.fill();
+  }
+  ctx.globalAlpha = 1;
+}
+
+// ---------- world travel drawing
+const travelCover = t => t < 1.0 ? 0 : t < 1.6 ? (t - 1.0) / 0.6 : t < TR.warp ? 1 : 0;
+function drawBeam(tr) {
+  // a column of light shooting up from the fountain (rainbow) or the star gate (cosmic)
+  const k = clamp(tr.t / 0.35, 0, 1), w = 70 * k * (1 + Math.sin(time * 30) * 0.06), top = tr.sy - 3000;
+  const cols = tr.to === 1 ? ['#ff5d6c', '#ff8a3d', '#ffd23f', '#7ee26b', '#4cc3ff', '#a26bff'] : ['#7ff3ff', '#b58cff', '#ff8af0', '#7ee26b'];
+  ctx.save(); ctx.globalAlpha = 0.85;
+  cols.forEach((c, i) => { const x0 = tr.sx - w + (2 * w / cols.length) * i; ctx.fillStyle = c; ctx.fillRect(x0, top, 2 * w / cols.length + 1, tr.sy - top); });
+  ctx.globalAlpha = 0.6; ctx.fillStyle = '#fff'; ctx.fillRect(tr.sx - w * 0.25, top, w * 0.5, tr.sy - top);
+  ctx.globalAlpha = 0.5; ctx.beginPath(); ctx.ellipse(tr.sx, tr.sy, w * 1.4, w * 0.5, 0, 0, TAU); ctx.fill();
+  ctx.restore();
+}
+function drawTravel(cover) {
+  const tr = trans, t = tr.t, u = uiS;
+  if (cover > 0) {
+    ctx.save(); ctx.globalAlpha = cover;
+    const cx = W / 2, cy = H * 0.5, R = Math.hypot(W, H) * 0.62, wt = Math.max(0, t - 1.0), speed = 0.5 + wt * 0.35;
+    if (tr.to === 1) {
+      // warp through space: dark sky, star streaks rushing past, planets flying by
+      const g = ctx.createRadialGradient(cx, cy, 0, cx, cy, R); g.addColorStop(0, '#3b1d6e'); g.addColorStop(1, '#060a24');
+      ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+      [[0.6, 2.1, '#ffb36b', 0], [1.4, 4.0, '#b9c3ff', 1]].forEach(([t0, dir, col, k]) => {
+        const q = (wt - t0) / 1.6; if (q <= 0 || q >= 1) return;
+        const d = q * q * R * 1.1, rr = (10 + q * q * q * 300) * zoom;
+        ctx.drawImage(planetSprite(k), cx + Math.cos(dir) * d - rr, cy + Math.sin(dir) * d - rr, rr * 2, rr * 2);
+      });
+      ctx.lineCap = 'round';
+      for (let pass = 0; pass < 2; pass++) {
+        ctx.strokeStyle = pass ? '#ffffff' : 'rgba(150,200,255,0.5)'; ctx.lineWidth = (pass ? 2.5 : 6) * DPR; ctx.beginPath();
+        for (let i = 0; i < 110; i++) {
+          const a = i * 2.39996, sp = 0.4 + ((i * 0.618) % 1) * 0.8, ph = (wt * sp * speed + i * 0.137) % 1, r0 = ph * ph * R, len = (8 + ph * ph * 220 * speed) * DPR;
+          ctx.moveTo(cx + Math.cos(a) * r0, cy + Math.sin(a) * r0); ctx.lineTo(cx + Math.cos(a) * (r0 + len), cy + Math.sin(a) * (r0 + len));
+        }
+        ctx.stroke();
+      }
+    } else {
+      // a leafy wormhole: rings rushing outward, from star purple to jungle green, leaves flying past
+      ctx.fillStyle = '#12082e'; ctx.fillRect(0, 0, W, H);
+      for (let i = 11; i >= 0; i--) {
+        const q = (i / 12 + wt * 0.45 * speed) % 1, rr = q * q * R * 1.2 + 4;
+        ctx.strokeStyle = mixHex('#a26bff', '#3fd17a', clamp(q * 1.2 + wt * 0.15, 0, 1)); ctx.lineWidth = (6 + q * 40) * DPR;
+        ctx.beginPath(); ctx.ellipse(cx + Math.sin(wt * 2 + i) * 20 * q * DPR, cy, rr, rr * 0.86, wt + i * 0.3, 0, TAU); ctx.stroke();
+      }
+      for (let i = 0; i < 46; i++) {
+        const a = i * 2.39996 + wt * 0.4, ph = (wt * (0.35 + (i % 5) * 0.12) * speed + i * 0.21) % 1, r0 = ph * ph * R, s = (6 + ph * 40) * DPR;
+        ctx.save(); ctx.translate(cx + Math.cos(a) * r0, cy + Math.sin(a) * r0); ctx.rotate(a + wt * 3 + i);
+        ctx.fillStyle = i % 3 ? '#5fd06a' : '#2f9a4a'; ctx.beginPath(); ctx.ellipse(0, 0, s, s * 0.45, 0, 0, TAU); ctx.fill(); ctx.restore();
+      }
+    }
+    // Pip and the herd fly through the middle of the screen
+    const zs = zoom * 1.5, bob = Math.sin(time * 5) * 8 * DPR;
+    trail.forEach((c, i) => {
+      const sp = cloudSprite(Math.min(8, c.tier)), r = cloudR(c.water) * zs * 0.8, s = r / sp.R;
+      const x = cx + Math.sin(time * 3 + i) * 26 * DPR, y = cy + 40 * zs + (i + 1) * 62 * zs * 0.7 + bob;
+      ctx.drawImage(sp.c, x - sp.SZ / 2 * s, y - sp.SZ / 2 * s, sp.SZ * s, sp.SZ * s);
+    });
+    ctx.save(); ctx.translate(cx, cy + bob); ctx.scale(zs, zs); ctx.translate(-P.x, -(P.y - 30 - liftZ)); drawPlayer(); ctx.restore();
+    const ts = 1 + Math.sin(time * 6) * 0.05;
+    ctx.save(); ctx.translate(cx, H * 0.2); ctx.scale(ts, ts);
+    txt(T(tr.to === 1 ? 'toSpace' : 'toJungle'), 0, 0, 60 * u, '#ffe36b', 'center', undefined, undefined, W - 40 * u);
+    ctx.restore();
+    ctx.restore();
+  }
+  // white flash where the worlds swap
+  const fl = clamp(1 - Math.abs(t - TR.warp) / 0.4, 0, 1);
+  if (fl > 0) { ctx.fillStyle = 'rgba(255,255,255,' + fl + ')'; ctx.fillRect(0, 0, W, H); }
 }
 // adds to the current path; render() fills all shadows in one go
 function shadow(x, y, r) { if (!onScreen(x, y, r)) return; ctx.moveTo(x + r * 0.85, y + 6); ctx.ellipse(x, y + 6, r * 0.85, r * 0.32, 0, 0, TAU); }
@@ -1358,6 +1950,9 @@ function drawBgClouds() {
 // and blitted; it is only repainted when the zoom changes or an island unlocks.
 const ISL_MAXPX = 4.2e6;
 const islCache = [];
+// only the islands of the current world are kept in memory (15 caches would be far too much for a phone)
+function trimIslands() { islCache.forEach((e, i) => { if (e && ZONES[i].w !== S.w) islCache[i] = null; }); }
+function preloadIslands() { let n = 0; ZONES.forEach((z, i) => { if (z.w === S.w) setTimeout(() => { if (ZONES[i].w === S.w) islandImage(i); }, 400 + 150 * n++); }); }
 function islandBounds(z) {
   const x0 = -(z.rx * 1.06 + 12), y0 = -(z.ry * 1.06 + 12);
   return { x0, y0, w: -2 * x0, h: Math.max(z.ry * 1.06 + 90, z.ry * 0.62 + 250) - y0 };
@@ -1375,12 +1970,15 @@ function islandImage(i) {
   paintIsland(g, i, locked);
   return (islCache[i] = { c, key, s, b });
 }
+// cliff colours per world: sky (warm earth), space (moon rock), jungle (dark loam)
+const CLIFF = [{ c: COL.cliff, s: COL.stripe, d: COL.cliffDark }, { c: '#7479b3', s: '#6469a3', d: '#45497e' }, { c: '#a0703f', s: '#8a5d33', d: '#5e3d20' }];
 function paintIsland(g, i, locked) {
-  const z = ZONES[i], I = ISL[i];
+  const z = ZONES[i], I = ISL[i], cl = CLIFF[z.w];
   // dangling rocks
   for (const r of I.rocks) {
     g.beginPath(); g.moveTo(r.x - r.w / 2, z.ry * 0.55); g.lineTo(r.x + r.w / 2, z.ry * 0.55); g.lineTo(r.x + r.w * 0.1, z.ry * 0.62 + r.h + 60); g.closePath();
-    g.fillStyle = locked ? '#b9a493' : COL.cliffDark; g.strokeStyle = NAVY; g.lineWidth = 7; g.lineJoin = 'round'; g.fill(); g.stroke();
+    g.fillStyle = locked ? '#b9a493' : cl.d; g.strokeStyle = NAVY; g.lineWidth = 7; g.lineJoin = 'round'; g.fill(); g.stroke();
+    if (z.w === 1 && !locked) { g.fillStyle = '#7ff3ff'; g.beginPath(); g.moveTo(r.x - 8, z.ry * 0.62 + r.h * 0.5); g.lineTo(r.x, z.ry * 0.62 + r.h * 0.5 - 22); g.lineTo(r.x + 8, z.ry * 0.62 + r.h * 0.5); g.closePath(); g.fill(); g.lineWidth = 3; g.stroke(); }
   }
   const D = 78;
   g.lineJoin = 'round';
@@ -1388,7 +1986,7 @@ function paintIsland(g, i, locked) {
   for (let k = D; k >= 0; k -= 3) {
     g.save(); g.translate(0, k);
     const band = ((k / 13) | 0) % 2;
-    g.fillStyle = locked ? (band ? '#d7c5b5' : '#cbb6a3') : (k > D - 10 ? COL.cliffDark : band ? COL.cliff : COL.stripe);
+    g.fillStyle = locked ? (band ? '#d7c5b5' : '#cbb6a3') : (k > D - 10 ? cl.d : band ? cl.c : cl.s);
     g.fill(I.top); g.restore();
   }
   // top
@@ -1405,8 +2003,20 @@ function paintIsland(g, i, locked) {
   }
   // grass lip highlight
   g.save(); g.clip(I.top); g.translate(0, 10); g.lineWidth = 10; g.strokeStyle = 'rgba(0,0,0,0.08)'; g.stroke(I.top); g.restore();
+  if (!locked && I.vines.length) {
+    // jungle vines hanging over the cliff edge
+    g.lineCap = 'round';
+    for (const v of I.vines) {
+      const y0 = z.ry * Math.sqrt(Math.max(0, 1 - (v.x / z.rx) ** 2)) - 6;
+      g.strokeStyle = NAVY; g.lineWidth = 9; g.beginPath(); g.moveTo(v.x, y0); g.quadraticCurveTo(v.x + 14, y0 + v.l * 0.5, v.x - 4, y0 + v.l); g.stroke();
+      g.strokeStyle = '#3f9a3a'; g.lineWidth = 4.5; g.stroke();
+      g.fillStyle = '#5fd06a'; g.strokeStyle = NAVY; g.lineWidth = 2.5;
+      for (let k = 1; k <= 3; k++) { const yy = y0 + v.l * k / 3.4, xx = v.x + 6 * Math.sin(k * 2); g.beginPath(); g.ellipse(xx + (k % 2 ? 7 : -7), yy, 8, 4, k % 2 ? 0.5 : -0.5, 0, TAU); g.fill(); g.stroke(); }
+    }
+  }
   if (!locked) {
     for (const d of I.deco) {
+      if (z.w) { paintDeco(g, d); continue; }
       if (d.k === 'tuft') { g.strokeStyle = 'rgba(30,90,40,0.35)'; g.lineWidth = 3.5; g.lineCap = 'round'; g.beginPath(); g.moveTo(d.x - 8 * d.s, d.y); g.lineTo(d.x - 3 * d.s, d.y - 9 * d.s); g.moveTo(d.x, d.y); g.lineTo(d.x + 1, d.y - 12 * d.s); g.moveTo(d.x + 8 * d.s, d.y); g.lineTo(d.x + 4 * d.s, d.y - 9 * d.s); g.stroke(); }
       else if (d.k === 'flower') { g.fillStyle = d.c; g.strokeStyle = NAVY; g.lineWidth = 2.5; for (let a = 0; a < 5; a++) { g.beginPath(); g.arc(d.x + Math.cos(a / 5 * TAU) * 5 * d.s, d.y + Math.sin(a / 5 * TAU) * 5 * d.s, 4 * d.s, 0, TAU); g.fill(); g.stroke(); } g.fillStyle = '#ffd23f'; g.beginPath(); g.arc(d.x, d.y, 3.4 * d.s, 0, TAU); g.fill(); }
       else { g.fillStyle = '#c9ced8'; g.strokeStyle = NAVY; g.lineWidth = 3; g.beginPath(); g.ellipse(d.x, d.y, 11 * d.s, 7 * d.s, 0, 0, TAU); g.fill(); g.stroke(); g.fillStyle = 'rgba(255,255,255,0.6)'; g.beginPath(); g.ellipse(d.x - 3 * d.s, d.y - 2 * d.s, 4 * d.s, 2 * d.s, 0, 0, TAU); g.fill(); }
@@ -1414,6 +2024,31 @@ function paintIsland(g, i, locked) {
   } else {
     // fog
     g.fillStyle = 'rgba(255,255,255,0.35)'; g.fill(I.top);
+  }
+}
+// space and jungle decorations, painted into the island cache
+function paintDeco(g, d) {
+  const s = d.s; g.strokeStyle = NAVY; g.lineJoin = 'round'; g.lineCap = 'round';
+  if (d.k === 'crater') {
+    g.fillStyle = 'rgba(38,49,89,0.2)'; g.beginPath(); g.ellipse(d.x, d.y, 20 * s, 10 * s, 0, 0, TAU); g.fill();
+    g.strokeStyle = 'rgba(255,255,255,0.45)'; g.lineWidth = 3; g.beginPath(); g.ellipse(d.x, d.y + 1, 20 * s, 10 * s, 0, 0.1 * Math.PI, 0.9 * Math.PI); g.stroke();
+  } else if (d.k === 'crystal') {
+    g.fillStyle = d.c; g.lineWidth = 2.5;
+    [[-8, 0.9, -0.3], [0, 1.3, 0], [8, 0.8, 0.35]].forEach(([dx, h, a]) => { g.save(); g.translate(d.x + dx * s, d.y); g.rotate(a); g.beginPath(); g.moveTo(-5 * s, 0); g.lineTo(-4 * s, -16 * h * s); g.lineTo(0, -22 * h * s); g.lineTo(4 * s, -16 * h * s); g.lineTo(5 * s, 0); g.closePath(); g.fill(); g.stroke(); g.fillStyle = 'rgba(255,255,255,0.55)'; g.fillRect(-2 * s, -15 * h * s, 2 * s, 10 * h * s); g.fillStyle = d.c; g.restore(); });
+  } else if (d.k === 'rock') {
+    g.fillStyle = '#a7a2d6'; g.lineWidth = 3; g.beginPath(); g.ellipse(d.x, d.y, 12 * s, 8 * s, 0, 0, TAU); g.fill(); g.stroke();
+    g.fillStyle = 'rgba(255,255,255,0.5)'; g.beginPath(); g.ellipse(d.x - 3 * s, d.y - 3 * s, 4 * s, 2 * s, 0, 0, TAU); g.fill();
+  } else if (d.k === 'fern') {
+    g.fillStyle = '#2f8f3a'; g.lineWidth = 2;
+    for (let k = -2; k <= 2; k++) { g.save(); g.translate(d.x, d.y); g.rotate(k * 0.45); g.beginPath(); g.ellipse(0, -13 * s, 4.5 * s, 13 * s, 0, 0, TAU); g.fill(); g.stroke(); g.restore(); }
+  } else if (d.k === 'flower') {
+    g.fillStyle = d.c; g.lineWidth = 2.5;
+    for (let a = 0; a < 5; a++) { g.beginPath(); g.ellipse(d.x + Math.cos(a / 5 * TAU + d.a) * 7 * s, d.y + Math.sin(a / 5 * TAU + d.a) * 6 * s, 6 * s, 4.5 * s, a / 5 * TAU + d.a, 0, TAU); g.fill(); g.stroke(); }
+    g.fillStyle = '#ffd23f'; g.beginPath(); g.arc(d.x, d.y, 3.6 * s, 0, TAU); g.fill();
+  } else if (d.k === 'shroom') {
+    g.fillStyle = '#fff1d6'; g.lineWidth = 2.5; roundRectPath(g, d.x - 3.5 * s, d.y - 10 * s, 7 * s, 11 * s, 3 * s); g.fill(); g.stroke();
+    g.fillStyle = d.c === '#ffffff' ? '#ff5d6c' : d.c; g.beginPath(); g.ellipse(d.x, d.y - 10 * s, 11 * s, 7 * s, 0, Math.PI, 0); g.closePath(); g.fill(); g.stroke();
+    g.fillStyle = '#fff'; g.beginPath(); g.arc(d.x - 4 * s, d.y - 13 * s, 1.8 * s, 0, TAU); g.arc(d.x + 4 * s, d.y - 12 * s, 1.5 * s, 0, TAU); g.fill();
   }
 }
 function drawIsland(i, ox, oy) {
@@ -1459,7 +2094,19 @@ function drawBridges() {
     const len = Math.hypot(b.x2 - b.x1, b.y2 - b.y1), a = Math.atan2(b.y2 - b.y1, b.x2 - b.x1);
     if (!onScreen((b.x1 + b.x2) / 2, (b.y1 + b.y2) / 2, len)) continue;
     ctx.save(); ctx.translate(b.x1, b.y1); ctx.rotate(a);
-    if (b.to <= S.zone) {
+    const bw = ZONES[b.to].w;
+    if (b.to <= S.zone && bw === 1) {
+      // space: a bridge of light with stars running along it
+      roundRectPath(ctx, 0, -40, len, 80, 20); ctx.fillStyle = 'rgba(127,243,255,0.32)'; ctx.fill(); ctx.lineWidth = 5; ctx.strokeStyle = NAVY; ctx.stroke();
+      ctx.lineCap = 'round';
+      for (const sd of [-40, 40]) {
+        ctx.strokeStyle = 'rgba(127,243,255,0.45)'; ctx.lineWidth = 16; ctx.beginPath(); ctx.moveTo(0, sd); ctx.lineTo(len, sd); ctx.stroke();
+        ctx.strokeStyle = '#eafdff'; ctx.lineWidth = 5; ctx.stroke();
+      }
+      ctx.fillStyle = '#fff6c2';
+      const n = Math.floor(len / 70);
+      for (let i = 0; i < n; i++) { const x = ((i / n + time * 0.22) % 1) * len; star(ctx, x, (i % 2 ? 14 : -14), 7 + Math.sin(time * 6 + i) * 2); }
+    } else if (b.to <= S.zone) {
       const n = Math.floor(len / 26);
       for (let i = 0; i <= n; i++) {
         const x = i * len / n;
@@ -1467,8 +2114,14 @@ function drawBridges() {
         ctx.fillStyle = i % 2 ? '#c98a4f' : '#b97a42'; ctx.fill(); ctx.strokeStyle = NAVY; ctx.lineWidth = 4; ctx.stroke();
       }
       for (const s of [-46, 46]) {
-        ctx.strokeStyle = NAVY; ctx.lineWidth = 8; ctx.beginPath(); ctx.moveTo(0, s); ctx.quadraticCurveTo(len / 2, s + (Math.abs(Math.cos(a)) > 0.5 ? 18 : 0), len, s); ctx.stroke();
-        ctx.strokeStyle = '#e8c48a'; ctx.lineWidth = 4; ctx.stroke();
+        const sag = Math.abs(Math.cos(a)) > 0.5 ? 18 : 0;
+        ctx.strokeStyle = NAVY; ctx.lineWidth = 8; ctx.beginPath(); ctx.moveTo(0, s); ctx.quadraticCurveTo(len / 2, s + sag, len, s); ctx.stroke();
+        ctx.strokeStyle = bw === 2 ? '#5fae45' : '#e8c48a'; ctx.lineWidth = 4; ctx.stroke();
+        if (bw === 2) {
+          // jungle: vine ropes with leaves
+          ctx.fillStyle = '#7ee26b'; ctx.lineWidth = 2.5; ctx.strokeStyle = NAVY;
+          for (let k = 1; k < 6; k++) { const q = k / 6, x = q * len, y = s + sag * 4 * q * (1 - q) * 0.5 * 2; ctx.beginPath(); ctx.ellipse(x, y + 6, 8, 4, k % 2 ? 0.6 : -0.6, 0, TAU); ctx.fill(); ctx.stroke(); }
+        }
         for (const x of [0, len]) { roundRectPath(ctx, x - 9, s - 9, 18, 18, 5); ctx.fillStyle = '#8f5a2f'; ctx.fill(); ctx.strokeStyle = NAVY; ctx.lineWidth = 4; ctx.stroke(); }
       }
     } else if (b.to === S.zone + 1) {
@@ -1480,18 +2133,21 @@ function drawBridges() {
   }
 }
 
+const SPRING_COLS = [['#aeb7c7', '#c2c9d6', '#5fd0ff'], ['#857dc4', '#9b93d6', '#d38bff'], ['#6b8f58', '#8fb874', '#4fd6c9']];
 function drawSpring(s) {
   if (!onScreen(s.x, s.y, 80)) return;
   const sc = outBack(s.appear) * (1 + s.puffAnim * 0.12);
   ctx.save(); ctx.translate(s.x, s.y); ctx.scale(sc, sc);
   ctx.fillStyle = 'rgba(38,49,89,0.18)'; ctx.beginPath(); ctx.ellipse(0, 8, 46, 20, 0, 0, TAU); ctx.fill();
+  const sc2 = SPRING_COLS[ZONES[s.z].w];
   for (let i = 0; i < 9; i++) {
     const a = i / 9 * TAU; const x = Math.cos(a) * 34, y = Math.sin(a) * 18;
-    ctx.fillStyle = i % 2 ? '#c2c9d6' : '#aeb7c7'; ctx.strokeStyle = NAVY; ctx.lineWidth = 3.5;
+    ctx.fillStyle = sc2[i % 2]; ctx.strokeStyle = NAVY; ctx.lineWidth = 3.5;
     ctx.beginPath(); ctx.ellipse(x, y, 13, 10, 0, 0, TAU); ctx.fill(); ctx.stroke();
   }
-  ctx.fillStyle = '#5fd0ff'; ctx.strokeStyle = NAVY; ctx.lineWidth = 3.5; ctx.beginPath(); ctx.ellipse(0, 0, 25, 11, 0, 0, TAU); ctx.fill(); ctx.stroke();
+  ctx.fillStyle = sc2[2]; ctx.strokeStyle = NAVY; ctx.lineWidth = 3.5; ctx.beginPath(); ctx.ellipse(0, 0, 25, 11, 0, 0, TAU); ctx.fill(); ctx.stroke();
   ctx.fillStyle = 'rgba(255,255,255,0.7)'; ctx.beginPath(); ctx.ellipse(-7, -3, 9, 3, 0, 0, TAU); ctx.fill();
+  if (ZONES[s.z].w === 2) { ctx.fillStyle = '#5fd06a'; ctx.lineWidth = 2.5; ctx.beginPath(); ctx.moveTo(12, 2); ctx.arc(12, 2, 8, 0.4, TAU - 0.2); ctx.closePath(); ctx.fill(); ctx.stroke(); }
   for (let i = 0; i < 3; i++) {
     const t = (time * 0.6 + i / 3) % 1;
     ctx.globalAlpha = (1 - t) * 0.8; ctx.fillStyle = '#fff';
@@ -1522,6 +2178,167 @@ function drawFountain(p) {
     ctx.globalAlpha = 1 - t * 0.6; ctx.fillStyle = cols[i % 6]; ctx.beginPath(); ctx.arc(dx, dy, 5 - t * 2, 0, TAU); ctx.fill();
   }
   ctx.globalAlpha = 1; ctx.restore();
+}
+// v0.9 finale builds: the Star gate (space) and the Tree of Life (jungle)
+function drawGate(p) {
+  if (!onScreen(p.x, p.y - 100, 220)) return;
+  ctx.save(); ctx.translate(p.x, p.y); ctx.lineJoin = 'round';
+  ctx.fillStyle = 'rgba(38,49,89,0.2)'; ctx.beginPath(); ctx.ellipse(0, 10, 90, 28, 0, 0, TAU); ctx.fill();
+  roundRectPath(ctx, -80, -12, 160, 28, 12); ctx.fillStyle = '#9196c9'; ctx.fill(); ctx.lineWidth = 5; ctx.strokeStyle = NAVY; ctx.stroke();
+  // swirling portal
+  ctx.save(); ctx.beginPath(); ctx.ellipse(0, -100, 58, 82, 0, 0, TAU); ctx.clip();
+  const g = ctx.createRadialGradient(0, -100, 5, 0, -100, 90); g.addColorStop(0, '#ffffff'); g.addColorStop(0.3, '#7ff3ff'); g.addColorStop(0.7, '#a26bff'); g.addColorStop(1, '#3b1d6e');
+  ctx.fillStyle = g; ctx.fillRect(-60, -184, 120, 168);
+  ctx.strokeStyle = 'rgba(255,255,255,0.6)'; ctx.lineWidth = 4;
+  for (let i = 0; i < 4; i++) { ctx.beginPath(); ctx.ellipse(0, -100, 14 + i * 12, 20 + i * 16, time * (1.5 + i * 0.3) + i, 0, Math.PI * 1.2); ctx.stroke(); }
+  ctx.restore();
+  ctx.lineWidth = 22; ctx.strokeStyle = NAVY; ctx.beginPath(); ctx.ellipse(0, -100, 66, 90, 0, 0, TAU); ctx.stroke();
+  ctx.lineWidth = 13; ctx.strokeStyle = '#c3c7ef'; ctx.stroke();
+  for (let i = 0; i < 8; i++) { const a = i / 8 * TAU + time * 0.6; ctx.fillStyle = i % 2 ? '#7ff3ff' : '#ff8af0'; ctx.beginPath(); ctx.arc(Math.cos(a) * 66, -100 + Math.sin(a) * 90, 6, 0, TAU); ctx.fill(); ctx.lineWidth = 2.5; ctx.strokeStyle = NAVY; ctx.stroke(); }
+  ctx.restore();
+}
+function drawTree(p) {
+  if (!onScreen(p.x, p.y - 120, 240)) return;
+  const sw = Math.sin(time * 1.2) * 0.02;
+  ctx.save(); ctx.translate(p.x, p.y); ctx.lineJoin = 'round'; ctx.lineCap = 'round';
+  ctx.fillStyle = 'rgba(38,49,89,0.2)'; ctx.beginPath(); ctx.ellipse(0, 10, 110, 32, 0, 0, TAU); ctx.fill();
+  ctx.fillStyle = '#8a5a30'; ctx.strokeStyle = NAVY; ctx.lineWidth = 6;
+  ctx.beginPath(); ctx.moveTo(-34, 12); ctx.quadraticCurveTo(-18, -50, -24, -120); ctx.lineTo(24, -120); ctx.quadraticCurveTo(18, -50, 34, 12); ctx.closePath(); ctx.fill(); ctx.stroke();
+  ctx.rotate(sw);
+  const blobs = [[0, -190, 78], [-70, -150, 58], [70, -150, 58], [-40, -230, 52], [45, -232, 50], [0, -130, 54]];
+  ctx.fillStyle = NAVY; blobs.forEach(b => { ctx.beginPath(); ctx.arc(b[0], b[1], b[2] + 6, 0, TAU); ctx.fill(); });
+  blobs.forEach((b, i) => { ctx.fillStyle = i % 2 ? '#4fbf55' : '#6fd36a'; ctx.beginPath(); ctx.arc(b[0], b[1], b[2], 0, TAU); ctx.fill(); });
+  ctx.fillStyle = 'rgba(255,255,255,0.25)'; ctx.beginPath(); ctx.ellipse(-30, -230, 30, 14, -0.4, 0, TAU); ctx.fill();
+  const fl = ['#ff5d8f', '#ffd23f', '#ff8a3d', '#b58cff', '#4cc3ff', '#ffffff'];
+  for (let i = 0; i < 14; i++) { const a = i * 2.4, r = 30 + (i * 37) % 70, x = Math.cos(a) * r, y = -180 + Math.sin(a) * r * 0.75, pul = 1 + Math.sin(time * 3 + i) * 0.15; ctx.fillStyle = fl[i % 6]; ctx.lineWidth = 2.5; ctx.strokeStyle = NAVY; ctx.beginPath(); ctx.arc(x, y, 7 * pul, 0, TAU); ctx.fill(); ctx.stroke(); }
+  ctx.restore();
+}
+// helper homes: UFO landing pad, toucan nest, monkey hut
+function drawHome(h) {
+  if (!onScreen(h.x, h.y, 90)) return;
+  const sc = outBack(h.appear) * (1 + h.bump * 0.1);
+  ctx.save(); ctx.translate(h.x, h.y); ctx.scale(sc, sc); ctx.lineJoin = 'round'; ctx.strokeStyle = NAVY;
+  ctx.fillStyle = 'rgba(38,49,89,0.18)'; ctx.beginPath(); ctx.ellipse(0, 10, 46, 16, 0, 0, TAU); ctx.fill();
+  if (h.kind === 'ufo') {
+    ctx.fillStyle = '#c9cfe8'; ctx.lineWidth = 4.5; ctx.beginPath(); ctx.ellipse(0, 0, 40, 15, 0, 0, TAU); ctx.fill(); ctx.stroke();
+    ctx.fillStyle = '#9aa2cf'; ctx.beginPath(); ctx.ellipse(0, -2, 24, 8, 0, 0, TAU); ctx.fill();
+    for (let i = 0; i < 6; i++) { const a = i / 6 * TAU; ctx.fillStyle = ((time * 4 | 0) + i) % 3 ? '#7ff3ff' : '#ffe36b'; ctx.beginPath(); ctx.arc(Math.cos(a) * 32, Math.sin(a) * 11, 3.5, 0, TAU); ctx.fill(); }
+  } else if (h.kind === 'toucan') {
+    ctx.fillStyle = '#8a5a30'; ctx.lineWidth = 4.5; roundRectPath(ctx, -10, -8, 20, 22, 4); ctx.fill(); ctx.stroke();
+    ctx.fillStyle = '#c99a5a'; ctx.beginPath(); ctx.ellipse(0, -12, 30, 13, 0, 0, TAU); ctx.fill(); ctx.stroke();
+    ctx.strokeStyle = '#8a5a30'; ctx.lineWidth = 3; for (let i = -2; i <= 2; i++) { ctx.beginPath(); ctx.moveTo(i * 10 - 6, -16); ctx.lineTo(i * 10 + 6, -8); ctx.stroke(); }
+    ctx.fillStyle = '#fff6e0'; ctx.strokeStyle = NAVY; ctx.lineWidth = 2.5; ctx.beginPath(); ctx.ellipse(-6, -18, 6, 7, 0, 0, TAU); ctx.ellipse(6, -18, 6, 7, 0, 0, TAU); ctx.fill(); ctx.stroke();
+  } else {
+    ctx.fillStyle = '#b07a42'; ctx.lineWidth = 4.5; roundRectPath(ctx, -26, -26, 52, 38, 6); ctx.fill(); ctx.stroke();
+    ctx.fillStyle = NAVY; roundRectPath(ctx, -9, -12, 18, 24, 8); ctx.fill();
+    ctx.fillStyle = '#4fbf55'; ctx.beginPath(); ctx.moveTo(-40, -22); ctx.lineTo(0, -56); ctx.lineTo(40, -22); ctx.closePath(); ctx.fill(); ctx.stroke();
+    ctx.fillStyle = '#ffd23f'; ctx.lineWidth = 2.5; for (let i = 0; i < 3; i++) { ctx.beginPath(); ctx.ellipse(30 + i * 5, -4 + i * 2, 4, 10, 0.6, 0, TAU); ctx.fill(); ctx.stroke(); }
+  }
+  ctx.restore();
+}
+function ufoShape(t, raining) {
+  ctx.lineJoin = 'round'; ctx.strokeStyle = NAVY;
+  if (raining) { ctx.fillStyle = 'rgba(127,243,255,0.28)'; ctx.beginPath(); ctx.moveTo(-14, 6); ctx.lineTo(14, 6); ctx.lineTo(30, 62); ctx.lineTo(-30, 62); ctx.closePath(); ctx.fill(); }
+  ctx.fillStyle = '#9ff0ff'; ctx.lineWidth = 3.5; ctx.beginPath(); ctx.arc(0, -6, 14, Math.PI, 0); ctx.closePath(); ctx.fill(); ctx.stroke();
+  ctx.fillStyle = '#7ee26b'; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(0, -8, 6, 0, TAU); ctx.fill(); ctx.stroke();
+  ctx.fillStyle = NAVY; ctx.beginPath(); ctx.arc(-2.2, -9, 1.5, 0, TAU); ctx.arc(2.2, -9, 1.5, 0, TAU); ctx.fill();
+  ctx.fillStyle = '#c9cfe8'; ctx.lineWidth = 4; ctx.beginPath(); ctx.ellipse(0, 0, 30, 9, 0, 0, TAU); ctx.fill(); ctx.stroke();
+  for (let i = -2; i <= 2; i++) { ctx.fillStyle = ((t * 6 | 0) + i + 9) % 3 ? '#ffe36b' : '#ff6fa8'; ctx.beginPath(); ctx.arc(i * 11, 2, 3, 0, TAU); ctx.fill(); }
+}
+function toucanShape(t) {
+  const fl = Math.sin(t * 14) * 0.6;
+  ctx.lineJoin = 'round'; ctx.strokeStyle = NAVY; ctx.lineWidth = 3;
+  ctx.save(); ctx.translate(-4, -6); ctx.rotate(-0.4 - fl); ctx.fillStyle = '#263159'; ctx.beginPath(); ctx.ellipse(-10, 0, 14, 6, 0, 0, TAU); ctx.fill(); ctx.restore();
+  ctx.fillStyle = '#2b2f4a'; ctx.beginPath(); ctx.ellipse(0, 0, 16, 12, 0, 0, TAU); ctx.fill(); ctx.stroke();
+  ctx.fillStyle = '#fff1d6'; ctx.beginPath(); ctx.ellipse(7, 3, 7, 7, 0, 0, TAU); ctx.fill();
+  ctx.fillStyle = '#ff9f2e'; ctx.beginPath(); ctx.moveTo(10, -6); ctx.quadraticCurveTo(34, -8, 36, 2); ctx.quadraticCurveTo(24, 2, 10, 2); ctx.closePath(); ctx.fill(); ctx.stroke();
+  ctx.fillStyle = '#ffd23f'; ctx.beginPath(); ctx.moveTo(10, -6); ctx.quadraticCurveTo(20, -8, 24, -5); ctx.lineTo(12, -2); ctx.closePath(); ctx.fill();
+  ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.arc(6, -5, 3.4, 0, TAU); ctx.fill(); ctx.fillStyle = NAVY; ctx.beginPath(); ctx.arc(7, -5, 1.8, 0, TAU); ctx.fill();
+  ctx.save(); ctx.translate(-4, -6); ctx.rotate(0.3 + fl); ctx.fillStyle = '#3a3f60'; ctx.beginPath(); ctx.ellipse(-10, 0, 14, 6, 0, 0, TAU); ctx.fill(); ctx.stroke(); ctx.restore();
+}
+function monkeyShape(t) {
+  ctx.lineJoin = 'round'; ctx.lineCap = 'round'; ctx.strokeStyle = NAVY; ctx.lineWidth = 3;
+  ctx.strokeStyle = NAVY; ctx.lineWidth = 7; ctx.beginPath(); ctx.moveTo(-10, 8); ctx.quadraticCurveTo(-26, 10, -22, -6 + Math.sin(t * 5) * 3); ctx.stroke();
+  ctx.strokeStyle = '#9a5f2e'; ctx.lineWidth = 3.5; ctx.stroke();
+  ctx.strokeStyle = NAVY; ctx.lineWidth = 3;
+  ctx.fillStyle = '#9a5f2e'; ctx.beginPath(); ctx.ellipse(0, 8, 12, 11, 0, 0, TAU); ctx.fill(); ctx.stroke();
+  ctx.beginPath(); ctx.arc(-13, -10, 6, 0, TAU); ctx.arc(13, -10, 6, 0, TAU); ctx.fill(); ctx.stroke();
+  ctx.beginPath(); ctx.arc(0, -10, 13, 0, TAU); ctx.fill(); ctx.stroke();
+  ctx.fillStyle = '#f2c99a'; ctx.beginPath(); ctx.ellipse(0, -7, 9, 7.5, 0, 0, TAU); ctx.fill();
+  ctx.beginPath(); ctx.arc(-13, -10, 3, 0, TAU); ctx.arc(13, -10, 3, 0, TAU); ctx.fill();
+  ctx.fillStyle = NAVY; ctx.beginPath(); ctx.arc(-4, -10, 2, 0, TAU); ctx.arc(4, -10, 2, 0, TAU); ctx.fill();
+  ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(0, -5, 3.5, 0.15 * Math.PI, 0.85 * Math.PI); ctx.stroke();
+}
+function drawRainer(r) {
+  if (!onScreen(r.x, r.y, 80)) return;
+  const hov = 70 + Math.sin(r.t * 2.6) * 6;
+  ctx.save(); ctx.translate(r.x, r.y - hov);
+  if (r.kind === 'ufo') { ctx.rotate(clamp(r.vx / 900, -0.2, 0.2)); ufoShape(r.t, r.raining); }
+  else {
+    // the toucan carries its own little rain cloud
+    const sp = cloudSprite(3); ctx.drawImage(sp.c, -26, 4, 52, 52);
+    if (r.vx < 0) ctx.scale(-1, 1); ctx.scale(1.2, 1.2); toucanShape(r.t);
+  }
+  ctx.restore();
+}
+// power-up orb: a bubble with the power's icon; while falling in it has a glowing tail
+function drawOrb(o) {
+  if (!onScreen(o.x, o.y - o.z, 80)) return;
+  const c = POWERS[o.id].col, y = o.y - 34 - o.z + (o.landed ? Math.sin(o.bob) * 6 : 0), blink = o.landed && o.life < 6 && (time * 8 | 0) % 2;
+  if (!o.landed) { ctx.strokeStyle = c; ctx.globalAlpha = 0.5; ctx.lineWidth = 18; ctx.lineCap = 'round'; ctx.beginPath(); ctx.moveTo(o.x, y); ctx.lineTo(o.x + 40, y - 160); ctx.stroke(); ctx.globalAlpha = 1; }
+  if (blink) ctx.globalAlpha = 0.45;
+  ctx.save(); ctx.translate(o.x, y); const s = 1 + Math.sin(time * 6) * 0.05; ctx.scale(s, s);
+  ctx.fillStyle = NAVY; ctx.beginPath(); ctx.arc(0, 0, 31, 0, TAU); ctx.fill();
+  const g = ctx.createRadialGradient(-8, -10, 4, 0, 0, 28); g.addColorStop(0, '#ffffff'); g.addColorStop(1, c);
+  ctx.fillStyle = g; ctx.beginPath(); ctx.arc(0, 0, 27, 0, TAU); ctx.fill();
+  pwIcon(o.id, 0.9);
+  ctx.fillStyle = 'rgba(255,255,255,0.75)'; ctx.beginPath(); ctx.ellipse(-11, -14, 7, 4, -0.6, 0, TAU); ctx.fill();
+  ctx.restore(); ctx.globalAlpha = 1;
+}
+function pwIcon(id, s) {
+  ctx.save(); ctx.scale(s, s); ctx.lineJoin = 'round'; ctx.lineCap = 'round'; ctx.strokeStyle = NAVY;
+  if (id === 'magnet') {
+    ctx.lineWidth = 13; ctx.beginPath(); ctx.arc(0, -2, 10, Math.PI, 0); ctx.lineTo(10, 10); ctx.moveTo(-10, -2); ctx.lineTo(-10, 10); ctx.stroke();
+    ctx.lineWidth = 7; ctx.strokeStyle = '#ff5d6c'; ctx.beginPath(); ctx.arc(0, -2, 10, Math.PI, 0); ctx.lineTo(10, 6); ctx.moveTo(-10, -2); ctx.lineTo(-10, 6); ctx.stroke();
+    ctx.fillStyle = '#e8eef8'; ctx.fillRect(-13.5, 6, 7, 6); ctx.fillRect(6.5, 6, 7, 6);
+  } else if (id === 'rocket') {
+    ctx.fillStyle = '#ffd23f'; ctx.beginPath(); ctx.moveTo(-5, 10); ctx.lineTo(0, 20); ctx.lineTo(5, 10); ctx.closePath(); ctx.fill();
+    ctx.lineWidth = 3; ctx.fillStyle = '#ff5d6c'; ctx.beginPath(); ctx.moveTo(-8, 4); ctx.lineTo(-13, 12); ctx.lineTo(-6, 10); ctx.closePath(); ctx.moveTo(8, 4); ctx.lineTo(13, 12); ctx.lineTo(6, 10); ctx.closePath(); ctx.fill(); ctx.stroke();
+    ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.moveTo(0, -17); ctx.quadraticCurveTo(9, -8, 7, 10); ctx.lineTo(-7, 10); ctx.quadraticCurveTo(-9, -8, 0, -17); ctx.closePath(); ctx.fill(); ctx.stroke();
+    ctx.fillStyle = '#4cc3ff'; ctx.beginPath(); ctx.arc(0, -3, 3.6, 0, TAU); ctx.fill(); ctx.lineWidth = 2; ctx.stroke();
+  } else if (id === 'comet') {
+    ctx.strokeStyle = '#bfe9ff'; ctx.lineWidth = 5; [-6, 0, 6].forEach(o => { ctx.beginPath(); ctx.moveTo(-14 + o * 0.3, 14 + o); ctx.lineTo(2 + o * 0.3, -2 + o); ctx.stroke(); });
+    ctx.fillStyle = '#ffd23f'; ctx.strokeStyle = NAVY; ctx.lineWidth = 3; starPath(5, -5, 12); ctx.fill(); ctx.stroke();
+  } else if (id === 'grow') {
+    ctx.save(); ctx.translate(-4, 12); ctx.scale(1.1, 1.1); ctx.lineWidth = 3; drawSprout(); ctx.restore();
+    ctx.fillStyle = '#7ee26b'; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(10, -16); ctx.lineTo(18, -6); ctx.lineTo(13, -6); ctx.lineTo(13, 4); ctx.lineTo(7, 4); ctx.lineTo(7, -6); ctx.lineTo(2, -6); ctx.closePath(); ctx.fill(); ctx.stroke();
+  } else if (id === 'frenzy') {
+    drawCoin(-3, 0, 12); txt('x3', 9, 9, 15, '#fff');
+  } else if (id === 'giant') {
+    ctx.fillStyle = '#ff7a52'; ctx.lineWidth = 3; ctx.beginPath(); ctx.arc(0, 2, 12, 0, TAU); ctx.fill(); ctx.stroke();
+    ctx.fillStyle = '#ffc93d'; ctx.beginPath(); ctx.moveTo(10, 0); ctx.lineTo(18, 3); ctx.lineTo(10, 6); ctx.closePath(); ctx.fill(); ctx.lineWidth = 2; ctx.stroke();
+    ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.arc(4, -2, 3.5, 0, TAU); ctx.fill(); ctx.fillStyle = NAVY; ctx.beginPath(); ctx.arc(5, -2, 1.8, 0, TAU); ctx.fill();
+    ctx.strokeStyle = '#fff'; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(-14, -8); ctx.lineTo(-18, -16); ctx.moveTo(-18, -16); ctx.lineTo(-11, -15); ctx.moveTo(-18, -16); ctx.lineTo(-19, -9); ctx.stroke();
+  }
+  ctx.restore();
+}
+// jungle bushes: berries and a sparkle when ready, bare while regrowing
+function drawBushes() {
+  for (const b of BUSHES) {
+    if (b.z > S.zone || !onScreen(b.x, b.y, 80)) continue;
+    const ready = b.t <= 0, wob = Math.sin(time * 30) * 0.08 * b.shake;
+    ctx.save(); ctx.translate(b.x, b.y); ctx.rotate(wob); ctx.lineJoin = 'round';
+    ctx.fillStyle = 'rgba(38,49,89,0.18)'; ctx.beginPath(); ctx.ellipse(0, 6, 50, 15, 0, 0, TAU); ctx.fill();
+    const blobs = [[-24, -10, 22], [22, -10, 22], [0, -26, 26], [0, -6, 26]];
+    ctx.fillStyle = NAVY; blobs.forEach(q => { ctx.beginPath(); ctx.arc(q[0], q[1], q[2] + 4.5, 0, TAU); ctx.fill(); });
+    blobs.forEach((q, i) => { ctx.fillStyle = ready ? (i % 2 ? '#3fae4f' : '#5fd06a') : (i % 2 ? '#5d8a4a' : '#719c5c'); ctx.beginPath(); ctx.arc(q[0], q[1], q[2], 0, TAU); ctx.fill(); });
+    if (ready) {
+      ctx.fillStyle = '#ff5d6c'; ctx.strokeStyle = NAVY; ctx.lineWidth = 2;
+      [[-20, -16], [14, -24], [2, -8], [24, -4], [-8, -32]].forEach(q => { ctx.beginPath(); ctx.arc(q[0], q[1], 5, 0, TAU); ctx.fill(); ctx.stroke(); });
+      if ((time * 1.5 + b.x) % 2 < 0.3) { ctx.fillStyle = '#fff'; star(ctx, 20, -40, 7); }
+    }
+    ctx.restore();
+  }
 }
 function drawField(f) {
   if (!onScreen(f.x, f.y, 120)) return;
@@ -1624,6 +2441,55 @@ function drawCrop(type, idx, ripe) {
       ctx.beginPath(); ctx.moveTo(-9, -28); ctx.lineTo(-4, -22); ctx.lineTo(0, -30); ctx.lineTo(4, -22); ctx.lineTo(9, -28); ctx.quadraticCurveTo(10, -12, 0, -12); ctx.quadraticCurveTo(-10, -12, -9, -28); ctx.closePath(); ctx.fill(); ctx.stroke();
       break;
     }
+    // v0.9 space crops
+    case 'saturnip':
+      ctx.fillStyle = '#5fd06a'; for (const a of [-0.4, 0.4]) { ctx.save(); ctx.rotate(a); ctx.beginPath(); ctx.ellipse(0, -20, 4.5, 10, 0, 0, TAU); ctx.fill(); ctx.stroke(); ctx.restore(); }
+      ctx.save(); ctx.rotate(-0.3); ctx.strokeStyle = NAVY; ctx.lineWidth = 6; ctx.beginPath(); ctx.ellipse(0, -2, 19, 5, 0, Math.PI, TAU); ctx.stroke(); ctx.strokeStyle = '#ffd98a'; ctx.lineWidth = 3; ctx.stroke(); ctx.restore();
+      ctx.strokeStyle = NAVY; ctx.lineWidth = 3; ctx.fillStyle = '#c58bff'; ctx.beginPath(); ctx.arc(0, -2, 10, 0, TAU); ctx.fill(); ctx.stroke();
+      ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.arc(-3, -6, 2.2, 0, TAU); ctx.fill();
+      ctx.save(); ctx.rotate(-0.3); ctx.strokeStyle = NAVY; ctx.lineWidth = 6; ctx.beginPath(); ctx.ellipse(0, -2, 19, 5, 0, 0, Math.PI); ctx.stroke(); ctx.strokeStyle = '#ffd98a'; ctx.lineWidth = 3; ctx.stroke(); ctx.restore();
+      break;
+    case 'starfruit':
+      ctx.strokeStyle = NAVY; ctx.lineWidth = 6; ctx.beginPath(); ctx.moveTo(0, 4); ctx.lineTo(0, -10); ctx.stroke(); ctx.strokeStyle = '#4fae43'; ctx.lineWidth = 3; ctx.stroke();
+      ctx.strokeStyle = NAVY; ctx.fillStyle = '#ffd23f'; starPath(0, -18, 13); ctx.fill(); ctx.stroke();
+      ctx.fillStyle = '#fff6c2'; starPath(-2, -20, 5); ctx.fill();
+      break;
+    case 'moonshroom':
+      for (const [x, s2, c] of [[-8, 0.8, '#7ff3ff'], [6, 1, '#b58cff']]) {
+        ctx.save(); ctx.translate(x, 0); ctx.scale(s2, s2);
+        ctx.fillStyle = '#eef2ff'; roundRectPath(ctx, -4, -14, 8, 16, 3); ctx.fill(); ctx.stroke();
+        ctx.fillStyle = c; ctx.beginPath(); ctx.ellipse(0, -14, 13, 10, 0, Math.PI, 0); ctx.closePath(); ctx.fill(); ctx.stroke();
+        ctx.fillStyle = 'rgba(255,255,255,0.85)'; ctx.beginPath(); ctx.arc(-4, -18, 2, 0, TAU); ctx.arc(4, -20, 1.6, 0, TAU); ctx.fill();
+        ctx.restore();
+      }
+      break;
+    case 'crystal':
+      ctx.lineWidth = 2.5;
+      [[-8, 0.8, -0.35, '#7ff3ff'], [8, 0.75, 0.35, '#ff8af0'], [0, 1.1, 0, '#b9a8ff']].forEach(([x, h, a, c]) => { ctx.save(); ctx.translate(x, 2); ctx.rotate(a); ctx.fillStyle = c; ctx.beginPath(); ctx.moveTo(-6, 0); ctx.lineTo(-5, -20 * h); ctx.lineTo(0, -28 * h); ctx.lineTo(5, -20 * h); ctx.lineTo(6, 0); ctx.closePath(); ctx.fill(); ctx.stroke(); ctx.fillStyle = 'rgba(255,255,255,0.6)'; ctx.fillRect(-2.5, -19 * h, 2.5, 12 * h); ctx.restore(); });
+      break;
+    // v0.9 jungle crops
+    case 'banana':
+      ctx.fillStyle = '#4fae43'; ctx.beginPath(); ctx.ellipse(-8, -14, 5, 12, -0.6, 0, TAU); ctx.fill(); ctx.stroke(); ctx.beginPath(); ctx.ellipse(8, -14, 5, 12, 0.6, 0, TAU); ctx.fill(); ctx.stroke();
+      ctx.fillStyle = '#ffd23f';
+      for (const a of [-0.5, 0, 0.5]) { ctx.save(); ctx.rotate(a); ctx.beginPath(); ctx.moveTo(-3, -16); ctx.quadraticCurveTo(8, -6, 2, 6); ctx.quadraticCurveTo(-2, -4, -6, -14); ctx.closePath(); ctx.fill(); ctx.stroke(); ctx.restore(); }
+      ctx.fillStyle = '#8a5a30'; ctx.beginPath(); ctx.arc(0, -17, 3, 0, TAU); ctx.fill();
+      break;
+    case 'cacao':
+      ctx.strokeStyle = NAVY; ctx.lineWidth = 5; ctx.beginPath(); ctx.moveTo(0, 4); ctx.lineTo(0, -20); ctx.stroke(); ctx.strokeStyle = '#8a5a30'; ctx.lineWidth = 2.5; ctx.stroke();
+      ctx.strokeStyle = NAVY; ctx.lineWidth = 3;
+      for (const [x, c] of [[-8, '#e8853a'], [8, '#c75a2a']]) { ctx.fillStyle = c; ctx.beginPath(); ctx.ellipse(x, -8, 7, 12, x > 0 ? 0.25 : -0.25, 0, TAU); ctx.fill(); ctx.stroke(); ctx.strokeStyle = 'rgba(38,49,89,0.35)'; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.moveTo(x, -18); ctx.lineTo(x, 2); ctx.stroke(); ctx.strokeStyle = NAVY; ctx.lineWidth = 3; }
+      break;
+    case 'dragonfruit':
+      ctx.fillStyle = '#ff4fa0'; ctx.beginPath(); ctx.ellipse(0, -8, 12, 14, 0, 0, TAU); ctx.fill(); ctx.stroke();
+      ctx.fillStyle = '#7ee26b'; for (const [x, y, a] of [[-11, -10, -1], [11, -6, 1], [-6, -20, -0.5], [7, -21, 0.5], [0, 4, 3.1]]) { ctx.save(); ctx.translate(x, y); ctx.rotate(a); ctx.beginPath(); ctx.moveTo(-3, 0); ctx.lineTo(0, -8); ctx.lineTo(3, 0); ctx.closePath(); ctx.fill(); ctx.lineWidth = 2; ctx.stroke(); ctx.restore(); }
+      ctx.fillStyle = 'rgba(255,255,255,0.6)'; ctx.beginPath(); ctx.ellipse(-4, -12, 3, 5, -0.3, 0, TAU); ctx.fill();
+      break;
+    case 'orchid':
+      ctx.strokeStyle = NAVY; ctx.lineWidth = 6; ctx.beginPath(); ctx.moveTo(0, 4); ctx.quadraticCurveTo(-4, -8, 0, -14); ctx.stroke(); ctx.strokeStyle = '#4fae43'; ctx.lineWidth = 3; ctx.stroke();
+      ctx.strokeStyle = NAVY; ctx.lineWidth = 2.5; ctx.fillStyle = ['#ff6fd8', '#b58cff', '#ff8a3d', '#ffffff'][idx % 4];
+      for (let a = 0; a < 5; a++) { const an = a / 5 * TAU - Math.PI / 2; ctx.beginPath(); ctx.ellipse(Math.cos(an) * 8, -22 + Math.sin(an) * 8, 7, 4.5, an, 0, TAU); ctx.fill(); ctx.stroke(); }
+      ctx.fillStyle = '#ffd23f'; ctx.beginPath(); ctx.arc(0, -22, 4, 0, TAU); ctx.fill(); ctx.stroke();
+      break;
   }
   if (ripe && ((time * 2 + idx * 0.7) % 3) < 0.25) { ctx.fillStyle = '#fff'; star(ctx, 10, -24, 6); }
 }
@@ -1663,6 +2529,20 @@ function padIcon(p, s) {
     case 'bee': beeShape(0, 0, 1.6, 0); break;
     case 'bridge': for (let i = -2; i <= 2; i++) { roundRectPath(ctx, i * 11 - 5, -18, 10, 36, 3); ctx.fillStyle = '#c98a4f'; ctx.fill(); ctx.lineWidth = 3; ctx.strokeStyle = NAVY; ctx.stroke(); } break;
     case 'fountain': rainbowIcon(); break;
+    case 'ufo': ctx.translate(0, 4); ufoShape(time, false); break;
+    case 'toucan': ctx.scale(1.3, 1.3); toucanShape(time); break;
+    case 'monkey': ctx.translate(0, 6); ctx.scale(1.3, 1.3); monkeyShape(time); break;
+    case 'gate': {
+      ctx.lineWidth = 12; ctx.strokeStyle = NAVY; ctx.beginPath(); ctx.ellipse(0, 0, 22, 30, 0, 0, TAU); ctx.stroke();
+      ctx.lineWidth = 6; ctx.strokeStyle = '#c3c7ef'; ctx.stroke(); ctx.fillStyle = '#a26bff'; ctx.beginPath(); ctx.ellipse(0, 0, 15, 23, 0, 0, TAU); ctx.fill();
+      ctx.fillStyle = '#fff6c2'; star(ctx, 0, 0, 9); break;
+    }
+    case 'tree': {
+      ctx.fillStyle = '#8a5a30'; ctx.strokeStyle = NAVY; ctx.lineWidth = 3.5; roundRectPath(ctx, -6, -4, 12, 26, 4); ctx.fill(); ctx.stroke();
+      ctx.fillStyle = '#5fd06a'; ctx.beginPath(); ctx.arc(0, -14, 20, 0, TAU); ctx.fill(); ctx.stroke();
+      ['#ff5d8f', '#ffd23f', '#b58cff'].forEach((c, i) => { ctx.fillStyle = c; ctx.beginPath(); ctx.arc(-9 + i * 9, -18 + (i % 2) * 8, 4, 0, TAU); ctx.fill(); });
+      break;
+    }
     case 'upgrade': {
       ctx.save(); ctx.translate(-6, 10); drawCropIcon(ZONES[p.z].crops[0], 1); ctx.restore();
       ctx.fillStyle = '#7ee26b'; ctx.strokeStyle = NAVY; ctx.lineWidth = 4; ctx.lineJoin = 'round';
@@ -1724,20 +2604,22 @@ function drawPuff(p) {
   if (p.gold) { ctx.globalAlpha = 0.5 + Math.sin(time * 8) * 0.3; ctx.fillStyle = '#fff'; star(ctx, p.x + r * 0.8, p.y - hov - r * 0.6, 8); ctx.globalAlpha = 1; }
 }
 function drawTrailCloud(c) {
-  const r = cloudR(c.water) * (1 + c.pop * 0.35), hov = 34 + Math.sin(time * 2.5 + c.x * 0.01) * 4;
+  const r = cloudR(c.water) * (1 + c.pop * 0.35), hov = 34 + Math.sin(time * 2.5 + c.x * 0.01) * 4 + liftZ * 0.92;
   c.hov = hov;
-  const sp = cloudSprite(Math.min(6, c.tier)), s = r / sp.R;
+  const sp = cloudSprite(Math.min(8, c.tier)), s = r / sp.R;
   const sq = c.raining ? Math.sin(time * 18) * 0.03 : 0;
   ctx.drawImage(sp.c, c.x - sp.SZ / 2 * s * (1 + sq), c.y - hov - sp.SZ / 2 * s * (1 - sq), sp.SZ * s * (1 + sq), sp.SZ * s * (1 - sq));
+  if (S.pw.comet > 0 && (time * 6 + c.x) % 1 < 0.15) { ctx.fillStyle = '#fff6c2'; star(ctx, c.x + rand(-r, r) * 0.6, c.y - hov - r * 0.5, 6); }
   if (c.raining) {
     ctx.globalAlpha = 0.2; ctx.fillStyle = NAVY; ctx.beginPath(); ctx.ellipse(c.x, c.y - hov + r * 0.3, r * 0.85, r * 0.4, 0, 0, TAU); ctx.fill(); ctx.globalAlpha = 1;
   }
 }
 function drawPlayer() {
   // Pip: a chubby little bird. Faces its flight direction, flaps, tilts and blinks.
-  const flapA = Math.sin(P.flap), hov = 30 + flapA * 3, x = P.x, y = P.y - hov, r = P.r;
-  const spd = Math.hypot(P.vx, P.vy);
+  const flapA = Math.sin(P.flap), hov = 30 + flapA * 3, x = P.x, y = P.y - hov - liftZ, r = P.r;
+  const spd = Math.hypot(P.vx, P.vy), gk = S.pw.giant > 0 ? 1.6 : 1;
   ctx.save(); ctx.translate(x, y);
+  if (gk > 1) { ctx.translate(0, -r * 0.5); ctx.scale(gk, gk); }
   ctx.scale(P.face, 1);
   ctx.rotate(clamp(P.vy / 900, -0.3, 0.3));
   ctx.scale(1 + P.squash * 0.6, 1 - P.squash * 0.6);
@@ -1825,6 +2707,17 @@ function drawHat(id) {
     shape('#ffd23f', () => { ctx.moveTo(-15, 2); ctx.lineTo(-17, -16); ctx.lineTo(-7, -7); ctx.lineTo(0, -20); ctx.lineTo(7, -7); ctx.lineTo(17, -16); ctx.lineTo(15, 2); ctx.closePath(); });
     ctx.fillStyle = COL.red; ctx.beginPath(); ctx.arc(0, -4, 3.2, 0, TAU); ctx.fill();
     ctx.fillStyle = COL.blue; ctx.beginPath(); ctx.arc(-9, -2, 2.6, 0, TAU); ctx.arc(9, -2, 2.6, 0, TAU); ctx.fill();
+  } else if (id === 'astro') {
+    shape('rgba(190,240,255,0.55)', () => ctx.arc(0, 6, 22, Math.PI * 1.05, Math.PI * 1.95));
+    ctx.fillStyle = 'rgba(255,255,255,0.8)'; ctx.beginPath(); ctx.ellipse(-8, -6, 5, 3, -0.6, 0, TAU); ctx.fill();
+    shape('#e8eef8', () => { roundRectPath(ctx, -20, 0, 40, 7, 3); });
+    ctx.beginPath(); ctx.moveTo(10, -12); ctx.lineTo(16, -26); ctx.stroke();
+    shape(((time * 3) | 0) % 2 ? '#ff5d6c' : '#ffd23f', () => ctx.arc(16, -27, 3.5, 0, TAU));
+  } else if (id === 'explorer') {
+    shape('#e3c48a', () => ctx.ellipse(0, 2, 25, 7, 0, 0, TAU));
+    shape('#ecd39c', () => { ctx.moveTo(-15, 2); ctx.bezierCurveTo(-15, -22, 15, -22, 15, 2); ctx.closePath(); });
+    ctx.fillStyle = '#4fae43'; ctx.fillRect(-15, -5, 30, 5);
+    shape('#7ee26b', () => ctx.ellipse(12, -10, 4, 9, 0.5, 0, TAU));
   } else if (id === 'rainbow') {
     ctx.save(); ctx.beginPath(); ctx.moveTo(-16, 3); ctx.bezierCurveTo(-16, -22, 16, -22, 16, 3); ctx.closePath(); ctx.clip();
     ['#ff5d6c', '#ff8a3d', '#ffd23f', '#7ee26b', '#4cc3ff', '#a26bff'].forEach((c, i) => { ctx.fillStyle = c; ctx.fillRect(-17, 3 - i * 4.2 - 4.2, 34, 4.4); });
@@ -1845,6 +2738,12 @@ function beeShape(x, y, s, t) {
 }
 function drawBee(b) {
   if (!onScreen(b.x, b.y, 40)) return;
+  if (b.kind === 'monkey') {
+    // the monkey hops along the ground
+    const hop = Math.abs(Math.sin(b.t * 7)) * (Math.hypot(b.vx, b.vy) > 30 ? 26 : 6) + (b.hop || 0) * 20;
+    ctx.save(); ctx.translate(b.x, b.y - 14 - hop); if (b.vx < 0) ctx.scale(-1, 1); ctx.scale(1.3, 1.3); monkeyShape(b.t); ctx.restore();
+    return;
+  }
   const hov = 40 + Math.sin(b.t * 5) * 5;
   ctx.save(); ctx.translate(b.x, b.y - hov); if (b.vx > 0) ctx.scale(-1, 1); beeShape(0, 0, 1.4, b.t); ctx.restore();
 }
@@ -1960,7 +2859,7 @@ function drawHUD() {
   roundRectPath(ctx, cx, sy, 26 * u * c + 18 * u, 38 * u, 19 * u); ctx.fillStyle = fl ? '#ffd0d0' : 'rgba(255,255,255,0.85)'; ctx.fill(); ctx.lineWidth = 4 * u; ctx.strokeStyle = NAVY; ctx.stroke();
   for (let i = 0; i < c; i++) {
     const x = cx + 9 * u + i * 26 * u + 13 * u, y = sy + 19 * u;
-    if (i < filled) { const t = trail[i]; const sp = cloudSprite(Math.min(6, t.tier)); ctx.drawImage(sp.c, x - 16 * u, y - 16 * u, 32 * u, 32 * u); }
+    if (i < filled) { const t = trail[i]; const sp = cloudSprite(Math.min(8, t.tier)); ctx.drawImage(sp.c, x - 16 * u, y - 16 * u, 32 * u, 32 * u); }
     else { ctx.fillStyle = 'rgba(38,49,89,0.18)'; ctx.beginPath(); ctx.arc(x, y, 8 * u, 0, TAU); ctx.fill(); }
   }
   // boost timer
@@ -1968,6 +2867,17 @@ function drawHUD() {
     const by = sy + 50 * u, bt = 'x2  ' + Math.ceil(S.boost) + 's';
     roundRectPath(ctx, cx, by, 130 * u, 38 * u, 19 * u); ctx.fillStyle = COL.purple; ctx.fill(); ctx.lineWidth = 4 * u; ctx.strokeStyle = NAVY; ctx.stroke();
     drawCoin(cx + 20 * u, by + 19 * u, 12 * u); txt(bt, cx + 76 * u, by + 20 * u, 24 * u, '#fff');
+  }
+  // active power-ups with seconds left
+  let pwy = sy + 50 * u + (S.boost > 0 ? 50 * u : 0), npw = 0;
+  for (const k in S.pw) {
+    if (!(S.pw[k] > 0)) continue;
+    npw++;
+    if (S.pw[k] < 4 && (time * 6 | 0) % 2) ctx.globalAlpha = 0.5;
+    roundRectPath(ctx, cx, pwy, 116 * u, 38 * u, 19 * u); ctx.fillStyle = POWERS[k].col; ctx.fill(); ctx.lineWidth = 4 * u; ctx.strokeStyle = NAVY; ctx.stroke();
+    ctx.save(); ctx.translate(cx + 22 * u, pwy + 19 * u); ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.arc(0, 0, 15 * u, 0, TAU); ctx.fill(); ctx.scale(u * 0.7, u * 0.7); pwIcon(k, 1); ctx.restore();
+    txt(Math.ceil(S.pw[k]) + 's', cx + 76 * u, pwy + 20 * u, 24 * u, '#fff');
+    ctx.globalAlpha = 1; pwy += 46 * u;
   }
   // pause button
   const pr = 28 * u, px = W - pad - pr, py = pad + pr;
@@ -1982,7 +2892,7 @@ function drawHUD() {
     if (tw > maxW) { fs *= maxW / tw; ctx.font = '700 ' + Math.round(fs) + 'px Fredoka, sans-serif'; tw = ctx.measureText(g.text).width; }
     const gw = tw + 92 * u, gh = 58 * u;
     const gx = W / 2 - gw / 2;
-    const yy = narrow ? sy + 38 * u + 22 * u + (S.boost > 0 ? 50 * u : 0) : pad + (isTouch ? 54 * u : 0);
+    const yy = narrow ? sy + 38 * u + 22 * u + (S.boost > 0 ? 50 * u : 0) + npw * 46 * u : pad + (isTouch ? 54 * u : 0);
     hudGoal = { x: gx, w: gw, b: yy + gh + (g.prog !== undefined ? 36 * u : 0) };
     roundRectPath(ctx, gx, yy + 5 * u, gw, gh, gh / 2); ctx.fillStyle = NAVY; ctx.fill();
     roundRectPath(ctx, gx, yy, gw, gh, gh / 2); ctx.fillStyle = '#fff'; ctx.fill(); ctx.lineWidth = 4.5 * u; ctx.strokeStyle = NAVY; ctx.stroke();
@@ -2015,6 +2925,17 @@ function drawHUD() {
     }
   }
   drawMissions(u, pad, pr);
+  // power-up indicator at the screen edge
+  const op = orbs.find(o => o.landed);
+  if (op) {
+    const sxp = wx(op.x), syp = wy(op.y), m = 50 * u;
+    if (sxp < 0 || sxp > W || syp < 0 || syp > H) {
+      const ex = clamp(sxp, m, W - m), ey = clamp(syp, m * 3, H - m * 2), s = (1 + Math.sin(time * 8) * 0.1) * u;
+      ctx.save(); ctx.translate(ex, ey); ctx.scale(s, s);
+      ctx.fillStyle = NAVY; ctx.beginPath(); ctx.arc(0, 0, 26, 0, TAU); ctx.fill(); ctx.fillStyle = POWERS[op.id].col; ctx.beginPath(); ctx.arc(0, 0, 22, 0, TAU); ctx.fill();
+      pwIcon(op.id, 0.75); ctx.restore();
+    }
+  }
   // golden indicator
   const gp = puffs.find(p => p.gold);
   if (gp) {
@@ -2072,8 +2993,8 @@ function drawHUD() {
   toasts.forEach((t, i) => {
     const a = t.t < 0.25 ? outBack(t.t / 0.25) : t.t > t.life - 0.3 ? (t.life - t.t) / 0.3 : 1;
     ctx.save(); ctx.globalAlpha = clamp(a, 0, 1); ctx.translate(W / 2, H * 0.32 + i * 70 * u); ctx.scale(a, a);
-    txt(t.text, 0, 0, 46 * u, t.col);
-    if (t.sub) txt(t.sub, 0, 44 * u, 26 * u, '#fff');
+    txt(t.text, 0, 0, 46 * u, t.col, 'center', undefined, undefined, W - 40 * u);
+    if (t.sub) txt(t.sub, 0, 44 * u, 26 * u, '#fff', 'center', undefined, undefined, W - 40 * u);
     ctx.restore();
   });
 }
@@ -2113,10 +3034,11 @@ function missionIcon(m, u) {
   if (m.t === 'harvest') { ctx.scale(u * 0.5, u * 0.5); ctx.translate(0, 8); drawCrop(m.k, 2, true); }
   else if (m.t === 'rain') { ctx.scale(u * 0.9, u * 0.9); drop(0, 0, 1); }
   else if (m.t === 'tier' || m.t === 'golden') {
-    const sp = cloudSprite(m.t === 'golden' ? 2 : Math.min(6, m.k), m.t === 'golden'); ctx.drawImage(sp.c, -22 * u, -22 * u, 44 * u, 44 * u);
+    const sp = cloudSprite(m.t === 'golden' ? 2 : Math.min(8, m.k), m.t === 'golden'); ctx.drawImage(sp.c, -22 * u, -22 * u, 44 * u, 44 * u);
     if (m.t === 'tier') txt('' + m.k, 12 * u, 10 * u, 16 * u, '#fff');
   }
   else if (m.t === 'coins') drawCoin(0, 0, 14 * u);
+  else if (m.t === 'power') { ctx.fillStyle = NAVY; ctx.beginPath(); ctx.arc(0, 0, 17 * u, 0, TAU); ctx.fill(); ctx.fillStyle = '#b58cff'; ctx.beginPath(); ctx.arc(0, 0, 14 * u, 0, TAU); ctx.fill(); ctx.fillStyle = '#fff6c2'; star(ctx, 0, 0, 9 * u); }
 }
 
 // ---------- modals
@@ -2154,7 +3076,7 @@ function drawModal() {
   // header ribbon
   const hcol = modal.type === 'boost' ? COL.purple : modal.type === 'pause' ? COL.blue : COL.orange;
   roundRectPath(ctx, px + 24 * u, py - 30 * u, pw - 48 * u, 70 * u, 26 * u); ctx.fillStyle = hcol; ctx.fill(); ctx.lineWidth = 6 * u; ctx.stroke();
-  const title = modal.type === 'pause' ? T('paused') : modal.type === 'boost' ? T('x2title') : modal.type === 'final' ? T('restored') : T('newIsland');
+  const title = modal.type === 'pause' ? T('paused') : modal.type === 'boost' ? T('x2title') : modal.type === 'final' ? T('allBloom') : modal.world ? T('newWorld') : T('newIsland');
   txt(title, W / 2, py + 4 * u, 40 * u, '#fff', 'center', undefined, undefined, pw - 90 * u);
   const bw = pw - 90 * u, bh = 70 * u, bx = W / 2 - bw / 2, b0 = uiBtns.length;
   if (modal.type === 'pause') {
@@ -2184,8 +3106,11 @@ function drawModal() {
     const z = modal.zone;
     txt(T('z' + z), W / 2, py + 82 * u, 38 * u, COL.orange, 'center', undefined, undefined, pw - 60 * u);
     ZONES[z].crops.forEach((c, i) => { ctx.save(); ctx.translate(W / 2 + (i - 0.5) * 110 * u, py + 165 * u + Math.sin(time * 4 + i) * 5 * u); ctx.scale(u * 2.2, u * 2.2); drawCrop(c, 2 + i, true); ctx.restore(); });
-    const sp = cloudSprite(Math.min(6, ZONES[z].tierCap)); ctx.drawImage(sp.c, W / 2 - pw / 2 + 40 * u, py + 205 * u, 70 * u, 70 * u);
-    txt(T('bigger'), W / 2 + 30 * u, py + 242 * u, 24 * u, NAVY, 'center', null, undefined, pw - 180 * u);
+    // what's new here: bigger clouds, or else the island's new helper or building
+    const nu = ZONES[z].tierCap > ZONES[z - 1].tierCap ? null : PADS.find(q => q.z === z && ['ufo', 'toucan', 'monkey', 'bee', 'spring', 'cap', 'speed'].includes(q.type));
+    if (nu) { ctx.save(); ctx.translate(W / 2 - pw / 2 + 75 * u, py + 240 * u); ctx.scale(u, u); padIcon(nu, 1); ctx.restore(); }
+    else { const sp = cloudSprite(Math.min(8, ZONES[z].tierCap)); ctx.drawImage(sp.c, W / 2 - pw / 2 + 40 * u, py + 205 * u, 70 * u, 70 * u); }
+    txt(nu ? padName(nu) : T('bigger'), W / 2 + 30 * u, py + 242 * u, 24 * u, NAVY, 'center', null, undefined, pw - 180 * u);
     button(bx, py + 290 * u, bw, bh, T('cont'), COL.orange, COL.orangeLip, () => { closeModal(); SDK.commercial().then(() => SDK.start()); });
     button(bx + bw * 0.08, py + 375 * u, bw * 0.84, bh * 0.82, T('bonus') + ' +' + fmt(modal.bonus), COL.purple, COL.purpleLip, () => {
       const b = modal.bonus; ev('rewarded', 'island-bonus', 'interact');
@@ -2193,7 +3118,7 @@ function drawModal() {
     }, { video: true, size: 26 * u });
     modal.def = () => { closeModal(); SDK.commercial().then(() => SDK.start()); };
   } else if (modal.type === 'final') {
-    ctx.save(); ctx.translate(W / 2, py + 150 * u); ctx.scale(u * 2, u * 2); rainbowIcon(); ctx.restore();
+    ctx.save(); ctx.translate(W / 2, py + 165 * u); ctx.scale(u * 2.4, u * 2.4); padIcon({ type: 'tree' }, 1); ctx.restore();
     txt(T('thanks'), W / 2, py + 250 * u, 22 * u, NAVY, 'center', null, undefined, pw - 50 * u);
     button(bx, py + 330 * u, bw, bh, T('cont'), COL.orange, COL.orangeLip, () => { closeModal(); SDK.commercial().then(() => SDK.start()); });
     modal.def = () => { closeModal(); SDK.commercial().then(() => SDK.start()); };
@@ -2214,7 +3139,7 @@ function drawModal() {
 S.paidMap = {};
 function save() {
   try {
-    localStorage.setItem(SKEY, JSON.stringify({ v: 1, c: S.coins, b: [...S.built], p: S.paidMap, f: S.flags, z: S.zone, t: S.time, st: S.stash, g: S.goldT, px: P.x, py: P.y, ms: S.miss, mi: S.mi, sr: S.stars, h: S.hat }));
+    localStorage.setItem(SKEY, JSON.stringify({ v: 1, c: S.coins, b: [...S.built], p: S.paidMap, f: S.flags, z: S.zone, t: S.time, st: S.stash, g: S.goldT, px: P.x, py: P.y, ms: S.miss, mi: S.mi, sr: S.stars, h: S.hat, w: S.w, pw: S.pw, ot: S.orbT }));
   } catch (e) {}
 }
 function saveSettings() { try { localStorage.setItem(SKEY + '_s', JSON.stringify({ on: AU.on, m: AU.music })); } catch (e) {} }
@@ -2230,8 +3155,9 @@ function load() {
     (d.b || []).forEach(id => { if (PAD_BY_ID[id]) S.built.add(id); });
     PADS.forEach(p => { p.paid = S.paidMap[p.id] || 0; if (S.built.has(p.id)) p.paid = 0; });
     if (typeof d.px === 'number') { P.x = d.px; P.y = d.py; }
-    S.miss = Array.isArray(d.ms) ? d.ms.filter(m => m && M_CYCLE.includes(m.t)) : []; S.mi = d.mi || 0; S.stars = d.sr || 0;
+    S.miss = Array.isArray(d.ms) ? d.ms.filter(m => m && M_TYPES.includes(m.t)) : []; S.mi = d.mi || 0; S.stars = d.sr || 0;
     S.hat = typeof d.h === 'number' ? Math.min(d.h, hatsOwned() - 1) : -1;
+    S.w = d.w || 0; S.pw = d.pw && typeof d.pw === 'object' ? d.pw : {}; S.orbT = d.ot || 0;
     return S.built.size > 0 || S.flags.harvested > 0;
   } catch (e) { return false; }
 }
@@ -2245,7 +3171,11 @@ function boot() {
   const keep = new Set(S.built); S.built = new Set(); S.zone = 0;
   resetWorld();
   PADS.forEach(p => { if (keep.has(p.id)) applyBuild(p, false); });
-  if (!walkable(P.x, P.y)) { P.x = 0; P.y = 30; }
+  // v0.9: a save that built a world's finale (e.g. the fountain in v0.8) still makes the trip to the next world
+  S.w = Math.min(S.w, worldOf(S.zone));
+  if (worldOf(S.zone) > S.w) { pendingTrans = worldOf(S.zone); transAt = 0; }
+  AU.world = S.w;
+  if (!walkable(P.x, P.y) || wAt(P.x, P.y) !== S.w) { const st = worldStart(S.w); P.x = st.x; P.y = st.y; }
   cam.x = P.x; cam.y = P.y - 40; hist = [{ x: P.x, y: P.y }];
   if (!had) {
     // safe, generous start: clouds right next to you
@@ -2269,8 +3199,8 @@ function startGame() {
   let last = performance.now();
   const frame = now => { const raw = (now - last) / 1000, dt = Math.min(0.05, raw); last = now; watchPerf(raw); step(dt); render(); requestAnimationFrame(frame); };
   requestAnimationFrame(frame);
-  // prepare the other islands in the background, so flying to one never hitches
-  ZONES.forEach((z, i) => setTimeout(() => islandImage(i), 400 + i * 150));
+  // prepare the other islands of this world in the background, so flying to one never hitches
+  preloadIslands();
 }
 (function init() {
   const bar = document.querySelector('#bar i'); if (bar) bar.style.width = '35%';
