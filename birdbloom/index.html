@@ -2966,20 +2966,27 @@ function drawHUD() {
     roundRectPath(ctx, bx2, by2, Math.max(16 * u, bw2 * n / zp.length), 16 * u, 8 * u); ctx.fillStyle = done ? COL.orange : '#7ee26b'; ctx.fill();
     ctx.lineWidth = 3 * u; ctx.strokeStyle = NAVY; roundRectPath(ctx, bx2, by2, bw2, 16 * u, 8 * u); ctx.stroke();
   }
-  // tutorial
+  // tutorial: a compact pill at the bottom edge so the field, clouds and pads stay visible
   if (tutFade > 0 && !modal) {
     ctx.globalAlpha = tutFade;
-    const ty = H * 0.78;
+    const label = isTouch ? T('drag') : T('drag') + '  ' + T('keys');
+    const ph = 72 * u, iconW = isTouch ? 76 * u : 92 * u, fs = 24 * u;
+    ctx.font = '700 ' + Math.round(fs) + 'px Fredoka, "Arial Rounded MT Bold", sans-serif';
+    const maxT = W - 2 * pad - iconW - 48 * u, tw = Math.min(ctx.measureText(label).width, maxT);
+    const pw = iconW + tw + 48 * u, px = (W - pw) / 2, py = H - pad - ph - 6 * u - (isTouch ? 20 * u : 0);
+    roundRectPath(ctx, px, py + 5 * u, pw, ph, ph / 2); ctx.fillStyle = NAVY; ctx.fill();
+    roundRectPath(ctx, px, py, pw, ph, ph / 2); ctx.fillStyle = 'rgba(255,255,255,0.92)'; ctx.fill(); ctx.lineWidth = 4 * u; ctx.strokeStyle = NAVY; ctx.stroke();
+    // touch: swipe icon then text; keyboard: "drag or use" then the keys
+    const cy = py + ph / 2, ix = isTouch ? px + 20 * u : px + pw - 20 * u - iconW, tx = isTouch ? ix + iconW + 16 * u : px + 24 * u;
     if (isTouch) {
-      const t = (time % 1.6) / 1.6, hx = W / 2 + Math.sin(t * TAU) * 70 * u;
-      ctx.fillStyle = 'rgba(255,255,255,0.35)'; ctx.beginPath(); ctx.arc(W / 2, ty, 62 * u, 0, TAU); ctx.fill(); ctx.lineWidth = 4 * u; ctx.strokeStyle = 'rgba(38,49,89,0.5)'; ctx.stroke();
-      ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.arc(hx, ty, 24 * u, 0, TAU); ctx.fill(); ctx.lineWidth = 5 * u; ctx.strokeStyle = NAVY; ctx.stroke();
-      txt(T('drag'), W / 2, ty - 100 * u, 34 * u, '#fff', 'center', undefined, undefined, W - 40 * u);
+      const t = (time % 1.6) / 1.6, hx = ix + iconW / 2 + Math.sin(t * TAU) * 20 * u;
+      ctx.fillStyle = 'rgba(38,49,89,0.12)'; roundRectPath(ctx, ix, cy - 14 * u, iconW, 28 * u, 14 * u); ctx.fill();
+      ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.arc(hx, cy, 15 * u, 0, TAU); ctx.fill(); ctx.lineWidth = 4 * u; ctx.strokeStyle = NAVY; ctx.stroke();
     } else {
-      txt(T('drag') + '  ' + T('keys'), W / 2, ty - 70 * u, 30 * u, '#fff', 'center', undefined, undefined, W - 40 * u);
-      const ks = [['W', 0, -1], ['A', -1, 0], ['S', 0, 0], ['D', 1, 0]], kw = 50 * u;
-      ks.forEach(k => { const x = W / 2 + k[1] * (kw + 8 * u) - kw / 2, y = ty + k[2] * (kw + 8 * u); roundRectPath(ctx, x, y + 6 * u, kw, kw, 10 * u); ctx.fillStyle = NAVY; ctx.fill(); roundRectPath(ctx, x, y, kw, kw, 10 * u); ctx.fillStyle = '#fff'; ctx.fill(); ctx.lineWidth = 4 * u; ctx.strokeStyle = NAVY; ctx.stroke(); txt(k[0], x + kw / 2, y + kw / 2, 26 * u, NAVY, 'center', null); });
+      const kw = 26 * u, g = 4 * u, ks = [['W', 0, -1], ['A', -1, 0], ['S', 0, 0], ['D', 1, 0]];
+      ks.forEach(k => { const x = ix + iconW / 2 + k[1] * (kw + g) - kw / 2, y = cy - kw / 2 + 2 * u + (k[2] ? -(kw + g) / 2 : (kw + g) / 2) - 2 * u; roundRectPath(ctx, x, y + 3 * u, kw, kw, 6 * u); ctx.fillStyle = NAVY; ctx.fill(); roundRectPath(ctx, x, y, kw, kw, 6 * u); ctx.fillStyle = '#fff'; ctx.fill(); ctx.lineWidth = 3 * u; ctx.strokeStyle = NAVY; ctx.stroke(); txt(k[0], x + kw / 2, y + kw / 2, 15 * u, NAVY, 'center', null); });
     }
+    txt(label, tx, cy + 1 * u, fs, NAVY, 'left', null, undefined, maxT);
     ctx.globalAlpha = 1;
   }
   // joystick
