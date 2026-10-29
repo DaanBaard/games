@@ -157,3 +157,19 @@ Nieuwe events:
 | tutorial | door | complete, auto | door een deur na de tutorial-kamer (zelf of automatisch) |
 
 `tutorial / move` en `tutorial / first-pop` worden nu los van elkaar gemeten (eerder kon first-pop pas na move).
+
+## v2.5 — afhaakpunten meten
+Doel: per scherm en per moment in een kamer kunnen zien waar spelers stoppen.
+
+| category | what | action | wanneer |
+|---|---|---|---|
+| leave | run, cards, pause, dying, home, over, ad, panel | `ch1-r4-w2`, `ch1-r5-mini`, `ch1-r3-clear`, `ch1-r6-shrine` of de schermnaam (`home`, `over`, `shop`…) | tabblad verborgen of gesloten: waar de speler op dat moment was (1× per keer verbergen; Poki kan een event bij sluiten soms missen) |
+| screen | home, cards, pause, over, adwait, panel | visible | elk scherm dat in beeld komt |
+| wave | ch1-r1 … / night-r… | w1, w2, w3, w4 | golf bereikt in een kamer (spookerij, zwerm, glimmerjacht, klopgeest) |
+| ritual | ch1-r… | candle1 … candle5 | aantal aangestoken kaarsen in een ritueel |
+| survive | ch1-r… | half | helft van de tijd overleefd |
+| ad | before-run | start, complete | advertentie vóór een run: komt de speler terug? |
+| player | first-input | s0-5, s5-15, s15-30, s30+ | hoe snel na het laden iemand voor het eerst iets aanraakt |
+| button | play-ch1 … play-ch5, play-night, resume | interact | spelen vanaf het startscherm, verder na pauze |
+
+Samen met `level`, `run`, `death` en `tutorial` geeft dit de hele funnel: laden → eerste input → tutorial → elke kamer en golf → kaartkeuze → deur → eindscherm → opnieuw of terug naar home → winkel.

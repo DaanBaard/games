@@ -496,8 +496,8 @@ function updRoomType(dt){
   switch(room.rt){
     case 'waves':case 'swarm':case 'hunt':case 'poltergeist':{
       if(room.wave<room.waves.length){
-        if(room.wave===0){room.waveDelay-=dt;if(room.waveDelay<=0){spawnWave(room.waves[0]);room.wave=1;room.waveClock=0}}
-        else{room.waveClock+=dt;const prev=room.waves[room.wave-1].e.length*(GT[room.waves[room.wave-1].e[0].tp].group||1);if(room.tut&&!R.tutPop&&room.waveClock<8){}else if(live<=Math.max(room.tut?0:1,Math.floor(prev*.3))||room.waveClock>13){spawnWave(room.waves[room.wave]);room.wave++;room.waveClock=0;
+        if(room.wave===0){room.waveDelay-=dt;if(room.waveDelay<=0){spawnWave(room.waves[0]);room.wave=1;room.waveClock=0;measure('wave',lvKey(),'w1')}}
+        else{room.waveClock+=dt;const prev=room.waves[room.wave-1].e.length*(GT[room.waves[room.wave-1].e[0].tp].group||1);if(room.tut&&!R.tutPop&&room.waveClock<8){}else if(live<=Math.max(room.tut?0:1,Math.floor(prev*.3))||room.waveClock>13){spawnWave(room.waves[room.wave]);room.wave++;room.waveClock=0;measure('wave',lvKey(),'w'+room.wave);
           if(room.tut)measure('tutorial','wave'+room.wave,'reached');
           if(R.room===2&&R.ch===0&&R.mode==='story'&&!R.dashHinted&&room.wave===2){R.dashHinted=true;hint={text:t('tutDash'),t:0,dur:4.5}}}}
       }else room.waveClock+=dt;
@@ -509,11 +509,11 @@ function updRoomType(dt){
         done=done&&room.furn.every(f=>!f.poss||f.poss.done)}
       if(done)roomCleared();break}
     case 'ritual':{const rc=room.ritual;let litN=0;
-      for(const c2 of rc){if(c2.lit){litN++;continue}const d=Math.hypot(P.x-c2.x,P.y-c2.y);room.ritT=(room.ritT||0)+dt;if(d<52){c2.p+=dt/(room.ritT>60?.6:1.15);if(Math.random()<dt*8)sparks(c2.x,c2.y-20,'#ffb050',1,40);if(c2.p>=1){c2.lit=true;litN++;room.candles.push({x:c2.x,y:c2.y-22,ph:c2.ph,noHolder:true,ritual:true});BURSTS.push({x:c2.x,y:c2.y,r:150,t:0,dur:.5,col:'255,190,110'});SFX.ignite();floatText(c2.x,c2.y-44,litN+'/'+rc.length,'#f0c890',18)}}else c2.p=Math.max(0,c2.p-dt*.15)}
+      for(const c2 of rc){if(c2.lit){litN++;continue}const d=Math.hypot(P.x-c2.x,P.y-c2.y);room.ritT=(room.ritT||0)+dt;if(d<52){c2.p+=dt/(room.ritT>60?.6:1.15);if(Math.random()<dt*8)sparks(c2.x,c2.y-20,'#ffb050',1,40);if(c2.p>=1){c2.lit=true;litN++;room.candles.push({x:c2.x,y:c2.y-22,ph:c2.ph,noHolder:true,ritual:true});BURSTS.push({x:c2.x,y:c2.y,r:150,t:0,dur:.5,col:'255,190,110'});SFX.ignite();floatText(c2.x,c2.y-44,litN+'/'+rc.length,'#f0c890',18);measure('ritual',lvKey(),'candle'+litN)}}else c2.p=Math.max(0,c2.p-dt*.15)}
       room.trickleT-=dt;if(room.trickleT<=0&&live<9+c*2){spawnTrickle(Math.random()<.35+c*.08?2:1);room.trickleT=Math.max(1.1,2.7-c*.25-litN*.12)}
       if(litN===rc.length){mProg('ritual',1);for(const g of G)if(!g.dead&&g.tp!=='golden'){g.hidden=false;g.spawnT=0;g.fear=g.hp;popGhost(g)}flash(255,200,140,.5);shake(10);showBanner(t('ritualDone'),'',1.4,'#f0c890');SFX.bigpop();roomCleared()}
       break}
-    case 'survive':{room.survT-=dt;room.trickleT-=dt;const k=1-room.survT/room.survMax;
+    case 'survive':{if(!room.halfEv&&room.survT<room.survMax/2){room.halfEv=1;measure('survive',lvKey(),'half')}room.survT-=dt;room.trickleT-=dt;const k=1-room.survT/room.survMax;
       if(room.trickleT<=0&&live<12+c*2){spawnTrickle(1+(Math.random()<.4+k*.4?1:0)+(k>.7&&Math.random()<.3?1:0));room.trickleT=Math.max(.7,1.5-c*.12-k*.4)}
       if(room.survT<=0){for(const g of G)if(!g.dead&&g.tp!=='golden'){g.hidden=false;g.spawnT=0;g.fear=g.hp;popGhost(g)}flash(255,236,200,.6);showBanner(t('dawn'),'',1.4,'#f0d48a');SFX.bell();roomCleared()}break}
     case 'shrine':break;

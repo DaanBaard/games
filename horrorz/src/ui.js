@@ -1,6 +1,7 @@
 /* ---------- UI ---------- */
 const SCREENS=['load','home','panel','cards','pause','over','adwait'];
-function show(id){for(const s of SCREENS)$(s).classList.toggle('on',s===id||(id==='panel'&&s==='home'))}
+let curScreen='loading';
+function show(id){if(id&&id!==curScreen&&!THUMB)measure('screen',id,'visible');curScreen=id||'game';for(const s of SCREENS)$(s).classList.toggle('on',s===id||(id==='panel'&&s==='home'))}
 const img=(k,cls)=>'<img class="'+(cls||'ic')+'" src="'+iconURL(k)+'" alt="">';
 const pips=(cur,max,nxt)=>{let h='<div class="pips">';for(let i=0;i<max;i++)h+='<i class="pip'+(i<cur?' on':(nxt&&i===cur?' new':''))+'"></i>';return h+'</div>'};
 function buildLogo(el){el.innerHTML='';'HORRORZ'.split('').forEach((ch,i)=>{const s=document.createElement('span');s.textContent=ch;if(i===4)s.className='o';if(i===6)s.className='z';el.appendChild(s)})}
@@ -203,22 +204,22 @@ function startFlow(mode,ch,skipAd){
   initAudio();state='ad';show('adwait');
   const pb=mode==='story'?S.best[ch]:S.nightBest;
   const go=()=>{demo=null;startRun(mode,ch);R.prevBest=pb;state='run';show(null);if(acted)gpStart();else pendingGp=true;lastT=performance.now()};
-  if(skipAd)go();else commercial().then(go);
+  if(skipAd)go();else{measure('ad','before-run','start');commercial().then(()=>{measure('ad','before-run','complete');go()})}
 }
 
 /* ---- texts & buttons ---- */
 function updMuteBtn(){$('muteBtn').innerHTML='<span style="opacity:'+(S.muted?.35:1)+'">&#9835;</span>'}
 function applyTexts(){buildHome();updMuteBtn();if(state==='pause')buildPause()}
 function bindUI(){
-  $('playBtn').onclick=()=>{if(S.selCh<S.unlocked){SFX.click();startFlow('story',S.selCh)}};
-  $('nightBtn').onclick=()=>{if(S.clear[0]){SFX.click();startFlow('night',0)}};
+  $('playBtn').onclick=()=>{if(S.selCh<S.unlocked){SFX.click();measure('button','play-ch'+(S.selCh+1),'interact');startFlow('story',S.selCh)}};
+  $('nightBtn').onclick=()=>{if(S.clear[0]){SFX.click();measure('button','play-night','interact');startFlow('night',0)}};
   $('chPrev').onclick=()=>changeCh(-1);$('chNext').onclick=()=>changeCh(1);
   $('setBtn').onclick=()=>{SFX.click();openPanel('settings')};
   $('pClose').onclick=()=>{SFX.click();closePanel()};
   $('panel').addEventListener('pointerdown',e=>{if(e.target===$('panel'))closePanel()});
   $('pauseBtn').onclick=()=>pauseGame();
   $('muteBtn').onclick=()=>{initAudio();S.muted=!S.muted;save();measure('button',S.muted?'mute':'unmute','interact');applyVolume();updMuteBtn()};
-  $('resumeBtn').onclick=()=>resumeGame();
+  $('resumeBtn').onclick=()=>{measure('button','resume','interact');resumeGame()};
   $('quitBtn').onclick=()=>{bankCandy();save();goHome()};
   $('sndToggle').onclick=()=>{S.muted=!S.muted;save();applyVolume();updMuteBtn();buildPause()};
   $('musToggle').onclick=()=>{S.music=!S.music;save();applyVolume();buildPause()};
@@ -229,7 +230,7 @@ function bindUI(){
 
 /* ---- input ---- */
 let acted=false,pendingGp=false;
-function userActed(){acted=true;if(pendingGp&&state==='run'){pendingGp=false;gpStart()}}
+function userActed(){if(!acted&&!THUMB){const s=performance.now()/1000;measure('player','first-input',s<5?'s0-5':s<15?'s5-15':s<30?'s15-30':'s30+')}acted=true;if(pendingGp&&state==='run'){pendingGp=false;gpStart()}}
 addEventListener('keydown',e=>{
   initAudio();userActed();KEY[e.code]=true;
   if(['Space','ArrowUp','ArrowDown','ArrowLeft','ArrowRight'].includes(e.code))e.preventDefault();
@@ -242,7 +243,12 @@ addEventListener('keydown',e=>{
 addEventListener('keyup',e=>{KEY[e.code]=false});
 function releaseAll(){for(const kk in KEY)KEY[kk]=false;stick.on=false;stick.dx=stick.dy=0}
 addEventListener('blur',()=>{releaseAll();if(state==='run')pauseGame()});
-document.addEventListener('visibilitychange',()=>{if(document.hidden){releaseAll();if(state==='run')pauseGame()}});
+document.addEventListener('visibilitychange',()=>{if(document.hidden){measureLeave();releaseAll();if(state==='run')pauseGame()}});
+addEventListener('pagehide',()=>measureLeave());
+let leftAt=-1;
+function measureLeave(){if(THUMB||performance.now()-leftAt<1000)return;leftAt=performance.now();
+  const where=(state==='run'||state==='pause'||state==='cards'||state==='dying')&&R&&room?lvKey()+'-'+(room.phase==='clear'?'clear':room.phase==='shrine'?'shrine':room.type!=='normal'?room.type:'w'+room.wave):(panelKind||curScreen);
+  measure('leave',state,where)}
 cv.addEventListener('pointerdown',e=>{
   initAudio();userActed();
   if(e.pointerType==='touch'||e.pointerType==='pen'){touchMode=true;if(state!=='run')return;e.preventDefault();
