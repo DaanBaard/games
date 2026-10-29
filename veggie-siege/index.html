@@ -1,5 +1,5 @@
 <!doctype html>
-<!-- Veggie Siege v0.1 -->
+<!-- Veggie Siege v0.2 -->
 <html lang="en">
 <head>
 <meta charset="utf-8">
@@ -66,9 +66,25 @@ button{font:inherit;color:inherit;border:none;background:none;cursor:pointer}
 #banner small{display:block;font-size:1.25rem;-webkit-text-stroke:.3rem var(--ink);color:#fff}
 #banner.go{animation:ban 2.1s ease-out}
 @keyframes ban{0%{opacity:0;transform:scale(.4)}12%{opacity:1;transform:scale(1.1)}20%{transform:scale(1)}80%{opacity:1}100%{opacity:0;transform:translateY(-20px)}}
-#tut{position:fixed;left:50%;top:22%;transform:translateX(-50%);background:#fff;border:3px solid var(--ink);border-radius:1rem;padding:.6rem 1rem;font-size:1.15rem;z-index:7;pointer-events:none;box-shadow:0 .3rem 0 rgba(43,45,78,.4);text-align:center;max-width:90vw}
-#tut.low{top:auto;bottom:9.6rem;font-size:1rem}
-#hand{position:fixed;width:3rem;height:3rem;z-index:8;pointer-events:none;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Cpath d='M14 22V8a3 3 0 016 0v9l9 2q4 1 3 5l-2 9q-1 4-5 4h-7q-3 0-5-3l-5-7q-2-3 1-4 2-1 4 1z' fill='%23fff' stroke='%232b2d4e' stroke-width='3' stroke-linejoin='round'/%3E%3C/svg%3E") center/contain no-repeat;margin:-.3rem 0 0 -1rem}
+#tut{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(var(--botH,8rem) + .5rem);display:flex;align-items:center;gap:.55rem;background:#fff;border:3px solid var(--ink);border-radius:1.2rem;padding:.4rem 1rem .4rem .4rem;font-size:1.2rem;line-height:1.2;z-index:7;pointer-events:none;box-shadow:0 .3rem 0 var(--ink);width:max-content;max-width:min(94vw,31rem);text-align:left}
+#tut.top{bottom:auto;top:calc(var(--topH,4rem) + .4rem)}
+#tut img{width:3.2rem;height:3.2rem;flex:none;margin:-.3rem 0}
+#tut b{color:var(--greenD)}
+#tut.pop{animation:tpop .35s ease-out}
+@keyframes tpop{0%{transform:translateX(-50%) scale(.5);opacity:0}70%{transform:translateX(-50%) scale(1.06)}100%{transform:translateX(-50%) scale(1);opacity:1}}
+#spot{position:fixed;border-radius:1.1rem;box-shadow:0 0 0 200vmax rgba(25,22,55,.5);pointer-events:none;z-index:4;transition:left .25s,top .25s,width .25s,height .25s}
+#spot::after{content:"";position:absolute;inset:-4px;border:4px solid #ffe14d;border-radius:1.3rem;animation:spotp 1s infinite}
+@keyframes spotp{50%{inset:-9px;opacity:.5}}
+.unrev{visibility:hidden!important}
+.revpop{animation:revp .6s ease-out}
+@keyframes revp{0%{transform:scale(0)}60%{transform:scale(1.3)}100%{transform:scale(1)}}
+.bump{animation:bmp .3s}
+@keyframes bmp{50%{transform:scale(1.18)}}
+.pointme{position:relative;animation:glw 1.3s infinite}
+.pointme::before{content:"";position:absolute;width:3rem;height:3rem;right:-.6rem;bottom:-1.6rem;z-index:3;pointer-events:none;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Cpath d='M14 22V8a3 3 0 016 0v9l9 2q4 1 3 5l-2 9q-1 4-5 4h-7q-3 0-5-3l-5-7q-2-3 1-4 2-1 4 1z' fill='%23fff' stroke='%232b2d4e' stroke-width='3' stroke-linejoin='round'/%3E%3C/svg%3E") center/contain no-repeat;animation:tap .9s infinite}
+.tile.locked{filter:grayscale(.7);opacity:.75}.tile em.lk{background:#fff;padding:0;border-radius:50%;width:1.6rem;height:1.6rem;display:flex;align-items:center;justify-content:center}.tile em.lk .ic{width:1.1rem;height:1.1rem}
+.toast span{text-align:left}
+#hand{position:fixed;width:3.2rem;height:3.2rem;z-index:8;pointer-events:none;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Cpath d='M14 22V8a3 3 0 016 0v9l9 2q4 1 3 5l-2 9q-1 4-5 4h-7q-3 0-5-3l-5-7q-2-3 1-4 2-1 4 1z' fill='%23fff' stroke='%232b2d4e' stroke-width='3' stroke-linejoin='round'/%3E%3C/svg%3E") center/contain no-repeat;margin:-.3rem 0 0 -1rem}
 #hand.tap{animation:tap .9s infinite}#hand.drag{animation:drg 1.8s infinite}
 @keyframes tap{50%{transform:scale(.85) translateY(6px)}}
 @keyframes drg{0%{transform:translate(0,0);opacity:0}10%{opacity:1}70%{transform:translate(var(--dx),var(--dy));opacity:1}100%{transform:translate(var(--dx),var(--dy));opacity:0}}
@@ -151,34 +167,34 @@ button{font:inherit;color:inherit;border:none;background:none;cursor:pointer}
 <canvas id="c"></canvas>
 <div id="hud" class="hidden">
   <div id="top">
-    <div class="pill" title="lettuce"><i class="ic"><svg viewBox="0 0 40 40"><circle cx="20" cy="22" r="14" fill="#7ee26b" stroke="#2b2d4e" stroke-width="3"/><path d="M11 20q9-10 18 0M14 27q6-7 12 0" fill="none" stroke="#4fae43" stroke-width="3" stroke-linecap="round"/></svg></i><b id="vLives">10</b></div>
-    <div class="pill" title="compost"><i class="ic"><svg viewBox="0 0 40 40"><path d="M5 31q2-12 9-14 2-7 8-6 7 1 7 8 6 3 6 12z" fill="#a8672f" stroke="#2b2d4e" stroke-width="3" stroke-linejoin="round"/><circle cx="15" cy="25" r="2" fill="#6e4524"/><circle cx="25" cy="22" r="2" fill="#6e4524"/><path d="M20 12q2-6 7-6-1 5-7 6z" fill="#5fd06a" stroke="#2b2d4e" stroke-width="2"/></svg></i><b id="vComp">0</b></div>
-    <div class="pill grow"><span id="vWave">1/20</span><div class="bar"><i id="wBar"></i></div></div>
-    <div class="pill" title="score"><i class="ic"><svg viewBox="0 0 40 40"><path d="M20 4l5 10 11 2-8 8 2 11-10-5-10 5 2-11-8-8 11-2z" fill="#ffd23f" stroke="#2b2d4e" stroke-width="3" stroke-linejoin="round"/></svg></i><b id="vScore">0</b></div>
+    <div class="pill" title="lettuce" data-rev="lives"><i class="ic"><svg viewBox="0 0 40 40"><circle cx="20" cy="22" r="14" fill="#7ee26b" stroke="#2b2d4e" stroke-width="3"/><path d="M11 20q9-10 18 0M14 27q6-7 12 0" fill="none" stroke="#4fae43" stroke-width="3" stroke-linecap="round"/></svg></i><b id="vLives">10</b></div>
+    <div class="pill" title="compost" data-rev="comp"><i class="ic"><svg viewBox="0 0 40 40"><path d="M5 31q2-12 9-14 2-7 8-6 7 1 7 8 6 3 6 12z" fill="#a8672f" stroke="#2b2d4e" stroke-width="3" stroke-linejoin="round"/><circle cx="15" cy="25" r="2" fill="#6e4524"/><circle cx="25" cy="22" r="2" fill="#6e4524"/><path d="M20 12q2-6 7-6-1 5-7 6z" fill="#5fd06a" stroke="#2b2d4e" stroke-width="2"/></svg></i><b id="vComp">0</b></div>
+    <div class="pill grow" data-rev="wave"><span id="vWave">1/20</span><div class="bar"><i id="wBar"></i></div></div>
+    <div class="pill" title="score" data-rev="score"><i class="ic"><svg viewBox="0 0 40 40"><path d="M20 4l5 10 11 2-8 8 2 11-10-5-10 5 2-11-8-8 11-2z" fill="#ffd23f" stroke="#2b2d4e" stroke-width="3" stroke-linejoin="round"/></svg></i><b id="vScore">0</b></div>
     <button class="rbtn" id="bPause" aria-label="pause"><i class="ic"><svg viewBox="0 0 40 40"><rect x="10" y="9" width="7" height="22" rx="2.5" fill="#2b2d4e"/><rect x="23" y="9" width="7" height="22" rx="2.5" fill="#2b2d4e"/></svg></i></button>
   </div>
   <div id="bot">
-    <div id="chips"></div>
+    <div id="chips" data-rev="power"></div>
     <div id="botRow">
-      <button class="abtn" id="bWater" aria-label="water"><i class="ic"><svg viewBox="0 0 40 40"><path d="M8 18h18v14q0 3-3 3H11q-3 0-3-3z" fill="#4cc3ff" stroke="#2b2d4e" stroke-width="3" stroke-linejoin="round"/><path d="M26 22l9-8" stroke="#2b2d4e" stroke-width="5" stroke-linecap="round"/><path d="M26 22l9-8" stroke="#4cc3ff" stroke-width="2" stroke-linecap="round"/><path d="M8 22q-5 0-5 5" fill="none" stroke="#2b2d4e" stroke-width="3"/><circle cx="35" cy="20" r="2" fill="#7fd3ff"/><circle cx="37" cy="26" r="2" fill="#7fd3ff"/></svg></i><span class="cd"></span></button>
-      <button class="abtn" id="bScare" aria-label="scarecrow"><i class="ic"><svg viewBox="0 0 40 40"><path d="M20 12v26" stroke="#8a5a30" stroke-width="4"/><path d="M6 20h28" stroke="#8a5a30" stroke-width="4" stroke-linecap="round"/><circle cx="20" cy="12" r="7" fill="#ffe36b" stroke="#2b2d4e" stroke-width="3"/><path d="M11 7h18l-4-5h-10z" fill="#c9874a" stroke="#2b2d4e" stroke-width="2.5" stroke-linejoin="round"/><path d="M12 20h16v8H12z" fill="#ff5d6c" stroke="#2b2d4e" stroke-width="3"/><circle cx="17.5" cy="12" r="1.5" fill="#2b2d4e"/><circle cx="22.5" cy="12" r="1.5" fill="#2b2d4e"/></svg></i><span class="cd"></span></button>
+      <button class="abtn" data-rev="water" id="bWater" aria-label="water"><i class="ic"><svg viewBox="0 0 40 40"><path d="M8 18h18v14q0 3-3 3H11q-3 0-3-3z" fill="#4cc3ff" stroke="#2b2d4e" stroke-width="3" stroke-linejoin="round"/><path d="M26 22l9-8" stroke="#2b2d4e" stroke-width="5" stroke-linecap="round"/><path d="M26 22l9-8" stroke="#4cc3ff" stroke-width="2" stroke-linecap="round"/><path d="M8 22q-5 0-5 5" fill="none" stroke="#2b2d4e" stroke-width="3"/><circle cx="35" cy="20" r="2" fill="#7fd3ff"/><circle cx="37" cy="26" r="2" fill="#7fd3ff"/></svg></i><span class="cd"></span></button>
+      <button class="abtn" data-rev="scare" id="bScare" aria-label="scarecrow"><i class="ic"><svg viewBox="0 0 40 40"><path d="M20 12v26" stroke="#8a5a30" stroke-width="4"/><path d="M6 20h28" stroke="#8a5a30" stroke-width="4" stroke-linecap="round"/><circle cx="20" cy="12" r="7" fill="#ffe36b" stroke="#2b2d4e" stroke-width="3"/><path d="M11 7h18l-4-5h-10z" fill="#c9874a" stroke="#2b2d4e" stroke-width="2.5" stroke-linejoin="round"/><path d="M12 20h16v8H12z" fill="#ff5d6c" stroke="#2b2d4e" stroke-width="3"/><circle cx="17.5" cy="12" r="1.5" fill="#2b2d4e"/><circle cx="22.5" cy="12" r="1.5" fill="#2b2d4e"/></svg></i><span class="cd"></span></button>
       <button class="btn big" id="bBuy"><span id="buyTxt">Plant</span><small><i class="ic"><svg viewBox="0 0 40 40"><path d="M5 31q2-12 9-14 2-7 8-6 7 1 7 8 6 3 6 12z" fill="#a8672f" stroke="#2b2d4e" stroke-width="3" stroke-linejoin="round"/><circle cx="15" cy="25" r="2" fill="#6e4524"/><circle cx="25" cy="22" r="2" fill="#6e4524"/><path d="M20 12q2-6 7-6-1 5-7 6z" fill="#5fd06a" stroke="#2b2d4e" stroke-width="2"/></svg></i><b id="vCost">8</b></small></button>
       <button class="abtn hide" id="bMest" aria-label="fertilizer"><i class="ic"><svg viewBox="0 0 40 40"><path d="M9 35q-3-17 11-24 14 7 11 24z" fill="#c9874a" stroke="#2b2d4e" stroke-width="3" stroke-linejoin="round"/><rect x="12" y="20" width="16" height="7" rx="2" fill="#fff6c2"/><path d="M20 21q3-5 6-4-1 4-6 4z" fill="#5fd06a"/><path d="M31 6l1.5 3.5L36 11l-3.5 1.5L31 16l-1.5-3.5L26 11l3.5-1.5z" fill="#fff6a0" stroke="#2b2d4e" stroke-width="1.5"/></svg></i><span class="cnt" id="vMest">0</span></button>
-      <button class="abtn" id="bSell" aria-label="compost bin"><i class="ic"><svg viewBox="0 0 40 40"><path d="M9 13h22l-2 22H11z" fill="#8bd75c" stroke="#2b2d4e" stroke-width="3" stroke-linejoin="round"/><path d="M6 12h28" stroke="#2b2d4e" stroke-width="4" stroke-linecap="round"/><path d="M16 9q4-5 8 0" fill="none" stroke="#2b2d4e" stroke-width="3"/><path d="M15 20v10M20 20v10M25 20v10" stroke="#4fae43" stroke-width="2.5" stroke-linecap="round"/></svg></i></button>
-      <button class="abtn" id="bSpeed" aria-label="speed">x1</button>
+      <button class="abtn" data-rev="bin" id="bSell" aria-label="compost bin"><i class="ic"><svg viewBox="0 0 40 40"><path d="M9 13h22l-2 22H11z" fill="#8bd75c" stroke="#2b2d4e" stroke-width="3" stroke-linejoin="round"/><path d="M6 12h28" stroke="#2b2d4e" stroke-width="4" stroke-linecap="round"/><path d="M16 9q4-5 8 0" fill="none" stroke="#2b2d4e" stroke-width="3"/><path d="M15 20v10M20 20v10M25 20v10" stroke="#4fae43" stroke-width="2.5" stroke-linecap="round"/></svg></i></button>
+      <button class="abtn" data-rev="speed" id="bSpeed" aria-label="speed">x1</button>
     </div>
   </div>
   <button id="bNext" class="btn small green hide"><i class="ic"><svg viewBox="0 0 40 40"><path d="M5 10l14 10-14 10zM20 10l14 10-14 10z" fill="#fff" stroke="#2b2d4e" stroke-width="3" stroke-linejoin="round"/></svg></i><span id="vNext"></span></button>
   <button id="bGold" class="btn small hide"><i class="ic"><svg viewBox="0 0 40 40"><rect x="4" y="9" width="32" height="22" rx="6" fill="#fff" stroke="#2b2d4e" stroke-width="3"/><path d="M17 14l9 6-9 6z" fill="#4cc3ff"/></svg></i><span data-i="goldenSeed">Golden seed</span></button>
 </div>
-<div id="tut" class="hidden"><div id="tutTxt"></div></div><div id="hand" class="hide"></div>
+<div id="spot" class="hide"></div><div id="tut" class="hidden"><img id="tutOma" alt=""><div id="tutTxt"></div></div><div id="hand" class="hide"></div>
 <div id="banner"></div>
 <div id="scr"></div>
 <div id="toasts"></div>
 <div id="load"><b>Veggie Siege</b><i></i><small id="ver0" style="color:#fff"></small></div>
 <script>
 'use strict';
-const VERSION='0.1';
+const VERSION='0.2';
 const $=id=>document.getElementById(id);
 const cv=$('c'),ctx=cv.getContext('2d');
 const TAU=Math.PI*2;
@@ -826,6 +842,87 @@ ad_kills:"击败{0}只害虫",ad_merges:"合并{0}次",ad_lvl:"把蔬菜升到{0
 ad_ewave:"在无尽模式到达第{0}波",ad_daily:"完成{0}次每日挑战",ad_streak:"连续{0}天",ad_unl:"解锁全部{0}种蔬菜",ad_gold:"抓住{0}只金甲虫",ad_close:"只剩1棵生菜时获胜",ad_sold:"把{0}个蔬菜做成堆肥"
 };
 
+/* onboarding texts (v0.2) */
+Object.assign(TR.en,{tut_plant:"Tap here to plant a veggie!",tut_plant2:"Nice! Plant one more.",tut_merge:"Drag one carrot onto the other!",tut_merged:"<b>Level 2!</b> Merging makes veggies stronger.",
+tut_pest:"A snail wants my lettuce! Your veggies shoot <b>by themselves</b>.",tut_comp:"Pests give <b>compost</b>. Use it to plant more!",tut_plant3:"Plant more veggies!",tut_go:"Here they come! Protect my lettuce!",
+h_merge:"Merge two identical veggies!",h_water:"Pests are close! Tap the <b>watering can</b>: veggies shoot faster.",h_scare:"Tap the <b>scarecrow</b>: all pests freeze!",h_full:"Beds full! Merge, or drag a veggie into the <b>compost bin</b>.",
+h_power:"Spend compost here: <b>all</b> veggies of that kind get stronger!",h_next:"Ready? Call the next wave early for bonus compost!",h_speed:"Tap <b>x2</b> to speed up the game.",h_swap:"Only two identical veggies of the same level merge!",h_lock:"Win Grandma's Garden first!",
+pn_cater:"Caterpillar",pi_cater:"fast, but weak.",pn_beetle:"Beetle",pi_beetle:"armored! Level up your veggies.",pn_crow:"Crow",pi_crow:"flies, onions slow it less.",pn_mole:"Mole",pi_mole:"digs underground and can't be hit there.",pn_gold:"Golden beetle",pi_gold:"catch it: jackpot and fertilizer!"});
+Object.assign(TR.nl,{tut_plant:"Tik hier om een groente te zaaien!",tut_plant2:"Top! Zaai er nog één.",tut_merge:"Sleep de ene wortel op de andere!",tut_merged:"<b>Niveau 2!</b> Samenvoegen maakt groenten sterker.",
+tut_pest:"Een slak wil mijn sla! Je groenten schieten <b>vanzelf</b>.",tut_comp:"Plagen leveren <b>compost</b> op. Daarmee zaai je meer!",tut_plant3:"Zaai meer groenten!",tut_go:"Daar komen ze! Bescherm mijn sla!",
+h_merge:"Voeg twee gelijke groenten samen!",h_water:"Plagen dichtbij! Tik op de <b>gieter</b>: groenten schieten sneller.",h_scare:"Tik op de <b>vogelverschrikker</b>: alle plagen bevriezen!",h_full:"Bedjes vol! Voeg samen, of sleep een groente naar de <b>compostbak</b>.",
+h_power:"Besteed hier compost: <b>alle</b> groenten van die soort worden sterker!",h_next:"Klaar? Roep de volgende golf eerder voor extra compost!",h_speed:"Tik op <b>x2</b> om het spel te versnellen.",h_swap:"Alleen twee gelijke groenten van hetzelfde niveau gaan samen!",h_lock:"Win eerst Oma's Moestuin!",
+pn_cater:"Rups",pi_cater:"snel, maar zwak.",pn_beetle:"Kever",pi_beetle:"gepantserd! Maak je groenten sterker.",pn_crow:"Kraai",pi_crow:"vliegt, uien remmen hem minder.",pn_mole:"Mol",pi_mole:"graaft onder de grond en is dan niet te raken.",pn_gold:"Gouden kever",pi_gold:"vang hem: jackpot en mest!"});
+Object.assign(TR.de,{tut_plant:"Tippe hier, um Gemüse zu säen!",tut_plant2:"Super! Noch eins.",tut_merge:"Ziehe eine Karotte auf die andere!",tut_merged:"<b>Stufe 2!</b> Kombinieren macht Gemüse stärker.",
+tut_pest:"Eine Schnecke will meinen Salat! Dein Gemüse schießt <b>von selbst</b>.",tut_comp:"Schädlinge geben <b>Kompost</b>. Damit säst du mehr!",tut_plant3:"Säe mehr Gemüse!",tut_go:"Da kommen sie! Beschütze meinen Salat!",
+h_merge:"Kombiniere zwei gleiche Gemüse!",h_water:"Schädlinge nah! Tippe auf die <b>Gießkanne</b>: Gemüse schießt schneller.",h_scare:"Tippe auf die <b>Vogelscheuche</b>: alle Schädlinge erstarren!",h_full:"Beete voll! Kombiniere oder ziehe Gemüse in den <b>Komposter</b>.",
+h_power:"Kompost hier ausgeben: <b>alle</b> Gemüse dieser Sorte werden stärker!",h_next:"Bereit? Rufe die nächste Welle früher für Extra-Kompost!",h_speed:"Tippe auf <b>x2</b>, um das Spiel zu beschleunigen.",h_swap:"Nur zwei gleiche Gemüse derselben Stufe lassen sich kombinieren!",h_lock:"Gewinne zuerst Omas Gemüsegarten!",
+pn_cater:"Raupe",pi_cater:"schnell, aber schwach.",pn_beetle:"Käfer",pi_beetle:"gepanzert! Verbessere dein Gemüse.",pn_crow:"Krähe",pi_crow:"fliegt, Zwiebeln bremsen sie weniger.",pn_mole:"Maulwurf",pi_mole:"gräbt unter der Erde und ist dann nicht zu treffen.",pn_gold:"Goldkäfer",pi_gold:"fang ihn: Jackpot und Dünger!"});
+Object.assign(TR.fr,{tut_plant:"Touche ici pour semer un légume !",tut_plant2:"Bravo ! Encore un.",tut_merge:"Glisse une carotte sur l'autre !",tut_merged:"<b>Niveau 2 !</b> Fusionner rend les légumes plus forts.",
+tut_pest:"Un escargot veut ma laitue ! Tes légumes tirent <b>tout seuls</b>.",tut_comp:"Les nuisibles donnent du <b>compost</b>. Il sert à semer !",tut_plant3:"Sème plus de légumes !",tut_go:"Les voilà ! Protège ma laitue !",
+h_merge:"Fusionne deux légumes identiques !",h_water:"Nuisibles tout près ! Touche l'<b>arrosoir</b> : les légumes tirent plus vite.",h_scare:"Touche l'<b>épouvantail</b> : tous les nuisibles se figent !",h_full:"Bacs pleins ! Fusionne, ou glisse un légume dans le <b>composteur</b>.",
+h_power:"Dépense du compost ici : <b>tous</b> les légumes de cette sorte deviennent plus forts !",h_next:"Prêt ? Lance la vague suivante plus tôt pour du compost bonus !",h_speed:"Touche <b>x2</b> pour accélérer le jeu.",h_swap:"Seuls deux légumes identiques du même niveau fusionnent !",h_lock:"Gagne d'abord le potager de Mamie !",
+pn_cater:"Chenille",pi_cater:"rapide, mais fragile.",pn_beetle:"Scarabée",pi_beetle:"blindé ! Fais monter tes légumes.",pn_crow:"Corbeau",pi_crow:"il vole, les oignons le ralentissent moins.",pn_mole:"Taupe",pi_mole:"creuse sous terre et devient intouchable.",pn_gold:"Scarabée doré",pi_gold:"attrape-le : jackpot et engrais !"});
+Object.assign(TR.es,{tut_plant:"¡Toca aquí para sembrar una verdura!",tut_plant2:"¡Bien! Siembra otra.",tut_merge:"¡Arrastra una zanahoria sobre la otra!",tut_merged:"<b>¡Nivel 2!</b> Fusionar hace las verduras más fuertes.",
+tut_pest:"¡Un caracol quiere mi lechuga! Tus verduras disparan <b>solas</b>.",tut_comp:"Las plagas dan <b>compost</b>. ¡Úsalo para sembrar más!",tut_plant3:"¡Siembra más verduras!",tut_go:"¡Ahí vienen! ¡Protege mi lechuga!",
+h_merge:"¡Fusiona dos verduras iguales!",h_water:"¡Plagas cerca! Toca la <b>regadera</b>: las verduras disparan más rápido.",h_scare:"Toca el <b>espantapájaros</b>: ¡todas las plagas se congelan!",h_full:"¡Bancales llenos! Fusiona o arrastra una verdura al <b>compostador</b>.",
+h_power:"Gasta compost aquí: ¡<b>todas</b> las verduras de ese tipo se hacen más fuertes!",h_next:"¿Listo? ¡Llama antes la siguiente oleada para ganar compost extra!",h_speed:"Toca <b>x2</b> para acelerar el juego.",h_swap:"¡Solo se fusionan dos verduras iguales del mismo nivel!",h_lock:"¡Gana primero el huerto de la abuela!",
+pn_cater:"Oruga",pi_cater:"rápida, pero débil.",pn_beetle:"Escarabajo",pi_beetle:"¡acorazado! Sube de nivel tus verduras.",pn_crow:"Cuervo",pi_crow:"vuela, las cebollas lo frenan menos.",pn_mole:"Topo",pi_mole:"cava bajo tierra y ahí no se le puede dar.",pn_gold:"Escarabajo dorado",pi_gold:"¡atrápalo: premio y abono!"});
+Object.assign(TR.it,{tut_plant:"Tocca qui per seminare una verdura!",tut_plant2:"Ottimo! Seminane un'altra.",tut_merge:"Trascina una carota sull'altra!",tut_merged:"<b>Livello 2!</b> Unire rende le verdure più forti.",
+tut_pest:"Una lumaca vuole la mia lattuga! Le verdure sparano <b>da sole</b>.",tut_comp:"I parassiti danno <b>compost</b>. Usalo per seminare!",tut_plant3:"Semina altre verdure!",tut_go:"Eccoli! Proteggi la mia lattuga!",
+h_merge:"Unisci due verdure uguali!",h_water:"Parassiti vicini! Tocca l'<b>annaffiatoio</b>: le verdure sparano più veloci.",h_scare:"Tocca lo <b>spaventapasseri</b>: tutti i parassiti si bloccano!",h_full:"Aiuole piene! Unisci, o trascina una verdura nella <b>compostiera</b>.",
+h_power:"Spendi compost qui: <b>tutte</b> le verdure di quel tipo diventano più forti!",h_next:"Pronto? Chiama prima la prossima ondata per compost extra!",h_speed:"Tocca <b>x2</b> per velocizzare il gioco.",h_swap:"Si uniscono solo due verdure uguali dello stesso livello!",h_lock:"Vinci prima l'orto della nonna!",
+pn_cater:"Bruco",pi_cater:"veloce, ma debole.",pn_beetle:"Scarabeo",pi_beetle:"corazzato! Fai salire di livello le verdure.",pn_crow:"Corvo",pi_crow:"vola, le cipolle lo rallentano meno.",pn_mole:"Talpa",pi_mole:"scava sottoterra e lì non si può colpire.",pn_gold:"Scarabeo d'oro",pi_gold:"prendilo: jackpot e concime!"});
+Object.assign(TR.pt,{tut_plant:"Toque aqui para plantar uma verdura!",tut_plant2:"Boa! Plante mais uma.",tut_merge:"Arraste uma cenoura sobre a outra!",tut_merged:"<b>Nível 2!</b> Juntar deixa as verduras mais fortes.",
+tut_pest:"Um caracol quer minha alface! Suas verduras atiram <b>sozinhas</b>.",tut_comp:"Pragas dão <b>adubo</b>. Use para plantar mais!",tut_plant3:"Plante mais verduras!",tut_go:"Lá vêm eles! Proteja minha alface!",
+h_merge:"Junte duas verduras iguais!",h_water:"Pragas perto! Toque no <b>regador</b>: as verduras atiram mais rápido.",h_scare:"Toque no <b>espantalho</b>: todas as pragas congelam!",h_full:"Canteiros cheios! Junte, ou arraste uma verdura para a <b>composteira</b>.",
+h_power:"Gaste adubo aqui: <b>todas</b> as verduras desse tipo ficam mais fortes!",h_next:"Pronto? Chame a próxima onda antes para ganhar adubo extra!",h_speed:"Toque em <b>x2</b> para acelerar o jogo.",h_swap:"Só duas verduras iguais do mesmo nível se juntam!",h_lock:"Vença primeiro a Horta da Vovó!",
+pn_cater:"Lagarta",pi_cater:"rápida, mas fraca.",pn_beetle:"Besouro",pi_beetle:"blindado! Suba o nível das verduras.",pn_crow:"Corvo",pi_crow:"voa, as cebolas o desaceleram menos.",pn_mole:"Toupeira",pi_mole:"cava debaixo da terra e lá não pode ser atingida.",pn_gold:"Besouro dourado",pi_gold:"pegue-o: jackpot e fertilizante!"});
+Object.assign(TR.ru,{tut_plant:"Нажми сюда, чтобы посадить овощ!",tut_plant2:"Отлично! Ещё один.",tut_merge:"Перетащи одну морковку на другую!",tut_merged:"<b>Уровень 2!</b> Соединение делает овощи сильнее.",
+tut_pest:"Улитка хочет мой салат! Овощи стреляют <b>сами</b>.",tut_comp:"Вредители дают <b>компост</b>. На него сажают овощи!",tut_plant3:"Посади ещё овощей!",tut_go:"Идут! Защити мой салат!",
+h_merge:"Соедини два одинаковых овоща!",h_water:"Вредители близко! Нажми на <b>лейку</b>: овощи стреляют быстрее.",h_scare:"Нажми на <b>пугало</b>: все вредители замрут!",h_full:"Грядки заняты! Соединяй или перетащи овощ в <b>компостер</b>.",
+h_power:"Трать компост здесь: <b>все</b> овощи этого вида станут сильнее!",h_next:"Готов? Вызови следующую волну раньше и получи бонусный компост!",h_speed:"Нажми <b>x2</b>, чтобы ускорить игру.",h_swap:"Соединяются только два одинаковых овоща одного уровня!",h_lock:"Сначала пройди Бабушкин огород!",
+pn_cater:"Гусеница",pi_cater:"быстрая, но слабая.",pn_beetle:"Жук",pi_beetle:"в броне! Повышай уровень овощей.",pn_crow:"Ворона",pi_crow:"летает, лук замедляет её слабее.",pn_mole:"Крот",pi_mole:"роет под землёй, там его не достать.",pn_gold:"Золотой жук",pi_gold:"поймай его: джекпот и удобрение!"});
+Object.assign(TR.tr,{tut_plant:"Sebze ekmek için buraya dokun!",tut_plant2:"Harika! Bir tane daha ek.",tut_merge:"Bir havucu diğerinin üstüne sürükle!",tut_merged:"<b>Seviye 2!</b> Birleştirmek sebzeleri güçlendirir.",
+tut_pest:"Bir salyangoz marulumu istiyor! Sebzelerin <b>kendi kendine</b> ateş eder.",tut_comp:"Zararlılar <b>kompost</b> verir. Onunla daha çok ek!",tut_plant3:"Daha çok sebze ek!",tut_go:"Geliyorlar! Marulumu koru!",
+h_merge:"İki aynı sebzeyi birleştir!",h_water:"Zararlılar yakın! <b>Sulama kabına</b> dokun: sebzeler daha hızlı ateş eder.",h_scare:"<b>Korkuluğa</b> dokun: tüm zararlılar donar!",h_full:"Tarhlar dolu! Birleştir ya da bir sebzeyi <b>kompost kutusuna</b> sürükle.",
+h_power:"Kompostu burada harca: o türdeki <b>tüm</b> sebzeler güçlenir!",h_next:"Hazır mısın? Ekstra kompost için sonraki dalgayı erken çağır!",h_speed:"Oyunu hızlandırmak için <b>x2</b>'ye dokun.",h_swap:"Sadece aynı seviyedeki iki aynı sebze birleşir!",h_lock:"Önce Ninenin Bostanı'nı kazan!",
+pn_cater:"Tırtıl",pi_cater:"hızlı ama zayıf.",pn_beetle:"Böcek",pi_beetle:"zırhlı! Sebzelerinin seviyesini yükselt.",pn_crow:"Karga",pi_crow:"uçar, soğanlar onu daha az yavaşlatır.",pn_mole:"Köstebek",pi_mole:"yer altında kazar ve orada vurulamaz.",pn_gold:"Altın böcek",pi_gold:"yakala: büyük ikramiye ve gübre!"});
+Object.assign(TR.pl,{tut_plant:"Stuknij tutaj, by posiać warzywo!",tut_plant2:"Super! Jeszcze jedno.",tut_merge:"Przeciągnij jedną marchewkę na drugą!",tut_merged:"<b>Poziom 2!</b> Łączenie wzmacnia warzywa.",
+tut_pest:"Ślimak chce moją sałatę! Warzywa strzelają <b>same</b>.",tut_comp:"Szkodniki dają <b>kompost</b>. Za niego siejesz!",tut_plant3:"Posiej więcej warzyw!",tut_go:"Nadchodzą! Chroń moją sałatę!",
+h_merge:"Połącz dwa takie same warzywa!",h_water:"Szkodniki blisko! Stuknij <b>konewkę</b>: warzywa strzelają szybciej.",h_scare:"Stuknij <b>stracha na wróble</b>: wszystkie szkodniki zamarzają!",h_full:"Grządki pełne! Łącz albo przeciągnij warzywo do <b>kompostownika</b>.",
+h_power:"Wydaj tu kompost: <b>wszystkie</b> warzywa tego rodzaju będą silniejsze!",h_next:"Gotowy? Wezwij następną falę wcześniej po bonusowy kompost!",h_speed:"Stuknij <b>x2</b>, by przyspieszyć grę.",h_swap:"Łączą się tylko dwa takie same warzywa na tym samym poziomie!",h_lock:"Najpierw wygraj Ogródek Babci!",
+pn_cater:"Gąsienica",pi_cater:"szybka, ale słaba.",pn_beetle:"Żuk",pi_beetle:"opancerzony! Podnieś poziom warzyw.",pn_crow:"Wrona",pi_crow:"lata, cebule mniej ją spowalniają.",pn_mole:"Kret",pi_mole:"kopie pod ziemią i wtedy nie da się go trafić.",pn_gold:"Złoty żuk",pi_gold:"złap go: jackpot i nawóz!"});
+Object.assign(TR.ja,{tut_plant:"ここをタップしてやさいを植えよう！",tut_plant2:"いいね！もう1つ植えよう。",tut_merge:"ニンジンをもう1つのニンジンに重ねよう！",tut_merged:"<b>レベル2！</b>合体するとやさいが強くなるよ。",
+tut_pest:"カタツムリがわたしのレタスをねらってる！やさいは<b>自動で</b>攻撃するよ。",tut_comp:"害虫をたおすと<b>たい肥</b>がもらえる。タネまきに使おう！",tut_plant3:"もっとやさいを植えよう！",tut_go:"来たよ！レタスを守って！",
+h_merge:"同じやさいを2つ合体しよう！",h_water:"害虫が近い！<b>じょうろ</b>をタップ：攻撃が速くなるよ。",h_scare:"<b>かかし</b>をタップ：害虫がぜんぶ止まる！",h_full:"はたけがいっぱい！合体するか、やさいを<b>たい肥箱</b>へドラッグ。",
+h_power:"ここでたい肥を使うと、その種類の<b>全部</b>のやさいが強くなる！",h_next:"準備OK？次のウェーブを早く呼ぶとたい肥ボーナス！",h_speed:"<b>x2</b>をタップでゲームが速くなるよ。",h_swap:"合体できるのは同じレベルの同じやさいだけ！",h_lock:"まずおばあちゃんのはたけをクリアしよう！",
+pn_cater:"イモムシ",pi_cater:"速いけど弱い。",pn_beetle:"カブトムシ",pi_beetle:"かたい！やさいのレベルを上げよう。",pn_crow:"カラス",pi_crow:"飛ぶので、タマネギが効きにくい。",pn_mole:"モグラ",pi_mole:"地中にもぐると攻撃が当たらない。",pn_gold:"金のカブトムシ",pi_gold:"つかまえると大当たり＆ひりょう！"});
+Object.assign(TR.ko,{tut_plant:"여기를 눌러 채소를 심으세요!",tut_plant2:"좋아요! 하나 더 심어요.",tut_merge:"당근 하나를 다른 당근 위로 끌어 놓으세요!",tut_merged:"<b>레벨 2!</b> 합치면 채소가 더 강해져요.",
+tut_pest:"달팽이가 내 상추를 노려요! 채소는 <b>알아서</b> 공격해요.",tut_comp:"해충을 물리치면 <b>퇴비</b>를 얻어요. 씨앗 심는 데 써요!",tut_plant3:"채소를 더 심으세요!",tut_go:"몰려온다! 내 상추를 지켜 줘!",
+h_merge:"똑같은 채소 두 개를 합치세요!",h_water:"해충이 가까워요! <b>물뿌리개</b>를 누르면 더 빨리 공격해요.",h_scare:"<b>허수아비</b>를 누르면 해충이 모두 멈춰요!",h_full:"밭이 가득! 합치거나 채소를 <b>퇴비통</b>으로 끌어 놓으세요.",
+h_power:"여기에 퇴비를 쓰면 그 종류의 <b>모든</b> 채소가 강해져요!",h_next:"준비됐나요? 다음 웨이브를 일찍 부르면 보너스 퇴비!",h_speed:"<b>x2</b>를 누르면 게임이 빨라져요.",h_swap:"같은 레벨의 똑같은 채소만 합칠 수 있어요!",h_lock:"먼저 할머니의 텃밭을 클리어하세요!",
+pn_cater:"애벌레",pi_cater:"빠르지만 약해요.",pn_beetle:"딱정벌레",pi_beetle:"단단해요! 채소 레벨을 올리세요.",pn_crow:"까마귀",pi_crow:"날아다녀서 양파가 덜 통해요.",pn_mole:"두더지",pi_mole:"땅속에 숨으면 공격이 안 맞아요.",pn_gold:"황금 딱정벌레",pi_gold:"잡으면 잭팟과 비료!"});
+Object.assign(TR.zh,{tut_plant:"点这里种一棵蔬菜！",tut_plant2:"很好！再种一棵。",tut_merge:"把一根胡萝卜拖到另一根上！",tut_merged:"<b>2级！</b>合并会让蔬菜变强。",
+tut_pest:"一只蜗牛想吃我的生菜！蔬菜会<b>自动</b>攻击。",tut_comp:"打败害虫会得到<b>堆肥</b>。用它来种更多！",tut_plant3:"多种些蔬菜！",tut_go:"它们来了！保护我的生菜！",
+h_merge:"把两个相同的蔬菜合并！",h_water:"害虫靠近了！点<b>浇水壶</b>：蔬菜射得更快。",h_scare:"点<b>稻草人</b>：所有害虫都会定住！",h_full:"菜畦满了！合并，或把蔬菜拖进<b>堆肥箱</b>。",
+h_power:"在这里花堆肥：这种蔬菜<b>全部</b>变强！",h_next:"准备好了？提前召唤下一波可得额外堆肥！",h_speed:"点<b>x2</b>加快游戏速度。",h_swap:"只有同等级的相同蔬菜才能合并！",h_lock:"先通关奶奶的菜园！",
+pn_cater:"毛毛虫",pi_cater:"跑得快，但很弱。",pn_beetle:"甲虫",pi_beetle:"有护甲！提升蔬菜等级。",pn_crow:"乌鸦",pi_crow:"会飞，洋葱减速效果较弱。",pn_mole:"鼹鼠",pi_mole:"钻到地下时打不到。",pn_gold:"金甲虫",pi_gold:"抓住它：大奖加肥料！"});
+
+Object.assign(TR.en,{h_water2:"Tip: the <b>watering can</b> makes all veggies shoot faster for a while.",h_scare2:"Tip: the <b>scarecrow</b> freezes all pests for a moment."});
+Object.assign(TR.nl,{h_water2:"Tip: met de <b>gieter</b> schieten al je groenten even sneller.",h_scare2:"Tip: de <b>vogelverschrikker</b> laat alle plagen even bevriezen."});
+Object.assign(TR.de,{h_water2:"Tipp: Mit der <b>Gießkanne</b> schießt dein Gemüse eine Weile schneller.",h_scare2:"Tipp: Die <b>Vogelscheuche</b> lässt alle Schädlinge kurz erstarren."});
+Object.assign(TR.fr,{h_water2:"Astuce : avec l'<b>arrosoir</b>, tous tes légumes tirent plus vite un moment.",h_scare2:"Astuce : l'<b>épouvantail</b> fige tous les nuisibles un instant."});
+Object.assign(TR.es,{h_water2:"Consejo: con la <b>regadera</b> todas tus verduras disparan más rápido un rato.",h_scare2:"Consejo: el <b>espantapájaros</b> congela a todas las plagas un momento."});
+Object.assign(TR.it,{h_water2:"Consiglio: con l'<b>annaffiatoio</b> tutte le verdure sparano più veloci per un po'.",h_scare2:"Consiglio: lo <b>spaventapasseri</b> blocca tutti i parassiti per un attimo."});
+Object.assign(TR.pt,{h_water2:"Dica: com o <b>regador</b>, todas as verduras atiram mais rápido por um tempo.",h_scare2:"Dica: o <b>espantalho</b> congela todas as pragas por um instante."});
+Object.assign(TR.ru,{h_water2:"Совет: с <b>лейкой</b> все овощи какое-то время стреляют быстрее.",h_scare2:"Совет: <b>пугало</b> ненадолго замораживает всех вредителей."});
+Object.assign(TR.tr,{h_water2:"İpucu: <b>sulama kabı</b> tüm sebzelerin bir süre daha hızlı ateş etmesini sağlar.",h_scare2:"İpucu: <b>korkuluk</b> tüm zararlıları kısa süre dondurur."});
+Object.assign(TR.pl,{h_water2:"Wskazówka: dzięki <b>konewce</b> wszystkie warzywa przez chwilę strzelają szybciej.",h_scare2:"Wskazówka: <b>strach na wróble</b> na chwilę zamraża wszystkie szkodniki."});
+Object.assign(TR.ja,{h_water2:"ヒント：<b>じょうろ</b>を使うと、しばらく全部のやさいの攻撃が速くなるよ。",h_scare2:"ヒント：<b>かかし</b>を使うと、害虫がぜんぶ少しの間止まるよ。"});
+Object.assign(TR.ko,{h_water2:"팁: <b>물뿌리개</b>를 쓰면 잠시 동안 모든 채소가 더 빨리 공격해요.",h_scare2:"팁: <b>허수아비</b>는 잠깐 동안 모든 해충을 멈춰요."});
+Object.assign(TR.zh,{h_water2:"提示：<b>浇水壶</b>能让所有蔬菜在一段时间内射得更快。",h_scare2:"提示：<b>稻草人</b>能让所有害虫定住片刻。"});
+
 /* ================= DATA ================= */
 const COLS=9,ROWS=7;
 const VEG={
@@ -937,21 +1034,21 @@ function newRun(fi,mode,opt){opt=opt||{};
     comp:60+S.meta.comp*10,lives:10+S.meta.lives,lives0:10+S.meta.lives,buys:0,score:0,kills:0,merges:0,plants:0,
     pl:{},mods:{},perks:[],perkPending:null,cdW:0,cdS:0,waterT:0,stunT:0,mest:0,goldNoMest:0,revived:false,
     time:0,speed:1,over:null,shield:0,bossAlive:0,id:0,maxL:1,golds:0,bossKills:0,firstMergeT:0,tut:opt.tut?1:0,
-    sunT:0,usedWater:0,early:0};
+    sunT:0,usedWater:0,early:0,guide:opt.guide?1:0,g:null,lastMergeT:0,lastPlantT:0,hintCD:0,hints:{}};
   if(mod==='rich')R.comp*=2;
   for(const t of bag)R.pl[t]=0;
-  if(R.tut){R.nextT=null}
+  if(R.guide&&!S.tut){R.nextT=null}
   emit('runStart');
   return R}
 
 function freeBeds(){return R.P.beds.filter(i=>!R.veg[i])}
 function seedCost(){let c=8+3*R.buys;if(R.mods.cheap)c*=.8;if(R.mod==='cheap5')c*=.6;return Math.floor(c)}
 function lvlCap(){return R.mod==='cheap5'?5:MAXL}
-function buySeed(force){const fb=freeBeds();const c=seedCost();if(!fb.length||R.comp<c)return null;
+function buySeed(force,bed){const fb=freeBeds();const c=seedCost();if(!fb.length||R.comp<c)return null;
   R.comp-=c;R.buys++;R.plants++;
-  const i=fb[Math.floor(rng()*fb.length)];
+  const i=bed!=null&&!R.veg[bed]?bed:fb[Math.floor(rng()*fb.length)];
   let t=force||R.bag[Math.floor(rng()*R.bag.length)];
-  let l=1;const sc=(S.meta.soil*.03)+(R.mods.soil?.15:0);if(rng()<sc)l=2;
+  let l=1;const sc=(S.meta.soil*.03)+(R.mods.soil?.15:0);if(bed==null&&rng()<sc)l=2;
   const v=mkVeg(t,l,i);R.veg[i]=v;emit('plant',v);return v}
 function mkVeg(t,l,i){return{t,l,i,x:i%COLS+.5,y:Math.floor(i/COLS)+.5,cd:fxr(0,.5),pop:0,blink:fxr(1,5),att:0,ang:0,id:++R.id,sunT:fxr(0,2)}}
 function canMerge(a,b){return a&&b&&a!==b&&a.t===b.t&&a.l===b.l&&a.l<lvlCap()}
@@ -974,7 +1071,7 @@ function vProd(v){let p=VEG.sun.prod*Math.pow(1.9,v.l-1)*(1+.1*(S.up.sun||0))*(1
 
 /* ---------- waves ---------- */
 function hpMul(w){const f=1+(R.F.mult-1)*clamp((w-1)/10,0,1);return(1+.14*w+.018*w*w)*f*(R.mod==='rich'?1.6:1)*(w>20?Math.pow(1.07,w-20):1)}
-function buildWave(w){const q=[];const n=Math.floor(6+w*1.15);const pool=R.F.pool.filter(p=>w>=p[1]||R.mode==='endless'&&p[1]<=w+3);
+function buildWave(w){const q=[];let n=Math.floor(6+w*1.15);if(R.guide&&w<=4)n=Math.min(n,2+w*2);const pool=R.F.pool.filter(p=>w>=p[1]||R.mode==='endless'&&p[1]<=w+3);
   const tot=pool.reduce((a,p)=>a+p[2],0);
   const isBoss=(w%10===0)||(R.mod==='bossy'&&w%5===0);
   if(isBoss){const bi=Math.floor((w/10-1))%2;const bk=R.F.boss[Math.max(0,bi)%2];q.push({k:bk,boss:1,big:w>=20?1+(w-10)/10*.7:1})}
@@ -983,7 +1080,7 @@ function buildWave(w){const q=[];const n=Math.floor(6+w*1.15);const pool=R.F.poo
   if(w>=2&&(R.mod==='golden'||w%3===0&&rng()<.6))q.splice(Math.floor(q.length*rng()),0,{k:'gold'});
   return q}
 function startWave(){R.wave++;R.spawnQ=buildWave(R.wave);R.spawnT=.3;R.waveOn=true;R.nextT=null;emit('wave',R.wave)}
-function callEarly(){if(R.nextT===null||R.nextT<=0||R.tut===1)return 0;const b=Math.floor(4+R.wave*1.5);R.comp+=b;R.score+=25*R.wave;R.early++;R.nextT=0;emit('early',b);return b}
+function callEarly(){if(R.nextT===null||R.nextT<=0||R.g)return 0;const b=Math.floor(4+R.wave*1.5);R.comp+=b;R.score+=25*R.wave;R.early++;R.nextT=0;emit('early',b);return b}
 function spawnPest(o){const d=PEST[o.k];const pi=R.P.paths.length>1?(R.id%R.P.paths.length):0;
   let hp=d.hp*hpMul(R.wave)*(o.big||1);if(d.boss)hp*=1;
   const spd=d.spd*(R.mod==='fast'?1.3:1)*(1+Math.min(.25,R.wave*.008));
@@ -1359,6 +1456,7 @@ function drawWorld(dt){const c=ctx;c.setTransform(L.dpr,0,0,L.dpr,0,0);
   c.save();c.translate(sx,sy);c.drawImage(bg,0,0,L.W,L.H);
   if(!R){c.restore();return}
   const T=L.T;drawDecals(c,dt);
+  if(R.g==='pest'||R.g==='comp')drawPathArrows(c);
   // ambient
   if(PAL[R.fi].night||PAL[R.fi].snow||PAL[R.fi].leaves){for(let i=0;i<14;i++){const k=i*97.3;
     if(PAL[R.fi].night){const x=(Math.sin(gT*.3+k)*.5+.5)*COLS,y=(Math.cos(gT*.23+k*1.3)*.5+.5)*ROWS;c.globalAlpha=.5+.5*Math.sin(gT*3+k);circ(c,bx(x),by(y),T*.05);c.fillStyle='#fff6a0';c.fill();c.globalAlpha=1}
@@ -1384,6 +1482,98 @@ function drawWorld(dt){const c=ctx;c.setTransform(L.dpr,0,0,L.dpr,0,0);
   c.restore()}
 function drawMest(c,x,y,r){const lw=Math.max(2,r*.1);c.beginPath();c.moveTo(x-r*.7,y+r*.6);c.quadraticCurveTo(x-r*.8,y-r*.4,x,y-r*.7);c.quadraticCurveTo(x+r*.8,y-r*.4,x+r*.7,y+r*.6);c.closePath();fillO(c,'#c9874a',lw);
   c.fillStyle='#fff6c2';rr(c,x-r*.45,y-r*.15,r*.9,r*.4,r*.1);c.fill();c.fillStyle='#4fae43';leaf(c,x,y-r*.05,r*.3,0,lw*.6,'#5fd06a');sparkle(c,x+r*.6,y-r*.6,r*.25)}
+
+/* ================= COACH: Poki-style onboarding =================
+   Learn by doing: one action at a time, a pointing hand, a spotlight and a short line from Grandma.
+   HUD elements stay hidden in the first garden until the moment they become useful. */
+const CO={on:false,hand:null,spot:null,slow:1,until:0,key:null};
+const BED_A=20,BED_B=21;                       // two neighbouring beds near the entrance of Grandma's Garden
+const REV_ALL=['lives','comp','wave','score','power','water','scare','bin','speed','next'];
+const GSTEPS=['plant1','plant2','merge','pest','comp','plant3','go'];
+let omaSrc=null;
+function omaIcon(){if(omaSrc)return omaSrc;const c=document.createElement('canvas');c.width=168;c.height=168;const x=c.getContext('2d');x.scale(2,2);drawOma(x,42,44,30,0,false,true);return omaSrc=c.toDataURL()}
+function setPos(e,x,y){e.style.left=x+'px';e.style.top=y+'px'}
+function elRect(el){const r=el.getBoundingClientRect();return{x:r.left,y:r.top,w:r.width,h:r.height}}
+function cellsRect(cells){let x0=1e9,y0=1e9,x1=-1e9,y1=-1e9;for(const i of cells){const x=i%COLS,y=Math.floor(i/COLS);x0=Math.min(x0,bx(x));y0=Math.min(y0,by(y));x1=Math.max(x1,bx(x+1));y1=Math.max(y1,by(y+1))}return{x:x0,y:y0,w:x1-x0,h:y1-y0}}
+function cellC(i){return[bx(i%COLS+.5),by(Math.floor(i/COLS)+.5)]}
+
+function coach(o){CO.on=true;CO.hand=o.hand||null;CO.spot=o.spot||null;CO.slow=o.slow||1;CO.until=o.dur?performance.now()+o.dur*1000:0;CO.key=o.key||null;
+  const b=$('tut');if(o.txt){$('tutOma').src=omaIcon();$('tutTxt').innerHTML=o.txt;b.className=o.top?'top':'';void b.offsetWidth;b.classList.add('pop')}else b.className='hidden';
+  if(o.key)measure('hint',o.key,'shown');coachTick()}
+function coachOff(key){if(key&&CO.key!==key)return false;const was=CO.on;CO.on=false;CO.hand=null;CO.spot=null;CO.slow=1;CO.key=null;
+  $('tut').className='hidden';$('hand').className='hide';$('spot').className='hide';if(R&&was)R.hintCD=4;return true}
+function coachTick(){if(!CO.on)return;if(CO.until&&performance.now()>CO.until){coachOff();return}
+  const h=$('hand'),sp=$('spot');
+  if(CO.hand&&!UI.paused&&!(R&&R.perkPending)){const H=CO.hand;let cls='';
+    if(H.k==='tap'){const r=elRect(H.el);setPos(h,r.x+r.w*.55,r.y+r.h*.42);cls='tap'}
+    else if(H.k==='drag'){const a=H.va?H.va.i:H.a;const [ax,ay]=cellC(a);let tx,ty;
+      if(H.toEl){const r=elRect(H.toEl);tx=r.x+r.w/2;ty=r.y+r.h/2}else{const [x2,y2]=cellC(H.vb?H.vb.i:H.b);tx=x2;ty=y2}
+      setPos(h,ax,ay);h.style.setProperty('--dx',(tx-ax)+'px');h.style.setProperty('--dy',(ty-ay)+'px');cls='drag'}
+    if(h.className!==cls)h.className=cls}else if(h.className!=='hide')h.className='hide';
+  if(CO.spot&&!UI.paused&&!(R&&R.perkPending)){const S2=CO.spot;const r=S2.el?elRect(S2.el):cellsRect(S2.cells.map(c=>typeof c==='object'?c.i:c));const p=S2.pad!=null?S2.pad:8;
+    sp.style.left=(r.x-p)+'px';sp.style.top=(r.y-p)+'px';sp.style.width=(r.w+2*p)+'px';sp.style.height=(r.h+2*p)+'px';if(sp.className!=='')sp.className=''}
+  else if(sp.className!=='hide')sp.className='hide'}
+
+/* ---------- progressive HUD ---------- */
+function revInit(){R.rev=new Set(R.guide?(S.tut?['lives','comp','wave','score']:[]):REV_ALL);applyRev()}
+function applyRev(){document.querySelectorAll('[data-rev]').forEach(e=>{e.classList.toggle('unrev',!R.rev.has(e.dataset.rev));e.classList.remove('revpop')})}
+function reveal(k,quiet){if(!R||!R.rev||R.rev.has(k))return false;R.rev.add(k);const e=document.querySelector('[data-rev="'+k+'"]');
+  if(e){e.classList.remove('unrev');e.classList.remove('revpop');void e.offsetWidth;e.classList.add('revpop')}if(!quiet)sfx('perk');measure('reveal',k,'shown');return true}
+function bump(id){const e=$(id);if(!e)return;const p=e.closest('.pill')||e;p.classList.remove('bump');void p.offsetWidth;p.classList.add('bump')}
+
+/* ---------- guided first steps ---------- */
+function gMeasure(s,a){measure('tutorial',(GSTEPS.indexOf(s)+1)+'-'+s,a)}
+function gStep(s){if(R.g)gMeasure(R.g,'complete');R.g=s;gMeasure(s,'start');const buy=$('bBuy');
+  if(s==='plant1')coach({txt:t('tut_plant'),hand:{k:'tap',el:buy},spot:{el:buy}});
+  else if(s==='plant2')coach({txt:t('tut_plant2'),hand:{k:'tap',el:buy},spot:{el:buy}});
+  else if(s==='merge'){const a=R.veg.find(v=>v&&v.t==='carrot'),b=R.veg.find(v=>v&&v!==a&&canMerge(a,v));
+    if(!a||!b){gStep('pest');return}coach({txt:t('tut_merge'),hand:{k:'drag',va:a,vb:b},spot:{cells:[a,b],pad:10}})}
+  else if(s==='pest'){reveal('lives');R.omaMad=1.5;const p=spawnPest({k:'snail'});p.spd=.5;p.hp=p.mhp=Math.min(p.mhp,20);p.say=t('say2');p.talk=4;
+    coach({txt:t('tut_pest'),top:true})}
+  else if(s==='comp'){reveal('comp');reveal('score',true);bump('vComp');coach({txt:t('tut_comp'),spot:{el:$('vComp').closest('.pill'),pad:6}});setTimeout(()=>{if(R&&R.g==='comp')gStep('plant3')},2800)}
+  else if(s==='plant3'){R.g3=R.plants;coach({txt:t('tut_plant3'),hand:{k:'tap',el:buy},spot:{el:buy}})}
+  else if(s==='go'){reveal('wave');coach({txt:t('tut_go'),dur:2.6,top:true});R.nextT=1.5;gMeasure('go','complete');R.g=null;S.tut=1;save();measure('tutorial','done','complete')}}
+function guideBuy(){// returns true when the click was handled by the guide
+  if(!R||!R.g)return false;
+  if(R.g==='plant1'){buySeed('carrot',BED_A);return true}
+  if(R.g==='plant2'){buySeed('carrot',BED_B);return true}
+  if(R.g==='merge'||R.g==='pest'||R.g==='comp'){sfx('click');return true}
+  return false}
+function guideEvent(ev,a){if(!R||!R.guide)return;
+  if(ev==='plant'){R.lastPlantT=R.time;if(R.g==='plant1')gStep('plant2');else if(R.g==='plant2')gStep('merge');
+    else if(R.g==='plant3'&&(R.plants-R.g3>=2||R.comp<seedCost()||!freeBeds().length))gStep('go');coachOff('plant')}
+  else if(ev==='merge'){R.lastMergeT=R.time;if(R.g==='merge'){gMeasure('merge','complete');R.g='merged';coach({txt:t('tut_merged'),spot:{cells:[a],pad:12}});
+      setTimeout(()=>{if(R&&R.g==='merged'){R.g=null;gStep('pest')}},1900)}else coachOff('merge')}
+  else if((ev==='kill'||ev==='eat')&&R.g==='pest')setTimeout(()=>{if(R&&R.g==='pest')gStep('comp')},350);
+  else if(ev==='waveDone'&&a===1&&!R.rev.has('next')){R.wantNext=1}
+  else if(ev==='wave'&&a>=3)reveal('speed',true)}
+function guideTick(dt){if(!R||!R.guide||R.g||R.over||R.perkPending||UI.paused)return;
+  if(R.hintCD>0){R.hintCD-=dt;return}
+  if(CO.on)return;
+  const H=R.hints,near=R.pests.filter(p=>!p.under&&pestRem(p)<9);
+  if(!R.rev.has('water')&&R.wave>=2&&(near.length||R.wave>=5)){const n=near.length>0;reveal('water');coach({key:'water',txt:t(n?'h_water':'h_water2'),hand:{k:'tap',el:$('bWater')},spot:{el:$('bWater')},slow:n?.25:1,dur:6});return}
+  if(!R.rev.has('scare')&&R.wave>=4&&R.cdW>0&&(near.length>=3||R.wave>=7)){const n=near.length>=3;reveal('scare');coach({key:'scare',txt:t(n?'h_scare':'h_scare2'),hand:{k:'tap',el:$('bScare')},spot:{el:$('bScare')},slow:n?.25:1,dur:6});return}
+  if(R.wantNext&&R.nextT>1.5){R.wantNext=0;reveal('next');coach({key:'next',txt:t('h_next'),hand:{k:'tap',el:$('bNext')},spot:{el:$('bNext'),pad:6},dur:5});return}
+  if(!R.rev.has('bin')&&(!freeBeds().length||R.wave>=8&&R.veg.some(v=>v&&v.l===1))){const lo=R.veg.filter(Boolean).sort((a,b)=>a.l-b.l)[0];reveal('bin');
+    coach({key:'bin',txt:t(freeBeds().length?'sellInfo':'h_full'),hand:lo?{k:'drag',va:lo,toEl:$('bSell')}:null,dur:6});return}
+  if(!R.rev.has('power')&&R.wave>=3&&R.comp>=powerCost(R.bag[0])+seedCost()){reveal('power');const el=$('chips').querySelector('.pchip');
+    coach({key:'power',txt:t('h_power'),hand:{k:'tap',el},spot:{el:$('chips'),pad:6},dur:6});return}
+  if(R.rev.has('speed')&&!H.speed&&R.wave>=3){H.speed=1;coach({key:'speed',txt:t('h_speed'),hand:{k:'tap',el:$('bSpeed')},dur:3.5});return}
+  // idle helpers: show what to do when the player hesitates
+  if((H.merge||0)<4&&R.time-Math.max(R.lastMergeT,R.lastPlantT)>10){const vs=R.veg.filter(Boolean);let pr=null;
+    for(const a of vs){for(const b of vs)if(canMerge(a,b)){pr=[a,b];break}if(pr)break}
+    if(pr){H.merge=(H.merge||0)+1;coach({key:'merge',txt:t('h_merge'),hand:{k:'drag',va:pr[0],vb:pr[1]},dur:3.6});return}}
+  if((H.plant||0)<3&&R.time-R.lastPlantT>9&&R.comp>=seedCost()&&freeBeds().length){H.plant=(H.plant||0)+1;coach({key:'plant',hand:{k:'tap',el:$('bBuy')},dur:3});return}}
+
+/* ---------- path arrows while explaining the pests ---------- */
+function drawPathArrows(c){const T=L.T;c.save();c.lineWidth=T*.09;c.lineCap='round';c.lineJoin='round';
+  for(const P of R.P.paths){const off=(gT*1.4)%0.8;for(let s=off+.4;s<P.len-.4;s+=.8){const a=pathPos(P,s),b=pathPos(P,s+.05);const ang=Math.atan2(b[1]-a[1],b[0]-a[0]);
+    c.save();c.translate(bx(a[0]),by(a[1]));c.rotate(ang);c.globalAlpha=.85;c.beginPath();c.moveTo(-T*.1,-T*.15);c.lineTo(T*.08,0);c.lineTo(-T*.1,T*.15);c.strokeStyle='#fff';c.stroke();c.restore()}}
+  const [ex,ey]=R.P.end;const pr=(gT*1.5)%1;c.globalAlpha=1-pr;circ(c,bx(ex+.5),by(ey+.5),T*(.45+pr*.4));c.lineWidth=T*.08;c.strokeStyle='#ffe14d';c.stroke();c.restore()}
+
+/* ---------- first-time explanations of veggies and pests ---------- */
+function introVeg(tp){if(!S.seenV)S.seenV={};if(S.seenV[tp])return;S.seenV[tp]=1;toast(img(vegIcon(tp,1),'ti')+'<span><b>'+t('v_'+tp)+'</b> · '+t('st_'+VEG[tp].kind)+'</span>',3400)}
+function introPest(k){if(!S.seenP)S.seenP={};if(S.seenP[k]||PEST[k].boss||k==='snail')return;S.seenP[k]=1;toast(img(pestIcon(k),'ti')+'<span><b>'+t('pn_'+k)+'</b> · '+t('pi_'+k)+'</span>',3600);measure('pest',k,'first-seen')}
 
 /* ================= UI ================= */
 let lang='en';
@@ -1433,6 +1623,7 @@ function resize(){const W=window.innerWidth,H=window.innerHeight,dpr=Math.min(2,
   const u=clamp(Math.min(W/440,H/700),.72,1.45);document.documentElement.style.fontSize=(16*u)+'px';
   const top=UI.state==='run'?($('top').getBoundingClientRect().height+12):12,bot=UI.state==='run'?($('bot').getBoundingClientRect().height+10):12;
   const aw=W-16,ah=H-top-bot;const T=Math.floor(Math.min(aw/(COLS+.6),ah/(ROWS+.6)));L.T=Math.max(16,T);
+  document.documentElement.style.setProperty('--topH',top+'px');document.documentElement.style.setProperty('--botH',bot+'px');
   L.bx=Math.round((W-COLS*L.T)/2);L.by=Math.round(top+(ah-ROWS*L.T)/2);bg=null;
   const nb=$('bNext');nb.style.top=Math.max(top-6,L.by-L.T*.3)+'px';
   $('bGold').style.top=(L.by+L.T*.1)+'px';$('bGold').style.right=(W-L.bx-COLS*L.T+L.T*.1)+'px'}
@@ -1448,7 +1639,7 @@ function onClick(sel,fn){scr.querySelectorAll(sel).forEach(e=>e.addEventListener
 
 function fieldUnlocked(i){return i===0||!!S.won[FIELDS[i-1].id]}
 function nextFieldIdx(){for(let i=0;i<FIELDS.length;i++)if(!S.won[FIELDS[i].id])return i;return FIELDS.length-1}
-function goHome(){UI.state='home';R=null;gpStop();$('hud').className='hidden';resize();UI.sel=null;
+function goHome(){UI.state='home';coachOff();R=null;gpStop();$('hud').className='hidden';resize();UI.sel=null;
   checkDaily();const nf=nextFieldIdx();
   const mis=S.mis.list.map((m,i)=>{const pr=Math.min(m.n,m.p);const done=pr>=m.n;return '<div class="mis'+(m.c?' claimed':'')+'"><div class="mt">'+t('mis_'+m.k,m.n)+'</div><div class="bar"><i style="width:'+(pr/m.n*100)+'%"></i></div>'+
     (m.c?'<b class="ok">✓</b>':done?'<button class="btn small green" data-claim="'+i+'">'+ic('coin')+'75</button>':'<span class="pr">'+fmtN(pr)+'/'+fmtN(m.n)+'</span>')+'</div>'}).join('');
@@ -1458,18 +1649,19 @@ function goHome(){UI.state='home';R=null;gpStop();$('hud').className='hidden';re
     '<button class="btn big green" id="hPlay">'+ic('play')+'<span>'+t('play')+'</span><small>'+t('f_'+FIELDS[nf].id)+'</small></button>'+
     '<div class="grid3">'+
       '<button class="tile" id="hFields">'+ic('star')+'<span>'+t('gardens')+'</span></button>'+
-      '<button class="tile" id="hEndless">'+ic('inf')+'<span>'+t('endless')+'</span></button>'+
-      '<button class="tile'+(dd?'':' glow')+'" id="hDaily">'+ic('cal')+'<span>'+t('daily')+'</span>'+(S.daily.streak>1?'<em>🔥'+S.daily.streak+'</em>':'')+'</button>'+
+      '<button class="tile'+(S.won.grandma?'':' locked')+'" id="hEndless">'+ic('inf')+'<span>'+t('endless')+'</span>'+(S.won.grandma?'':'<em class="lk">'+ic('lock')+'</em>')+'</button>'+
+      '<button class="tile'+(S.won.grandma?(dd?'':' glow'):' locked')+'" id="hDaily">'+ic('cal')+'<span>'+t('daily')+'</span>'+(!S.won.grandma?'<em class="lk">'+ic('lock')+'</em>':S.daily.streak>1?'<em>🔥'+S.daily.streak+'</em>':'')+'</button>'+
       '<button class="tile" id="hShop">'+ic('shed')+'<span>'+t('shed')+'</span>'+(canAffordSomething()?'<em class="dot"></em>':'')+'</button>'+
       '<button class="tile" id="hAch">'+ic('trophy')+'<span>'+t('achievements')+'</span><em class="sm">'+achCount()+'/'+ACH.length+'</em></button>'+
       '<button class="tile" id="hClub">'+ic('club')+'<span>'+t('club')+'</span></button>'+
     '</div><div class="sub">'+t('missions')+'</div><div class="mislist">'+mis+'</div><div class="ver">v'+VERSION+'</div>','home');
-  onClick('#hPlay',()=>prerun(nf,'field'));onClick('#hFields',showFields);onClick('#hEndless',()=>showFields('endless'));onClick('#hDaily',showDaily);
-  onClick('#hShop',()=>showShop());onClick('#hAch',showAch);onClick('#hClub',()=>showClub(0));onClick('#hSet',()=>showSettings(goHome));
+  onClick('#hPlay',()=>prerun(nf,'field'));onClick('#hFields',showFields);onClick('#hEndless',()=>S.won.grandma?showFields('endless'):toast(t('h_lock')));onClick('#hDaily',()=>S.won.grandma?showDaily():toast(t('h_lock')));
+  onClick('#hShop',()=>{if(!S.hShed&&$('hShop').classList.contains('pointme')){S.hShed=1;measure('hint','shed','used')}showShop()});onClick('#hAch',showAch);onClick('#hClub',()=>showClub(0));onClick('#hSet',()=>showSettings(goHome));
   onClick('[data-claim]',e=>{const m=S.mis.list[+e.dataset.claim];if(!m||m.c)return;m.c=1;addCoins(75);measure('mission',m.k,'claim');
     if(S.mis.list.every(x=>x.c)){addCoins(100);toast(ic('chest')+' '+t('allMissions'))}save();goHome()});
   measure('screen','home','visible');
-  if(S.login.last!==todayKey())setTimeout(showLogin,350)}
+  if(S.fg&&!S.hShed&&canAffordSomething()){$('hShop').classList.add('pointme');measure('hint','shed','shown')}
+  if(S.login.last!==todayKey()&&S.st.days>=1)setTimeout(showLogin,350)}
 function canAffordSomething(){for(const tp of VORDER){if(!S.unl[tp]){if(S.coins>=VEG[tp].cost)return true}else if(S.coins>=upCost(tp))return true}return false}
 function addCoins(n){S.coins+=n;save()}
 
@@ -1493,17 +1685,17 @@ function prerun(fi,mode){const f=FIELDS[fi];let bag=defaultBag();const unl=VORDE
   if(unl.length<=3){startRun(fi,mode,{bag:unl});return}
   render()}
 
-function startRun(fi,mode,opt){opt=opt||{};hide();if(!S.tut&&fi===0&&mode==='field'){opt.tut=1;opt.bag=['carrot','tomato','onion']}
+function startRun(fi,mode,opt){opt=opt||{};hide();coachOff();if(!S.fg&&fi===0&&mode==='field'){opt.guide=1;opt.bag=['carrot','tomato','onion']}
   const go=()=>{newRun(fi,mode,opt);UI.state='run';UI.paused=false;$('hud').className='';UI.sel=null;FX.length=0;DECAL.length=0;bg=null;resize();
-    R.omaMad=0;R.omaHappy=0;buildChips();gpStart();const fk=runKey();measure(mode,fk,'start');
-    if(R.tut)tutStep(1);else banner(t('f_'+R.F.id),mode==='daily'?t('mod_'+R.mod):t('getReady'));
+    R.omaMad=0;R.omaHappy=0;buildChips();revInit();resize();gpStart();const fk=runKey();measure(mode,fk,'start');
+    if(R.guide&&!S.tut)gStep('plant1');else banner(t('f_'+R.F.id),mode==='daily'?t('mod_'+R.mod):t('getReady'));
     if(mode==='daily')measure('daily','challenge','start')};
   if(!UI.firstRunThisSession){commercial().then(go)}else{UI.firstRunThisSession=false;go()}}
 function runKey(){return R.mode==='daily'?'daily':(R.mode==='endless'?'e-':'f')+(R.fi+1)}
 
 /* ---------- in-run HUD ---------- */
 function buildChips(){const el=$('chips');el.innerHTML=R.bag.map(x=>'<button class="pchip" data-p="'+x+'">'+img(vegIcon(x,1,64))+'<b class="pl"></b><span class="pc">'+ic('comp')+'<i></i></span></button>').join('');
-  el.querySelectorAll('[data-p]').forEach(b=>b.addEventListener('click',()=>{const x=b.dataset.p;if(powerUp(x)){sfx('perk');toast(t('poweredUp',t('v_'+x),R.pl[x]));measure('powerup',x,'buy')}else{sfx('click');if(R.pl[x]>=5)toast(t('maxPower'));else toast(t('needComp',powerCost(x)))}}));
+  el.querySelectorAll('[data-p]').forEach(b=>b.addEventListener('click',()=>{const x=b.dataset.p;if(powerUp(x)){if(coachOff('power'))measure('hint','power','used');sfx('perk');toast(t('poweredUp',t('v_'+x),R.pl[x]));measure('powerup',x,'buy')}else{sfx('click');if(R.pl[x]>=5)toast(t('maxPower'));else toast(t('needComp',powerCost(x)))}}));
   UI.hud={}}
 function setTxt(id,v){if(UI.hud[id]!==v){UI.hud[id]=v;$(id).textContent=v}}
 function updHUD(){if(!R)return;setTxt('vLives',R.lives);setTxt('vComp',fmtN(R.comp));setTxt('vScore',fmtN(R.score));
@@ -1515,22 +1707,13 @@ function updHUD(){if(!R)return;setTxt('vLives',R.lives);setTxt('vComp',fmtN(R.co
   cd('bWater',R.cdW,45);cd('bScare',R.cdS,60);
   setTxt('vMest',R.mest);$('bMest').classList.toggle('hide',R.mest<=0&&!UI.mestDrag);
   setTxt('bSpeed','x'+R.speed);
-  const nb=$('bNext');if(R.nextT>0&&!R.tut&&R.wave>0){nb.classList.remove('hide');setTxt('vNext',t('nextWave')+' +'+Math.floor(4+R.wave*1.5))}else nb.classList.add('hide');
-  const gb=$('bGold');const gs=R.wave>=5&&!R.goldUsed&&freeBeds().length>0&&R.mode!=='daily';gb.classList.toggle('hide',!gs);if(gs&&!R.goldSeen){R.goldSeen=1;measure('rewarded','golden-seed','visible')}
+  const nb=$('bNext');if(R.nextT>0&&!R.g&&R.rev&&R.rev.has('next')&&R.wave>0){nb.classList.remove('hide');setTxt('vNext',t('nextWave')+' +'+Math.floor(4+R.wave*1.5))}else nb.classList.add('hide');
+  const gb=$('bGold');const gs=R.wave>=5&&!R.goldUsed&&!R.guide&&freeBeds().length>0&&R.mode!=='daily';gb.classList.toggle('hide',!gs);if(gs&&!R.goldSeen){R.goldSeen=1;measure('rewarded','golden-seed','visible')}
   $('chips').querySelectorAll('[data-p]').forEach(b=>{const x=b.dataset.p;const pl=R.pl[x]||0;const k=x+pl+'_'+(R.comp>=powerCost(x));if(b._k===k)return;b._k=k;
     b.querySelector('.pl').textContent=pl?'+'+pl:'';b.querySelector('.pc i').textContent=pl>=5?'MAX':powerCost(x);b.classList.toggle('can',pl<5&&R.comp>=powerCost(x))})}
 
-/* ---------- tutorial ---------- */
-function tutStep(n){R.tut=n;const tt=$('tut'),h=$('hand');
-  if(n===1){tt.className='';$('tutTxt').innerHTML=t('tut1');pointAt($('bBuy'));measure('tutorial','1-plant','start')}
-  else if(n===2){$('tutTxt').innerHTML=t('tut2');measure('tutorial','1-plant','complete');measure('tutorial','2-merge','start');dragHint()}
-  else if(n===3){$('tut').classList.add('low');$('tutTxt').innerHTML=t('tut3');h.className='hide';measure('tutorial','2-merge','complete');R.nextT=2.5;setTimeout(()=>{if(R&&R.tut===3){tt.className='hidden';R.tut=0;S.tut=1;save();measure('tutorial','done','complete')}},4200)}
-  else if(n===4){tt.className='low';$('tutTxt').innerHTML=t('tut4');pointAt($('bWater'));measure('tutorial','4-water','start');setTimeout(()=>{if(R&&R.tut===4){endTut4()}},7000)}}
-function endTut4(){$('tut').className='hidden';$('hand').className='hide';if(R)R.tut=0}
-function pointAt(el){const r=el.getBoundingClientRect(),h=$('hand');h.className='tap';h.style.left=(r.left+r.width*.55)+'px';h.style.top=(r.top+r.height*.35)+'px'}
-function dragHint(){const vs=R.veg.filter(Boolean);if(vs.length<2)return;const a=vs[0],b=vs.find(v=>v!==a&&canMerge(a,v))||vs[1];const h=$('hand');
-  h.className='drag';h.style.left=bx(a.x)+'px';h.style.top=by(a.y)+'px';h.style.setProperty('--dx',(bx(b.x)-bx(a.x))+'px');h.style.setProperty('--dy',(by(b.y)-by(a.y))+'px')}
-
+function flyComp(p){if(!R.rev||!R.rev.has('comp'))return;if(FX.filter(f=>f.k==='fly').length>10)return;const r=elRect($('vComp'));
+  fx('fly',0,0,{scr:1,sx:bx(p.x),sy:by(p.y),tx:r.x+r.w/2,ty:r.y+r.h/2,life:.55,col:'#a8672f'});setTimeout(()=>bump('vComp'),550)}
 /* ---------- humor lines ---------- */
 const SAY_N=8;
 function maybeTalk(p){if(p.boss)return;if(R.pests.some(q=>q.talk>0))return;if(Math.random()<.07){p.say=t('say'+Math.floor(Math.random()*SAY_N));p.talk=2.4}}
@@ -1538,30 +1721,30 @@ function maybeTalk(p){if(p.boss)return;if(R.pests.some(q=>q.talk>0))return;if(Ma
 /* ---------- game events → effects ---------- */
 listeners.push((ev,a,b)=>{if(!R)return;const T=L.T;
   switch(ev){
-  case 'plant':puff(a.x,a.y,6,'#c9874a');sfx('plant');misProg('plant',1);if(R.tut===1&&R.plants>=2)tutStep(2);break;
+  case 'plant':puff(a.x,a.y,6,'#c9874a');sfx('plant');misProg('plant',1);introVeg(a.t);guideEvent('plant',a);break;
   case 'merge':{puff(a.x,a.y,10,LVC[a.l-1]);fx('ring',a.x,a.y,{life:.5,sz:1,col:'#ffe14d'});for(let i=0;i<5;i++)fx('star',a.x+fxr(-.4,.4),a.y+fxr(-.5,.2),{life:.7,sz:.14,vy:-.6});
     sfx('merge',a.l);floatText(a.x,a.y-.5,t('lvl')+' '+a.l+'!',LVC[a.l-1],.34);S.st.merges++;misProg('merges',1);
     if(a.l>S.st.maxLvl){S.st.maxLvl=a.l;measure('merge','level-'+a.l,'first')}misMax('lvl',a.l);
     if(a.l>=5){shake=.15;R.omaHappy=2;if(a.l>=6)banner(t('wow'),t('v_'+a.t)+' '+t('lvl')+' '+a.l,'#ffe14d')}
-    if(R.tut===2)tutStep(3);checkAch();break}
+    guideEvent('merge',a);checkAch();break}
   case 'kill':{const d=PEST[a.k];puff(a.x,a.y,a.boss?18:6,a.k==='gold'?'#ffd23f':'#fff',a.boss?2:1);sfx('poof');misProg('kills',1);
-    floatText(a.x,a.y-.3,'+'+b,'#c9f27a',.26);
+    floatText(a.x,a.y-.3,'+'+b,'#c9f27a',.26);flyComp(a);guideEvent('kill',a);
     if(a.k==='gold'){sfx('gold');floatText(a.x,a.y-.7,t('jackpot'),'#ffd23f',.36);misProg('gold',1)}
     if(a.boss){shake=.4;banner(t('bossDown'),'+'+fmtN(500*(1+R.fi)),'#ffe14d');misProg('boss',1);measure('boss',a.k,'defeat');R.omaHappy=3}
     break}
-  case 'eat':sfx('munch');shake=.2;R.omaMad=2;floatText(R.P.end[0]+.5,R.P.end[1]-.1,'-'+(PEST[a.k].eat||1),'#ff5d6c',.4);
+  case 'eat':guideEvent('eat',a);sfx('munch');shake=.2;R.omaMad=2;floatText(R.P.end[0]+.5,R.P.end[1]-.1,'-'+(PEST[a.k].eat||1),'#ff5d6c',.4);
     if(Math.random()<.5)R.omaLine=t('oma'+Math.floor(Math.random()*4));break;
   case 'shielded':floatText(R.P.end[0]+.5,R.P.end[1]-.1,t('blocked'),'#7fd3ff',.3);break;
   case 'wave':{sfx('wave');const boss=R.spawnQ.find(o=>o.boss);measure('wave',runKey()+'-'+String(a).padStart(2,'0'),'start');
     if(boss){setTimeout(()=>{sfx('boss');banner(t('b_'+boss.k),t('bs_'+boss.k),'#ff8a9a')},300);measure('boss',boss.k,'spawn')}else banner(t('wave')+' '+a,R.maxWave<1e8&&a===R.maxWave?t('lastWave'):'');
     if(R.mode==='endless')misMax('ewave',a);
-    if(a===3&&!S.tutW&&R.mode==='field'){S.tutW=1;tutStep(4)}break}
-  case 'waveDone':measure('wave',runKey()+'-'+String(a).padStart(2,'0'),'complete');break;
-  case 'spawn':maybeTalk(a);break;
-  case 'perkOffer':showPerks(a);break;
+    guideEvent('wave',a);break}
+  case 'waveDone':guideEvent('waveDone',a);measure('wave',runKey()+'-'+String(a).padStart(2,'0'),'complete');break;
+  case 'spawn':maybeTalk(a);introPest(a.k);break;
+  case 'perkOffer':coachOff();showPerks(a);break;
   case 'perk':sfx('perk');measure('perk',a,'selected');hide();break;
-  case 'water':sfx('water');for(let i=0;i<20;i++)fx('dot',fxr(0,COLS),fxr(-1,ROWS*.5),{vy:5,life:.6,col:'#7fd3ff',sz:.05});misProg('water',1);measure('ability','water','use');if(R.tut===4)endTut4();break;
-  case 'scare':sfx('scare');shake=.25;for(const p of R.pests)fx('star',p.x,p.y-.6,{life:.8,sz:.15});measure('ability','scare','use');break;
+  case 'water':sfx('water');for(let i=0;i<20;i++)fx('dot',fxr(0,COLS),fxr(-1,ROWS*.5),{vy:5,life:.6,col:'#7fd3ff',sz:.05});misProg('water',1);measure('ability','water','use');if(coachOff('water'))measure('hint','water','used');break;
+  case 'scare':sfx('scare');shake=.25;for(const p of R.pests)fx('star',p.x,p.y-.6,{life:.8,sz:.15});measure('ability','scare','use');if(coachOff('scare'))measure('hint','scare','used');break;
   case 'mestDrop':floatText(a.x,a.y-.9,t('mestFound'),'#fff6a0',.32);if(!S.mestHint){S.mestHint=1;toast(ic('mest')+' '+t('mestHint'),3500)}break;
   case 'mest':sfx('merge',a.l);puff(a.x,a.y,10,'#ffd23f');floatText(a.x,a.y-.5,t('lvl')+' '+a.l+'!','#ffd23f',.34);misMax('lvl',a.l);if(a.l>S.st.maxLvl)S.st.maxLvl=a.l;break;
   case 'sun':floatText(a.x,a.y-.5,'+'+b,'#ffe36b',.24);break;
@@ -1572,8 +1755,8 @@ listeners.push((ev,a,b)=>{if(!R)return;const T=L.T;
   case 'shell':floatText(a.x,a.y-.8,t('shell'),'#9ad0ff',.32);break;
   case 'summon':floatText(a.x,a.y-.8,t('summon'),'#b58cff',.3);sfx('boss');break;
   case 'burrow':puff(a.x,a.y+.2,4,'#9b6a3d',.8);break;
-  case 'early':floatText(COLS/2,.4,'+'+a,'#c9f27a',.36);sfx('coin');measure('button','next-wave','interact');break;
-  case 'sell':puff(a.x,a.y,8,'#8bd75c');sfx('coin');floatText(a.x,a.y-.4,'+'+b,'#c9f27a',.3);break;
+  case 'early':if(coachOff('next'))measure('hint','next','used');floatText(COLS/2,.4,'+'+a,'#c9f27a',.36);sfx('coin');measure('button','next-wave','interact');break;
+  case 'sell':if(coachOff('bin'))measure('hint','bin','used');puff(a.x,a.y,8,'#8bd75c');sfx('coin');floatText(a.x,a.y-.4,'+'+b,'#c9f27a',.3);break;
   case 'revive':sfx('win');banner(t('revived'),'');break;
   }});
 
@@ -1601,7 +1784,7 @@ function showRevive(){gpStop();UI.state='over';measure('rewarded','revive','visi
   onClick('#rv',()=>rewarded('revive').then(ok=>{if(ok){revive();hide();UI.state='run';gpStart()}else{toast(t('adFail'));showResult()}}));
   onClick('#no',showResult)}
 function drawOmaImg(mad){const c=document.createElement('canvas');c.width=240;c.height=180;const x=c.getContext('2d');x.scale(2,2);drawOma(x,60,42,30,0,mad,!mad);return img(c.toDataURL(),'oma')}
-function showResult(){gpStop();UI.state='over';const res=finishRun();R.res=res;const win=res.win;
+function showResult(){gpStop();UI.state='over';coachOff();if(R.guide){S.fg=1;measure('tutorial','first-garden',R.over==='win'?'complete':'fail')}const res=finishRun();R.res=res;const win=res.win;
   if(win){sfx('win')}else sfx('lose');
   measure(R.mode,runKey(),win?'complete':'fail');
   if(R.mode==='field')measure('field',runKey(),'stars-'+res.stars);
@@ -1658,9 +1841,10 @@ function showShop(tab){tab=tab||'veg';measure('screen','shop','visible');
     if(ready)measure('rewarded','shop-coins','visible')}
   show('<h2>'+t('shed')+'</h2><div class="row top"><div class="pill">'+ic('coin')+'<b>'+fmtN(S.coins)+'</b></div></div><div class="tabs"><button class="tab'+(tab==='veg'?' on':'')+'" data-tab="veg">'+t('tabVeg')+'</button><button class="tab'+(tab==='meta'?' on':'')+'" data-tab="meta">'+t('tabGarden')+'</button></div><div class="slist">'+body+'</div><button class="btn gray" id="back">'+t('back')+'</button>','shop');
   onClick('[data-tab]',e=>showShop(e.dataset.tab));onClick('#back',goHome);
+  if(!S.hUp&&tab==='veg'){const b=[...scr.querySelectorAll('[data-g],[data-u]')].find(e=>e.classList.contains('green'));if(b)b.classList.add('pointme')}
   onClick('[data-u]',e=>{const tp=e.dataset.u;if(S.coins<VEG[tp].cost){toast(t('needCoins'));return}S.coins-=VEG[tp].cost;S.unl[tp]=1;save();sfx('perk');toast(img(vegIcon(tp,1),'ti')+t('unlocked',t('v_'+tp)));measure('shop-item','unlock-'+tp,'buy');checkAch();
     if(!S.bag||S.bag.length<5){S.bag=(S.bag||defaultBag()).concat(tp).slice(0,5)}showShop('veg')});
-  onClick('[data-g]',e=>{const tp=e.dataset.g;const c=upCost(tp);if(S.coins<c){toast(t('needCoins'));return}S.coins-=c;S.up[tp]=(S.up[tp]||0)+1;save();sfx('merge',3);measure('shop-item','upgrade-'+tp,'buy');if(!S.firstUp){S.firstUp=1;measure('milestone','first-upgrade','reached')}showShop('veg')});
+  onClick('[data-g]',e=>{const tp=e.dataset.g;const c=upCost(tp);if(S.coins<c){toast(t('needCoins'));return}S.coins-=c;S.up[tp]=(S.up[tp]||0)+1;S.hUp=1;save();sfx('merge',3);measure('shop-item','upgrade-'+tp,'buy');if(!S.firstUp){S.firstUp=1;measure('milestone','first-upgrade','reached')}showShop('veg')});
   onClick('[data-m]',e=>{const m=META.find(x=>x.k===e.dataset.m);const c=metaCost(m);if(S.coins<c){toast(t('needCoins'));return}S.coins-=c;S.meta[m.k]=(S.meta[m.k]||0)+1;save();sfx('merge',4);measure('shop-item','meta-'+m.k,'buy');showShop('meta')});
   onClick('#adc',()=>rewarded('shop-coins').then(ok=>{if(ok){S.adCoinT=Date.now();addCoins(60);sfx('coin')}else toast(t('adFail'));showShop('meta')}))}
 
@@ -1728,14 +1912,14 @@ window.addEventListener('pointerup',e=>{const p=ptr(e);
     if(!d.moved){UI.sel=UI.sel===d.v?null:d.v;if(UI.sel){const v=d.v;toast(img(vegIcon(v.t,v.l),'ti')+'<b>'+t('v_'+v.t)+'</b> '+t('lvl')+' '+v.l+(VEG[v.t].kind==='eco'?' · +'+Math.ceil(vProd(v))+'/6s':' · '+t('dmg')+' '+Math.round(vDmg(v))),1400)}return}
     if(overEl($('bSell'),p)){sellVeg(d.v);measure('button','sell','interact');return}
     const ci=cellAt(p.x,p.y);if(ci<0||!R.P.beds.includes(ci)||ci===d.v.i)return;const o=R.veg[ci];
-    if(o&&canMerge(d.v,o))doMerge(d.v,o);else if(o&&o.t===d.v.t&&o.l===d.v.l){toast(t('maxLvl'))}else{moveVeg(d.v,ci);sfx('click')}}
+    if(o&&canMerge(d.v,o))doMerge(d.v,o);else if(o&&o.t===d.v.t&&o.l===d.v.l){toast(t('maxLvl'))}else{if(o&&(S.hSwap||0)<3){S.hSwap=(S.hSwap||0)+1;toast(t('h_swap'),2600);measure('hint','swap','shown')}moveVeg(d.v,ci);sfx('click')}}
   if(UI.mestDrag){UI.mestDrag=null;const ci=cellAt(p.x,p.y);if(ci>=0&&R&&R.veg[ci]){if(!useMest(R.veg[ci]))toast(t('maxLvl'))}}});
 $('bMest').addEventListener('pointerdown',e=>{if(!R||R.mest<=0)return;Snd.resume();UI.mestDrag={px:e.clientX,py:e.clientY};e.preventDefault()});
-$('bBuy').addEventListener('click',()=>{Snd.resume();if(!R||R.over||UI.paused)return;if(R.tut===2||R.tut===3&&R.plants<2){}
-  const force=R.tut&&R.plants<2?'carrot':null;const v=buySeed(force);if(!v){sfx('click');if(!freeBeds().length)toast(t('fullInfo'));else toast(t('needComp',seedCost()))}});
+$('bBuy').addEventListener('click',()=>{Snd.resume();if(!R||R.over||UI.paused)return;if(guideBuy())return;
+  const v=buySeed();if(!v){sfx('click');if(!freeBeds().length)toast(t('fullInfo'));else toast(t('needComp',seedCost()))}});
 $('bWater').addEventListener('click',()=>{if(R&&!useWater()){if(R.mod==='nowater')toast(t('mod_nowater'));else toast(t('cooldown'))}});
 $('bScare').addEventListener('click',()=>{if(R&&!useScare()){if(R.mod==='nowater')toast(t('mod_nowater'));else toast(t('cooldown'))}});
-$('bSpeed').addEventListener('click',()=>{if(!R)return;R.speed=R.speed===1?2:1;sfx('click');measure('button','speed-x'+R.speed,'interact')});
+$('bSpeed').addEventListener('click',()=>{if(!R)return;coachOff('speed');R.speed=R.speed===1?2:1;sfx('click');measure('button','speed-x'+R.speed,'interact')});
 $('bPause').addEventListener('click',()=>{sfx('click');pause()});
 $('bNext').addEventListener('click',()=>{if(R)callEarly()});
 $('bSell').addEventListener('click',()=>toast(t('sellInfo')));
@@ -1744,7 +1928,7 @@ window.addEventListener('keydown',e=>{if(UI.state!=='run'||!R)return;const k=e.k
   if(k===' '||k==='b'){e.preventDefault();$('bBuy').click()}else if(k==='1')$('bWater').click();else if(k==='2')$('bScare').click();else if(k==='f')$('bSpeed').click();else if(k==='n')$('bNext').click();else if(k==='escape'||k==='p'){if(UI.paused)resume();else pause()}});
 document.addEventListener('visibilitychange',()=>{if(document.hidden)pause()});
 window.addEventListener('blur',()=>{if(UI.state==='run')pause()});
-window.addEventListener('resize',()=>{resize();if(R&&R.tut===1)pointAt($('bBuy'))});
+window.addEventListener('resize',()=>{resize();coachTick()});
 ['contextmenu','selectstart'].forEach(ev=>document.addEventListener(ev,e=>e.preventDefault()));
 window.addEventListener('keydown',e=>{if([' ','ArrowUp','ArrowDown'].includes(e.key))e.preventDefault()});
 window.addEventListener('wheel',e=>{if(!e.target.closest('#scr'))e.preventDefault()},{passive:false});
@@ -1769,8 +1953,8 @@ function thumbScene(){S.tut=1;newRun(0,'field',{bag:['carrot','tomato','onion','
 /* ---------- main loop ---------- */
 let lastT=0;
 function frame(ts){const dt=Math.min(.05,Math.max(0,(ts-lastT)/1000));lastT=ts;gT+=dt;
-  try{if(UI.state==='run'&&R&&!UI.paused&&!inAd){const was=R.over;update(dt);if(!was&&R.over)setTimeout(onOver,R.over==='win'?900:700)}
-    if(R&&(UI.state==='run'||UI.state==='over')){if(R.omaMad>0)R.omaMad-=dt;if(R.omaHappy>0)R.omaHappy-=dt;drawWorld(dt);updHUD()}else drawHome(dt);
+  try{if(UI.state==='run'&&R&&!UI.paused&&!inAd){const was=R.over;update(dt*CO.slow);guideTick(dt);if(!was&&R.over)setTimeout(onOver,R.over==='win'?900:700)}
+    if(R&&(UI.state==='run'||UI.state==='over')){if(R.omaMad>0)R.omaMad-=dt;if(R.omaHappy>0)R.omaHappy-=dt;drawWorld(dt);updHUD()}else drawHome(dt);coachTick();
     if(!inAd&&!document.hidden){UI.sess+=dt;S.play+=dt;const ms=[1,3,5,7,10,15,20,30];for(const m of ms)if(UI.sess>=m*60&&!UI.msent[m]){UI.msent[m]=1;measure('session','m'+m,'reached');
       if(m===3||m===7)measure('opener',S.opener||'x','alive-'+m+'m')}}
     if((saveT+=dt)>10){saveT=0;save()}
@@ -1779,7 +1963,8 @@ function frame(ts){const dt=Math.min(.05,Math.max(0,(ts-lastT)/1000));lastT=ts;g
 
 /* ---------- boot ---------- */
 load();lang=S.lang&&TR[S.lang]?S.lang:detectLang();applyI18n();
-if(!S.opener){S.opener=['a','b','c'][Math.floor(Math.random()*3)];save();measure('opener',S.opener,'assigned')}
+if(S.opener==='c')S.opener=null;if(!S.fg&&S.st.runs>0)S.fg=1;
+if(!S.opener){S.opener=['a','b'][Math.floor(Math.random()*2)];save();measure('opener',S.opener,'assigned')}
 console.log('Veggie Siege v'+VERSION);$('ver0').textContent='v'+VERSION;
 resize();
 Promise.resolve(window.__pokiReady).catch(()=>{}).then(()=>{if(window.PokiSDK)SDK=window.PokiSDK;return SDK.init()}).catch(()=>{}).then(()=>{
@@ -1790,10 +1975,9 @@ Promise.resolve(window.__pokiReady).catch(()=>{}).then(()=>{if(window.PokiSDK)SD
   const qs=new URLSearchParams(location.search);if(qs.get('opener'))S.opener=qs.get('opener');
   if(qs.get('home')){goHome();return}
   if(qs.get('thumb')){thumbScene();return}
-  if(!S.tut){const v=S.opener;measure('opener',v,'start');
-    if(v==='a')startRun(0,'field',{tut:1,bag:['carrot','tomato','onion']});
-    else if(v==='b'){UI.state='home';showIntro(()=>startRun(0,'field',{tut:1,bag:['carrot','tomato','onion']}))}
-    else goHome()}
+  if(!S.fg){const v=S.opener;measure('opener',v,'start');
+    if(v==='b'&&!S.tut){UI.state='home';showIntro(()=>startRun(0,'field',{}))}
+    else startRun(0,'field',{})}
   else goHome()});
 
 </script>
