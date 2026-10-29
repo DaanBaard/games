@@ -4,6 +4,15 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Jungle Skirmish</title>
+<script>
+/* Poki SDK async laden. Niet op de eigen gamesite (github.io): daar meldt de SDK "unauthorized hosting". */
+window.__pokiReady = new Promise(function (res) {
+  if (/(^|\.)github\.io$/i.test(location.hostname) || /[?&](thumb|test)=1/.test(location.search)) { res(false); return; }
+  var s = document.createElement('script'); s.src = 'https://game-cdn.poki.com/scripts/v2/poki-sdk.js'; s.async = true;
+  s.onload = function () { res(true); }; s.onerror = function () { res(false); }; setTimeout(function () { res(false); }, 6000);
+  document.head.appendChild(s);
+});
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&display=swap" rel="stylesheet">
@@ -114,6 +123,7 @@ button:focus-visible{ outline:2px solid var(--leaf); outline-offset:2px; }
 .row button, .plain{ flex:1; padding:7px; font-size:15px; font-weight:700; color:var(--cream); background:#3a2414; border:2px solid #7a5428; border-radius:10px; }
 .row button:disabled, .plain:disabled{ opacity:.4; cursor:default; }
 button.off{ opacity:.55; text-decoration:line-through; }
+.menuCard .ver{ position:absolute; right:10px; bottom:6px; font-size:12px; color:#8a7658; pointer-events:none; }
 .keys{ margin-top:12px; font-size:13px; line-height:1.5; color:#cdb991; text-align:left; }
 .keys kbd{ display:inline-block; padding:0 5px; border-radius:4px; background:#5a3a20; color:#fff; font-family:var(--font); font-size:12px; border-bottom:2px solid #2a180c; }
 #pause, #end, #brief, #revive{ background:rgba(8,16,10,.72); }
@@ -247,6 +257,7 @@ button.off{ opacity:.55; text-decoration:line-through; }
       <button id="togVoice" class="off" aria-pressed="false" data-i18n="voice">Stem</button>
       <button id="btnLang" data-i18n="lang">English</button>
     </div>
+    <div class="ver">v1.5</div>
     <div class="keys" data-i18n-html="keys">
       <kbd>Sleep</kbd> selecteren · <kbd>Rechts+sleep</kbd> kaart verschuiven · <kbd>Klik</kbd>/<kbd>Rechtsklik</kbd> verplaatsen of aanvallen · <kbd>A</kbd> aanval-verplaatsen · <kbd>S</kbd> stop · <kbd>Ctrl</kbd>+<kbd>1-9</kbd> groep · <kbd>E</kbd> alle eenheden in beeld · <kbd>H</kbd> naar Nest · <kbd>M</kbd> muziek · <kbd>Pijltjes</kbd>/schermrand scrollen · <kbd>Scroll</kbd> zoomen
     </div>
@@ -4463,15 +4474,24 @@ const POKI = {
   sdk: null, inGameplay: false, adPlaying: false, bonusAt: 0, BONUS: 300, BONUS_CD: 150,
   init() {
     return new Promise(res => {
-      if (typeof PokiSDK === 'undefined') return res(false);
-      const done = () => { this.sdk = PokiSDK; res(true); };
-      try { PokiSDK.init().then(done).catch(done); } catch (e) { res(false); } // catch = adblock: game still runs
+      Promise.resolve(window.__pokiReady).then(() => {
+        if (typeof PokiSDK === 'undefined') return res(false);
+        const done = () => { this.sdk = PokiSDK; res(true); };
+        try { PokiSDK.init().then(done).catch(done); } catch (e) { res(false); } // catch = adblock: game still runs
+      });
     });
   },
   loadingFinished() { try { this.sdk && this.sdk.gameLoadingFinished(); } catch (e) { } },
-  // funnel analytics (shows up in the Poki dashboard): where do players drop off?
-  sent: {},
-  measure(cat, what, action, once) { const k = cat + '|' + what + '|' + action; if (once && this.sent[k]) return; this.sent[k] = 1; try { if (this.sdk && this.sdk.measure) this.sdk.measure(cat, String(what), action); } catch (e) { } },
+  // funnel analytics (shows up in the Poki dashboard): where do players drop off? Full list: EVENTS.md
+  // values are cleaned like in PLONK!/Prismatic (no / or ^, max. 60 chars); without the SDK or with ?debug=1 they go to the console
+  sent: {}, events: [], debug: /[?&]debug=1/.test(location.search),
+  measure(cat, what, action, once) {
+    const clean = v => String(v).replace(/[\/^]/g, '-').slice(0, 60); const c = clean(cat), w = clean(what), a = clean(action);
+    const k = c + '|' + w + '|' + a; if (once && this.sent[k]) return; this.sent[k] = 1;
+    this.events.push([c, w, a]); if (this.events.length > 500) this.events.shift();
+    if (!this.sdk || this.debug) console.log('[Poki] measure', c, w, a);
+    try { if (this.sdk && this.sdk.measure) this.sdk.measure(c, w, a); } catch (e) { }
+  },
   start() { if (this.inGameplay || this.adPlaying) return; this.inGameplay = true; try { this.sdk && this.sdk.gameplayStart(); } catch (e) { } },
   stop() { if (!this.inGameplay) return; this.inGameplay = false; try { this.sdk && this.sdk.gameplayStop(); } catch (e) { } },
   mute(on) {
@@ -4502,8 +4522,55 @@ const POKI = {
   async claimBonus() {
     if (!this.bonusReady() || G.paused || G.over) return;
     const ok = await this.rewarded();
+    this.measure('rewarded', 'bonus', ok ? 'reward' : 'noreward');
     if (ok) { G.players.player.credits += this.BONUS; this.bonusAt = G.t + this.BONUS_CD; UI.eva(T('bonusGot', { n: this.BONUS })); SND.play('coin'); }
     else UI.eva(T('bonusNo'));
+  },
+};
+// ===================== GAME EVENTS (Poki measure) =====================
+// Same setup as PLONK!/Prismatic: one funnel per ATTEMPT (start -> complete/fail), playtime milestones from the
+// first input, where the player is at 1/3/5/12 min, return visits and a funnel per version. Full list: EVENTS.md
+const GAME_VERSION = '1.5';
+const EV = {
+  attempt: null, firstInput: 0, msSent: {}, vSent: {}, MILESTONES: [1, 2, 3, 5, 8, 12, 20, 30],
+  version(what) { if (this.vSent[what]) return; this.vSent[what] = 1; POKI.measure('version', GAME_VERSION.replace('.', ''), what); },
+  start() { this.attempt = { id: G.mission ? G.mission.id : 'skirmish-' + G.diff }; POKI.measure('level', this.attempt.id, 'start'); },
+  // how: complete | fail; why: set when the player leaves a running match (menu, restart, load)
+  end(how, why) {
+    const a = this.attempt; if (!a) return; this.attempt = null;
+    POKI.measure('level', a.id, how);
+    if (why) POKI.measure('quit', a.id, why);
+    const m = G.t / 60, b = m < 1 ? '0-1min' : m < 3 ? '1-3min' : m < 5 ? '3-5min' : m < 10 ? '5-10min' : m < 20 ? '10-20min' : '20min+';
+    POKI.measure('mtime', a.id + '-' + (why ? 'quit' : how), b);
+    if (how === 'complete' && !a.id.startsWith('skirmish')) this.version(a.id); // campaign progress per version
+  },
+  quit(why) { this.end('fail', why); },
+  input() { if (this.firstInput) return; this.firstInput = performance.now(); POKI.measure('session', 'first-input', 'interact'); this.version('first-input'); },
+  where() {
+    if (!G.started) return $('mSkirm') && !$('mSkirm').hidden ? 'menu-skirmish' : $('mMissions') && !$('mMissions').hidden ? 'menu-missions' : 'menu';
+    const id = G.mission ? G.mission.id : 'skirmish';
+    if (G.over) return 'end-' + id; if (G.reviveOpen) return 'revive-' + id;
+    if (!$('brief').classList.contains('hide')) return 'brief-' + id; if (G.paused) return 'pause-' + id;
+    if (G.mission && G.mission.tutorial && G.ms && TUT[G.ms.tut]) return id + '-' + TUT[G.ms.tut].id;
+    return id;
+  },
+  tick() {
+    if (!this.firstInput) return; const m = (performance.now() - this.firstInput) / 60000;
+    for (const k of this.MILESTONES) if (m >= k && !this.msSent[k]) {
+      this.msSent[k] = 1; POKI.measure('session', 'played', k + 'min');
+      if (k === 1 || k === 3 || k === 5 || k === 12) POKI.measure('where', k + 'min', this.where());
+      if (k === 1 || k === 3 || k === 5 || k === 12 || k === 20) this.version(k + 'min');
+    }
+  },
+  open() {
+    POKI.measure('session', 'first-input', 'visible'); this.version('load');
+    const today = Math.floor(Date.now() / 864e5 - new Date().getTimezoneOffset() / 1440);
+    let last = null; try { last = JSON.parse(localStorage.getItem('jungle_lastday')); } catch (e) { }
+    if (typeof last === 'number' && last <= today) {
+      const d = today - last; POKI.measure('session', 'return', d === 0 ? 'sameday' : d === 1 ? 'day1' : d <= 3 ? 'day2-3' : d <= 7 ? 'day4-7' : 'day8plus');
+      this.version('return'); if (d >= 1) this.version('return-nextday');
+    } else POKI.measure('session', 'new', 'visit');
+    try { localStorage.setItem('jungle_lastday', JSON.stringify(today)); } catch (e) { }
   },
 };
 // begin (or resume into) a match at a natural break
@@ -4514,7 +4581,7 @@ function stopAutoNext() { clearInterval(AUTONEXT.timer); AUTONEXT.timer = null; 
 function startAutoNext(i, secs) {
   stopAutoNext(); let left = secs; const b = $('btnNext'), base = T('nextMission') + ' · ' + mName(MISSIONS[i]);
   const show = () => { b.textContent = base + ' (' + left + ')'; };
-  show(); AUTONEXT.timer = setInterval(() => { if (POKI.adPlaying || $('end').classList.contains('hide')) return; left--; if (left <= 0) { stopAutoNext(); b.click(); } else show(); }, 1000);
+  show(); AUTONEXT.timer = setInterval(() => { if (POKI.adPlaying || $('end').classList.contains('hide')) return; left--; if (left <= 0) { stopAutoNext(); AUTONEXT.auto = true; b.click(); } else show(); }, 1000);
 }
 
 // ===================== UI / INPUT / MENUS =====================
@@ -4656,7 +4723,7 @@ function updateHUD() {
   if (UI.placing && !(P.buildQ && P.buildQ.ready && P.buildQ.key === UI.placing)) UI.placing = null;
   if ((UI.mode === 'amove' || UI.mode === 'jump') && !selUnits().length) UI.mode = null;
   drawCameos(); selPanel(); drawMinimap(); powerHUD(); objHUD();
-  const bb = $('btnBonus'); if (bb) { bb.hidden = !POKI.sdk; if (POKI.sdk) { const ready = POKI.bonusReady(); bb.disabled = !ready; bb.textContent = ready ? T('bonus', { n: POKI.BONUS }) : T('bonus', { n: POKI.BONUS }) + ' · ' + Math.ceil(POKI.bonusAt - G.t) + 's'; } }
+  const bb = $('btnBonus'); if (bb) { bb.hidden = !POKI.sdk; if (POKI.sdk) { const ready = POKI.bonusReady(); bb.disabled = !ready; if (ready) POKI.measure('rewarded', 'bonus', 'visible', true); bb.textContent = ready ? T('bonus', { n: POKI.BONUS }) : T('bonus', { n: POKI.BONUS }) + ' · ' + Math.ceil(POKI.bonusAt - G.t) + 's'; } }
   $('modeSell').classList.toggle('on', UI.mode === 'sell'); $('modeRepair').classList.toggle('on', UI.mode === 'repair');
   $('hint').textContent = UI.placing ? T('hPlace') : UI.mode === 'jump' ? T('hJump') : UI.mode && UI.mode.startsWith('sp:') ? T('hPower', { n: powName(UI.mode.slice(3)) }) : UI.mode === 'amove' ? T('hAmove') : UI.mode === 'sell' ? T('hSell') : UI.mode === 'repair' ? T('hRepair') : '';
 }
@@ -4835,8 +4902,8 @@ function setupInput() {
   document.querySelectorAll('.tab').forEach(t => t.addEventListener('click', () => { UI.tab = t.dataset.tab; buildSidebar(); SND.play('click'); }));
   $('modeSell').onclick = () => { UI.mode = UI.mode === 'sell' ? null : 'sell'; UI.placing = null; };
   $('modeRepair').onclick = () => { UI.mode = UI.mode === 'repair' ? null : 'repair'; UI.placing = null; };
-  $('btnMenu').onclick = () => togglePause();
-  $('btnBonus').onclick = () => { SND.init(); POKI.claimBonus(); };
+  $('btnMenu').onclick = () => { POKI.measure('pause', 'open', 'interact'); togglePause(); };
+  $('btnBonus').onclick = () => { SND.init(); if (POKI.bonusReady()) POKI.measure('rewarded', 'bonus', 'interact'); POKI.claimBonus(); };
   document.addEventListener('visibilitychange', () => { try { if (SND.ctx) { if (document.hidden) SND.ctx.suspend(); else if (!POKI.adPlaying) SND.ctx.resume(); } } catch (e) { } if (document.hidden && G.started && !G.paused && !G.over) togglePause(); });
   $('btnAll').onclick = () => selectEnts(G.ents.filter(e => !e.dead && e.type === 'unit' && e.owner === 'player' && !isHarv(e) && onScreen(e.x, e.y, 0)), false);
   // mobile browsers report the new size a moment after rotating: resize now and again shortly after
@@ -5088,7 +5155,7 @@ function showBrief(M) {
   $('briefTitle').textContent = `${T('mission')} ${MISSIONS.indexOf(M) + 1}: ${mName(M)}`;
   $('briefText').textContent = mBrief(M);
   $('briefGoals').innerHTML = `<li class="g">🎯 ${goalText(M)}</li>` + [0, 1, 2].map(i => `<li>★ ${starText(M, i)}</li>`).join('');
-  $('brief').classList.remove('hide'); fitOverlays();
+  $('brief').classList.remove('hide'); fitOverlays(); POKI.measure('brief', M.id, 'visible');
 }
 function startMission(i) { const M = MISSIONS[i]; startGame(M.faction, 'normaal', M); }
 function renderMissionGrid() {
@@ -5097,7 +5164,7 @@ function renderMissionGrid() {
     const b = document.createElement('button'); b.className = 'mtile' + (CAMP.unlocked(i) ? '' : ' locked') + (M.faction === 'kevers' ? ' kev' : '');
     const st = CAMP.stars[M.id] || 0;
     b.innerHTML = `<span class="mn">${i + 1}</span><span class="mt">${mName(M)}</span><span class="ms">${CAMP.unlocked(i) ? '★'.repeat(st) + '<i>' + '★'.repeat(3 - st) + '</i>' : '🔒'}</span>`;
-    b.onclick = () => { if (!CAMP.unlocked(i)) { SND.init(); SND.play('deny'); return; } SND.init(); beginMatch(() => startMission(i)); };
+    b.onclick = () => { POKI.measure('menu', 'mission-tile', 'interact'); if (!CAMP.unlocked(i)) { POKI.measure('missions', M.id, 'locked'); SND.init(); SND.play('deny'); return; } POKI.measure('missions', M.id, 'pick'); SND.init(); beginMatch(() => startMission(i)); };
     g.appendChild(b);
   });
 }
@@ -5105,6 +5172,9 @@ function menuView(v) {
   ['mMain', 'mSkirm', 'mMissions'].forEach(id => { $(id).hidden = id !== v; });
   if (v === 'mMissions') renderMissionGrid();
   refreshPlayBtn(); fitOverlays();
+  if (v === 'mMain') { POKI.measure('menu', 'missions', 'visible', true); POKI.measure('menu', 'skirmish', 'visible', true); if (hasSave()) POKI.measure('menu', 'continue', 'visible', true); }
+  if (v === 'mMissions') POKI.measure('menu', 'mission-tile', 'visible', true);
+  if (v === 'mSkirm') POKI.measure('button', 'skirmish-start', 'visible', true);
   if (!G.started) prerenderTerrain(v === 'mSkirm' ? 4242 : MISSIONS[CAMP.next()].seed);
 }
 function refreshPlayBtn() {
@@ -5122,6 +5192,7 @@ function resetState() {
   explored.fill(0); visible.fill(0);
 }
 function startGame(faction, diff, M) {
+  EV.quit('restart');
   resetState(); G.faction = faction; G.diff = diff; G.mission = M || null;
   G.aiCfg = Object.assign({}, DIFFS[diff], M && M.ai.cfg ? M.ai.cfg : {});
   G.seed = M ? M.seed : 4242;
@@ -5160,7 +5231,7 @@ function startGame(faction, diff, M) {
     const q = freePoint(n.x + 250, n.y - 60); G.ms.mark = q; POKI.measure('tutorial', 'move', 'start');
     const en = ownedB('ai', 'nest')[0]; if (en) en.hp = Math.round(en.maxHp * 0.6);
   }
-  POKI.measure('level', M ? M.id : 'skirmish-' + diff, 'start');
+  EV.start(); POKI.measure('pause', 'open', 'visible', true);
   MUSIC.play('game');
 }
 const REVIVE = { credits: 600, secs: 10, t: 0, timer: null,
@@ -5175,11 +5246,12 @@ function offerRevive() {
   REVIVE.timer = setInterval(() => { if (POKI.adPlaying) return; const k = 1 - (performance.now() - t0) / (REVIVE.secs * 1000); bar.style.width = Math.max(0, k * 100) + '%'; if (k <= 0) declineRevive(); }, 100);
 }
 function closeRevive() { clearInterval(REVIVE.timer); $('revive').classList.add('hide'); G.reviveOpen = false; }
-function declineRevive() { if (!G.reviveOpen) return; closeRevive(); G.revived = true; G.paused = false; endGame(false); }
+function declineRevive() { if (!G.reviveOpen) return; POKI.measure('rewarded', 'revive', 'decline'); closeRevive(); G.revived = true; G.paused = false; endGame(false); }
 async function acceptRevive() {
   if (!G.reviveOpen) return; $('btnRevive').disabled = true; clearInterval(REVIVE.timer); POKI.measure('rewarded', 'revive', 'interact');
   let ok = true;
   if (POKI.sdk) ok = await POKI.rewarded();
+  POKI.measure('rewarded', 'revive', ok ? 'reward' : 'noreward');
   if (!ok) { UI.eva(T('rvNoAd')); declineRevive(); return; }
   closeRevive(); doRevive(); G.paused = false; POKI.start();
 }
@@ -5208,12 +5280,13 @@ function endGame(win) {
   if (G.over || G.reviveOpen) return;
   if (!win && !G.revived && !(G.mission && G.mission.tutorial)) { offerRevive(); return; }
   G.over = win ? 'win' : 'lose'; POKI.stop();
-  POKI.measure('level', G.mission ? G.mission.id : 'skirmish-' + G.diff, win ? 'complete' : 'fail');
+  EV.end(win ? 'complete' : 'fail');
   SND.play(win ? 'win' : 'lose'); VOICE.say(win ? T('win') : T('lose'), 'end');
   const M = G.mission; let stars = 0, got = [false, false, false];
   if (M && win) {
     got = [true, M.goal === 'survive' ? G.stats.lost <= M.par : G.t <= M.par, !(G.stats.lostB > 0)];
     stars = got.filter(Boolean).length;
+    POKI.measure('stars', M.id, String(stars));
     if (stars > (CAMP.stars[M.id] || 0)) { CAMP.stars[M.id] = stars; CAMP.save(); }
   }
   setTimeout(() => {
@@ -5227,6 +5300,7 @@ function endGame(win) {
     $('btnAgain').textContent = M ? T('retry') : T('again');
     $('btnAgain').classList.toggle('primary', !hasNext);
     $('end').classList.remove('hide'); fitOverlays();
+    if (hasNext) POKI.measure('end', 'next', 'visible'); POKI.measure('end', 'retry', 'visible'); POKI.measure('end', 'menu', 'visible');
   }, 1800);
 }
 function togglePause() {
@@ -5252,6 +5326,7 @@ function saveGame() {
 function loadGame() {
   let d; try { d = JSON.parse(localStorage.getItem('jungle_skirmish_v3')); } catch (e) { d = null; }
   if (!d) { UI.eva(T('noSave')); return; }
+  EV.quit('load');
   resetState(); G.faction = d.faction; G.diff = d.diff;
   G.mission = d.mission >= 0 ? MISSIONS[d.mission] : null; G.seed = d.seed || 4242;
   G.aiCfg = Object.assign({}, DIFFS[G.diff], G.mission && G.mission.ai.cfg ? G.mission.ai.cfg : {});
@@ -5272,7 +5347,7 @@ function loadGame() {
   UI.tab = 'b'; buildSidebar(); updateFog();
   G.started = true; G.paused = false;
   $('menu').classList.add('hide'); $('pause').classList.add('hide'); $('end').classList.add('hide');
-  UI.eva(T('loaded')); MUSIC.play('game');
+  EV.start(); UI.eva(T('loaded')); MUSIC.play('game');
 }
 
 // ---------------- menu scene ----------------
@@ -5281,33 +5356,33 @@ function setupMenu() {
   MENU.cv = $('menuScene');
   const keys = ['scout_aap', 'werp_aap', 'bamboekar', 'citrusschutter', 'springkikker', 'kapitein_kokos', 'plukaap', 'tunnelkever', 'draagkever', 'neushoornkever', 'soldaatmier', 'peperkever', 'goliathkever', 'sjouwkever'];
   MENU.actors = keys.map((k, i) => ({ key: k, x: Math.random() * 1600, y: 0, sp: 26 + Math.random() * 16, dir: UNITS[k].faction === 'apen' ? 1 : -1, walk: Math.random() * 6, seed: i, lane: i % 2 }));
-  document.querySelectorAll('.fac').forEach(b => b.onclick = () => { MENU.faction = b.dataset.f; document.querySelectorAll('.fac').forEach(x => x.classList.toggle('on', x === b)); SND.init(); SND.play(b.dataset.f === 'apen' ? 'selM' : 'selB'); });
-  document.querySelectorAll('.dif').forEach(b => b.onclick = () => { MENU.diff = b.dataset.d; document.querySelectorAll('.dif').forEach(x => x.classList.toggle('on', x === b)); SND.init(); SND.play('click'); });
-  $('btnStart').onclick = () => { SND.init(); POKI.measure('button', 'skirmish-start', 'interact'); beginMatch(() => startGame(MENU.faction, MENU.diff)); };
+  document.querySelectorAll('.fac').forEach(b => b.onclick = () => { MENU.faction = b.dataset.f; POKI.measure('skirmish', 'faction', b.dataset.f); document.querySelectorAll('.fac').forEach(x => x.classList.toggle('on', x === b)); SND.init(); SND.play(b.dataset.f === 'apen' ? 'selM' : 'selB'); });
+  document.querySelectorAll('.dif').forEach(b => b.onclick = () => { MENU.diff = b.dataset.d; POKI.measure('skirmish', 'difficulty', b.dataset.d); document.querySelectorAll('.dif').forEach(x => x.classList.toggle('on', x === b)); SND.init(); SND.play('click'); });
+  $('btnStart').onclick = () => { SND.init(); POKI.measure('button', 'skirmish-start', 'interact'); POKI.measure('skirmish', MENU.faction, MENU.diff); beginMatch(() => startGame(MENU.faction, MENU.diff)); };
   $('btnPlay').onclick = () => { SND.init(); POKI.measure('button', 'play', 'interact'); const i = CAMP.next(); beginMatch(() => startMission(i)); };
-  $('btnMissions').onclick = () => { SND.init(); SND.play('click'); menuView('mMissions'); };
-  $('btnSkirmish').onclick = () => { SND.init(); SND.play('click'); menuView('mSkirm'); };
-  document.querySelectorAll('[data-back]').forEach(b => b.onclick = () => { SND.play('click'); menuView('mMain'); });
+  $('btnMissions').onclick = () => { SND.init(); SND.play('click'); POKI.measure('menu', 'missions', 'interact'); menuView('mMissions'); };
+  $('btnSkirmish').onclick = () => { SND.init(); SND.play('click'); POKI.measure('menu', 'skirmish', 'interact'); menuView('mSkirm'); };
+  document.querySelectorAll('[data-back]').forEach(b => b.onclick = () => { SND.play('click'); POKI.measure('menu', 'back', $('mSkirm').hidden ? 'missions' : 'skirmish'); menuView('mMain'); });
   $('obj').addEventListener('click', ev => { if (ev.target && ev.target.id === 'tutAtk') tutAttack(); });
   $('btnRevive').onclick = () => { SND.init(); acceptRevive(); };
   $('btnNoRevive').onclick = () => declineRevive();
-  $('btnBriefGo').onclick = () => { SND.init(); $('brief').classList.add('hide'); G.paused = false; POKI.start(); VOICE.say(goalText(G.mission), 'goal'); };
-  $('btnNext').onclick = () => { const i = MISSIONS.indexOf(G.mission) + 1; if (MISSIONS[i]) beginMatch(() => startMission(i), !!(G.mission && G.mission.tutorial)); };
+  $('btnBriefGo').onclick = () => { SND.init(); if (G.mission) POKI.measure('brief', G.mission.id, 'interact'); $('brief').classList.add('hide'); G.paused = false; POKI.start(); VOICE.say(goalText(G.mission), 'goal'); };
+  $('btnNext').onclick = () => { POKI.measure('end', AUTONEXT.auto ? 'autonext' : 'next', 'interact'); AUTONEXT.auto = false; const i = MISSIONS.indexOf(G.mission) + 1; if (MISSIONS[i]) beginMatch(() => startMission(i), !!(G.mission && G.mission.tutorial)); };
   menuView('mMain');
-  $('btnContinue').onclick = () => { SND.init(); beginMatch(() => loadGame()); };
+  $('btnContinue').onclick = () => { SND.init(); POKI.measure('menu', 'continue', 'interact'); beginMatch(() => loadGame()); };
   $('btnContinue').disabled = !hasSave();
-  const tog = (id, obj) => { const b = $(id); b.onclick = () => { SND.init(); if (obj === MUSIC) { MUSIC.setOn(!MUSIC.on); return; } obj.on = !obj.on; syncToggles(); if (obj === VOICE && !obj.on && typeof speechSynthesis !== 'undefined') speechSynthesis.cancel(); }; };
-  const langBtn = () => { setLang(LANG === 'nl' ? 'en' : 'nl'); SND.init(); SND.play('click'); }; $('btnLang').onclick = langBtn; $('btnLang2').onclick = langBtn;
+  const tog = (id, obj) => { const b = $(id); b.onclick = () => { SND.init(); if (obj === MUSIC) { MUSIC.setOn(!MUSIC.on); POKI.measure('settings', 'music', MUSIC.on ? 'on' : 'off'); return; } obj.on = !obj.on; syncToggles(); POKI.measure('settings', obj === VOICE ? 'voice' : 'sfx', obj.on ? 'on' : 'off'); if (obj === VOICE && !obj.on && typeof speechSynthesis !== 'undefined') speechSynthesis.cancel(); }; };
+  const langBtn = () => { setLang(LANG === 'nl' ? 'en' : 'nl'); POKI.measure('settings', 'language', LANG); SND.init(); SND.play('click'); }; $('btnLang').onclick = langBtn; $('btnLang2').onclick = langBtn;
   tog('togSound', SND); tog('togVoice', VOICE); tog('togSound2', SND); tog('togVoice2', VOICE); tog('togMusic', MUSIC); tog('togMusic2', MUSIC);
-  $('btnMusic').onclick = () => { SND.init(); MUSIC.setOn(!MUSIC.on); };
+  $('btnMusic').onclick = () => { SND.init(); MUSIC.setOn(!MUSIC.on); POKI.measure('settings', 'music', MUSIC.on ? 'on' : 'off'); };
   syncToggles();
-  $('btnResume').onclick = () => togglePause();
-  $('btnSave').onclick = () => { saveGame(); $('btnLoad2').disabled = !hasSave(); };
-  $('btnLoad2').onclick = () => beginMatch(() => loadGame());
-  $('btnRestart').onclick = () => beginMatch(() => startGame(G.faction, G.diff, G.mission));
-  $('btnQuit').onclick = () => { POKI.stop(); G.started = false; G.paused = true; $('pause').classList.add('hide'); $('menu').classList.remove('hide'); $('btnContinue').disabled = !hasSave(); menuView('mMain'); MUSIC.play('menu'); };
-  $('btnAgain').onclick = () => beginMatch(() => startGame(G.faction, G.diff, G.mission));
-  $('btnToMenu').onclick = () => { stopAutoNext(); POKI.stop(); G.started = false; G.paused = true; $('end').classList.add('hide'); $('menu').classList.remove('hide'); $('btnContinue').disabled = !hasSave(); menuView('mMain'); MUSIC.play('menu'); };
+  $('btnResume').onclick = () => { POKI.measure('pause', 'resume', 'interact'); togglePause(); };
+  $('btnSave').onclick = () => { POKI.measure('pause', 'save', 'interact'); saveGame(); $('btnLoad2').disabled = !hasSave(); };
+  $('btnLoad2').onclick = () => { POKI.measure('pause', 'load', 'interact'); beginMatch(() => loadGame()); };
+  $('btnRestart').onclick = () => { POKI.measure('pause', 'restart', 'interact'); beginMatch(() => startGame(G.faction, G.diff, G.mission)); };
+  $('btnQuit').onclick = () => { POKI.measure('pause', 'quit', 'interact'); EV.quit('menu'); POKI.stop(); G.started = false; G.paused = true; $('pause').classList.add('hide'); $('menu').classList.remove('hide'); $('btnContinue').disabled = !hasSave(); menuView('mMain'); MUSIC.play('menu'); };
+  $('btnAgain').onclick = () => { POKI.measure('end', 'retry', 'interact'); beginMatch(() => startGame(G.faction, G.diff, G.mission)); };
+  $('btnToMenu').onclick = () => { POKI.measure('end', 'menu', 'interact'); stopAutoNext(); POKI.stop(); G.started = false; G.paused = true; $('end').classList.add('hide'); $('menu').classList.remove('hide'); $('btnContinue').disabled = !hasSave(); menuView('mMain'); MUSIC.play('menu'); };
   // faction card portraits
   ['apen', 'kevers'].forEach(f => { const cv = $('facCv_' + f); MENU['p_' + f] = cv; });
 }
@@ -5340,6 +5415,7 @@ function drawMenu(dt, t) {
 let lastFrame = performance.now(), hudT = 0, menuT = 0;
 function frame(now) {
   const raw = now - lastFrame, dtAll = Math.min(0.25, raw / 1000), dt = Math.min(0.05, dtAll); lastFrame = now;
+  EV.tick();
   if (!G.started) { menuT += dt; drawMenu(dt, menuT); }
   else {
     adaptQuality(raw, dtAll);
@@ -5357,7 +5433,8 @@ function boot() {
   setupInput(); setupMenu(); applyLang(); resize();
   try { document.fonts && document.fonts.ready.then(fitOverlays); } catch (e) { }
   requestAnimationFrame(frame);
-  POKI.init().then(() => { POKI.loadingFinished(); POKI.measure('button', 'play', 'visible', true); POKI.measure('device', IS_TOUCH ? 'touch' : 'mouse', 'detect', true); });
+  ['pointerdown', 'keydown'].forEach(t => window.addEventListener(t, () => EV.input(), { capture: true, passive: true }));
+  POKI.init().then(() => { POKI.loadingFinished(); EV.open(); POKI.measure('button', 'play', 'visible', true); POKI.measure('device', IS_TOUCH ? 'touch' : 'mouse', 'detect', true); });
   setTimeout(() => { if (!G.started) prerenderTerrain(MISSIONS[CAMP.next()].seed); }, 400);
 }
 if (typeof window !== 'undefined' && typeof document !== 'undefined' && document.getElementById) window.addEventListener('load', boot);
