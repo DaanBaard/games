@@ -228,7 +228,7 @@ select.lang{appearance:none;-webkit-appearance:none;padding-right:12px;cursor:po
         <button class="play" id="playBtn" data-i18n="play">Spelen</button>
         <button class="ghost" id="shopBtn"><svg viewBox="0 0 24 24"><path d="M4 15c3-1 4-5 8-5 3 0 4 2 7 1M7 15l-1 3M10 13.5l1 4M15 11l1 4M18 11.5l2 2" stroke="#b9e44f" stroke-width="2" fill="none" stroke-linecap="round"/><circle cx="6" cy="14" r="1" fill="#b9e44f"/></svg><span data-i18n="geckos">Gekko's</span></button>
       </div>
-      <div class="menuFoot"><span class="coinsBig"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="#ffc93c"/><circle cx="12" cy="12" r="7" fill="none" stroke="#c98a12" stroke-width="1.6"/></svg><span id="menuCoins">0</span></span><span id="menuBest"></span><button class="ghost gfx" id="gfxBtn">Graphics</button><select class="ghost gfx lang" id="langSel" data-i18n-aria="language" aria-label="Taal"></select><span class="ver">v1.2</span></div>
+      <div class="menuFoot"><span class="coinsBig"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="#ffc93c"/><circle cx="12" cy="12" r="7" fill="none" stroke="#c98a12" stroke-width="1.6"/></svg><span id="menuCoins">0</span></span><span id="menuBest"></span><button class="ghost gfx" id="gfxBtn">Graphics</button><select class="ghost gfx lang" id="langSel" data-i18n-aria="language" aria-label="Taal"></select><span class="ver">v1.3</span></div>
       <div class="keys" data-i18n-html="keys"><span><kbd>WASD</kbd> lopen</span><span><kbd>Muis</kbd> kijken</span><span><kbd>Shift</kbd> sprinten</span><span><kbd>Spatie</kbd> springen</span><span><kbd>Klik</kbd>/<kbd>E</kbd> tong</span><span><kbd>F</kbd> drinken</span></div>
     </div>
   </div>
@@ -607,6 +607,9 @@ function trunkGeo(rB,rT,H,x0,y0,z0,seed){
 }
 function branchGeo(a,b,r0,r1){const d=new V3().subVectors(b,a);const L=d.length();const g=new THREE.CylinderGeometry(r1,r0,L,7,1,true);g.translate(0,L/2,0);
   g.applyQuaternion(new THREE.Quaternion().setFromUnitVectors(new V3(0,1,0),d.normalize()));g.translate(a.x,a.y,a.z);return prep(colorize(g,new THREE.Color(.85,.92,.8)),['position','normal','uv','color']);}
+// Walkable branch: horizontal direction (dx,dz), rise dy, bark radius r0 at the trunk to r1 at the tip.
+function branchInfo(a,b,r0,r1,ang){const dx=b.x-a.x,dy=b.y-a.y,dz=b.z-a.z,L2=dx*dx+dz*dz;
+  return{ax:a.x,ay:a.y,az:a.z,dx,dy,dz,L2,hl:Math.sqrt(L2),sec:Math.hypot(dx,dy,dz)/Math.sqrt(L2),r0,r1,ang};}
 function finGeo(x0,y0,z0,ang,L,H){const s=new THREE.Shape();s.moveTo(0,0);s.lineTo(L,0);s.quadraticCurveTo(L*.22,H*.18,0,H);s.lineTo(0,0);
   const g=new THREE.ExtrudeGeometry(s,{depth:.16,bevelEnabled:false,curveSegments:6});g.translate(0,0,-.08);g.rotateY(ang);g.translate(x0,y0-.15,z0);
   const uv=g.attributes.uv;for(let i=0;i<uv.count;i++)uv.setXY(i,uv.getX(i)*.5,uv.getY(i)*.4);g.computeVertexNormals();return prep(colorize(g,new THREE.Color(.62,.8,.45)),['position','normal','uv','color']);}
@@ -623,24 +626,24 @@ function placeTree(x,z,kind){
     const H=R(15,22),rB=R(.7,1.1),rT=rB*.45,seed=R(0,99);
     trunkGeos.push(trunkGeo(rB,rT,H,x,base-.3,z,seed));
     const nf=RI(4,6),fins=[];for(let i=0;i<nf;i++){const a=i/nf*6.28+R(-.3,.3),L=R(1.6,2.6)*rB,FH=R(2.2,3.4);trunkGeos.push(finGeo(x+Math.cos(a)*rB*.5,base,z+Math.sin(a)*rB*.5,-a,L,FH));fins.push({c:Math.cos(a),s:Math.sin(a),r0:rB*.5,L,FH});}
-    const top=new V3(x,base+H-.3,z);const nb=RI(4,6);
+    const top=new V3(x,base+H-.3,z);const nb=RI(4,6),branches=[];
     for(let i=0;i<nb;i++){const a=i/nb*6.28+R(-.4,.4),L=R(3.5,6);const from=new V3(x,base+H*R(.72,.92),z);
-      const to=new V3(x+Math.cos(a)*L,from.y+R(1.5,3.2),z+Math.sin(a)*L);trunkGeos.push(branchGeo(from,to,rT*.8,rT*.25));
+      const to=new V3(x+Math.cos(a)*L,from.y+R(1.5,3.2),z+Math.sin(a)*L);trunkGeos.push(branchGeo(from,to,rT*.8,rT*.25));branches.push(branchInfo(from,to,rT*.8,rT*.25,a));
       const cc=[to.x,to.y+.5,to.z];for(let k=0;k<26;k++){const a2=R(0,6.28),r2=R(.3,1)*2.9;addLeaf(to.x+Math.cos(a2)*r2,to.y+R(-.5,1.9)*(1.1-r2/3.2),to.z+Math.sin(a2)*r2,R(1.5,2.5),0,cc);}
       if(rnd()<.45)lianaGeos.push(lianaGeo(to,new V3(to.x+R(-1.5,1.5),0,to.z+R(-1.5,1.5))));}
     {const cc=[x,top.y+1.2,z];for(let k=0;k<22;k++)addLeaf(x+R(-3.2,3.2),top.y+R(.3,2.6),z+R(-3.2,3.2),R(1.8,2.6),0,cc);}
-    trees.push({x,z,base,rB,rT,H,climbMax:H*.86,canopy:H*.7,kind,yOff:-.3,flare:true,fins});
+    trees.push({x,z,base,rB,rT,H,top:H-.3,climbMax:H-.45,canopy:H*.7,kind,yOff:-.3,flare:true,fins,branches});
   }else if(kind==='small'){
     const H=R(4,7),rB=R(.16,.26),rT=rB*.5;
     trunkGeos.push(trunkGeo(rB,rT,H,x,base-.2,z,R(0,99)));
     const n=RI(18,28),cc=[x,base+H*.8,z];for(let k=0;k<n;k++){const t=R(.55,1.05);addLeaf(x+R(-1.6,1.6)*t,base+H*t,z+R(-1.6,1.6)*t,R(1,1.7),0,cc);}
-    trees.push({x,z,base,rB,rT,H,climbMax:H*.92,canopy:H*.6,kind,yOff:-.2,flare:true,fins:null});
+    trees.push({x,z,base,rB,rT,H,top:H-.2,climbMax:H-.35,canopy:H*.6,kind,yOff:-.2,flare:true,fins:null,branches:null});
   }else{
     const H=R(7,11),rB=.24,rT=.16,lean=R(-.12,.12);
     const g=new THREE.CylinderGeometry(rT,rB,H,10,6,true);g.translate(0,H/2,0);const uv=g.attributes.uv;for(let i=0;i<uv.count;i++)uv.setY(i,uv.getY(i)*H/1.2);
     g.translate(x,base-.2,z);palmGeos.push(prep(g));
     const nf=RI(9,13);for(let i=0;i<nf;i++){const f=frondGeo(R(3,4.2),R(1,1.3),R(.35,.55),R(.25,.5));f.rotateY(i/nf*6.28+R(-.2,.2));f.translate(x,base+H-.25,z);frondGeos.push(prep(f));}
-    trees.push({x,z,base,rB,rT,H,climbMax:H-.6,canopy:H-1.2,kind,yOff:-.2,flare:false,fins:null});
+    trees.push({x,z,base,rB,rT,H,top:H-.2,climbMax:H-.35,canopy:H-1.2,kind,yOff:-.2,flare:false,fins:null,branches:null});
   }
 }
 function lianaGeo(a,b){const mid=new V3().lerpVectors(a,b,.5);const pts=[a.clone(),new V3(lerp(a.x,mid.x,.5),lerp(a.y,mid.y,.5)-1,lerp(a.z,mid.z,.5)),
@@ -1183,17 +1186,28 @@ tb('tDrink',()=>touch.drink=true,()=>touch.drink=false);
 function groundAt(x,z,y){let h=terrainH(x,z);
   for(const r of rocks){const dx=x-r.x,dz=z-r.z,q=1-(dx*dx+dz*dz)/(r.s*r.s);if(q>0){const ry=r.cy+r.sy*Math.sqrt(q);if(ry>h)h=ry;}}
   for(const b of boxes)if(x>b.minX&&x<b.maxX&&z>b.minZ&&z<b.maxZ&&b.top<=y+.4&&b.top>h)h=b.top;
-  if(h<WATER_Y-.07)h=WATER_Y-.07;return h;}
+  if(h<WATER_Y-.07)h=WATER_Y-.07;
+  perch=null;perchBr=null;
+  for(const t of trees){const dx=x-t.x,dz=z-t.z;if(Math.abs(dx)>7||Math.abs(dz)>7||y+.4<t.base+t.H*.6)continue;
+    const ty=t.base+t.top;if(ty<=y+.4&&ty>h&&dx*dx+dz*dz<(Math.max(t.rT*1.13,.18)+.04)**2){h=ty;perch=t;perchBr=null;}
+    if(t.branches)for(const br of t.branches){const by=branchTop(br,x,z);if(by<=y+.4&&by>h){h=by;perch=t;perchBr=br;}}}
+  return h;}
+// Top of the bark at (x,z), a little wider than the bark so walking along a branch is not fiddly. -Infinity when off the branch.
+function branchTop(br,x,z){const px=x-br.ax,pz=z-br.az,s=(px*br.dx+pz*br.dz)/br.L2;if(s<0||s>1)return -Infinity;
+  const perp=Math.abs(px*br.dz-pz*br.dx)/br.hl,r=lerp(br.r0,br.r1,s);if(perp>r+.14)return -Infinity;
+  return br.ay+s*br.dy+r*br.sec*Math.sqrt(Math.max(.16,1-(perp/r)**2));}
+// Ease the gecko toward the middle of the branch it walks on.
+function branchPull(br,p,k){const px=p.x-br.ax,pz=p.z-br.az,off=(px*br.dz-pz*br.dx)/br.L2;p.x-=br.dz*off*k;p.z+=br.dx*off*k;}
 // Collider radius that follows the visible trunk, including the root flare and bark bulges (see trunkGeo).
 function treeRadius(t,hy){const ly=hy-t.yOff;const r0=lerp(t.rB,t.rT,clamp(ly/t.H,0,1));
   const flare=t.flare&&ly<2?Math.max(0,2-ly)**2*.18/Math.max(t.rB,.2):0;return r0*(1.13+flare)+.01;}
-const _v=new V3(),_w=new V3(),_n=new V3(),_prev=new V3();
+const _v=new V3(),_w=new V3(),_n=new V3(),_prev=new V3();let perch=null,perchBr=null;
 const geckoR=()=>.13*geckoScale();
 // Resolve one small step from prev to np. Pushes are taken toward the side prev was on, so a fast step can never pop out the far side.
 function tryClimbOrCollide(np,prev,move,moving){
   const GR=geckoR();
   for(let pass=0;pass<2;pass++){const grab=pass===0;
-  for(const t of trees){const dx=np.x-t.x,dz=np.z-t.z;if(Math.abs(dx)>4||Math.abs(dz)>4)continue;const hy=np.y-t.base;if(hy>t.H)continue;
+  for(const t of trees){const dx=np.x-t.x,dz=np.z-t.z;if(Math.abs(dx)>4||Math.abs(dz)>4)continue;const hy=np.y-t.base;if(hy>t.top-.02)continue;
     const tr=treeRadius(t,hy),rr=tr+GR;let d=Math.hypot(dx,dz);
     if(d<rr){const toward=moving?-(dx*move.x+dz*move.z)/(d||1):0;
       if(grab&&toward>.3&&PL.regrab<=0&&hy<t.climbMax-.1){PL.climb={type:'tree',t,a:Math.atan2(dz,dx),h:Math.max(hy,.06)};PL.vel.set(0,0,0);return true;}
@@ -1233,7 +1247,7 @@ let goldEaten=0,escapes=0;
 function show(id,on){$(id).hidden=!on;}
 function setScreen(s){state=s;show('menu',s==='menu');show('shop',s==='shop');show('pause',s==='pause');show('over',s==='over');
   show('hud',s==='play'||s==='pause');show('touch',isTouch&&s==='play');if(s!=='play'&&document.pointerLockElement)document.exitPointerLock?.();}
-function placeGeckoAtSpawn(){PL.pos.set(SPAWN.x,terrainH(SPAWN.x,SPAWN.z),SPAWN.z);PL.yaw=SPAWN.face;PL.vel.set(0,0,0);PL.climb=null;PL.up.set(0,1,0);
+function placeGeckoAtSpawn(){PL.pos.set(SPAWN.x,terrainH(SPAWN.x,SPAWN.z),SPAWN.z);PL.yaw=SPAWN.face;PL.vel.set(0,0,0);PL.climb=null;PL.perch=null;PL.up.set(0,1,0);
   gecko.root.position.copy(PL.pos);gecko.root.quaternion.setFromAxisAngle(Y,PL.yaw);}
 
 function startGame(){
@@ -1303,7 +1317,7 @@ function updatePlayer(dt){
   const sc=geckoScale();PL.regrab-=dt;
   const wantDrink=keys.KeyF||touch.drink;
   PL.inWater=!PL.climb&&terrainH(PL.pos.x,PL.pos.z)<WATER_Y-.05&&PL.pos.y<WATER_Y+.05;
-  const nearWater=PL.inWater||(!PL.climb&&PL.onGround&&(terrainH(PL.pos.x+Math.sin(PL.yaw)*.4,PL.pos.z+Math.cos(PL.yaw)*.4)<WATER_Y+.02||terrainH(PL.pos.x,PL.pos.z)<WATER_Y+.08));
+  const nearWater=PL.inWater||(!PL.climb&&PL.onGround&&!PL.perch&&(terrainH(PL.pos.x+Math.sin(PL.yaw)*.4,PL.pos.z+Math.cos(PL.yaw)*.4)<WATER_Y+.02||terrainH(PL.pos.x,PL.pos.z)<WATER_Y+.08));
   PL.drinking=wantDrink&&nearWater&&!moving;
   PL.canDrink=nearWater;
   if(PL.drinking){PL.thirst=Math.min(100,PL.thirst+22*dt);if(Math.random()<dt*5)AU.sfx.drink();}
@@ -1320,22 +1334,30 @@ function updatePlayer(dt){
   for(let k=0;k<ns;k++){np.copy(_prev).addScaledVector(PL.vel,dt/ns);
     if(tryClimbOrCollide(np,_prev,move,moving)){updateClimb(0,0,0,false,false);return;}_prev.copy(np);}
   const lim=HALF-16;np.x=clamp(np.x,-lim,lim);np.z=clamp(np.z,-lim,lim);
-  const g=groundAt(np.x,np.z,PL.pos.y);
+  let g=groundAt(np.x,np.z,PL.pos.y);
+  if(perchBr&&PL.onGround&&PL.vel.y<=0){branchPull(perchBr,np,1-Math.exp(-5*dt));g=groundAt(np.x,np.z,PL.pos.y);}
   if(np.y<=g){np.y=g;PL.vel.y=Math.max(PL.vel.y,0);PL.onGround=true;}
   else if(PL.onGround&&PL.vel.y<=0&&np.y-g<.3){np.y=g;PL.vel.y=0;}
   else PL.onGround=false;
+  PL.perch=PL.onGround?perch:null;
   PL.pos.copy(np);PL.speed=Math.hypot(PL.vel.x,PL.vel.z);
   gecko.root.position.copy(PL.pos);
   const tn=terrainNormal(PL.pos.x,PL.pos.z,_n);tn.lerp(Y,.45).normalize();
-  orient(PL.onGround?tn:Y,_p.set(Math.sin(PL.yaw),0,Math.cos(PL.yaw)),dt);
+  orient(PL.onGround&&!PL.perch?tn:Y,_p.set(Math.sin(PL.yaw),0,Math.cos(PL.yaw)),dt);
   PL.up.copy(Y);
 }
+function stepOff(x,y,z,yaw){PL.climb=null;PL.regrab=.4;PL.pos.set(x,y,z);PL.yaw=yaw;PL.onGround=true;PL.vel.set(0,0,0);groundAt(x,z,y+.05);PL.perch=perch;gecko.root.position.copy(PL.pos);}
 function updateClimb(dt,ix,iy,moving,sprint){
   const c=PL.climb;const sp=(sprint?3.8:2.4);let n=_n,fwd=_p;
   if(c.type==='tree'){const t=c.t;n.set(Math.cos(c.a),0,Math.sin(c.a));const tan=_w.set(-Math.sin(c.a),0,Math.cos(c.a));
     const lat=ix*Math.sign(camR.dot(tan)||1);c.h+=iy*sp*dt;
     const rr=treeRadius(t,c.h);c.a+=lat*sp*dt/(rr+.05);
     if(c.h>t.climbMax)c.h=t.climbMax;
+    if(iy>.3){const y=t.base+c.h;
+      if(t.branches)for(const br of t.branches){let da=c.a-br.ang;da=Math.atan2(Math.sin(da),Math.cos(da));if(Math.abs(da)*rr>br.r0+.12)continue;
+        const hx=t.x+n.x*(rr+.15),hz=t.z+n.z*(rr+.15),by=branchTop(br,hx,hz);
+        if(y>=by-.3&&y<=by+.35){stepOff(hx,by,hz,Math.atan2(n.x,n.z));return;}}
+      if(c.h>=t.climbMax){stepOff(t.x+n.x*.04,t.base+t.top,t.z+n.z*.04,Math.atan2(-n.x,-n.z));return;}}
     const gy=terrainH(t.x+n.x*(rr+.1),t.z+n.z*(rr+.1));
     if(c.h+t.base<=gy+.02&&iy<0){PL.climb=null;PL.regrab=.5;PL.pos.set(t.x+n.x*(rr+.18),gy,t.z+n.z*(rr+.18));PL.yaw=Math.atan2(n.x,n.z);return;}
     PL.pos.set(t.x+n.x*(rr+.025),t.base+c.h,t.z+n.z*(rr+.025));
@@ -1394,10 +1416,10 @@ function updateCrickets(dt){for(const c of crickets){if(!c.alive||(tongue.target
    Update: poachers
    ===================================================================== */
 function geckoHeightAboveGround(){return PL.pos.y-terrainH(PL.pos.x,PL.pos.z);}
-function inCover(){return !PL.climb&&(grassDensity(PL.pos.x,PL.pos.z)>.45||inPlantCover(PL.pos.x,PL.pos.z));}
+function inCover(){return !PL.climb&&!PL.perch&&(grassDensity(PL.pos.x,PL.pos.z)>.45||inPlantCover(PL.pos.x,PL.pos.z));}
 function updatePoachers(dt){
   const pk=perks();let anyChase=false,anySus=false;const hide=inCover()&&PL.speed<5;PL.hidden=hide;
-  const inCanopy=PL.climb&&PL.climb.type==='tree'&&PL.climb.h>PL.climb.t.canopy-1;
+  const inCanopy=PL.climb?PL.climb.type==='tree'&&PL.climb.h>PL.climb.t.canopy-1:!!PL.perch&&PL.pos.y-PL.perch.base>PL.perch.canopy-1;
   for(const p of poachers){
     const to=_v.subVectors(PL.pos,p.pos);const dist=Math.hypot(to.x,to.z);
     let range=CFG.see*pk.camo*(PL.speed>5?1.25:1)*(hide?.42:1)*(inCanopy?.3:1)*(.85+PL.growth*.3);
@@ -1474,7 +1496,7 @@ function updateCamera(dt){
   desired.set(Math.sin(camYaw)*Math.cos(camPitch),Math.sin(camPitch),Math.cos(camYaw)*Math.cos(camPitch)).multiplyScalar(dist).add(camTarget);
   const floor=Math.max(groundAt(desired.x,desired.z,desired.y+.3),WATER_Y)+.14;if(desired.y<floor)desired.y=floor;
   const b=insideBox(desired.x,desired.z,.15);if(b&&desired.y<b.top+.25&&desired.y>b.bottom-1)desired.y=b.top+.25;
-  for(const t of trees){const dx=desired.x-t.x,dz=desired.z-t.z;if(Math.abs(dx)>2.5||Math.abs(dz)>2.5)continue;const rr=treeRadius(t,desired.y-t.base)+.15;const d=Math.hypot(dx,dz);if(d<rr&&desired.y<t.base+t.H){desired.x=t.x+dx/d*rr;desired.z=t.z+dz/d*rr;}}
+  for(const t of trees){const dx=desired.x-t.x,dz=desired.z-t.z;if(Math.abs(dx)>2.5||Math.abs(dz)>2.5)continue;const rr=treeRadius(t,desired.y-t.base)+.15;const d=Math.hypot(dx,dz);if(d<rr&&desired.y<t.base+t.top){desired.x=t.x+dx/d*rr;desired.z=t.z+dz/d*rr;}}
   camPos.lerp(desired,1-Math.exp(-dt*14));camera.position.copy(camPos);
   if(camLook.distanceToSquared(camTarget)>4)camLook.copy(camTarget);else camLook.lerp(camTarget,1-Math.exp(-dt*22));camera.lookAt(camLook);
 }
@@ -1670,7 +1692,7 @@ applyLang(save.lang||detectLang());applyQuality(QUALITY);placeGeckoAtSpawn();cam
 setScreen('menu');requestAnimationFrame(frame);
 setTimeout(()=>{$('loading').style.opacity=0;setTimeout(()=>$('loading').remove(),650);},150);
 pokiInit.then(()=>{if(!save.lang&&detectLang()!==lang)applyLang(detectLang());measure('lang',lang,'start');Poki.loaded();measure('screen','menu','visible');onboarding('loaded');});
-window.__gekko={PL,renderer,scene,updatePlayer,treeRadius,poachers,crickets,trees,boxes,rocks,startGame,setMode:m=>{mode=m;},get state(){return state;},camera,gecko,keys,get camYaw(){return camYaw;},set camYaw(v){camYaw=v;}};
+window.__gekko={PL,renderer,scene,updatePlayer,treeRadius,groundAt,poachers,crickets,trees,boxes,rocks,startGame,setMode:m=>{mode=m;},get state(){return state;},camera,gecko,keys,get camYaw(){return camYaw;},set camYaw(v){camYaw=v;}};
 </script>
 </body>
 </html>
