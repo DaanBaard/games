@@ -138,6 +138,13 @@ select.lang{appearance:none;-webkit-appearance:none;padding-right:12px;cursor:po
 .shopAction{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
 .shopAction .play{font-size:22px;padding:12px 18px}
 .shopAction .play[disabled]{background:#5d6b55;color:#c9d2c3;box-shadow:none;cursor:not-allowed}
+.tabs{display:flex;gap:6px;flex-wrap:wrap}.tabs button{padding:7px 12px;border-radius:999px;border:1.5px solid var(--line);background:var(--glass);font-weight:900;font-size:13px;color:inherit}
+.tabs button[aria-pressed="true"]{border-color:var(--leaf);background:rgba(79,138,38,.45)}
+.skin .lv{display:grid;place-items:center;font-family:var(--display);font-size:20px;color:#14260d}
+.pageHead{grid-column:1/-1;display:flex;justify-content:space-between;gap:8px;align-items:baseline;margin-top:6px;font-family:var(--display);font-size:18px}.pageHead small{font-family:inherit;font-size:12px;font-weight:900;color:var(--muted)}.pageHead small.done{color:var(--leaf)}
+.skin.unknown .sw{background:#1d2a1a!important;display:grid;place-items:center;font-family:var(--display);font-size:22px;color:#55704a}
+.stars{font-size:34px;letter-spacing:6px;color:var(--coin)}.stars i{font-style:normal;color:rgba(255,255,255,.18)}
+#win h2{color:var(--leaf)}
 .shopMsg{font-size:13px;font-weight:700;color:var(--muted);min-height:1.3em}
 
 .center{align-items:center;justify-content:center;background:rgba(5,14,8,.66);backdrop-filter:blur(3px)}
@@ -208,6 +215,7 @@ select.lang{appearance:none;-webkit-appearance:none;padding-right:12px;cursor:po
       </div>
       <div class="pill"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="#ffc93c"/><circle cx="12" cy="12" r="7" fill="none" stroke="#c98a12" stroke-width="1.6"/><path d="M9.5 9.5c1.5-2 5-1.4 5 .9 0 2.4-5 1.6-5 4 0 2 3.4 2.4 5 .8" stroke="#a86f0a" stroke-width="1.6" fill="none" stroke-linecap="round"/></svg><span id="hudCoins">0</span></div>
       <div class="pill" id="hudTime">0:00</div>
+      <div class="pill" id="hudFamily" title="Familie"><svg viewBox="0 0 24 24"><path d="M3 15c3-1 4-5 8-5 3 0 4 2 8 1M6 15l-1 3M9 13.5l1 4M14 11l1 4M17 11.5l2 2" stroke="#b9e44f" stroke-width="2" fill="none" stroke-linecap="round"/><circle cx="5" cy="14" r="1" fill="#b9e44f"/></svg><span id="hudFam">0/12</span></div>
       <div class="pill mode" id="hudMode">Makkelijk</div>
       <canvas id="minimap" width="160" height="160"></canvas>
     </div>
@@ -240,7 +248,7 @@ select.lang{appearance:none;-webkit-appearance:none;padding-right:12px;cursor:po
         <button class="play" id="playBtn" data-i18n="play">Spelen</button>
         <button class="ghost" id="shopBtn"><svg viewBox="0 0 24 24"><path d="M4 15c3-1 4-5 8-5 3 0 4 2 7 1M7 15l-1 3M10 13.5l1 4M15 11l1 4M18 11.5l2 2" stroke="#b9e44f" stroke-width="2" fill="none" stroke-linecap="round"/><circle cx="6" cy="14" r="1" fill="#b9e44f"/></svg><span data-i18n="geckos">Gekko's</span></button>
       </div>
-      <div class="menuFoot"><span class="coinsBig"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="#ffc93c"/><circle cx="12" cy="12" r="7" fill="none" stroke="#c98a12" stroke-width="1.6"/></svg><span id="menuCoins">0</span></span><span id="menuBest"></span><button class="ghost gfx" id="gfxBtn">Graphics</button><select class="ghost gfx lang" id="langSel" data-i18n-aria="language" aria-label="Taal"></select><span class="ver">v1.4</span></div>
+      <div class="menuFoot"><span class="coinsBig"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="#ffc93c"/><circle cx="12" cy="12" r="7" fill="none" stroke="#c98a12" stroke-width="1.6"/></svg><span id="menuCoins">0</span></span><span id="menuBest"></span><button class="ghost gfx" id="gfxBtn">Graphics</button><select class="ghost gfx lang" id="langSel" data-i18n-aria="language" aria-label="Taal"></select><span class="ver">v1.6</span></div>
       <div class="keys" data-i18n-html="keys"><span><kbd>WASD</kbd> lopen</span><span><kbd>Muis</kbd> kijken</span><span><kbd>Shift</kbd> sprinten</span><span><kbd>Spatie</kbd> springen</span><span><kbd>Klik</kbd>/<kbd>E</kbd> tong</span><span><kbd>F</kbd> drinken</span></div>
     </div>
   </div>
@@ -248,6 +256,7 @@ select.lang{appearance:none;-webkit-appearance:none;padding-right:12px;cursor:po
   <div id="shop" class="screen" hidden>
     <div class="shopCol">
       <div class="shopHead"><h2 data-i18n="geckos">Gekko's</h2><span class="coinsBig"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="#ffc93c"/><circle cx="12" cy="12" r="7" fill="none" stroke="#c98a12" stroke-width="1.6"/></svg><span id="shopCoins">0</span></span></div>
+      <div class="tabs" id="shopTabs"><button data-tab="skins" data-i18n="geckos">Gekko's</button><button data-tab="skills" data-i18n="skillsTab">Vaardigheden</button><button data-tab="book" data-i18n="bookTab">Insectenboek</button></div>
       <div class="skins" id="skins"></div>
       <div class="shopMsg" id="shopMsg"></div>
       <div class="shopAction"><button class="play" id="shopAct">Kies</button><button class="ghost" id="shopBack" data-i18n="back">Terug</button></div>
@@ -276,6 +285,21 @@ select.lang{appearance:none;-webkit-appearance:none;padding-right:12px;cursor:po
       <p class="nextStage" id="rNext"></p>
       <button class="play revive" id="reviveBtn" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="5" width="20" height="14" rx="3" fill="none" stroke="currentColor" stroke-width="2"/><path d="M10 9l5 3-5 3z" fill="currentColor"/></svg><span data-i18n="revive">Nog een kans</span> <small data-i18n="ad">(reclame)</small></button>
       <div class="row"><button class="play" id="againBtn" data-i18n="again">Opnieuw</button><button class="ghost" id="overShop"><span data-i18n="geckos">Gekko's</span></button><button class="ghost" id="menuBtn" data-i18n="menu">Menu</button></div>
+    </div>
+  </div>
+
+  <div id="win" class="screen center" hidden>
+    <div class="card">
+      <h2 data-i18n="finTitle">Vrij!</h2>
+      <p data-i18n="finText"></p>
+      <div class="stars" id="winStars"></div>
+      <div class="results">
+        <div class="res"><b id="wTime">0:00</b><span data-i18n="survived">Overleefd</span></div>
+        <div class="res"><b id="wFamily">12</b><span data-i18n="family">Familie</span></div>
+        <div class="res coin"><b id="wCoins">0</b><span data-i18n="coins">Munten</span></div>
+      </div>
+      <p class="nextStage" id="wNote"></p>
+      <div class="row"><button class="play" id="keepBtn" data-i18n="keepPlaying">Verder spelen</button><button class="ghost" id="winMenu" data-i18n="menu">Menu</button></div>
     </div>
   </div>
 
@@ -316,7 +340,7 @@ const $=id=>document.getElementById(id);
    Save data (per browser)
    ===================================================================== */
 const SAVE_KEY='gekko-survival-v1';
-let save={coins:0,owned:['dag'],skin:'dag',best:{},mode:'easy',tutorial:false,muted:false};
+let save={coins:0,owned:['dag'],skin:'dag',best:{},mode:'easy',tutorial:false,muted:false,book:{},pages:{},skills:{},rescued:[],won:{}};
 try{const s=JSON.parse(localStorage.getItem(SAVE_KEY));if(s&&typeof s==='object')save={...save,...s};}catch(e){}
 function persist(){try{localStorage.setItem(SAVE_KEY,JSON.stringify(save));}catch(e){}}
 
@@ -372,9 +396,29 @@ const SKINS=[
   {id:'koning',name:'Regenwoudkoning',price:-1,unlock:'Overleef 5:00 op Master',perk:'Alles 15% beter',dorsal:'#20b39a',flank:'#5fd06f',belly:'#f4f7c8',eye:'#ff5a3c',pat:'rainbow',irid:1},
 ];
 const skinById=id=>SKINS.find(s=>s.id===id)||SKINS[0];
+/* Insects: three species per area (common, uncommon, rare). Every catch goes into the insect book; a full page pays out once. */
+const SPECIES=[
+  {id:'krekel',area:0,r:0,col:'#6a4520',leg:'#4e3216'},{id:'sprinkhaan',area:0,r:1,col:'#5fae2e',leg:'#3f7a1c',long:1},{id:'goudkrekel',area:0,r:2,col:'#ffcc33',metal:.85,glow:'#ffd75a'},
+  {id:'ijskrekel',area:1,r:0,col:'#cfe3ee',leg:'#8aa6b8'},{id:'sneeuwkever',area:1,r:1,col:'#2f4a86',leg:'#1c2a4a',beetle:1,metal:.3},{id:'kristalkrekel',area:1,r:2,col:'#a8ecff',metal:.6,glow:'#9fe3ff'},
+  {id:'zandkrekel',area:2,r:0,col:'#d2ac6c',leg:'#9a7a44'},{id:'mestkever',area:2,r:1,col:'#2a2420',leg:'#16120e',beetle:1,metal:.45},{id:'robijnkever',area:2,r:2,col:'#e2303e',metal:.6,beetle:1,glow:'#ff6a5a'},
+  {id:'boskrekel',area:3,r:0,col:'#4f6a26',leg:'#33461a'},{id:'vuurvliegje',area:3,r:1,col:'#3a3220',leg:'#2a2416',glow:'#e8ff6a',fly:1},{id:'smaragdkever',area:3,r:2,col:'#18c27a',metal:.75,beetle:1,glow:'#5fffb0'},
+];
+const RARITY=[{hunger:17,grow:.05,coins:2,need:10},{hunger:22,grow:.06,coins:4,need:5},{hunger:30,grow:.1,coins:10,need:1}];
+const speciesById=id=>SPECIES.find(q=>q.id===id);
+const PAGE_REWARD=[150,250,350,500];
+const pageDone=a=>SPECIES.filter(q=>q.area===a).every(q=>(save.book[q.id]||0)>=RARITY[q.r].need);
+/* Skills, bought with coins; level 3 needs a special insect in the book */
+const SKILLS=[
+  {id:'tong',cost:[60,160,350],req:'goudkrekel'},{id:'poten',cost:[80,200,420],req:'sneeuwkever'},{id:'maag',cost:[60,160,350],req:'kristalkrekel'},
+  {id:'waterbuik',cost:[60,160,350],req:'robijnkever'},{id:'plakpoten',cost:[70,180,380],req:'smaragdkever'},{id:'groei',cost:[90,220,450],req:'vuurvliegje'},
+];
+const skillLv=id=>Math.min(3,save.skills[id]||0);
 function perks(){const id=save.skin;const k=id==='koning';return{
-  hunger:id==='luipaard'?0.8:k?0.85:1, health:id==='tokeh'?130:k?115:100, jump:id==='kuif'?1.35:k?1.15:1,
-  camo:id==='blad'?0.7:k?0.85:1, stamina:id==='nacht'?1.4:k?1.15:1, coins:id==='goud'?1.5:k?1.15:1};}
+  hunger:(id==='luipaard'?0.8:k?0.85:1)*(1-.1*skillLv('maag')), health:id==='tokeh'?130:k?115:100, jump:id==='kuif'?1.35:k?1.15:1,
+  camo:id==='blad'?0.7:k?0.85:1, stamina:id==='nacht'?1.4:k?1.15:1, coins:id==='goud'?1.5:k?1.15:1,
+  thirst:1-.1*skillLv('waterbuik'), reach:3.8*(1+.15*skillLv('tong')), speed:1+.05*skillLv('poten'), climb:1+.15*skillLv('plakpoten'), grow:1+.15*skillLv('groei')};}
+/* Rescue: every area has a poacher camp with three caged geckos. The rainforest camp is the main camp: its locks only open once the other nine are free. */
+const FAMILY=12;
 
 /* =====================================================================
    Renderer, scene, sky
@@ -845,6 +889,48 @@ function gateOpen(g){return !g.fwd||stageIdx()>=2;}
 function placeAtGate(g){const d=4.2;const x=g.x+g.nx*d,z=g.z+g.nz*d;PL.pos.set(x,terrainH(x,z),z);PL.yaw=Math.atan2(g.nx,g.nz);PL.vel.set(0,0,0);PL.climb=null;PL.perch=null;PL.onGround=true;
   gecko.root.position.copy(PL.pos);gecko.root.quaternion.setFromAxisAngle(Y,PL.yaw);camYaw=PL.yaw+Math.PI;camPos.copy(PL.pos).add(_v.set(Math.sin(camYaw)*1.6,.6,Math.cos(camYaw)*1.6));}
 
+/* Poacher camps: a tent, a fire, crates and three cages with a captured gecko. The geckos themselves are added in updateCamp,
+   because the Gecko class is defined further down and the first area is built before it exists. */
+const cages=[];let CAMP=null,NEST=null;
+const woodMat=new THREE.MeshStandardMaterial({color:'#7a5530',roughness:.85});
+const ropeMat=new THREE.MeshStandardMaterial({color:'#e0b04a',roughness:.9});
+const tentMat=new THREE.MeshStandardMaterial({color:'#7d6b44',roughness:.95,side:THREE.DoubleSide});
+const emberMat=new THREE.MeshStandardMaterial({color:'#ff7a2a',emissive:'#ff5a10',emissiveIntensity:2.2,roughness:1});
+const nestMat=new THREE.MeshStandardMaterial({color:'#8a6a3e',roughness:1}),bedMat=new THREE.MeshStandardMaterial({color:'#5d7a2a',roughness:.9});
+const plain=g=>{for(const n of Object.keys(g.attributes))if(!['position','normal','uv'].includes(n))g.deleteAttribute(n);return g.index?g.toNonIndexed():g;};
+const CAGE_GEO=(()=>{const P=[];const add=(g,x,y,z)=>{g.translate(x,y,z);P.push(plain(g));};
+  add(new THREE.BoxGeometry(.9,.06,.9),0,.03,0);add(new THREE.BoxGeometry(.92,.05,.92),0,.8,0);
+  for(const [sx,sz] of [[-1,-1],[1,-1],[-1,1],[1,1]])add(new THREE.BoxGeometry(.06,.8,.06),sx*.42,.4,sz*.42);
+  for(let k=1;k<6;k++){const o=-.42+k*.14;add(new THREE.CylinderGeometry(.013,.013,.74,5),o,.42,-.42);add(new THREE.CylinderGeometry(.013,.013,.74,5),-.42,.42,o);add(new THREE.CylinderGeometry(.013,.013,.74,5),.42,.42,o);}
+  return mergeGeometries(P);})();
+const DOOR_GEO=(()=>{const P=[];for(let k=1;k<6;k++){const g=new THREE.CylinderGeometry(.013,.013,.74,5);g.translate(k*.14,.42,0);P.push(plain(g));}const r=plain(new THREE.BoxGeometry(.84,.04,.03));r.translate(.42,.12,0);P.push(r);const r2=r.clone();r2.translate(0,.62,0);P.push(r2);return mergeGeometries(P);})();
+function buildCamp(A,idx){cages.length=0;CAMP=null;
+  const s=findGateSpot(SPAWN.x,SPAWN.z,38,80)||findGateSpot(0,0,20,110);if(!s)return;
+  const base=terrainH(s.x,s.z);CAMP={x:s.x,z:s.z,base};exclusion.push({x:s.x,z:s.z,r:10});
+  const along=rnd()<.5;// tent: a triangular prism, kept axis-aligned so its collider box fits
+  {const tx=s.x+(along?0:-3.4),tz=s.z+(along?-3.4:0),g=new THREE.Group();g.position.set(tx,terrainH(tx,tz)-.05,tz);g.rotation.y=along?0:Math.PI/2;
+    const m=new THREE.Mesh(new THREE.CylinderGeometry(1.5,1.5,3.2,3,1,false,Math.PI/2),tentMat);m.rotation.z=Math.PI/2;m.position.y=.75;m.castShadow=m.receiveShadow=true;g.add(m);world.add(g);
+    addBox(tx,tz,along?1.6:1.3,along?1.3:1.6,g.position.y-.3,g.position.y+1.6);}
+  for(let k=0;k<3;k++){const a=R(0,6.28),x=s.x+Math.cos(a)*R(4,5.5),z=s.z+Math.sin(a)*R(4,5.5),w=R(.3,.45),h=terrainH(x,z);const b=addBox(x,z,w,w,h-.1,h+w*1.6);boxGeo(b,'#8a6236');}
+  {const g=new THREE.Group();g.position.set(s.x,base,s.z);for(let k=0;k<3;k++){const l=new THREE.Mesh(new THREE.CylinderGeometry(.06,.07,.9,6),woodMat);l.rotation.set(Math.PI/2-.25,k*2.1,0);l.position.y=.12;g.add(l);}
+    const e=new THREE.Mesh(new THREE.SphereGeometry(.22,10,6),emberMat);e.scale.y=.45;e.position.y=.06;g.add(e);
+    for(let k=0;k<8;k++){const st=new THREE.Mesh(new THREE.DodecahedronGeometry(.1),stoneMat);st.position.set(Math.cos(k*.785)*.45,.04,Math.sin(k*.785)*.45);g.add(st);}world.add(g);}
+  for(let k=0;k<3;k++){const a=k*2.09+R(-.3,.3)+(along?.5:2),x=s.x+Math.cos(a)*2.6,z=s.z+Math.sin(a)*2.6,h=terrainH(x,z);const id=A.id+k;
+    const g=new THREE.Group();g.position.set(x,h,z);g.rotation.y=Math.atan2(x-s.x,z-s.z);// door faces away from the fire
+    const m=new THREE.Mesh(CAGE_GEO,woodMat);m.castShadow=m.receiveShadow=true;g.add(m);
+    const door=new THREE.Group();door.position.set(-.42,0,.42);const dm=new THREE.Mesh(DOOR_GEO,woodMat);dm.castShadow=true;door.add(dm);
+    const knot=new THREE.Mesh(new THREE.TorusGeometry(.05,.022,6,12),ropeMat);knot.position.set(.84,.4,.02);door.add(knot);g.add(door);world.add(g);
+    addBox(x,z,.47,.47,h-.1,h+.84);const open=save.rescued.includes(id);if(open){door.rotation.y=-1.9;knot.visible=false;}
+    cages.push({id,area:idx,k,x,z,base:h,grp:g,door,knot,open,prog:0,g:null,run:0,doorT:open?1:0});}}
+function buildNest(){NEST=null;if(areaIdx!==0)return;const s=findGateSpot(SPAWN.x,SPAWN.z,5,11)||{x:SPAWN.x+5,z:SPAWN.z};const base=terrainH(s.x,s.z);
+  NEST={x:s.x,z:s.z,base,geckos:[]};exclusion.push({x:s.x,z:s.z,r:3.5});
+  const g=new THREE.Group();g.position.set(s.x,base,s.z);
+  const ring=new THREE.Mesh(new THREE.TorusGeometry(.8,.26,8,26),nestMat);ring.rotation.x=Math.PI/2;ring.scale.z=.55;ring.position.y=.1;ring.castShadow=ring.receiveShadow=true;g.add(ring);
+  for(let k=0;k<26;k++){const tw=new THREE.Mesh(new THREE.CylinderGeometry(.018,.022,R(.5,.9),4),woodMat);const a=R(0,6.28);tw.position.set(Math.cos(a)*R(.6,1),R(.1,.25),Math.sin(a)*R(.6,1));tw.rotation.set(Math.PI/2+R(-.3,.3),0,a+R(-.5,.5));g.add(tw);}
+  const bed=new THREE.Mesh(new THREE.CircleGeometry(.62,20),bedMat);bed.rotation.x=-Math.PI/2;bed.position.y=.06;g.add(bed);
+  for(let k=0;k<3;k++){const e=new THREE.Mesh(new THREE.SphereGeometry(.07,10,8),new THREE.MeshStandardMaterial({color:'#f3ead2',roughness:.6}));e.scale.y=1.3;e.position.set(R(-.2,.2),.13,R(-.2,.2));g.add(e);}
+  world.add(g);}
+
 /* Shared materials, built once and reused by every area (no shader recompiles on travel) */
 const TILE=75;
 // Merge per 75 m world tile instead of one huge mesh, so the camera, shadow and reflection passes can cull what they cannot see.
@@ -1034,6 +1120,7 @@ async function buildWorld(idx,prog=()=>{}){
   /* gates: back to the previous area next to the spawn point, onward to the next area far away */
   if(idx>0){const s=findGateSpot(SPAWN.x,SPAWN.z,7,16)||{x:SPAWN.x+8,z:SPAWN.z};makeGate(s.x,s.z,Math.atan2(SPAWN.x-s.x,SPAWN.z-s.z),idx-1,false);}
   if(idx<AREAS.length-1){const s=findGateSpot(SPAWN.x,SPAWN.z,85,130)||findGateSpot(0,0,30,120)||{x:-SPAWN.x*.6,z:-SPAWN.z*.6};makeGate(s.x,s.z,Math.atan2(SPAWN.x-s.x,SPAWN.z-s.z),idx+1,true);}
+  buildCamp(A,idx);buildNest();
   /* Temple: stepped pyramid */
   {const tb=Math.min(terrainH(TEMPLE.x-8,TEMPLE.z-8),terrainH(TEMPLE.x+8,TEMPLE.z-8),terrainH(TEMPLE.x-8,TEMPLE.z+8),terrainH(TEMPLE.x+8,TEMPLE.z+8))-.4;
     const tiers=[7.5,5.8,4.2,2.7],th=2.3;
@@ -1175,10 +1262,12 @@ const irisTex=canvasTex(256,256,(g)=>{const gr=g.createRadialGradient(128,128,10
 const corneaMat=new THREE.MeshPhysicalMaterial({color:'#ffffff',roughness:0,metalness:0,transparent:true,opacity:.12,clearcoat:1,clearcoatRoughness:0,envMapIntensity:2.5,depthWrite:false});
 const nostrilMat=new THREE.MeshStandardMaterial({color:'#140c08',roughness:.6});
 const pupilMat=new THREE.MeshPhysicalMaterial({color:'#050505',roughness:.1,clearcoat:1});
+const liteEyeMat=new THREE.MeshPhysicalMaterial({color:'#b88a2a',roughness:.15,clearcoat:1});
 const Y=new V3(0,1,0),_fp=new V3();
 class Gecko{
-  constructor(mat,eyeColor='#c9a028'){
-    this.root=new THREE.Group();this.mat=mat;
+  // lite: a cheaper gecko for the caged and rescued family members (no toes, simple eyes)
+  constructor(mat,eyeColor='#c9a028',lite=false){
+    this.root=new THREE.Group();this.mat=mat;this.lite=lite;
     const vc=NS*(NR+1);this.pos=new Float32Array(vc*3);this.nor=new Float32Array(vc*3);const uv=new Float32Array(vc*2);const idx=[];
     for(let i=0;i<NS;i++)for(let j=0;j<=NR;j++){const k=i*(NR+1)+j;uv[k*2]=i/(NS-1);uv[k*2+1]=j/NR;}
     for(let i=0;i<NS-1;i++)for(let j=0;j<NR;j++){const a=i*(NR+1)+j,b=a+NR+1;idx.push(a,b,a+1,b,b+1,a+1);}
@@ -1187,16 +1276,17 @@ class Gecko{
     this.mesh=new THREE.Mesh(g,mat);this.mesh.castShadow=true;this.mesh.receiveShadow=true;this.root.add(this.mesh);
     this.P=[];this.S=[];this.U=[];this.T=[];for(let i=0;i<NS;i++){this.P.push(new V3());this.S.push(new V3());this.U.push(new V3());this.T.push(new V3());}
     this.head=new THREE.Group();this.root.add(this.head);
-    this.eyeMat=new THREE.MeshPhysicalMaterial({map:irisTex,color:eyeColor,roughness:.25,emissive:eyeColor,emissiveMap:irisTex,emissiveIntensity:.12});
+    this.eyeMat=lite?liteEyeMat:new THREE.MeshPhysicalMaterial({map:irisTex,color:eyeColor,roughness:.25,emissive:eyeColor,emissiveMap:irisTex,emissiveIntensity:.12});
     this.lids=[];
     for(const sd of [-1,1]){const eg=new THREE.Group();eg.position.set(sd*.0225,.0125,.004);eg.rotation.y=sd*Math.PI/2*.82;this.head.add(eg);
+      if(lite){const e=new THREE.Mesh(EYE_GEO,liteEyeMat);e.scale.z=.6;eg.add(e);continue;}
       const e=new THREE.Mesh(EYE_GEO,pupilMat);e.scale.z=.5;e.position.z=-.001;eg.add(e);
       const ir=new THREE.Mesh(IRIS_GEO,this.eyeMat);ir.position.z=.0042;eg.add(ir);
       const co=new THREE.Mesh(CORNEA_GEO,corneaMat);co.rotation.x=Math.PI/2;eg.add(co);
       const lid=new THREE.Mesh(LID_GEO,mat);lid.position.z=.0035;eg.add(lid);this.lids.push(lid);
       const no=new THREE.Mesh(new THREE.SphereGeometry(.0018,6,5),nostrilMat);no.position.set(sd*.0068,.0085,.075);this.head.add(no);}
     this.crest=new THREE.Group();this.head.add(this.crest);
-    for(const sd of [-1,1])for(let k=0;k<6;k++){const c=new THREE.Mesh(new THREE.ConeGeometry(.0035,.009,5),mat);c.position.set(sd*(.018-k*.001),.019,.02-k*.009);c.rotation.z=-sd*.6;this.crest.add(c);}
+    if(!lite)for(const sd of [-1,1])for(let k=0;k<6;k++){const c=new THREE.Mesh(new THREE.ConeGeometry(.0035,.009,5),mat);c.position.set(sd*(.018-k*.001),.019,.02-k*.009);c.rotation.z=-sd*.6;this.crest.add(c);}
     this.legs=[];for(const [sd,front] of [[1,true],[-1,true],[1,false],[-1,false]])this.legs.push(this.makeLeg(sd,front));
     this.phase=0;this.t=R(0,9);this.walk=0;this.look=0;this.drink=0;this.climbing=0;this.open=0;
     this.setMaterial(mat,eyeColor,false);this.update(0,0);
@@ -1206,25 +1296,28 @@ class Gecko{
     const knee=new THREE.Group();knee.position.x=side*.042;up.add(knee);
     const lower=new THREE.Mesh(LOWER_GEO,mat);lower.position.y=-.024;knee.add(lower);
     const foot=new THREE.Group();foot.position.y=-.048;knee.add(foot);
-    for(let k=-2;k<=2;k++){const tg=new THREE.Group();tg.rotation.y=k*.42+side*(front?-.25:.35)+(side>0?Math.PI/2:-Math.PI/2)*.0;
+    if(!this.lite)for(let k=-2;k<=2;k++){const tg=new THREE.Group();tg.rotation.y=k*.42+side*(front?-.25:.35)+(side>0?Math.PI/2:-Math.PI/2)*.0;
       const toe=new THREE.Mesh(TOE_GEO,mat);toe.rotation.x=Math.PI/2;toe.position.z=.011;tg.add(toe);
       const pad=new THREE.Mesh(PAD_GEO,mat);pad.scale.set(1,.45,1.1);pad.position.z=.021;tg.add(pad);
       tg.rotation.y+=side*Math.PI/2*(front?.55:.75)*-1+side*Math.PI/2;foot.add(tg);}
     for(const m of [upper,lower])m.castShadow=true;
     this.root.add(hip);return{hip,up,knee,foot,side,front,parts:[upper,lower,...foot.children.flatMap(c=>c.children)]};}
   setMaterial(mat,eyeColor,crest){this.mat=mat;this.mesh.material=mat;for(const l of this.legs)for(const p of l.parts)p.material=mat;for(const c of this.crest.children)c.material=mat;for(const l of this.lids||[])l.material=mat;
-    this.eyeMat.color.set(eyeColor);this.eyeMat.emissive.set(eyeColor);this.crest.visible=!!crest;}
+    if(!this.lite){this.eyeMat.color.set(eyeColor);this.eyeMat.emissive.set(eyeColor);}this.crest.visible=!!crest;}
   update(dt,speed,o={}){
     this.t+=dt;this.walk=damp(this.walk,clamp(speed/2.6,0,1.25),9,dt);const w=Math.min(this.walk,1);
     this.phase+=dt*(speed*8.5+(o.climbing&&speed>.1?4:0));
     this.drink=damp(this.drink,o.drinking?1:0,8,dt);this.look=damp(this.look,o.look||0,4,dt);
     const breathe=Math.sin(this.t*3)*.0015;
+    // Lizard gait: a standing wave bends the trunk between the shoulders and hips in step with the diagonal leg pairs
+    // (front-left reaches forward while the trunk bows to the left), the head counter-swings to stay on target and the tail trails the wave.
+    const sw=Math.sin(this.phase),A=.016*w;
     for(let i=0;i<NS;i++){const s=i/(NS-1);
-      const und=Math.sin(this.phase-s*6.2)*(.010+.04*s)*w;
+      const und=s<.1?A*sw*(-1+(.1-s)*5):s<.56?A*sw*Math.cos(Math.PI*(s-.33)/.23):-A*Math.sin(this.phase-(s-.56)*5.5)*(1+(s-.56)*3.2);
       const idle=Math.sin(this.t*1.1-s*3.4)*.03*smoothstep(.45,1,s)*(1-w);
       const curl=o.idleCurl?Math.sin(s*4)*.0:0;
       const x=und+idle+curl+(s<.22?this.look*(.22-s)*.6:0);
-      const y=.056+(s<.2?(.2-s)*.07:0)-(s>.5?(s-.5)*.06:0)+(s<.26?-this.drink*(.26-s)*.32:0)+(s>.2&&s<.5?breathe:0);
+      const y=.056-.004*w+(s<.2?(.2-s)*.07:0)-(s>.5?(s-.5)*.06:0)+(s<.26?-this.drink*(.26-s)*.32:0)+(s>.2&&s<.5?breathe:0);
       this.P[i].set(x,y,.22-s*.55);}
     const pos=this.pos,nor=this.nor;let k=0;
     for(let i=0;i<NS;i++){const s=i/(NS-1);const T=this.T[i].subVectors(this.P[Math.max(i-1,0)],this.P[Math.min(i+1,NS-1)]).normalize();
@@ -1239,8 +1332,9 @@ class Gecko{
       L.hip.position.copy(this.P[i]).addScaledVector(this.S[i],L.side*rx*.7).addScaledVector(this.U[i],-.006);
       _m.makeBasis(this.S[i],this.U[i],this.T[i]);L.hip.quaternion.setFromRotationMatrix(_m);
       const off=(L.front===(L.side>0))?0:Math.PI;const c=this.phase+off;
-      const swing=Math.sin(c)*.7*w,lift=Math.max(0,Math.cos(c))*.5*w;const base=L.front?.55:-.45;
-      L.up.rotation.set(0,-L.side*(swing+base),L.side*(lift-.1));L.knee.rotation.z=-L.side*(lift*.5-.12);
+      // sprawled limbs: the elbow/knee rides above the body line and lifts high in the swing, the lower leg plants almost straight down
+      const swing=Math.sin(c)*.85*w,lift=Math.max(0,Math.cos(c))*w;const base=L.front?.55:-.5;
+      L.up.rotation.set(0,-L.side*(swing+base),L.side*(.12*w-.1*(1-w)+lift*.6));L.knee.rotation.z=-L.side*(.12*w-.12*(1-w)+lift*.4);
       L.foot.rotation.set(0,L.side*(swing+base)*.6,-L.up.rotation.z-L.knee.rotation.z);}
     // Feet follow the ground: a foot that would end up below the surface lifts its leg until it rests on top.
     if(o.ground){this.root.updateMatrixWorld(true);const sc=this.root.scale.x;
@@ -1275,7 +1369,11 @@ const crickets=[];
 const cricketMat=new THREE.MeshStandardMaterial({color:'#6a4520',roughness:.45,metalness:.05});
 const cricketLegMat=new THREE.MeshStandardMaterial({color:'#4e3216',roughness:.6});
 const goldMat=new THREE.MeshPhysicalMaterial({color:'#ffcc33',roughness:.2,metalness:.85,emissive:'#7a4d00',emissiveIntensity:.5,clearcoat:1});
-function makeCricket(golden){const g=new THREE.Group();const m=golden?goldMat:cricketMat,lm=golden?goldMat:cricketLegMat;
+const insectMats={};
+function insectMat(sp){if(insectMats[sp.id])return insectMats[sp.id];if(sp.id==='krekel')return insectMats[sp.id]=[cricketMat,cricketLegMat];if(sp.id==='goudkrekel')return insectMats[sp.id]=[goldMat,goldMat];
+  const b=new THREE.MeshPhysicalMaterial({color:sp.col,roughness:sp.metal?.25:.45,metalness:sp.metal||.05,clearcoat:sp.beetle?1:.2,emissive:sp.glow&&sp.r===2?sp.col:'#000',emissiveIntensity:sp.r===2?.35:0});
+  const l=sp.leg?new THREE.MeshStandardMaterial({color:sp.leg,roughness:.6}):b;return insectMats[sp.id]=[b,l];}
+function makeInsect(sp){const g=new THREE.Group();const [m,lm]=insectMat(sp);
   const body=new THREE.Mesh(new THREE.SphereGeometry(1,12,10),m);body.scale.set(.016,.014,.038);body.position.y=.024;g.add(body);
   const head=new THREE.Mesh(new THREE.SphereGeometry(.012,10,8),m);head.position.set(0,.026,.04);g.add(head);
   const wings=new THREE.Mesh(new THREE.SphereGeometry(1,10,8),m);wings.scale.set(.014,.006,.032);wings.position.set(0,.036,-.008);g.add(wings);
@@ -1287,16 +1385,19 @@ function makeCricket(golden){const g=new THREE.Group();const m=golden?goldMat:cr
   const parts={};g.updateMatrixWorld(true);for(const o of [...g.children]){const k=o.material===m?'b':'l';const gg=o.geometry.clone().applyMatrix4(o.matrix);
     for(const n of Object.keys(gg.attributes))if(!['position','normal','uv'].includes(n))gg.deleteAttribute(n);(parts[k]=parts[k]||[]).push(gg.index?gg.toNonIndexed():gg);g.remove(o);}
   for(const [k,L] of Object.entries(parts)){const me=new THREE.Mesh(mergeGeometries(L),k==='b'?m:lm);me.castShadow=k==='b';g.add(me);}
+  // beetles are short and round, grasshoppers long and thin, fireflies carry a glowing tail
+  const shape=new THREE.Group();for(const c of [...g.children]){g.remove(c);shape.add(c);}g.add(shape);
+  if(sp.beetle)shape.scale.set(1.35,1.1,.72);else if(sp.long)shape.scale.set(.85,.95,1.4);
   g.scale.setScalar(1.45);
-  if(golden){const sp=new THREE.Sprite(new THREE.SpriteMaterial({map:glowTex,color:'#ffd75a',transparent:true,depthWrite:false,blending:THREE.AdditiveBlending}));sp.scale.setScalar(.22);sp.position.y=.03;g.add(sp);}
+  if(sp.glow){const gl=new THREE.Sprite(new THREE.SpriteMaterial({map:glowTex,color:sp.glow,transparent:true,depthWrite:false,blending:THREE.AdditiveBlending}));gl.scale.setScalar(sp.fly?.16:.22);gl.position.set(0,.03,sp.fly?-.04:0);g.add(gl);}
   return g;}
 const glowTex=canvasTex(64,64,(g)=>{const gr=g.createRadialGradient(32,32,0,32,32,32);gr.addColorStop(0,'rgba(255,255,255,1)');gr.addColorStop(.3,'rgba(255,240,180,.5)');gr.addColorStop(1,'rgba(255,240,180,0)');g.fillStyle=gr;g.fillRect(0,0,64,64);},{repeat:false});
 function insideBox(x,z,pad=0){for(const b of boxes)if(x>b.minX-pad&&x<b.maxX+pad&&z>b.minZ-pad&&z<b.maxZ+pad)return b;return null;}
 function landSpot(cx,cz,rMin,rMax){for(let t=0;t<40;t++){const a=R(0,6.28),d=R(rMin,rMax);const x=clamp(cx+Math.cos(a)*d,-HALF+18,HALF-18),z=clamp(cz+Math.sin(a)*d,-HALF+18,HALF-18);
   const h=terrainH(x,z);if(h>.15&&h<9&&!insideBox(x,z,.5))return new V3(x,h,z);}return null;}
 function spawnCricket(c,near){const p=landSpot(near.x,near.z,4,28);if(!p)return;c.pos.copy(p);c.vel.set(0,0,0);c.yaw=R(0,6.28);c.alive=true;c.g.visible=true;c.hopT=R(1,4);}
-function setupCrickets(n,golden=.08){for(const c of crickets)scene.remove(c.g);crickets.length=0;
-  for(let i=0;i<n;i++){const gold=rnd()<golden;const c={g:makeCricket(gold),gold,pos:new V3(),vel:new V3(),yaw:0,alive:true,hopT:0,chirp:R(2,9)};scene.add(c.g);spawnCricket(c,PL.pos);crickets.push(c);}}
+function setupCrickets(n,golden=.08){for(const c of crickets)scene.remove(c.g);crickets.length=0;const S=SPECIES.filter(q=>q.area===areaIdx);
+  for(let i=0;i<n;i++){const u=rnd();const sp=S[u<golden?2:u<golden+.22?1:0];const c={g:makeInsect(sp),sp,gold:sp.r===2,pos:new V3(),vel:new V3(),yaw:0,alive:true,hopT:0,chirp:R(2,9)};scene.add(c.g);spawnCricket(c,PL.pos);crickets.push(c);}}
 
 /* =====================================================================
    Poachers (family-friendly: they carry butterfly nets)
@@ -1484,7 +1585,7 @@ const QUESTS=[
 let goldEaten=0,escapes=0;
 function show(id,on){$(id).hidden=!on;}
 function setScreen(s){state=s;show('menu',s==='menu');show('shop',s==='shop');show('pause',s==='pause');show('over',s==='over');
-  show('travel',s==='travel');show('hud',s==='play'||s==='pause');show('touch',isTouch&&s==='play');if(s!=='play'&&document.pointerLockElement)document.exitPointerLock?.();}
+  show('travel',s==='travel');show('win',s==='win');show('hud',s==='play'||s==='pause');show('touch',isTouch&&s==='play');if(s!=='play'&&document.pointerLockElement)document.exitPointerLock?.();}
 function placeGeckoAtSpawn(){PL.pos.set(SPAWN.x,terrainH(SPAWN.x,SPAWN.z),SPAWN.z);PL.yaw=SPAWN.face;PL.vel.set(0,0,0);PL.climb=null;PL.perch=null;PL.up.set(0,1,0);
   gecko.root.position.copy(PL.pos);gecko.root.quaternion.setFromAxisAngle(Y,PL.yaw);}
 
@@ -1495,7 +1596,8 @@ async function startGame(){
   Object.assign(PL,{health:pk.health,maxHealth:pk.health,hunger:100,thirst:100,stamina:100,growth:0,inv:2,crickets:0,coins:0,time:0,dead:false,regrab:0,drinking:false,seen:false});
   placeGeckoAtSpawn();camYaw=PL.yaw+Math.PI;camPitch=.3;camDist=1.15;camPos.copy(PL.pos).add(_v.set(Math.sin(camYaw)*1.6,.6,Math.cos(camYaw)*1.6));
   for(const p of poachers)p.dispose();poachers.length=0;
-  for(let i=0;i<CFG.start;i++)spawnPoacher();nextSpawn=CFG.every;
+  for(let i=0;i<CFG.start;i++)spawnPoacher();spawnGuard();nextSpawn=CFG.every;
+  for(const c of cages)c.prog=0;
   setupCrickets(CFG.crickets,mode==='master'?.06:.09);
   goldEaten=0;escapes=0;questIdx=0;newQuest();tipIdx=save.tutorial?99:0;tipT=1;lostTimer=0;wasChased=false;maxChase=0;
   setHudArea();$('floaters').innerHTML='';
@@ -1525,13 +1627,56 @@ async function travel(to){if(traveling)return;traveling=true;const from=areaIdx;
   await buildWorld(to,p=>$('travelBar').style.width=Math.round(p*100)+'%');
   const g=gates.find(q=>q.to===from)||gates[0];if(g)placeAtGate(g);else placeGeckoAtSpawn();
   lastPL.copy(PL.pos);visOff.set(0,0,0);
-  for(let i=0;i<CFG.start+Math.floor(areaIdx/2);i++)spawnPoacher();nextSpawn=CFG.every;
+  for(let i=0;i<CFG.start+Math.floor(areaIdx/2);i++)spawnPoacher();spawnGuard();nextSpawn=CFG.every;
   setupCrickets(CFG.crickets,mode==='master'?.06:.09);
   warmUp();$('travelBar').style.width='100%';
   measure('area',AREAS[to].id,to>from?'enter':'return');
   gateCool=2.5;PL.inv=Math.max(PL.inv,2);traveling=false;setHudArea();setScreen('play');Poki.start();perfSkip=3;
   const hint=L().areaHints?.[AREAS[to].id]||'';const fg=gates.find(q=>q.fwd);
-  showBanner(areaName(to),hint+(fg&&gateOpen(fg)?(hint?' ':'')+t('gateFind',{area:areaName(fg.to)}):''),7);}
+  showBanner(areaName(to),hint+(fg&&gateOpen(fg)?(hint?' ':'')+t('gateFind',{area:areaName(fg.to)}):'')+campHint(),8);}
+/* ---- rescue: cages, the nest and the finale ---- */
+let gnaw=null;// {p} while gnawing a rope, {locked:n} next to a main-camp cage that cannot open yet
+const rescuedOutside=()=>save.rescued.filter(id=>!id.startsWith('rainforest')).length;
+const cageLocked=c=>c.area===3&&rescuedOutside()<FAMILY-3;
+const closedCages=()=>cages.filter(c=>!c.open).length;
+function npcGecko(i,scale){const sk=SKINS[i%SKINS.length];const g=new Gecko(skinMaterial(sk),sk.eye,true);g.setMaterial(skinMaterial(sk),sk.eye,false);g.root.scale.setScalar(scale);g.t=R(0,9);world.add(g.root);return g;}
+function updateCamp(dt){gnaw=null;const play=state==='play'&&!PL.dead;
+  for(const c of cages){
+    if(!c.g&&(!c.open||c.run>0)){c.g=npcGecko(c.area*3+c.k+1,.72);c.g.root.position.set(c.x,c.base+.06,c.z);c.g.root.rotation.y=c.grp.rotation.y+R(-.8,.8);}
+    if(c.open&&c.doorT<1){c.doorT=Math.min(1,c.doorT+dt*2.5);c.door.rotation.y=-1.9*smoothstep(0,1,c.doorT);}
+    if(c.g){const d=Math.hypot(c.x-camera.position.x,c.z-camera.position.z);c.g.root.visible=d<70;
+      if(c.run>0){c.run-=dt;const a=c.grp.rotation.y;const v=c.run>1.2?1.2:3.4;c.g.root.rotation.y=a;c.g.root.position.x+=Math.sin(a)*v*dt;c.g.root.position.z+=Math.cos(a)*v*dt;
+        c.g.root.position.y=terrainH(c.g.root.position.x,c.g.root.position.z)+.02;c.g.update(dt,v);
+        if(c.run<=0){world.remove(c.g.root);c.g=null;}}
+      else if(d<28)c.g.update(dt,0,{look:Math.sin(c.g.t*.8+c.k)*.7});}
+    if(!play||c.open)continue;
+    const d=Math.hypot(PL.pos.x-c.x,PL.pos.z-c.z);
+    if(d<1.3&&!PL.climb&&Math.abs(PL.pos.y-c.base)<.7){
+      if(cageLocked(c)){gnaw={locked:FAMILY-3-rescuedOutside()};if(lockMsgT<=0){lockMsgT=4;showBanner(t('mainCamp'),t('cageLocked',{n:FAMILY-3-rescuedOutside()}),5);measureOnce('rescue','rainforest','locked');}}
+      else{c.prog+=dt/2.2;c.knot.rotation.z+=dt*9;gnaw={p:c.prog};if(c.prog>=1)rescue(c);}}
+    else c.prog=Math.max(0,c.prog-dt*.5);}
+  if(NEST){const n=Math.min(FAMILY,save.rescued.length);
+    if(NEST.geckos.length<n){const i=NEST.geckos.length,a=i/FAMILY*6.283+.3,r=1.55+(i%2)*.5,x=NEST.x+Math.cos(a)*r,z=NEST.z+Math.sin(a)*r;
+      const g=npcGecko(i+1,.8+(i%3)*.08);g.root.position.set(x,terrainH(x,z)+.02,z);g.root.rotation.y=Math.atan2(NEST.x-x,NEST.z-z)+R(-.6,.6);NEST.geckos.push(g);}
+    const d=Math.hypot(NEST.x-camera.position.x,NEST.z-camera.position.z);
+    for(const g of NEST.geckos){g.root.visible=d<70;if(d<30)g.update(dt,0,{look:Math.sin(g.t*.6)*.8});}}}
+function rescue(c){c.open=true;c.run=1.8;c.knot.visible=false;if(!save.rescued.includes(c.id))save.rescued.push(c.id);
+  const n=save.rescued.length;const v=addCoins(50);persist();AU.sfx.quest();
+  floater(PL.pos.clone().add(_v.set(0,.5,0)),t('rescuedFloat',{v}),'green');
+  showBanner(t('rescuedTitle',{n,m:FAMILY}),n>=FAMILY?t('finNear'):c.area===0?t('rescuedNest'):t('rescuedText'),6);
+  measure('rescue',AREAS[c.area].id,'cage'+(c.k+1));measure('family','n'+n,'rescued');
+  if(n>=FAMILY&&!save.won[mode])setTimeout(()=>{if(state==='play')finale();},2200);}
+function finale(){Poki.stop();const first=!Object.keys(save.won).length;save.won[mode]=true;const bonus=first?500:150;save.coins+=bonus;PL.coins+=bonus;persist();
+  const stars=1+(mode==='hard'||mode==='master'?1:0)+([0,1,2,3].every(a=>save.pages[a])?1:0);
+  $('winStars').innerHTML='★'.repeat(stars)+'<i>'+'★'.repeat(3-stars)+'</i>';
+  $('wTime').textContent=fmtTime(PL.time);$('wFamily').textContent=FAMILY;$('wCoins').textContent='+'+PL.coins;
+  $('wNote').textContent=stars<3?t(mode==='hard'||mode==='master'?'finTipBook':'finTipMode'):t('finAll');
+  AU.sfx.grow();measure('finale',mode,'won');measure('finale-time',mode,timeKey(PL.time));measure('finale-stars',mode,'s'+stars);
+  setScreen('win');measure('screen','win','visible');}
+$('keepBtn').onclick=()=>{AU.sfx.click();setScreen('play');Poki.start();};
+$('winMenu').onclick=()=>{measure('button','menu-win','interact');toMenu();};
+function spawnGuard(){if(!CAMP||!cages.some(c=>!c.open))return;const p=landSpot(CAMP.x,CAMP.z,3,7);if(!p)return;const g=new Poacher(p.x,p.z);g.home=CAMP;poachers.push(g);}
+function campHint(){const n=closedCages();if(!n)return '';return ' '+(areaIdx===3&&rescuedOutside()<FAMILY-3?t('campMain',{n:FAMILY-3-rescuedOutside()}):t('campLeft',{n}));}
 function newQuest(){const q=QUESTS[questIdx%QUESTS.length];quest={...q,data:q.init?q.init():{}};$('questText').textContent=L().quests[q.i]+` (+${q.coins})`;}
 function spawnPoacher(){const p=landSpot(PL.pos.x,PL.pos.z,42,70)||landSpot(0,0,20,100);if(!p)return;poachers.push(new Poacher(p.x,p.z));}
 function setPause(on){if(on&&state==='play'){setScreen('pause');Poki.stop();if(!document.hidden)measure('button','pause','interact');}else if(!on&&state==='pause'){setScreen('play');Poki.start();}}
@@ -1545,7 +1690,7 @@ function gameOver(reason){if(PL.dead)return;PL.dead=true;Poki.stop();
   persist();
   setTimeout(()=>{$('overTitle').textContent=T[0];$('overText').textContent=T[1]+unlockMsg;$('rTime').textContent=fmtTime(PL.time);$('rCrickets').textContent=PL.crickets;$('rCoins').textContent='+'+PL.coins;
     $('rBest').textContent=nb?t('newRecord',{mode:CFG.name}):t('recordMode',{mode:CFG.name,t:fmtTime(prev)});
-    const si=stageIdx();$('rNext').textContent=si<2?t('nextStage',{n:Math.ceil((STAGE_AT[si+1]-PL.growth)/GROW_CRICKET-1e-6),stage:L().stages[si+1]}):t('wasAdult');updateShopBadge();
+    const si=stageIdx();$('rNext').textContent=si<2?t('nextStage',{n:Math.ceil((STAGE_AT[si+1]-PL.growth)/(GROW_CRICKET*perks().grow)-1e-6),stage:L().stages[si+1]}):t('wasAdult');updateShopBadge();
     const canRevive=!PL.revived&&Poki.hasRewarded();$('reviveBtn').hidden=!canRevive;if(canRevive)measure('button','revive','visible');
     setScreen('over');measure('screen','gameover','visible');},reason==='caught'?1300:600);
 }
@@ -1558,6 +1703,12 @@ async function revive(){if(adBusy||state!=='over')return;measure('button','reviv
 let netDome=null;
 function dropNet(){if(netDome)scene.remove(netDome);netDome=new THREE.Mesh(new THREE.SphereGeometry(.4,16,10,0,6.28,0,Math.PI/2),netMat);netDome.position.copy(PL.pos);scene.add(netDome);}
 function addCoins(n){const v=Math.max(1,Math.round(n));PL.coins+=v;save.coins+=v;persist();return v;}
+function addToBook(sp){const first=!save.book[sp.id];const had=pageDone(sp.area);save.book[sp.id]=(save.book[sp.id]||0)+1;
+  if(first){measure('book',sp.id,'new');setTimeout(()=>floater(PL.pos.clone().add(_v.set(0,.5,0)),t('bookNew',{n:insectName(sp)}),'green'),350);}
+  if(!had&&pageDone(sp.area)&&!save.pages[sp.area]){save.pages[sp.area]=true;const r=PAGE_REWARD[sp.area];save.coins+=r;PL.coins+=r;AU.sfx.quest();
+    showBanner(t('pageDone',{area:areaName(sp.area)}),t('pageReward',{n:r}),6);measure('book',AREAS[sp.area].id,'complete');}
+  persist();}
+const insectName=sp=>L().insects?.[sp.id]?.[0]||sp.id;
 
 /* =====================================================================
    Floating labels
@@ -1592,7 +1743,7 @@ function updatePlayer(dt){
   if(PL.drinking){PL.thirst=Math.min(100,PL.thirst+22*dt);if(Math.random()<dt*5)AU.sfx.drink();}
 
   if(PL.climb){updateClimb(dt,ix,iy,moving,sprint);return;}
-  const speed=(sprint?7.2:3.5)*(PL.inWater?.5:1)*(.85+sc*.2)*(mode==='easy'?1.05:1);
+  const speed=(sprint?7.2:3.5)*pk.speed*(PL.inWater?.5:1)*(.85+sc*.2)*(mode==='easy'?1.05:1);
   const acc=PL.onGround?16:4;
   PL.vel.x=damp(PL.vel.x,move.x*speed,acc,dt);PL.vel.z=damp(PL.vel.z,move.z*speed,acc,dt);
   if(moving){const ty=Math.atan2(move.x,move.z);let d=ty-PL.yaw;d=Math.atan2(Math.sin(d),Math.cos(d));PL.yaw+=d*(1-Math.exp(-14*dt));}
@@ -1617,7 +1768,7 @@ function updatePlayer(dt){
 }
 function stepOff(x,y,z,yaw){PL.climb=null;PL.regrab=.4;PL.pos.set(x,y,z);PL.yaw=yaw;PL.onGround=true;PL.vel.set(0,0,0);groundAt(x,z,y+.05);PL.perch=perch;gecko.root.position.copy(PL.pos);}
 function updateClimb(dt,ix,iy,moving,sprint){
-  const c=PL.climb;const sp=(sprint?3.8:2.4);let n=_n,fwd=_p;
+  const c=PL.climb;const sp=(sprint?3.8:2.4)*perks().climb;let n=_n,fwd=_p;
   if(c.type==='tree'){const t=c.t;n.set(Math.cos(c.a),0,Math.sin(c.a));const tan=_w.set(-Math.sin(c.a),0,Math.cos(c.a));
     const lat=ix*Math.sign(camR.dot(tan)||1);c.h+=iy*sp*dt;
     const rr=treeRadius(t,c.h);c.a+=lat*sp*dt/(rr+.05);
@@ -1647,8 +1798,8 @@ function updateClimb(dt,ix,iy,moving,sprint){
    Update: tongue, crickets
    ===================================================================== */
 const mouth=new V3();let ringTarget=null;
-function findTarget(){let best=null,bs=1e9;gecko.mouthWorld(mouth);const f=_v.set(0,0,1).applyQuaternion(gecko.root.quaternion);
-  for(const c of crickets){if(!c.alive)continue;const d=c.pos.distanceTo(mouth);if(d>3.8)continue;const dir=_w.subVectors(c.pos,mouth).normalize();const fa=dir.dot(f);
+function findTarget(){let best=null,bs=1e9;const reach=perks().reach;gecko.mouthWorld(mouth);const f=_v.set(0,0,1).applyQuaternion(gecko.root.quaternion);
+  for(const c of crickets){if(!c.alive)continue;const d=c.pos.distanceTo(mouth);if(d>reach)continue;const dir=_w.subVectors(c.pos,mouth).normalize();const fa=dir.dot(f);
     const ca=dir.dot(_n.subVectors(PL.pos,camera.position).normalize());if(fa<.15&&ca<.5)continue;const s=d-fa*1.2-ca*.6;if(s<bs){bs=s;best=c;}}return best;}
 function updateTongue(dt){tongue.cool-=dt;
   if(tongueQ&&tongue.t<0&&tongue.cool<=0&&!PL.drinking){tongue.t=0;tongue.cool=.42;tongue.target=findTarget();AU.sfx.tongue();
@@ -1662,10 +1813,10 @@ function updateTongue(dt){tongue.cool-=dt;
     tongue.mesh.quaternion.setFromUnitVectors(Y,d.normalize());tongue.tip.position.copy(tip);
     if(tongue.target&&tongue.target.alive&&k>=.5){const c=tongue.target;c.pos.copy(tip);c.g.position.copy(tip);c.g.scale.setScalar(1.45*Math.max(.2,ext));}
     if(k>=1){tongue.t=-1;tongue.mesh.visible=tongue.tip.visible=false;if(tongue.target&&tongue.target.alive)eatCricket(tongue.target);tongue.target=null;}}}
-function eatCricket(c){onboarding('first-cricket');if(c.gold)measure('cricket','gold','eaten');c.alive=false;c.g.visible=false;c.g.scale.setScalar(1.45);const pk=perks();
-  PL.hunger=Math.min(100,PL.hunger+(c.gold?30:17));PL.health=Math.min(PL.maxHealth,PL.health+4);PL.crickets++;
-  const before=stageName();PL.growth=Math.min(1,PL.growth+(c.gold?GROW_GOLD:GROW_CRICKET));
-  const v=addCoins((c.gold?10:2)*CFG.coinMult*pk.coins);AU.sfx.eat();c.gold?AU.sfx.gold():AU.sfx.coin();if(c.gold)goldEaten++;
+function eatCricket(c){onboarding('first-cricket');if(c.gold)measure('cricket','gold','eaten');c.alive=false;c.g.visible=false;c.g.scale.setScalar(1.45);const pk=perks();const Rv=RARITY[c.sp.r];
+  PL.hunger=Math.min(100,PL.hunger+Rv.hunger);PL.health=Math.min(PL.maxHealth,PL.health+4);PL.crickets++;
+  const before=stageName();PL.growth=Math.min(1,PL.growth+Rv.grow*pk.grow);
+  const v=addCoins(Rv.coins*CFG.coinMult*pk.coins);addToBook(c.sp);AU.sfx.eat();c.gold?AU.sfx.gold():AU.sfx.coin();if(c.gold)goldEaten++;
   floater(PL.pos.clone().add(_v.set(0,.25,0)),'+'+v,'');
   if(stageName()!==before){AU.sfx.grow();if(stageIdx()===2)announceGate();measure('growth',stageKey(),'reached');measure('growth-time',stageKey(),timeKey(PL.time));floater(PL.pos.clone().add(_v.set(0,.5,0)),stageName()+'!','green');}
   setTimeout(()=>{if(state==='play'||state==='pause')spawnCricket(c,PL.pos);},R(2500,6000));}
@@ -1701,7 +1852,7 @@ function updatePoachers(dt){
     const unreachable=geckoHeightAboveGround()>1.65;
     let target=null,spd=0;
     if(p.state==='patrol'){if(p.alert>=1){p.state='chase';AU.sfx.alert();p.shout=1.2;}
-      else if(p.alert>.25){target=PL.pos;spd=.9;}else{if(!p.wp||Math.hypot(p.wp.x-p.pos.x,p.wp.z-p.pos.z)<1.5){p.wp=landSpot(PL.pos.x,PL.pos.z,10,38)||landSpot(p.pos.x,p.pos.z,5,25);}target=p.wp;spd=1.45;}}
+      else if(p.alert>.25){target=PL.pos;spd=.9;}else{if(!p.wp||Math.hypot(p.wp.x-p.pos.x,p.wp.z-p.pos.z)<1.5){p.wp=p.home?landSpot(p.home.x,p.home.z,3,11):landSpot(PL.pos.x,PL.pos.z,10,38)||landSpot(p.pos.x,p.pos.z,5,25);}target=p.wp;spd=1.45;}}
     if(p.state==='chase'){anyChase=true;p.lost+=sees?0:dt;target=sees?PL.pos:p.last;spd=CFG.chase;
       if(unreachable&&dist<4){spd=0;p.wait+=dt;target=PL.pos;if(p.wait>CFG.wait){p.state='patrol';p.alert=0;p.wait=0;p.wp=landSpot(p.pos.x,p.pos.z,25,40);escapes++;}}else p.wait=Math.max(0,p.wait-dt*.5);
       if(p.lost>(mode==='master'?7:4.5)){p.state='search';p.searchT=5;}}
@@ -1787,10 +1938,14 @@ function drawMinimap(){const W=mm.width,S=W/76;mg.save();mg.clearRect(0,0,W,W);m
   for(const c of crickets)if(c.alive&&c.pos.distanceTo(PL.pos)<30){mg.fillStyle=c.gold?'#ffd23a':'#f2f7e8';mg.beginPath();mg.arc(c.pos.x+HALF,c.pos.z+HALF,c.gold?1.3:.8,0,6.28);mg.fill();}
   for(const p of poachers){const d=Math.hypot(p.pos.x-PL.pos.x,p.pos.z-PL.pos.z);if(d>36)continue;mg.fillStyle=p.state==='chase'?'#ff3b2e':p.alert>.2?'#ffb02e':'#ff7a6e';mg.beginPath();mg.arc(p.pos.x+HALF,p.pos.z+HALF,1.9,0,6.28);mg.fill();
     mg.strokeStyle='rgba(255,90,70,.35)';mg.lineWidth=.7;mg.beginPath();mg.moveTo(p.pos.x+HALF,p.pos.z+HALF);mg.lineTo(p.pos.x+HALF+Math.sin(p.yaw)*5,p.pos.z+HALF+Math.cos(p.yaw)*5);mg.stroke();}
+  if(CAMP&&closedCages()){mg.fillStyle='#ff9a3c';mg.strokeStyle='#14260d';mg.lineWidth=.8;mg.fillRect(CAMP.x+HALF-2.4,CAMP.z+HALF-2.4,4.8,4.8);mg.strokeRect(CAMP.x+HALF-2.4,CAMP.z+HALF-2.4,4.8,4.8);}
+  if(NEST){mg.fillStyle='#c79a58';mg.strokeStyle='#14260d';mg.lineWidth=.8;mg.beginPath();mg.arc(NEST.x+HALF,NEST.z+HALF,2.2,0,6.28);mg.fill();mg.stroke();}
   for(const g of gates){mg.fillStyle=g.fwd?(gateOpen(g)?'#b9e44f':'#8a9a7a'):'#9fd3ff';mg.strokeStyle='#14260d';mg.lineWidth=.8;mg.beginPath();mg.arc(g.x+HALF,g.z+HALF,2.6,0,6.28);mg.fill();mg.stroke();}
   mg.restore();
-  {const g=gates.find(q=>q.fwd&&gateOpen(q));if(g){const dx=g.x-PL.pos.x,dz=g.z-PL.pos.z,d=Math.hypot(dx,dz);if(d*S>W/2-10){const c=Math.cos(camYaw),sn=Math.sin(camYaw);const vx=(dx*c-dz*sn)/d,vy=(dx*sn+dz*c)/d;
-    mg.save();mg.translate(W/2+vx*(W/2-11),W/2+vy*(W/2-11));mg.rotate(Math.atan2(vy,vx));mg.fillStyle='#b9e44f';mg.strokeStyle='#14260d';mg.lineWidth=1.5;mg.beginPath();mg.moveTo(8,0);mg.lineTo(-5,-6);mg.lineTo(-5,6);mg.closePath();mg.fill();mg.stroke();mg.restore();}}}
+  const rim=(x,z,col)=>{const dx=x-PL.pos.x,dz=z-PL.pos.z,d=Math.hypot(dx,dz);if(d*S<=W/2-10)return;const c=Math.cos(camYaw),sn=Math.sin(camYaw);const vx=(dx*c-dz*sn)/d,vy=(dx*sn+dz*c)/d;
+    mg.save();mg.translate(W/2+vx*(W/2-11),W/2+vy*(W/2-11));mg.rotate(Math.atan2(vy,vx));mg.fillStyle=col;mg.strokeStyle='#14260d';mg.lineWidth=1.5;mg.beginPath();mg.moveTo(8,0);mg.lineTo(-5,-6);mg.lineTo(-5,6);mg.closePath();mg.fill();mg.stroke();mg.restore();};
+  {const g=gates.find(q=>q.fwd&&gateOpen(q));if(g)rim(g.x,g.z,'#b9e44f');}
+  if(CAMP&&cages.some(c=>!c.open&&!cageLocked(c)))rim(CAMP.x,CAMP.z,'#ff9a3c');
   mg.save();mg.translate(W/2,W/2);mg.rotate(camYaw-PL.yaw+Math.PI);mg.fillStyle='#b9e44f';mg.strokeStyle='#14260d';mg.lineWidth=1.5;mg.beginPath();mg.moveTo(0,-8);mg.lineTo(6,6);mg.lineTo(0,3);mg.lineTo(-6,6);mg.closePath();mg.fill();mg.stroke();mg.restore();}
 const statEls={health:$('sHealth'),hunger:$('sHunger'),thirst:$('sThirst'),stamina:$('sStamina')};
 function setStat(k,v,max=100){const el=statEls[k];el.querySelector('.fill').style.width=(clamp(v/max,0,1)*100)+'%';el.classList.toggle('low',v/max<.25&&k!=='stamina');}
@@ -1809,7 +1964,8 @@ function updateHUD(dt){hudT-=dt;if(hudT>0)return;hudT=.1;
   const al=$('alert');if(PL.chased){al.hidden=false;al.className='';al.textContent=t('alertChased');}
   else if(PL.hidden&&PL.sus){al.hidden=false;al.className='hidden-status';al.textContent=t('alertHidden');}
   else if(PL.sus){al.hidden=false;al.className='';al.textContent=t('alertSus');}else al.hidden=true;
-  let pr='';if(PL.canDrink&&PL.thirst<97&&!PL.drinking)pr=t(isTouch?'prDrinkTouch':'prDrinkKb');
+  $('hudFam').textContent=Math.min(FAMILY,save.rescued.length)+'/'+FAMILY;
+  let pr='';if(gnaw)pr=gnaw.locked?t('prLocked',{n:gnaw.locked}):t('prGnaw',{p:Math.min(100,Math.round(gnaw.p*100))});else if(PL.canDrink&&PL.thirst<97&&!PL.drinking)pr=t(isTouch?'prDrinkTouch':'prDrinkKb');
   else if(PL.drinking)pr=t('prDrinking');else if(PL.climb&&PL.climb.type==='tree'&&PL.climb.h>=PL.climb.t.climbMax-.05)pr=t(isTouch?'prSafeTouch':'prSafeKb');
   else if(ringT&&PL.crickets<3)pr=t(isTouch?'prEatTouch':'prEatKb');
   else if(PL.thirst<WATER_WARN&&!PL.canDrink)pr=t('prWater');
@@ -1831,12 +1987,13 @@ function updateGame(dt){
   {const m=SURVIVE_MARKS[EV.si];if(m!==undefined&&PL.time>=m*60){EV.si++;measure('survive',mode,'m'+m);}}PL.inv-=dt;const pk=perks();
   updatePlayer(dt);updateTongue(dt);jumpQ=false;
   PL.hunger=Math.max(0,PL.hunger-dt*100/CFG.hungerT*pk.hunger*AREA.needs.hunger*(PL.speed>5?1.3:1));
-  PL.thirst=Math.max(0,PL.thirst-dt*100/CFG.thirstT*AREA.needs.thirst*(PL.speed>5?1.3:1)*(PL.drinking?0:1));
+  PL.thirst=Math.max(0,PL.thirst-dt*100/CFG.thirstT*pk.thirst*AREA.needs.thirst*(PL.speed>5?1.3:1)*(PL.drinking?0:1));
   if(PL.hunger<=0||PL.thirst<=0){PL.health-=dt*(mode==='master'?6:4);if(PL.health<=0){PL.health=0;gameOver(PL.thirst<=0?'thirst':'hunger');}}
   else if(PL.hunger>55&&PL.thirst>55)PL.health=Math.min(PL.maxHealth,PL.health+dt*1.5);
   updatePoachers(dt);
   nextSpawn-=dt;if(nextSpawn<=0){nextSpawn=CFG.every*(1-areaIdx*.08);if(poachers.length<CFG.max+areaIdx){spawnPoacher();}}
   checkGates(dt);updateBanner(dt);
+  if(PL.time>9&&PL.time-dt<=9&&areaIdx===0&&closedCages()&&tipIdx>=5)showBanner(t('campTitle'),t('campLeft',{n:closedCages()}).trim(),6);
   if(quest&&quest.done(quest.data)){measure('quest','q'+(questIdx%QUESTS.length+1),'complete');if(questIdx===0)onboarding('first-quest');const v=addCoins(quest.coins);AU.sfx.quest();floater(PL.pos.clone().add(_v.set(0,.45,0)),t('questDone',{v}),'green');questIdx++;newQuest();}
   updateTips(dt);updateHUD(dt);
 }
@@ -1901,7 +2058,7 @@ function frame(ts){requestAnimationFrame(frame);const raw=lastTs?Math.min((ts-la
   else{if(state==='play')smoothVisual(dt);gecko.update(dt,PL.speed,{drinking:PL.drinking,climbing:!!PL.climb,ground:PL.climb?null:footGround});if(state==='play'||state==='over')updateCamera(dt);}
   gecko.root.scale.setScalar(geckoScale());gecko.root.visible=!(PL.dead&&state==='over');
   if(PL.inv>0&&state==='play'&&!PL.dead)gecko.root.visible=Math.floor(time*14)%2===0;
-  if(state!=='pause'){updateCrickets(dt);updateButterflies(dt);updateDust(dt);AU.update(dt);}
+  if(state!=='pause'){updateCamp(state==='win'?0:dt);updateCrickets(dt);updateButterflies(dt);updateDust(dt);AU.update(dt);}
   updateTargetRing();
   windUniforms.uTime.value=time;windUniforms.uPlayer.value.copy(PL.pos);shaftMat.uniforms.uCam.value.copy(camera.position);
   waterNormal.offset.set(time*.012,time*.008);waterU.uTime.value=time;if(waterMirror)waterMirror.material.uniforms.uTime.value=time;nearGrass.uCenter.value.set(PL.pos.x,PL.pos.z);clouds.offset.set(time*.002,time*.0007);
@@ -1923,7 +2080,7 @@ const _sr=new V3(),_su=new V3();
 function renderModes(){const el=$('modes');el.innerHTML='';for(const [k,m] of Object.entries(MODES)){const b=document.createElement('button');b.className='modeBtn';b.dataset.mode=k;b.setAttribute('aria-pressed',k===mode);
   const best=save.best[k];b.innerHTML=`<b>${m.name}</b><span>${m.desc}</span><em>${best?t('record',{t:fmtTime(best)}):t('coinMult',{m:m.coinMult})}</em>`;
   b.onclick=()=>{mode=k;save.mode=k;persist();measure('mode',k,'selected');AU.init();AU.sfx.click();renderModes();};el.appendChild(b);}
-  $('menuCoins').textContent=save.coins;updateShopBadge();const best=save.best[mode];$('menuBest').textContent=best?t('recordMode',{mode:MODES[mode].name,t:fmtTime(best)}):'';}
+  $('menuCoins').textContent=save.coins;updateShopBadge();const best=save.best[mode];$('menuBest').textContent=(best?t('recordMode',{mode:MODES[mode].name,t:fmtTime(best)})+' · ':'')+t('family')+' '+Math.min(FAMILY,save.rescued.length)+'/'+FAMILY;}
 let shopSel=save.skin;
 function applyLang(l){lang=TR[l]?l:'en';document.documentElement.lang=lang;const T=L();
   for(const k in MODES){MODES[k].name=T.modes[k][0];MODES[k].desc=T.modes[k][1];}
@@ -1935,7 +2092,12 @@ function applyLang(l){lang=TR[l]?l:'en';document.documentElement.lang=lang;const
   $('langSel').value=lang;setHudArea();refreshGateLabels();renderModes();if(state==='shop')renderShop();}
 {const sel=$('langSel');for(const [k,n] of Object.entries(LANGS)){const o=document.createElement('option');o.value=k;o.textContent=n;sel.appendChild(o);}
   sel.onchange=()=>{save.lang=sel.value;persist();applyLang(sel.value);measure('lang',sel.value,'selected');};}
+let shopTab='skins',skillSel='tong';
+for(const b of $('shopTabs').children)b.onclick=()=>{shopTab=b.dataset.tab;AU.sfx.click();measure('screen','shop-'+shopTab,'visible');renderShop();};
 function renderShop(){const el=$('skins');el.innerHTML='';$('shopCoins').textContent=save.coins;
+  for(const b of $('shopTabs').children)b.setAttribute('aria-pressed',b.dataset.tab===shopTab);
+  $('shopAct').hidden=shopTab==='book';
+  if(shopTab==='skills')return renderSkills(el);if(shopTab==='book')return renderBook(el);
   for(const s of SKINS){const owned=save.owned.includes(s.id);const b=document.createElement('button');b.className='skin';b.setAttribute('aria-pressed',s.id===shopSel);
     const status=owned?(save.skin===s.id?`<i class="owned">${t('shopChosen')}</i>`:`<i class="owned">${t('shopOwned')}</i>`):s.price<0?`<i class="lock">${s.unlock}</i>`:`<i>${t('shopPrice',{p:s.price})}</i>`;
     b.innerHTML=`<div class="sw" style="background:linear-gradient(135deg,${s.dorsal},${s.flank} 55%,${s.belly})"></div><b>${s.name}</b><span>${s.perk}</span>${status}`;
@@ -1944,10 +2106,27 @@ function renderShop(){const el=$('skins');el.innerHTML='';$('shopCoins').textCon
   if(owned){act.textContent=save.skin===s.id?t('shopChosen'):t('shopSelect');act.disabled=save.skin===s.id;}
   else if(s.price<0){act.textContent=t('shopLocked');act.disabled=true;$('shopMsg').textContent=t('shopUnlock',{u:s.unlock});}
   else{act.textContent=t('shopBuy',{p:s.price});act.disabled=save.coins<s.price;if(save.coins<s.price)$('shopMsg').textContent=t('shopNeed',{n:s.price-save.coins});}}
-function canBuySkin(){return SKINS.some(s=>s.price>0&&!save.owned.includes(s.id)&&save.coins>=s.price);}
+function skillState(k){const lv=skillLv(k.id);if(lv>=3)return{lv,max:true};const cost=k.cost[lv];const need=lv===2&&!save.book[k.req];return{lv,cost,need,ok:!need&&save.coins>=cost};}
+function renderSkills(el){const T=L();
+  for(const k of SKILLS){const st=skillState(k);const b=document.createElement('button');b.className='skin';b.setAttribute('aria-pressed',k.id===skillSel);
+    const status=st.max?`<i class="owned">${t('skillMax')}</i>`:st.need?`<i class="lock">${t('skillNeeds',{n:insectName(speciesById(k.req))})}</i>`:`<i>${t('shopPrice',{p:st.cost})}</i>`;
+    b.innerHTML=`<div class="sw lv" style="background:linear-gradient(135deg,#b9e44f,#4f8a26)">${st.lv}/3</div><b>${T.skills[k.id][0]}</b><span>${T.skills[k.id][1]}</span>${status}`;
+    b.onclick=()=>{skillSel=k.id;AU.sfx.click();renderShop();};el.appendChild(b);}
+  const k=SKILLS.find(q=>q.id===skillSel),st=skillState(k),act=$('shopAct');$('shopMsg').textContent='';
+  if(st.max){act.textContent=t('skillMax');act.disabled=true;}
+  else{act.textContent=t('shopUpgrade',{p:st.cost});act.disabled=!st.ok;
+    $('shopMsg').textContent=st.need?t('skillNeeds',{n:insectName(speciesById(k.req))})+' ('+areaName(speciesById(k.req).area)+')':save.coins<st.cost?t('shopNeed',{n:st.cost-save.coins}):t('skillLv',{n:st.lv+1});}}
+function renderBook(el){const T=L();$('shopMsg').textContent='';
+  for(let a=0;a<AREAS.length;a++){const S=SPECIES.filter(q=>q.area===a);const n=S.filter(q=>(save.book[q.id]||0)>=RARITY[q.r].need).length;
+    const h=document.createElement('div');h.className='pageHead';h.innerHTML=`<span>${areaName(a)} <small>${n}/3</small></span><small class="${save.pages[a]?'done':''}">${save.pages[a]?t('bookRewardDone'):t('bookReward',{n:PAGE_REWARD[a]})}</small>`;el.appendChild(h);
+    for(const q of S){const c=save.book[q.id]||0;const d=document.createElement('div');d.className='skin'+(c?'':' unknown');
+      d.innerHTML=c?`<div class="sw" style="background:radial-gradient(circle at 40% 35%,${q.glow||q.col},${q.col} 55%,${q.leg||q.col})"></div><b>${insectName(q)}</b><span>${T.rarity[q.r]}</span><i class="${c>=RARITY[q.r].need?'owned':''}">${Math.min(c,RARITY[q.r].need)}/${RARITY[q.r].need}</i>`
+        :`<div class="sw">?</div><b>???</b><span>${T.rarity[q.r]} · ${areaName(a)}</span><i>0/${RARITY[q.r].need}</i>`;el.appendChild(d);}}}
+function canBuySkin(){return SKINS.some(s=>s.price>0&&!save.owned.includes(s.id)&&save.coins>=s.price)||SKILLS.some(k=>skillState(k).ok);}
 function updateShopBadge(){const b=canBuySkin();for(const id of ['shopBtn','overShop'])$(id).classList.toggle('badge',b);}
 function previewSkin(s){gecko.setMaterial(skinMaterial(s),s.eye,s.crest);}
-$('shopAct').onclick=()=>{const s=skinById(shopSel);if(save.owned.includes(s.id)){save.skin=s.id;}else if(s.price>=0&&save.coins>=s.price){save.coins-=s.price;save.owned.push(s.id);measure('skin',s.id,'bought');save.skin=s.id;AU.sfx.gold();}
+$('shopAct').onclick=()=>{if(shopTab==='skills'){const k=SKILLS.find(q=>q.id===skillSel),st=skillState(k);if(!st.ok)return;save.coins-=st.cost;save.skills[k.id]=st.lv+1;measure('skill',k.id,'lv'+(st.lv+1));AU.sfx.gold();persist();renderShop();return;}
+  const s=skinById(shopSel);if(save.owned.includes(s.id)){save.skin=s.id;}else if(s.price>=0&&save.coins>=s.price){save.coins-=s.price;save.owned.push(s.id);measure('skin',s.id,'bought');save.skin=s.id;AU.sfx.gold();}
   persist();curSkin=skinById(save.skin);renderShop();};
 $('shopBtn').onclick=()=>{AU.init();AU.sfx.click();measure('button','shop','interact');measure('screen','shop','visible');shopSel=save.skin;renderShop();setScreen('shop');};
 $('shopBack').onclick=()=>{AU.sfx.click();curSkin=skinById(save.skin);previewSkin(curSkin);renderModes();setScreen('menu');};
@@ -1975,7 +2154,7 @@ applyLang(save.lang||detectLang());applyQuality(QUALITY);placeGeckoAtSpawn();cam
 setScreen('menu');requestAnimationFrame(frame);
 setTimeout(()=>{$('loading').style.opacity=0;setTimeout(()=>$('loading').remove(),650);},150);
 pokiInit.then(()=>{if(!save.lang&&detectLang()!==lang)applyLang(detectLang());measure('lang',lang,'start');Poki.loaded();measure('screen','menu','visible');onboarding('loaded');});
-window.__gekko={travel,buildWorld,gates,AREAS,get areaIdx(){return areaIdx;},get SPAWN(){return SPAWN;},stageIdx,PL,renderer,scene,updatePlayer,treeRadius,groundAt,poachers,crickets,trees,boxes,rocks,startGame,setMode:m=>{mode=m;},get state(){return state;},camera,gecko,keys,get camYaw(){return camYaw;},set camYaw(v){camYaw=v;}};
+window.__gekko={cages,get CAMP(){return CAMP;},get NEST(){return NEST;},save,finale,renderShop,setShopTab:v=>{shopTab=v;},travel,buildWorld,gates,AREAS,get areaIdx(){return areaIdx;},get SPAWN(){return SPAWN;},stageIdx,PL,renderer,scene,updatePlayer,treeRadius,groundAt,poachers,crickets,trees,boxes,rocks,startGame,setMode:m=>{mode=m;},get state(){return state;},camera,gecko,keys,get camYaw(){return camYaw;},set camYaw(v){camYaw=v;},set camPitch(v){camPitch=v;},set camDist(v){camDist=v;}};
 </script>
 </body>
 </html>
