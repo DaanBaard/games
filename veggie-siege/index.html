@@ -1,5 +1,5 @@
 <!doctype html>
-<!-- Veggie Siege v0.4 -->
+<!-- Veggie Siege v0.5 -->
 <html lang="en">
 <head>
 <meta charset="utf-8">
@@ -84,6 +84,9 @@ button{font:inherit;color:inherit;border:none;background:none;cursor:pointer}
 .pointme::before{content:"";position:absolute;width:3rem;height:3rem;right:-.6rem;bottom:-1.6rem;z-index:3;pointer-events:none;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Cpath d='M14 22V8a3 3 0 016 0v9l9 2q4 1 3 5l-2 9q-1 4-5 4h-7q-3 0-5-3l-5-7q-2-3 1-4 2-1 4 1z' fill='%23fff' stroke='%232b2d4e' stroke-width='3' stroke-linejoin='round'/%3E%3C/svg%3E") center/contain no-repeat;animation:tap .9s infinite}
 .tile.locked{filter:grayscale(.7);opacity:.75}.tile em.lk{background:#fff;padding:0;border-radius:50%;width:1.6rem;height:1.6rem;display:flex;align-items:center;justify-content:center}.tile em.lk .ic{width:1.1rem;height:1.1rem}
 .toast span{text-align:left}
+#hud,#top,#bot,#botRow,#chips,#bNext,#bGold{direction:ltr}
+[dir=rtl] #tut,[dir=rtl] .toast span,[dir=rtl] .mis,[dir=rtl] .srow,[dir=rtl] .arow,[dir=rtl] .perk,[dir=rtl] .rk,[dir=rtl] .rival{text-align:right}
+.langs{grid-template-columns:repeat(3,1fr)}.lang{font-size:.9rem;padding:.3rem .2rem}
 #hand{position:fixed;width:3.2rem;height:3.2rem;z-index:8;pointer-events:none;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Cpath d='M14 22V8a3 3 0 016 0v9l9 2q4 1 3 5l-2 9q-1 4-5 4h-7q-3 0-5-3l-5-7q-2-3 1-4 2-1 4 1z' fill='%23fff' stroke='%232b2d4e' stroke-width='3' stroke-linejoin='round'/%3E%3C/svg%3E") center/contain no-repeat;margin:-.3rem 0 0 -1rem}
 #hand.tap{animation:tap .9s infinite}#hand.drag{animation:drg 1.8s infinite}
 @keyframes tap{50%{transform:scale(.85) translateY(6px)}}
@@ -194,7 +197,7 @@ button{font:inherit;color:inherit;border:none;background:none;cursor:pointer}
 <div id="load"><b>Veggie Siege</b><i></i><small id="ver0" style="color:#fff"></small></div>
 <script>
 'use strict';
-const VERSION='0.4';
+const VERSION='0.5';
 const $=id=>document.getElementById(id);
 const cv=$('c'),ctx=cv.getContext('2d');
 const TAU=Math.PI*2;
@@ -369,6 +372,102 @@ ad_kills:"Versla {0} plagen",ad_merges:"Voeg {0} keer samen",ad_lvl:"Kweek een g
 ad_ewave:"Haal golf {0} in Eindeloos",ad_daily:"Voltooi {0} dag-uitdagingen",ad_streak:"Reeks van {0} dagen",ad_unl:"Speel alle {0} groenten vrij",ad_gold:"Vang {0} gouden kevers",ad_close:"Win met nog maar 1 krop sla",ad_sold:"Composteer {0} groenten"
 };
 
+TR.ar={
+tagline:"ادمج الخضار. أنقذ الخس!",play:"العب",gardens:"الحدائق",endless:"بلا نهاية",daily:"يومي",shed:"السقيفة",achievements:"الكؤوس",club:"نادي الحديقة",
+missions:"مهام اليوم",allMissions:"أنجزت كل المهام! +100",best:"الأفضل",bestWave:"أفضل موجة",winPrev:"اربح الحديقة السابقة أولاً",endlessInfo:"إلى متى ستصمد؟ الموجات لا تتوقف أبداً.",
+back:"رجوع",waves:"{0} موجة",seedBag:"كيس البذور",bagInfo:"اختر 3–5 خضار. أنواع أقل = دمج أسهل!",toBeat:"تغلّب على {0}: {1}",start:"ابدأ!",bagMin:"3 خضار على الأقل",bagMax:"5 خضار كحد أقصى",
+getReady:"احمِ الخس!",poweredUp:"{0} أصبح أقوى! (+{1})",maxPower:"قوة قصوى!",needComp:"تحتاج {0} سماد",wave:"موجة",plant:"ازرع",full:"ممتلئ",nextWave:"الموجة التالية",
+lvl:"Lv",wow:"رائع!",jackpot:"الجائزة الكبرى!",bossDown:"هزمت الزعيم!",blocked:"تم الصد!",lastWave:"الموجة الأخيرة!",mestFound:"سماد!",mestHint:"اسحب السماد إلى خضرة: +1 مستوى!",
+shell:"درع الصدفة!",summon:"قاق قاق!",revived:"عدنا للعب!",perkTitle:"اختر مكافأة",perkInfo:"تستمر حتى نهاية هذه الحديقة.",paused:"متوقف",resume:"تابع",
+soundOn:"الصوت: تشغيل",soundOff:"الصوت: إيقاف",musicOn:"الموسيقى: تشغيل",musicOff:"الموسيقى: إيقاف",restart:"إعادة",quit:"خروج",reviveTitle:"الآفات تنتصر!",
+reviveInfo:"لدى الجدة خس إضافي في السقيفة. شاهد إعلاناً لتحصل على +5 خس وتدفع الآفات للوراء.",reviveBtn:"+5 خس",noThanks:"لا، شكراً",adFail:"لا يوجد إعلان الآن",
+paper:"جريدة البرعم اليومية",newBest:"رقم قياسي جديد!",reachedWave:"وصلت إلى الموجة {0}",passed:"تجاوزت {0}!",nextR:"التالي: {0} ({1})",topClub:"أنت الأول في نادي الحديقة!",nextRW:"التالي: {0} (الموجة {1})",
+double:"ضاعف: +{0}",next:"الحديقة التالية",again:"حاول مجدداً",home:"القائمة",you:"أنت",clubInfo:"تغلّب على أقزام الحديقة في النادي! (إنهم أقزام، وليسوا لاعبين حقيقيين.)",
+upInfo:"+10% ضرر لكل مستوى",freeCoins:"عملات مجانية",freeCoinsInfo:"شاهد إعلاناً: +60 عملة (كل 10 دقائق)",tabVeg:"الخضار",tabGarden:"الحديقة",needCoins:"عملات غير كافية",unlocked:"تم فتح {0}!",
+misDone:"اكتملت المهمة!",day:"اليوم {0}",loginTitle:"هدية يومية",loginInfo:"عد كل يوم لهدايا أكبر!",claim:"استلم",
+dailyInfo:"نفس التحدي للجميع اليوم. 15 موجة. اربح لتحصل على +60 عملة وحافظ على سلسلتك!",dailyDone:"أنجزته اليوم! حاول تحقيق نتيجة أعلى.",settings:"الإعدادات",language:"اللغة",
+introTitle:"خس الجدة في خطر!",introText:"آفات جائعة تزحف إلى الحديقة. ازرع الخضار وادمجها لإيقافها!",defend:"دافع عن الحديقة!",
+dmg:"ضرر",maxLvl:"وصل لأعلى مستوى!",fullInfo:"كل الأحواض ممتلئة — ادمج الخضار!",cooldown:"يُعاد الشحن…",sellInfo:"اسحب خضرة إلى هنا لتحويلها إلى سماد",goldenSeed:"بذرة ذهبية",
+f_grandma:"حديقة الجدة",f_allot:"حقل القناة",f_green:"البيت الزجاجي",f_autumn:"بستان الخريف",f_winter:"حديقة الشتاء",f_moon:"حديقة ضوء القمر",
+v_carrot:"جزر",v_tomato:"طماطم",v_onion:"بصل",v_corn:"ذرة",v_sun:"عباد الشمس",v_chili:"فلفل حار",v_pumpkin:"يقطين",
+st_dart:"يطلق سهام جزر على آفة واحدة",st_lob:"يرمي طماطم تتناثر على مجموعة",st_aura:"يُبكي الآفات القريبة: يبطئها",st_pop:"رشاش فشار: سريع جداً",st_fire:"كرات نار تواصل الاحتراق",st_slam:"ضربة ثقيلة تتجاهل الدروع",st_eco:"ينتج سماداً إضافياً لك",
+b_baron:"البارون فون لزج",bs_baron:"يضع نظارة أحادية. ولديه شهية.",b_queen:"ملكة الغربان",bs_queen:"تحضر أصدقاءها. الكثير منهم.",b_megamol:"الخلد العملاق",bs_megamol:"يحفر تحت دفاعاتك!",
+p_tears:"دموع التماسيح",pd_tears:"البصل يبطئ أكثر ويصل أبعد",p_pierce:"جزر حاد",pd_pierce:"سهام الجزر تخترق آفة إضافية",p_ketchup:"انفجار الكاتشب",pd_ketchup:"رذاذ الطماطم أكبر بنسبة 40%",
+p_popcorn:"حفلة الفشار",pd_popcorn:"الذرة تطلق أسرع بنسبة 30%",p_spicy:"حار جداً",pd_spicy:"الحرق يدوم أطول ويؤلم أكثر",p_pump:"قوة اليقطين",pd_pump:"اليقطين يضرب أقوى بنسبة 40%",
+p_sunny:"يوم مشمس",pd_sunny:"عباد الشمس ينتج سماداً أكثر بنسبة 50%",p_soil:"تربة جيدة",pd_soil:"فرصة 15% أن تنبت البذرة الجديدة بالمستوى 2",p_cheap:"تخفيض البذور",pd_cheap:"البذور أرخص بنسبة 20%",
+p_compost:"ملك السماد",pd_compost:"+25% سماد من الآفات",p_lettuce:"خس احتياطي",pd_lettuce:"+3 رؤوس خس",p_quick:"أيدٍ سريعة",pd_quick:"كل الخضار تهاجم أسرع بنسبة 12%",
+p_cool:"بطاريات جديدة",pd_cool:"الأدوات تشحن أسرع بنسبة 30%",p_shield:"سياج الحديقة",pd_shield:"الآفات الثلاث التالية لا تستطيع أكل الخس",p_sharp:"حجر المسن",pd_sharp:"كل الخضار تسبب ضرراً أكثر بنسبة 12%",
+mod_fast:"آفات توربو",modd_fast:"الآفات أسرع بنسبة 30%",mod_rich:"تربة غنية",modd_rich:"سماد مضاعف، لكن صحة الآفات أعلى بنسبة 60%",mod_nowater:"بلا أدوات",modd_nowater:"المرشة والفزاعة معطلتان اليوم",
+mod_golden:"حمى الذهب",modd_golden:"خنفساء ذهبية في كل موجة",mod_cheap5:"حديقة اقتصادية",modd_cheap5:"البذور أرخص بنسبة 40%، لكن أقصى مستوى 5",mod_bossy:"يوم الزعماء",modd_bossy:"زعيم كل 5 موجات",
+mis_kills:"اهزم {0} آفة",mis_merges:"ادمج {0} مرة",mis_lvl:"ازرع خضرة بالمستوى {0}",mis_win:"اربح حديقة",mis_water:"استخدم المرشة {0} مرات",mis_boss:"اهزم {0} زعماء",
+mis_ewave:"صل إلى الموجة {0} في وضع بلا نهاية",mis_gold:"اصطد {0} خنافس ذهبية",mis_plant:"ازرع {0} بذرة",mis_perfect:"اربح حديقة دون خسارة أي خس",
+m_comp:"كومة السماد",md_comp:"+10 سماد في البداية لكل مستوى",m_lives:"خس إضافي",md_lives:"+1 رأس خس لكل مستوى",m_soil:"تربة خصبة",md_soil:"+3% فرصة لبذرة بالمستوى 2 لكل مستوى",
+say0:"هل هذا هو البوفيه؟",say1:"أنا في حمية. من الغد.",say2:"خس! طعامي المفضل!",say3:"لا أحد يرانا، صحيح؟",say4:"من زرع البصل هنا؟! *شهقة*",say5:"هل وصلنا؟",say6:"أشم رائحة سلطة!",say7:"على مهلك تنال الخس.",
+oma0:"خسّي!!",oma1:"هش! هش!",oma2:"ليس وأنا هنا!",oma3:"كانت أجمل واحدة عندي!",
+head_win0:"الجدة تحمي الخس والآفات في صدمة",head_win1:"عصابة الحلزون تهرب باكية",head_win2:"الخضار تنتصر — السلطة بأمان",
+head_lose0:"الحلزونات تطالب بمزيد من السلطة",head_lose1:"أُكل الخس. الجدة: 'سأعود'",head_lose2:"اليرقات تقيم حفلة خس",
+chest0:"صندوق",chest1:"صندوق نادر!",chest2:"صندوق أسطوري!",
+a_kill_k1:"مكافح الآفات",a_kill_k2:"صائد الحشرات",a_kill_k3:"كابوس الحلزون",a_kill_k4:"أسطورة الحديقة",a_merge_m1:"الخاطبة",a_merge_m2:"آلة الدمج",a_merge_m3:"سيد الاندماج",
+a_lvl:"خضرة بالمستوى {0}",a_won:"تم إنقاذ {0}",a_allstars:"البستاني الذهبي",a_perfect:"ولا ورقة واحدة",a_boss_b1:"قاهر الزعماء",a_boss_b2:"صائد الزعماء",a_boss_b3:"جامع الزعماء",a_ewave:"موجة بلا نهاية {0}",
+a_daily_d1:"الحفّار اليومي",a_daily_d2:"مزيل الأعشاب الأسبوعي",a_streak_3:"مشتعل",a_streak_7:"لا يمكن إيقافه",a_allveg:"كيس بذور ممتلئ",a_gold10:"باحث عن الذهب",a_close:"بأعجوبة",a_seller:"تاجر السماد",
+ad_kills:"اهزم {0} آفة",ad_merges:"ادمج {0} مرة",ad_lvl:"طوّر خضرة إلى المستوى {0}",ad_won:"اربح هذه الحديقة",ad_allstars:"اجمع {0} نجمة",ad_perfect:"اربح دون خسارة أي خس",ad_bosses:"اهزم {0} زعماء",
+ad_ewave:"صل إلى الموجة {0} في وضع بلا نهاية",ad_daily:"أنجز {0} تحديات يومية",ad_streak:"سلسلة {0} أيام",ad_unl:"افتح كل الخضار الـ{0}",ad_gold:"اصطد {0} خنافس ذهبية",ad_close:"اربح وبقي لديك خسة واحدة فقط",ad_sold:"حوّل {0} خضار إلى سماد",
+tut_plant:"انقر على <b>حوض فارغ</b> لتزرع خضرة!",tut_plant2:"رائع! ازرع واحدة أخرى بجانبها مباشرة.",tut_merge:"اسحب جزرة فوق الأخرى!",tut_merged:"<b>المستوى 2!</b> الدمج يجعل الخضار أقوى.",
+tut_pest:"حلزون يريد خسّي! خضارك تطلق النار <b>وحدها</b>.",tut_comp:"الآفات تعطي <b>سماداً</b>. استخدمه لتزرع المزيد!",tut_plant3:"انقر على الأحواض الفارغة لتزرع المزيد!",tut_go:"لقد جاؤوا! احمِ خسّي!",
+h_merge:"ادمج خضرتين متطابقتين!",h_water:"الآفات قريبة! انقر على <b>المرشة</b>: الخضار تطلق أسرع.",h_scare:"انقر على <b>الفزاعة</b>: تتجمد كل الآفات!",h_full:"الأحواض ممتلئة! ادمج، أو اسحب خضرة إلى <b>صندوق السماد</b>.",
+h_power:"أنفق السماد هنا: <b>كل</b> خضار هذا النوع تصبح أقوى!",h_next:"جاهز؟ استدعِ الموجة التالية مبكراً لسماد إضافي!",h_speed:"انقر على <b>x2</b> لتسريع اللعبة.",h_swap:"لا يُدمج إلا خضرتان متطابقتان بنفس المستوى!",h_lock:"اربح حديقة الجدة أولاً!",
+pn_cater:"يرقة",pi_cater:"سريعة لكنها ضعيفة.",pn_beetle:"خنفساء",pi_beetle:"مدرّعة! طوّر خضارك.",pn_crow:"غراب",pi_crow:"يطير، والبصل يبطئه أقل.",pn_mole:"خلد",pi_mole:"يحفر تحت الأرض ولا يمكن إصابته هناك.",pn_gold:"خنفساء ذهبية",pi_gold:"اصطدها: جائزة كبرى وسماد!",
+h_water2:"نصيحة: <b>المرشة</b> تجعل كل الخضار تطلق أسرع لفترة.",h_scare2:"نصيحة: <b>الفزاعة</b> تجمّد كل الآفات للحظة.",h_plantbed:"نصيحة: انقر على حوض فارغ لتزرع في ذلك المكان بالضبط."
+};
+
+TR.bn={
+tagline:"সবজি মেলাও। লেটুস বাঁচাও!",play:"খেলো",gardens:"বাগান",endless:"অন্তহীন",daily:"প্রতিদিন",shed:"চালাঘর",achievements:"ট্রফি",club:"গার্ডেন ক্লাব",
+missions:"আজকের মিশন",allMissions:"সব মিশন শেষ! +100",best:"সেরা",bestWave:"সেরা ঢেউ",winPrev:"আগে আগের বাগানটা জেতো",endlessInfo:"কতক্ষণ টিকতে পারবে? ঢেউ কখনো থামে না।",
+back:"ফিরে যাও",waves:"{0}টি ঢেউ",seedBag:"বীজের থলে",bagInfo:"৩–৫টি সবজি বাছো। কম রকম = সহজে মেলানো!",toBeat:"{0}-কে হারাও: {1}",start:"শুরু!",bagMin:"অন্তত ৩টি সবজি",bagMax:"সর্বোচ্চ ৫টি সবজি",
+getReady:"লেটুস রক্ষা করো!",poweredUp:"{0} শক্তিশালী হলো! (+{1})",maxPower:"পূর্ণ শক্তি!",needComp:"{0} কম্পোস্ট লাগবে",wave:"ঢেউ",plant:"বোনো",full:"ভর্তি",nextWave:"পরের ঢেউ",
+lvl:"Lv",wow:"দারুণ!",jackpot:"জ্যাকপট!",bossDown:"বস হেরে গেছে!",blocked:"আটকানো!",lastWave:"শেষ ঢেউ!",mestFound:"সার পাওয়া গেছে!",mestHint:"সার কোনো সবজির ওপর টেনে আনো: +১ লেভেল!",
+shell:"খোলসের ঢাল!",summon:"কা কা!",revived:"আবার শুরু!",perkTitle:"একটা বোনাস বাছো",perkInfo:"এই বাগানের শেষ পর্যন্ত থাকবে।",paused:"বিরতি",resume:"চালিয়ে যাও",
+soundOn:"শব্দ: চালু",soundOff:"শব্দ: বন্ধ",musicOn:"গান: চালু",musicOff:"গান: বন্ধ",restart:"আবার শুরু",quit:"বের হও",reviveTitle:"পোকারা জিতে যাচ্ছে!",
+reviveInfo:"দিদিমার চালাঘরে আরও লেটুস আছে। +৫ লেটুসের জন্য একটা বিজ্ঞাপন দেখো আর পোকাদের পিছু হটাও।",reviveBtn:"+৫ লেটুস",noThanks:"না, ধন্যবাদ",adFail:"এখন কোনো বিজ্ঞাপন নেই",
+paper:"দৈনিক অঙ্কুর",newBest:"নতুন রেকর্ড!",reachedWave:"তুমি {0} নম্বর ঢেউ পর্যন্ত পৌঁছেছ",passed:"তুমি {0}-কে পেছনে ফেলেছ!",nextR:"পরের জন: {0} ({1})",topClub:"তুমি গার্ডেন ক্লাবে ১ নম্বর!",nextRW:"পরের জন: {0} (ঢেউ {1})",
+double:"দ্বিগুণ: +{0}",next:"পরের বাগান",again:"আবার চেষ্টা করো",home:"মেনু",you:"তুমি",clubInfo:"ক্লাবের বাগানের বামনদের হারাও! (এরা বামন, আসল খেলোয়াড় নয়।)",
+upInfo:"প্রতি লেভেলে +১০% ক্ষতি",freeCoins:"ফ্রি কয়েন",freeCoinsInfo:"বিজ্ঞাপন দেখো: +৬০ কয়েন (প্রতি ১০ মিনিটে)",tabVeg:"সবজি",tabGarden:"বাগান",needCoins:"যথেষ্ট কয়েন নেই",unlocked:"{0} খুলে গেছে!",
+misDone:"মিশন শেষ!",day:"দিন {0}",loginTitle:"আজকের উপহার",loginInfo:"বড় উপহারের জন্য প্রতিদিন ফিরে এসো!",claim:"নাও",
+dailyInfo:"আজ সবার জন্য একই চ্যালেঞ্জ। ১৫টি ঢেউ। জিতে +৬০ কয়েন নাও আর ধারা বজায় রাখো!",dailyDone:"আজ শেষ! এবার আরও বেশি স্কোর করো।",settings:"সেটিংস",language:"ভাষা",
+introTitle:"দিদিমার লেটুস বিপদে!",introText:"ক্ষুধার্ত পোকারা বাগানে ঢুকছে। সবজি ফলাও আর মেলাও, ওদের থামাও!",defend:"বাগান রক্ষা করো!",
+dmg:"ক্ষতি",maxLvl:"এটা ইতিমধ্যে সর্বোচ্চ লেভেল!",fullInfo:"সব কেয়ারি ভর্তি — সবজি মেলাও!",cooldown:"চার্জ হচ্ছে…",sellInfo:"কম্পোস্ট বানাতে সবজি এখানে টেনে আনো",goldenSeed:"সোনার বীজ",
+f_grandma:"দিদিমার বাগান",f_allot:"খালপাড়ের খেত",f_green:"গ্রিনহাউস",f_autumn:"শরতের বাগান",f_winter:"শীতের বাগান",f_moon:"জ্যোৎস্নার বাগান",
+v_carrot:"গাজর",v_tomato:"টমেটো",v_onion:"পেঁয়াজ",v_corn:"ভুট্টা",v_sun:"সূর্যমুখী",v_chili:"লঙ্কা",v_pumpkin:"কুমড়ো",
+st_dart:"একটা পোকার দিকে গাজরের তীর ছোড়ে",st_lob:"টমেটো ছোড়ে, যা দলের ওপর ছিটিয়ে পড়ে",st_aura:"কাছের পোকাদের কাঁদায়: ধীর করে দেয়",st_pop:"পপকর্ন মেশিনগান: খুব দ্রুত",st_fire:"আগুনের গোলা, যা জ্বলতেই থাকে",st_slam:"ভারী আঘাত, বর্ম মানে না",st_eco:"তোমার জন্য বাড়তি কম্পোস্ট বানায়",
+b_baron:"ব্যারন ফন স্লাইম",bs_baron:"এক চোখে চশমা। আর খিদেও।",b_queen:"কাকের রানি",bs_queen:"বন্ধুদের নিয়ে আসে। অনেক বন্ধু।",b_megamol:"মেগা ছুঁচো",bs_megamol:"তোমার প্রতিরক্ষার নিচ দিয়ে খোঁড়ে!",
+p_tears:"কুমিরের কান্না",pd_tears:"পেঁয়াজ বেশি ধীর করে আর দূরে পৌঁছায়",p_pierce:"ধারালো গাজর",pd_pierce:"গাজরের তীর আরও একটা পোকা ভেদ করে",p_ketchup:"কেচাপ বিস্ফোরণ",pd_ketchup:"টমেটোর ছিটে ৪০% বড়",
+p_popcorn:"পপকর্ন পার্টি",pd_popcorn:"ভুট্টা ৩০% দ্রুত ছোড়ে",p_spicy:"দারুণ ঝাল",pd_spicy:"জ্বালা বেশিক্ষণ থাকে আর বেশি লাগে",p_pump:"কুমড়ো শক্তি",pd_pump:"কুমড়ো ৪০% জোরে মারে",
+p_sunny:"রোদেলা দিন",pd_sunny:"সূর্যমুখী ৫০% বেশি কম্পোস্ট দেয়",p_soil:"ভালো মাটি",pd_soil:"১৫% সম্ভাবনায় নতুন বীজ লেভেল ২-এ গজায়",p_cheap:"বীজের সেল",pd_cheap:"বীজ ২০% সস্তা",
+p_compost:"কম্পোস্টের রাজা",pd_compost:"পোকা থেকে +২৫% কম্পোস্ট",p_lettuce:"বাড়তি লেটুস",pd_lettuce:"+৩টি লেটুস",p_quick:"চটপটে হাত",pd_quick:"সব সবজি ১২% দ্রুত আক্রমণ করে",
+p_cool:"নতুন ব্যাটারি",pd_cool:"যন্ত্র ৩০% দ্রুত চার্জ হয়",p_shield:"বাগানের বেড়া",pd_shield:"পরের ৩টি পোকা লেটুস খেতে পারবে না",p_sharp:"শান পাথর",pd_sharp:"সব সবজি ১২% বেশি ক্ষতি করে",
+mod_fast:"টার্বো পোকা",modd_fast:"পোকারা ৩০% দ্রুত চলে",mod_rich:"উর্বর মাটি",modd_rich:"দ্বিগুণ কম্পোস্ট, কিন্তু পোকাদের ৬০% বেশি জান",mod_nowater:"কোনো যন্ত্র নেই",modd_nowater:"আজ ঝাঁঝরি আর কাকতাড়ুয়া ভাঙা",
+mod_golden:"সোনার খোঁজ",modd_golden:"প্রতি ঢেউয়ে একটা সোনালি গুবরে",mod_cheap5:"সস্তা বাগান",modd_cheap5:"বীজ ৪০% সস্তা, কিন্তু সর্বোচ্চ লেভেল ৫",mod_bossy:"বসের দিন",modd_bossy:"প্রতি ৫ ঢেউয়ে একজন বস",
+mis_kills:"{0}টি পোকা হারাও",mis_merges:"{0} বার মেলাও",mis_lvl:"লেভেল {0}-এর সবজি ফলাও",mis_win:"একটা বাগান জেতো",mis_water:"ঝাঁঝরি {0} বার ব্যবহার করো",mis_boss:"{0}জন বস হারাও",
+mis_ewave:"অন্তহীনে {0} নম্বর ঢেউয়ে পৌঁছাও",mis_gold:"{0}টি সোনালি গুবরে ধরো",mis_plant:"{0}টি বীজ বোনো",mis_perfect:"লেটুস না হারিয়ে একটা বাগান জেতো",
+m_comp:"কম্পোস্টের স্তূপ",md_comp:"প্রতি লেভেলে +১০ শুরুর কম্পোস্ট",m_lives:"বাড়তি লেটুস",md_lives:"প্রতি লেভেলে +১টি লেটুস",m_soil:"উর্বর মাটি",md_soil:"প্রতি লেভেলে লেভেল ২ বীজের +৩% সম্ভাবনা",
+say0:"এটাই কি বুফে?",say1:"আমি ডায়েটে আছি। কাল থেকে।",say2:"লেটুস! আমার প্রিয়!",say3:"কেউ দেখছে না তো?",say4:"এখানে পেঁয়াজ কে লাগাল?! *ফোঁপানি*",say5:"এসে গেছি?",say6:"সালাদের গন্ধ পাচ্ছি!",say7:"ধীরে চলো, লেটুস পাবে।",
+oma0:"আমার লেটুস!!",oma1:"যাও! যাও!",oma2:"আমি থাকতে না!",oma3:"ওটাই তো আমার সবচেয়ে ভালোটা ছিল!",
+head_win0:"দিদিমা লেটুস বাঁচালেন, পোকারা হতবাক",head_win1:"শামুকের দল কাঁদতে কাঁদতে পালাল",head_win2:"সবজির জয় — সালাদ বাঁচল",
+head_lose0:"শামুকেরা আরও সালাদ চায়",head_lose1:"লেটুস খাওয়া শেষ। দিদিমা: 'আমি ফিরব'",head_lose2:"শুঁয়োপোকাদের লেটুস পার্টি",
+chest0:"বাক্স",chest1:"বিরল বাক্স!",chest2:"মহাকাব্যিক বাক্স!",
+a_kill_k1:"পোকা দমন",a_kill_k2:"পোকা তাড়ানো",a_kill_k3:"শামুকের দুঃস্বপ্ন",a_kill_k4:"বাগানের কিংবদন্তি",a_merge_m1:"ঘটক",a_merge_m2:"মেলানোর যন্ত্র",a_merge_m3:"ফিউশন ওস্তাদ",
+a_lvl:"লেভেল {0} সবজি",a_won:"{0} রক্ষা",a_allstars:"সোনালি মালি",a_perfect:"একটা পাতাও যায়নি",a_boss_b1:"বস জয়ী",a_boss_b2:"বস শিকারি",a_boss_b3:"বস সংগ্রাহক",a_ewave:"অন্তহীন ঢেউ {0}",
+a_daily_d1:"রোজকার খননকারী",a_daily_d2:"সাপ্তাহিক নিড়ানি",a_streak_3:"জোরে চলছে",a_streak_7:"থামানো যায় না",a_allveg:"ভরা বীজের থলে",a_gold10:"সোনা সন্ধানী",a_close:"অল্পের জন্য",a_seller:"কম্পোস্ট বিক্রেতা",
+ad_kills:"{0}টি পোকা হারাও",ad_merges:"{0} বার মেলাও",ad_lvl:"একটা সবজিকে লেভেল {0}-এ তোলো",ad_won:"এই বাগান জেতো",ad_allstars:"{0}টি তারা জোগাড় করো",ad_perfect:"লেটুস না হারিয়ে জেতো",ad_bosses:"{0}জন বস হারাও",
+ad_ewave:"অন্তহীনে {0} নম্বর ঢেউয়ে পৌঁছাও",ad_daily:"{0}টি দৈনিক চ্যালেঞ্জ শেষ করো",ad_streak:"টানা {0} দিন",ad_unl:"সব {0}টি সবজি খোলো",ad_gold:"{0}টি সোনালি গুবরে ধরো",ad_close:"মাত্র ১টি লেটুস নিয়ে জেতো",ad_sold:"{0}টি সবজি কম্পোস্ট করো",
+tut_plant:"সবজি বুনতে একটা <b>খালি কেয়ারিতে</b> ট্যাপ করো!",tut_plant2:"দারুণ! ঠিক পাশে আরও একটা বোনো।",tut_merge:"একটা গাজর অন্যটার ওপর টেনে আনো!",tut_merged:"<b>লেভেল ২!</b> মেলালে সবজি শক্তিশালী হয়।",
+tut_pest:"একটা শামুক আমার লেটুস খেতে চায়! তোমার সবজিরা <b>নিজে থেকেই</b> আক্রমণ করে।",tut_comp:"পোকারা <b>কম্পোস্ট</b> দেয়। তা দিয়ে আরও বোনো!",tut_plant3:"আরও সবজি বুনতে খালি কেয়ারিতে ট্যাপ করো!",tut_go:"ওরা আসছে! আমার লেটুস বাঁচাও!",
+h_merge:"দুটো একই রকম সবজি মেলাও!",h_water:"পোকারা কাছে! <b>ঝাঁঝরি</b> ট্যাপ করো: সবজিরা দ্রুত আক্রমণ করবে।",h_scare:"<b>কাকতাড়ুয়া</b> ট্যাপ করো: সব পোকা থেমে যাবে!",h_full:"কেয়ারি ভর্তি! মেলাও, বা কোনো সবজি <b>কম্পোস্টের পাত্রে</b> টেনে আনো।",
+h_power:"এখানে কম্পোস্ট খরচ করো: ওই রকমের <b>সব</b> সবজি শক্তিশালী হবে!",h_next:"তৈরি? বাড়তি কম্পোস্টের জন্য পরের ঢেউ আগেই ডাকো!",h_speed:"খেলা দ্রুত করতে <b>x2</b> ট্যাপ করো।",h_swap:"শুধু একই লেভেলের দুটো একই সবজি মেলে!",h_lock:"আগে দিদিমার বাগান জেতো!",
+pn_cater:"শুঁয়োপোকা",pi_cater:"দ্রুত, কিন্তু দুর্বল।",pn_beetle:"গুবরে পোকা",pi_beetle:"বর্ম পরা! সবজির লেভেল বাড়াও।",pn_crow:"কাক",pi_crow:"ওড়ে, পেঁয়াজ একে কম ধীর করে।",pn_mole:"ছুঁচো",pi_mole:"মাটির নিচে খোঁড়ে, তখন আঘাত লাগে না।",pn_gold:"সোনালি গুবরে",pi_gold:"ধরো: জ্যাকপট আর সার!",
+h_water2:"টিপ: <b>ঝাঁঝরি</b> কিছুক্ষণ সব সবজিকে দ্রুত আক্রমণ করায়।",h_scare2:"টিপ: <b>কাকতাড়ুয়া</b> কিছুক্ষণের জন্য সব পোকা থামিয়ে দেয়।",h_plantbed:"টিপ: ঠিক সেখানে বুনতে খালি কেয়ারিতে ট্যাপ করো।"
+};
+
 TR.de={
 tagline:"Gemüse kombinieren. Salat retten!",play:"SPIELEN",gardens:"Gärten",endless:"Endlos",daily:"Täglich",shed:"Schuppen",achievements:"Erfolge",club:"Gartenclub",
 missions:"Heutige Missionen",allMissions:"Alle Missionen erledigt! +100",best:"Rekord",bestWave:"Beste Welle",winPrev:"Gewinne zuerst den vorigen Garten",endlessInfo:"Wie lange hältst du durch? Die Wellen hören nie auf.",
@@ -496,6 +595,102 @@ a_lvl:"Légume niveau {0}",a_won:"{0} sauvé",a_allstars:"Jardinier d'or",a_perf
 a_daily_d1:"Bêcheur du jour",a_daily_d2:"Désherbeur de la semaine",a_streak_3:"En feu",a_streak_7:"Inarrêtable",a_allveg:"Sac complet",a_gold10:"Chercheur d'or",a_close:"De justesse",a_seller:"Dealer de compost",
 ad_kills:"Bats {0} nuisibles",ad_merges:"Fusionne {0} fois",ad_lvl:"Fais monter un légume au niveau {0}",ad_won:"Gagne ce jardin",ad_allstars:"Récolte {0} étoiles",ad_perfect:"Gagne sans perdre de laitue",ad_bosses:"Bats {0} boss",
 ad_ewave:"Atteins la vague {0} en Infini",ad_daily:"Réussis {0} défis du jour",ad_streak:"Série de {0} jours",ad_unl:"Débloque les {0} légumes",ad_gold:"Attrape {0} scarabées dorés",ad_close:"Gagne avec 1 seule laitue",ad_sold:"Composte {0} légumes"
+};
+
+TR.hi={
+tagline:"सब्ज़ियाँ मिलाओ। सलाद पत्ता बचाओ!",play:"खेलें",gardens:"बगीचे",endless:"अंतहीन",daily:"रोज़ाना",shed:"शेड",achievements:"ट्रॉफ़ियाँ",club:"गार्डन क्लब",
+missions:"आज के मिशन",allMissions:"सारे मिशन पूरे! +100",best:"बेस्ट",bestWave:"बेस्ट लहर",winPrev:"पहले पिछला बगीचा जीतो",endlessInfo:"कितनी देर टिक पाओगे? लहरें कभी नहीं रुकतीं।",
+back:"वापस",waves:"{0} लहरें",seedBag:"बीज की थैली",bagInfo:"3–5 सब्ज़ियाँ चुनो। कम किस्में = आसान मिलाना!",toBeat:"{0} को हराओ: {1}",start:"शुरू!",bagMin:"कम से कम 3 सब्ज़ियाँ",bagMax:"ज़्यादा से ज़्यादा 5 सब्ज़ियाँ",
+getReady:"सलाद पत्ते की रक्षा करो!",poweredUp:"{0} ताक़तवर हुआ! (+{1})",maxPower:"पूरी ताक़त!",needComp:"{0} खाद चाहिए",wave:"लहर",plant:"बोओ",full:"भरा",nextWave:"अगली लहर",
+lvl:"Lv",wow:"वाह!",jackpot:"जैकपॉट!",bossDown:"बॉस हारा!",blocked:"रोका!",lastWave:"आख़िरी लहर!",mestFound:"खाद मिली!",mestHint:"खाद को किसी सब्ज़ी पर खींचो: +1 लेवल!",
+shell:"खोल की ढाल!",summon:"काँव काँव!",revived:"फिर से तैयार!",perkTitle:"एक बोनस चुनो",perkInfo:"यह इस बगीचे के अंत तक चलेगा।",paused:"रुका हुआ",resume:"जारी रखें",
+soundOn:"आवाज़: चालू",soundOff:"आवाज़: बंद",musicOn:"संगीत: चालू",musicOff:"संगीत: बंद",restart:"फिर से",quit:"छोड़ें",reviveTitle:"कीड़े जीत रहे हैं!",
+reviveInfo:"दादी के शेड में और सलाद पत्ता है। +5 सलाद के लिए विज्ञापन देखो और कीड़ों को पीछे धकेलो।",reviveBtn:"+5 सलाद",noThanks:"नहीं, धन्यवाद",adFail:"अभी कोई विज्ञापन नहीं है",
+paper:"रोज़ का अंकुर",newBest:"नया रिकॉर्ड!",reachedWave:"तुम लहर {0} तक पहुँचे",passed:"तुमने {0} को पीछे छोड़ा!",nextR:"अगला: {0} ({1})",topClub:"तुम गार्डन क्लब में नंबर 1 हो!",nextRW:"अगला: {0} (लहर {1})",
+double:"दोगुना: +{0}",next:"अगला बगीचा",again:"फिर कोशिश करो",home:"मेन्यू",you:"तुम",clubInfo:"क्लब के बगीचे वाले बौनों को हराओ! (ये बौने हैं, असली खिलाड़ी नहीं।)",
+upInfo:"हर लेवल पर +10% नुकसान",freeCoins:"मुफ़्त सिक्के",freeCoinsInfo:"विज्ञापन देखो: +60 सिक्के (हर 10 मिनट)",tabVeg:"सब्ज़ियाँ",tabGarden:"बगीचा",needCoins:"सिक्के कम हैं",unlocked:"{0} खुल गया!",
+misDone:"मिशन पूरा!",day:"दिन {0}",loginTitle:"रोज़ का तोहफ़ा",loginInfo:"बड़े तोहफ़ों के लिए रोज़ आओ!",claim:"लो",
+dailyInfo:"आज सबके लिए एक ही चुनौती। 15 लहरें। जीतो, +60 सिक्के पाओ और अपनी लय बनाए रखो!",dailyDone:"आज पूरा हुआ! अब और ऊँचा स्कोर बनाओ।",settings:"सेटिंग्स",language:"भाषा",
+introTitle:"दादी का सलाद पत्ता ख़तरे में है!",introText:"भूखे कीड़े बगीचे में घुस रहे हैं। सब्ज़ियाँ उगाओ और मिलाओ, उन्हें रोको!",defend:"बगीचा बचाओ!",
+dmg:"नुकसान",maxLvl:"पहले से सबसे ऊँचा लेवल!",fullInfo:"सारी क्यारियाँ भरी हैं — सब्ज़ियाँ मिलाओ!",cooldown:"चार्ज हो रहा है…",sellInfo:"सब्ज़ी को यहाँ खींचकर खाद बनाओ",goldenSeed:"सुनहरा बीज",
+f_grandma:"दादी का बगीचा",f_allot:"नहर किनारे का खेत",f_green:"ग्रीनहाउस",f_autumn:"पतझड़ का बाग़",f_winter:"सर्दियों का बगीचा",f_moon:"चाँदनी बगीचा",
+v_carrot:"गाजर",v_tomato:"टमाटर",v_onion:"प्याज़",v_corn:"मक्का",v_sun:"सूरजमुखी",v_chili:"मिर्च",v_pumpkin:"कद्दू",
+st_dart:"एक कीड़े पर गाजर के तीर चलाता है",st_lob:"टमाटर फेंकता है जो झुंड पर फैलते हैं",st_aura:"पास के कीड़ों को रुलाता है: धीमा करता है",st_pop:"पॉपकॉर्न मशीनगन: बहुत तेज़",st_fire:"आग के गोले जो जलते रहते हैं",st_slam:"भारी वार, कवच को अनदेखा करता है",st_eco:"तुम्हारे लिए ज़्यादा खाद बनाता है",
+b_baron:"बैरन वॉन स्लाइम",bs_baron:"एक आँख पर चश्मा। और भूख भी।",b_queen:"कौवों की रानी",bs_queen:"दोस्त साथ लाती है। बहुत सारे।",b_megamol:"मेगा छछूंदर",bs_megamol:"तुम्हारी सुरक्षा के नीचे से खोदता है!",
+p_tears:"मगरमच्छ के आँसू",pd_tears:"प्याज़ ज़्यादा धीमा करते हैं और दूर तक पहुँचते हैं",p_pierce:"नुकीली गाजर",pd_pierce:"गाजर के तीर एक और कीड़े को भेदते हैं",p_ketchup:"केचप धमाका",pd_ketchup:"टमाटर की छींटें 40% बड़ी",
+p_popcorn:"पॉपकॉर्न पार्टी",pd_popcorn:"मक्का 30% तेज़ चलाता है",p_spicy:"बहुत तीखा",pd_spicy:"जलन ज़्यादा देर और ज़्यादा दर्द",p_pump:"कद्दू शक्ति",pd_pump:"कद्दू 40% ज़ोर से मारते हैं",
+p_sunny:"धूप वाला दिन",pd_sunny:"सूरजमुखी 50% ज़्यादा खाद बनाते हैं",p_soil:"अच्छी मिट्टी",pd_soil:"15% मौक़ा कि नया बीज लेवल 2 पर उगे",p_cheap:"बीज सेल",pd_cheap:"बीज 20% सस्ते",
+p_compost:"खाद का राजा",pd_compost:"कीड़ों से +25% खाद",p_lettuce:"अतिरिक्त सलाद",pd_lettuce:"+3 सलाद पत्ते",p_quick:"तेज़ हाथ",pd_quick:"सारी सब्ज़ियाँ 12% तेज़ हमला करती हैं",
+p_cool:"नई बैटरियाँ",pd_cool:"औज़ार 30% तेज़ चार्ज होते हैं",p_shield:"बगीचे की बाड़",pd_shield:"अगले 3 कीड़े सलाद नहीं खा सकते",p_sharp:"सान का पत्थर",pd_sharp:"सारी सब्ज़ियाँ 12% ज़्यादा नुकसान करती हैं",
+mod_fast:"टर्बो कीड़े",modd_fast:"कीड़े 30% तेज़ चलते हैं",mod_rich:"उपजाऊ मिट्टी",modd_rich:"दोगुनी खाद, पर कीड़ों में 60% ज़्यादा जान",mod_nowater:"कोई औज़ार नहीं",modd_nowater:"आज पानी का डिब्बा और बिजूका टूटे हैं",
+mod_golden:"सोने की होड़",modd_golden:"हर लहर में एक सुनहरा भृंग",mod_cheap5:"बजट बगीचा",modd_cheap5:"बीज 40% सस्ते, पर लेवल 5 तक ही",mod_bossy:"बॉस का दिन",modd_bossy:"हर 5 लहरों पर एक बॉस",
+mis_kills:"{0} कीड़े हराओ",mis_merges:"{0} बार मिलाओ",mis_lvl:"लेवल {0} की सब्ज़ी उगाओ",mis_win:"एक बगीचा जीतो",mis_water:"पानी का डिब्बा {0} बार इस्तेमाल करो",mis_boss:"{0} बॉस हराओ",
+mis_ewave:"अंतहीन में लहर {0} तक पहुँचो",mis_gold:"{0} सुनहरे भृंग पकड़ो",mis_plant:"{0} बीज बोओ",mis_perfect:"बिना सलाद खोए एक बगीचा जीतो",
+m_comp:"खाद का ढेर",md_comp:"हर लेवल पर +10 शुरुआती खाद",m_lives:"अतिरिक्त सलाद",md_lives:"हर लेवल पर +1 सलाद पत्ता",m_soil:"उपजाऊ मिट्टी",md_soil:"हर लेवल पर लेवल 2 बीज का +3% मौक़ा",
+say0:"क्या यही बुफ़े है?",say1:"मैं डाइट पर हूँ। कल से।",say2:"सलाद पत्ता! मेरा पसंदीदा!",say3:"कोई देख तो नहीं रहा?",say4:"यहाँ प्याज़ किसने लगाया?! *सुबक*",say5:"पहुँचे क्या?",say6:"सलाद की ख़ुशबू आ रही है!",say7:"धीरे-धीरे चलो, सलाद मिलेगा।",
+oma0:"मेरा सलाद!!",oma1:"भागो! भागो!",oma2:"मेरे रहते नहीं!",oma3:"वो तो मेरा सबसे अच्छा था!",
+head_win0:"दादी ने सलाद बचाया, कीड़े हैरान",head_win1:"घोंघा गिरोह रोते हुए भागा",head_win2:"सब्ज़ियों की जीत — सलाद सुरक्षित",
+head_lose0:"घोंघे और सलाद माँग रहे हैं",head_lose1:"सलाद खा लिया गया। दादी: 'मैं वापस आऊँगी'",head_lose2:"इल्लियों की सलाद पार्टी",
+chest0:"पेटी",chest1:"दुर्लभ पेटी!",chest2:"शानदार पेटी!",
+a_kill_k1:"कीट नियंत्रण",a_kill_k2:"कीड़ा भगाऊ",a_kill_k3:"घोंघों का डर",a_kill_k4:"बगीचे की किंवदंती",a_merge_m1:"जोड़ी बनाने वाला",a_merge_m2:"मिलाने की मशीन",a_merge_m3:"फ़्यूज़न उस्ताद",
+a_lvl:"लेवल {0} सब्ज़ी",a_won:"{0} बचाया",a_allstars:"सुनहरा माली",a_perfect:"एक भी पत्ता नहीं गया",a_boss_b1:"बॉस विजेता",a_boss_b2:"बॉस शिकारी",a_boss_b3:"बॉस संग्राहक",a_ewave:"अंतहीन लहर {0}",
+a_daily_d1:"रोज़ का खुदाई वाला",a_daily_d2:"हफ़्ते का निराई वाला",a_streak_3:"जोश में",a_streak_7:"रुकने वाला नहीं",a_allveg:"भरी बीज थैली",a_gold10:"सोना खोजी",a_close:"बाल-बाल बचे",a_seller:"खाद व्यापारी",
+ad_kills:"{0} कीड़े हराओ",ad_merges:"{0} बार मिलाओ",ad_lvl:"एक सब्ज़ी को लेवल {0} तक उगाओ",ad_won:"यह बगीचा जीतो",ad_allstars:"{0} सितारे इकट्ठा करो",ad_perfect:"बिना सलाद खोए जीतो",ad_bosses:"{0} बॉस हराओ",
+ad_ewave:"अंतहीन में लहर {0} तक पहुँचो",ad_daily:"{0} रोज़ाना चुनौतियाँ पूरी करो",ad_streak:"{0} दिन लगातार",ad_unl:"सारी {0} सब्ज़ियाँ खोलो",ad_gold:"{0} सुनहरे भृंग पकड़ो",ad_close:"सिर्फ़ 1 सलाद बचाकर जीतो",ad_sold:"{0} सब्ज़ियों की खाद बनाओ",
+tut_plant:"सब्ज़ी बोने के लिए किसी <b>ख़ाली क्यारी</b> पर टैप करो!",tut_plant2:"बढ़िया! उसके ठीक बगल में एक और बोओ।",tut_merge:"एक गाजर को दूसरी पर खींचो!",tut_merged:"<b>लेवल 2!</b> मिलाने से सब्ज़ियाँ ताक़तवर होती हैं।",
+tut_pest:"एक घोंघा मेरा सलाद खाना चाहता है! तुम्हारी सब्ज़ियाँ <b>अपने आप</b> वार करती हैं।",tut_comp:"कीड़ों से <b>खाद</b> मिलती है। इससे और बोओ!",tut_plant3:"और सब्ज़ियाँ बोने के लिए ख़ाली क्यारियों पर टैप करो!",tut_go:"वो आ गए! मेरे सलाद को बचाओ!",
+h_merge:"दो एक जैसी सब्ज़ियाँ मिलाओ!",h_water:"कीड़े पास हैं! <b>पानी का डिब्बा</b> टैप करो: सब्ज़ियाँ तेज़ वार करेंगी।",h_scare:"<b>बिजूका</b> टैप करो: सारे कीड़े जम जाएँगे!",h_full:"क्यारियाँ भरी हैं! मिलाओ, या कोई सब्ज़ी <b>खाद के डिब्बे</b> में डालो।",
+h_power:"यहाँ खाद ख़र्च करो: उस किस्म की <b>सारी</b> सब्ज़ियाँ ताक़तवर होंगी!",h_next:"तैयार? बोनस खाद के लिए अगली लहर जल्दी बुलाओ!",h_speed:"खेल तेज़ करने के लिए <b>x2</b> टैप करो।",h_swap:"सिर्फ़ एक ही लेवल की दो एक जैसी सब्ज़ियाँ मिलती हैं!",h_lock:"पहले दादी का बगीचा जीतो!",
+pn_cater:"इल्ली",pi_cater:"तेज़, पर कमज़ोर।",pn_beetle:"भृंग",pi_beetle:"कवच वाला! सब्ज़ियों का लेवल बढ़ाओ।",pn_crow:"कौवा",pi_crow:"उड़ता है, प्याज़ इसे कम धीमा करता है।",pn_mole:"छछूंदर",pi_mole:"ज़मीन के नीचे खोदता है, तब उसे मारा नहीं जा सकता।",pn_gold:"सुनहरा भृंग",pi_gold:"पकड़ो: जैकपॉट और खाद!",
+h_water2:"टिप: <b>पानी का डिब्बा</b> कुछ देर सारी सब्ज़ियों को तेज़ बनाता है।",h_scare2:"टिप: <b>बिजूका</b> सारे कीड़ों को कुछ पल के लिए जमा देता है।",h_plantbed:"टिप: ठीक वहीं बोने के लिए ख़ाली क्यारी पर टैप करो।"
+};
+
+TR.id={
+tagline:"Gabungkan sayur. Selamatkan selada!",play:"MAIN",gardens:"Kebun",endless:"Tanpa Akhir",daily:"Harian",shed:"Gudang",achievements:"Trofi",club:"Klub Kebun",
+missions:"Misi hari ini",allMissions:"Semua misi selesai! +100",best:"Terbaik",bestWave:"Gelombang terbaik",winPrev:"Menangkan kebun sebelumnya dulu",endlessInfo:"Berapa lama kamu bisa bertahan? Gelombangnya tidak pernah berhenti.",
+back:"Kembali",waves:"{0} gelombang",seedBag:"Kantong benih",bagInfo:"Pilih 3–5 sayur. Lebih sedikit jenis = lebih mudah digabung!",toBeat:"Kalahkan {0}: {1}",start:"Mulai!",bagMin:"Minimal 3 sayur",bagMax:"Maksimal 5 sayur",
+getReady:"Lindungi seladanya!",poweredUp:"{0} makin kuat! (+{1})",maxPower:"Kekuatan penuh!",needComp:"Butuh {0} kompos",wave:"Gelombang",plant:"Tanam",full:"Penuh",nextWave:"Gelombang berikutnya",
+lvl:"Lv",wow:"WAH!",jackpot:"JACKPOT!",bossDown:"BOS KALAH!",blocked:"Ditahan!",lastWave:"Gelombang terakhir!",mestFound:"Pupuk!",mestHint:"Seret pupuk ke sayur: +1 level!",
+shell:"Perisai cangkang!",summon:"Gaak gaak!",revived:"Lanjut lagi!",perkTitle:"Pilih bonus",perkInfo:"Berlaku sampai akhir kebun ini.",paused:"Jeda",resume:"Lanjutkan",
+soundOn:"Suara: nyala",soundOff:"Suara: mati",musicOn:"Musik: nyala",musicOff:"Musik: mati",restart:"Ulangi",quit:"Keluar",reviveTitle:"Hamanya menang!",
+reviveInfo:"Nenek masih punya selada di gudang. Tonton iklan untuk +5 selada dan pukul mundur hamanya.",reviveBtn:"+5 selada",noThanks:"Tidak, terima kasih",adFail:"Belum ada iklan sekarang",
+paper:"KORAN TUNAS HARIAN",newBest:"REKOR BARU!",reachedWave:"Kamu mencapai gelombang {0}",passed:"Kamu menyalip {0}!",nextR:"Berikutnya: {0} ({1})",topClub:"Kamu juara 1 di Klub Kebun!",nextRW:"Berikutnya: {0} (gelombang {1})",
+double:"Lipat ganda: +{0}",next:"Kebun berikutnya",again:"Coba lagi",home:"Menu",you:"Kamu",clubInfo:"Kalahkan para kurcaci kebun di klub! (Mereka kurcaci, bukan pemain sungguhan.)",
+upInfo:"+10% kerusakan per level",freeCoins:"Koin gratis",freeCoinsInfo:"Tonton iklan: +60 koin (tiap 10 menit)",tabVeg:"Sayur",tabGarden:"Kebun",needCoins:"Koin tidak cukup",unlocked:"{0} terbuka!",
+misDone:"Misi selesai!",day:"Hari {0}",loginTitle:"Hadiah harian",loginInfo:"Datang tiap hari untuk hadiah yang lebih besar!",claim:"Ambil",
+dailyInfo:"Tantangan yang sama untuk semua orang hari ini. 15 gelombang. Menang untuk +60 koin dan jaga rentetanmu!",dailyDone:"Selesai hari ini! Kejar skor yang lebih tinggi.",settings:"Pengaturan",language:"Bahasa",
+introTitle:"Selada Nenek dalam bahaya!",introText:"Hama lapar merayap ke kebun. Tanam dan gabungkan sayur untuk menghentikan mereka!",defend:"Lindungi kebun!",
+dmg:"kerusakan",maxLvl:"Sudah level maksimal!",fullInfo:"Semua bedengan penuh — gabungkan sayur!",cooldown:"Mengisi ulang…",sellInfo:"Seret sayur ke sini untuk dijadikan kompos",goldenSeed:"Benih emas",
+f_grandma:"Kebun Nenek",f_allot:"Kebun Tepi Kanal",f_green:"Rumah Kaca",f_autumn:"Kebun Musim Gugur",f_winter:"Kebun Musim Dingin",f_moon:"Kebun Cahaya Bulan",
+v_carrot:"Wortel",v_tomato:"Tomat",v_onion:"Bawang",v_corn:"Jagung",v_sun:"Bunga matahari",v_chili:"Cabai",v_pumpkin:"Labu",
+st_dart:"Menembakkan panah wortel ke satu hama",st_lob:"Melempar tomat yang memercik ke kelompok",st_aura:"Membuat hama di dekatnya menangis: memperlambat",st_pop:"Senapan berondong jagung: super cepat",st_fire:"Bola api yang terus membakar",st_slam:"Hantaman berat, tembus zirah",st_eco:"Menghasilkan kompos tambahan",
+b_baron:"Baron von Lendir",bs_baron:"Pakai monokel. Dan lapar.",b_queen:"Ratu Gagak",bs_queen:"Bawa teman. Banyak teman.",b_megamol:"Mega Tikus Tanah",bs_megamol:"Menggali di bawah pertahananmu!",
+p_tears:"Air mata buaya",pd_tears:"Bawang memperlambat lebih kuat dan lebih jauh",p_pierce:"Wortel tajam",pd_pierce:"Panah wortel menembus satu hama lagi",p_ketchup:"Ledakan saus tomat",pd_ketchup:"Percikan tomat 40% lebih besar",
+p_popcorn:"Pesta berondong",pd_popcorn:"Jagung menembak 30% lebih cepat",p_spicy:"Ekstra pedas",pd_spicy:"Bakaran lebih lama dan lebih sakit",p_pump:"Kekuatan labu",pd_pump:"Labu memukul 40% lebih keras",
+p_sunny:"Hari cerah",pd_sunny:"Bunga matahari menghasilkan 50% kompos lebih banyak",p_soil:"Tanah bagus",pd_soil:"15% peluang benih baru tumbuh di level 2",p_cheap:"Diskon benih",pd_cheap:"Benih 20% lebih murah",
+p_compost:"Raja kompos",pd_compost:"+25% kompos dari hama",p_lettuce:"Selada cadangan",pd_lettuce:"+3 selada",p_quick:"Tangan cekatan",pd_quick:"Semua sayur menyerang 12% lebih cepat",
+p_cool:"Baterai baru",pd_cool:"Alat terisi 30% lebih cepat",p_shield:"Pagar kebun",pd_shield:"3 hama berikutnya tidak bisa makan selada",p_sharp:"Batu asah",pd_sharp:"Semua sayur memberi 12% kerusakan lebih",
+mod_fast:"Hama turbo",modd_fast:"Hama bergerak 30% lebih cepat",mod_rich:"Tanah subur",modd_rich:"Kompos dobel, tapi nyawa hama 60% lebih banyak",mod_nowater:"Tanpa alat",modd_nowater:"Gembor dan orang-orangan sawah rusak hari ini",
+mod_golden:"Demam emas",modd_golden:"Kumbang emas di setiap gelombang",mod_cheap5:"Kebun hemat",modd_cheap5:"Benih 40% lebih murah, tapi level maksimal 5",mod_bossy:"Hari bos",modd_bossy:"Bos setiap 5 gelombang",
+mis_kills:"Kalahkan {0} hama",mis_merges:"Gabungkan {0} kali",mis_lvl:"Tumbuhkan sayur level {0}",mis_win:"Menangkan satu kebun",mis_water:"Pakai gembor {0} kali",mis_boss:"Kalahkan {0} bos",
+mis_ewave:"Capai gelombang {0} di Tanpa Akhir",mis_gold:"Tangkap {0} kumbang emas",mis_plant:"Tanam {0} benih",mis_perfect:"Menangkan kebun tanpa kehilangan selada",
+m_comp:"Tumpukan kompos",md_comp:"+10 kompos awal per level",m_lives:"Selada tambahan",md_lives:"+1 selada per level",m_soil:"Tanah subur",md_soil:"+3% peluang benih level 2 per level",
+say0:"Ini prasmanannya, ya?",say1:"Aku lagi diet. Mulai besok.",say2:"Selada! Kesukaanku!",say3:"Nggak ada yang lihat, kan?",say4:"Siapa yang tanam BAWANG?! *hiks*",say5:"Udah sampai belum?",say6:"Aku cium bau salad!",say7:"Pelan-pelan asal dapat selada.",
+oma0:"Seladaku!!",oma1:"Hus! Hus!",oma2:"Tidak selama aku di sini!",oma3:"Itu yang paling bagus!",
+head_win0:"Nenek pertahankan selada, hama syok",head_win1:"Geng siput kabur sambil menangis",head_win2:"Sayur menang — salad selamat",
+head_lose0:"Siput menuntut salad lebih banyak",head_lose1:"Selada habis. Nenek: 'Aku akan kembali'",head_lose2:"Ulat bikin pesta selada",
+chest0:"Peti",chest1:"Peti langka!",chest2:"PETI EPIK!",
+a_kill_k1:"Pembasmi Hama",a_kill_k2:"Pemburu Serangga",a_kill_k3:"Mimpi Buruk Siput",a_kill_k4:"Legenda Kebun",a_merge_m1:"Mak Comblang",a_merge_m2:"Mesin Penggabung",a_merge_m3:"Master Fusi",
+a_lvl:"Sayur level {0}",a_won:"{0} terselamatkan",a_allstars:"Tukang Kebun Emas",a_perfect:"Tak Satu Daun Pun",a_boss_b1:"Penumbang Bos",a_boss_b2:"Pemburu Bos",a_boss_b3:"Kolektor Bos",a_ewave:"Gelombang tanpa akhir {0}",
+a_daily_d1:"Penggali Harian",a_daily_d2:"Penyiang Mingguan",a_streak_3:"Lagi panas",a_streak_7:"Tak terhentikan",a_allveg:"Kantong Penuh",a_gold10:"Pemburu Emas",a_close:"Nyaris!",a_seller:"Juragan Kompos",
+ad_kills:"Kalahkan {0} hama",ad_merges:"Gabungkan {0} kali",ad_lvl:"Tumbuhkan sayur sampai level {0}",ad_won:"Menangkan kebun ini",ad_allstars:"Kumpulkan {0} bintang",ad_perfect:"Menang tanpa kehilangan selada",ad_bosses:"Kalahkan {0} bos",
+ad_ewave:"Capai gelombang {0} di Tanpa Akhir",ad_daily:"Selesaikan {0} tantangan harian",ad_streak:"Rentetan {0} hari",ad_unl:"Buka semua {0} sayur",ad_gold:"Tangkap {0} kumbang emas",ad_close:"Menang dengan sisa 1 selada",ad_sold:"Jadikan {0} sayur kompos",
+tut_plant:"Ketuk <b>bedengan kosong</b> untuk menanam sayur!",tut_plant2:"Bagus! Tanam satu lagi tepat di sebelahnya.",tut_merge:"Seret satu wortel ke wortel lainnya!",tut_merged:"<b>Level 2!</b> Menggabungkan membuat sayur lebih kuat.",
+tut_pest:"Seekor siput mau seladaku! Sayurmu menembak <b>sendiri</b>.",tut_comp:"Hama memberi <b>kompos</b>. Pakai untuk menanam lagi!",tut_plant3:"Ketuk bedengan kosong untuk menanam lebih banyak!",tut_go:"Mereka datang! Lindungi seladaku!",
+h_merge:"Gabungkan dua sayur yang sama!",h_water:"Hama sudah dekat! Ketuk <b>gembor</b>: sayur menembak lebih cepat.",h_scare:"Ketuk <b>orang-orangan sawah</b>: semua hama membeku!",h_full:"Bedengan penuh! Gabungkan, atau seret sayur ke <b>tong kompos</b>.",
+h_power:"Habiskan kompos di sini: <b>semua</b> sayur jenis itu jadi lebih kuat!",h_next:"Siap? Panggil gelombang berikutnya lebih awal untuk bonus kompos!",h_speed:"Ketuk <b>x2</b> untuk mempercepat permainan.",h_swap:"Hanya dua sayur yang sama dengan level sama yang bisa digabung!",h_lock:"Menangkan Kebun Nenek dulu!",
+pn_cater:"Ulat",pi_cater:"cepat, tapi lemah.",pn_beetle:"Kumbang",pi_beetle:"berzirah! Naikkan level sayurmu.",pn_crow:"Gagak",pi_crow:"terbang, bawang kurang memperlambatnya.",pn_mole:"Tikus tanah",pi_mole:"menggali di bawah tanah dan tak bisa kena di sana.",pn_gold:"Kumbang emas",pi_gold:"tangkap: jackpot dan pupuk!",
+h_water2:"Tip: <b>gembor</b> membuat semua sayur menembak lebih cepat untuk sementara.",h_scare2:"Tip: <b>orang-orangan sawah</b> membekukan semua hama sebentar.",h_plantbed:"Tip: ketuk bedengan kosong untuk menanam tepat di sana."
 };
 
 TR.it={
@@ -756,6 +951,54 @@ ad_kills:"Победи {0} вредителей",ad_merges:"Соедини {0} �
 ad_ewave:"Дойди до волны {0} в Бесконечном",ad_daily:"Выполни {0} заданий дня",ad_streak:"Серия {0} дней",ad_unl:"Открой все {0} овощей",ad_gold:"Поймай {0} золотых жуков",ad_close:"Победи с 1 кочаном",ad_sold:"Отправь в компост {0} овощей"
 };
 
+TR.th={
+tagline:"รวมผัก ปกป้องผักกาด!",play:"เล่น",gardens:"สวน",endless:"ไม่รู้จบ",daily:"รายวัน",shed:"โรงเก็บของ",achievements:"ถ้วยรางวัล",club:"ชมรมสวน",
+missions:"ภารกิจวันนี้",allMissions:"ทำภารกิจครบแล้ว! +100",best:"ดีที่สุด",bestWave:"ระลอกที่ดีที่สุด",winPrev:"ชนะสวนก่อนหน้าก่อน",endlessInfo:"จะอยู่รอดได้นานแค่ไหน? ระลอกไม่มีวันหยุด",
+back:"กลับ",waves:"{0} ระลอก",seedBag:"ถุงเมล็ด",bagInfo:"เลือกผัก 3–5 ชนิด ยิ่งน้อยชนิดยิ่งรวมง่าย!",toBeat:"เอาชนะ {0}: {1}",start:"เริ่ม!",bagMin:"อย่างน้อย 3 ชนิด",bagMax:"ไม่เกิน 5 ชนิด",
+getReady:"ปกป้องผักกาด!",poweredUp:"{0} แข็งแกร่งขึ้น! (+{1})",maxPower:"พลังเต็ม!",needComp:"ต้องใช้ปุ๋ยหมัก {0}",wave:"ระลอก",plant:"ปลูก",full:"เต็ม",nextWave:"ระลอกถัดไป",
+lvl:"Lv",wow:"ว้าว!",jackpot:"แจ็กพอต!",bossDown:"ล้มบอสแล้ว!",blocked:"กันได้!",lastWave:"ระลอกสุดท้าย!",mestFound:"ปุ๋ย!",mestHint:"ลากปุ๋ยไปที่ผัก: +1 เลเวล!",
+shell:"โล่เปลือกหอย!",summon:"กา กา!",revived:"สู้ต่อ!",perkTitle:"เลือกโบนัส",perkInfo:"ใช้ได้จนจบสวนนี้",paused:"หยุดชั่วคราว",resume:"เล่นต่อ",
+soundOn:"เสียง: เปิด",soundOff:"เสียง: ปิด",musicOn:"เพลง: เปิด",musicOff:"เพลง: ปิด",restart:"เริ่มใหม่",quit:"ออก",reviveTitle:"ศัตรูพืชกำลังชนะ!",
+reviveInfo:"คุณยายยังมีผักกาดในโรงเก็บของ ดูโฆษณาเพื่อรับผักกาด +5 แล้วผลักศัตรูพืชถอยไป",reviveBtn:"ผักกาด +5",noThanks:"ไม่เป็นไร",adFail:"ตอนนี้ไม่มีโฆษณา",
+paper:"หนังสือพิมพ์ต้นอ่อนรายวัน",newBest:"สถิติใหม่!",reachedWave:"คุณไปถึงระลอก {0}",passed:"คุณแซง {0} แล้ว!",nextR:"ถัดไป: {0} ({1})",topClub:"คุณเป็นอันดับ 1 ของชมรมสวน!",nextRW:"ถัดไป: {0} (ระลอก {1})",
+double:"คูณสอง: +{0}",next:"สวนถัดไป",again:"ลองอีกครั้ง",home:"เมนู",you:"คุณ",clubInfo:"เอาชนะเหล่าคนแคระประจำสวนของชมรม! (เป็นคนแคระ ไม่ใช่ผู้เล่นจริง)",
+upInfo:"ความเสียหาย +10% ต่อเลเวล",freeCoins:"เหรียญฟรี",freeCoinsInfo:"ดูโฆษณา: +60 เหรียญ (ทุก 10 นาที)",tabVeg:"ผัก",tabGarden:"สวน",needCoins:"เหรียญไม่พอ",unlocked:"ปลดล็อก {0} แล้ว!",
+misDone:"ภารกิจสำเร็จ!",day:"วันที่ {0}",loginTitle:"ของขวัญรายวัน",loginInfo:"กลับมาทุกวันเพื่อรับของขวัญที่ใหญ่ขึ้น!",claim:"รับ",
+dailyInfo:"วันนี้ทุกคนเจอความท้าทายเดียวกัน 15 ระลอก ชนะเพื่อรับ +60 เหรียญและรักษาสถิติต่อเนื่อง!",dailyDone:"วันนี้ผ่านแล้ว! ลองทำคะแนนให้สูงขึ้น",settings:"ตั้งค่า",language:"ภาษา",
+introTitle:"ผักกาดของคุณยายตกอยู่ในอันตราย!",introText:"ศัตรูพืชหิวโหยกำลังคลานเข้าสวน ปลูกและรวมผักเพื่อหยุดพวกมัน!",defend:"ปกป้องสวน!",
+dmg:"ความเสียหาย",maxLvl:"เลเวลสูงสุดแล้ว!",fullInfo:"แปลงเต็มหมดแล้ว — รวมผักสิ!",cooldown:"กำลังชาร์จ…",sellInfo:"ลากผักมาที่นี่เพื่อทำปุ๋ยหมัก",goldenSeed:"เมล็ดทองคำ",
+f_grandma:"สวนของคุณยาย",f_allot:"แปลงผักริมคลอง",f_green:"เรือนกระจก",f_autumn:"สวนผลไม้ฤดูใบไม้ร่วง",f_winter:"สวนฤดูหนาว",f_moon:"สวนแสงจันทร์",
+v_carrot:"แครอท",v_tomato:"มะเขือเทศ",v_onion:"หัวหอม",v_corn:"ข้าวโพด",v_sun:"ทานตะวัน",v_chili:"พริก",v_pumpkin:"ฟักทอง",
+st_dart:"ยิงลูกดอกแครอทใส่ศัตรูหนึ่งตัว",st_lob:"ปามะเขือเทศที่กระเซ็นใส่ทั้งกลุ่ม",st_aura:"ทำให้ศัตรูใกล้ๆ ร้องไห้: ช้าลง",st_pop:"ปืนกลป๊อปคอร์น: เร็วสุดๆ",st_fire:"ลูกไฟที่เผาไม่หยุด",st_slam:"ทุบหนัก ทะลุเกราะ",st_eco:"ผลิตปุ๋ยหมักเพิ่มให้คุณ",
+b_baron:"บารอนเมือกลื่น",bs_baron:"ใส่แว่นข้างเดียว และหิวมาก",b_queen:"ราชินีอีกา",bs_queen:"พาเพื่อนมาด้วย เยอะมาก",b_megamol:"ตุ่นยักษ์",bs_megamol:"ขุดลอดใต้แนวป้องกันของคุณ!",
+p_tears:"น้ำตาจระเข้",pd_tears:"หัวหอมทำให้ช้าลงมากขึ้นและไกลขึ้น",p_pierce:"แครอทแหลม",pd_pierce:"ลูกดอกแครอททะลุศัตรูได้อีกหนึ่งตัว",p_ketchup:"ซอสมะเขือเทศระเบิด",pd_ketchup:"รอยกระเซ็นมะเขือเทศใหญ่ขึ้น 40%",
+p_popcorn:"ปาร์ตี้ป๊อปคอร์น",pd_popcorn:"ข้าวโพดยิงเร็วขึ้น 30%",p_spicy:"เผ็ดพิเศษ",pd_spicy:"ไฟไหม้นานขึ้นและเจ็บขึ้น",p_pump:"พลังฟักทอง",pd_pump:"ฟักทองตีแรงขึ้น 40%",
+p_sunny:"วันแดดดี",pd_sunny:"ทานตะวันผลิตปุ๋ยหมักเพิ่ม 50%",p_soil:"ดินดี",pd_soil:"มีโอกาส 15% ที่เมล็ดใหม่จะงอกเป็นเลเวล 2",p_cheap:"ลดราคาเมล็ด",pd_cheap:"เมล็ดถูกลง 20%",
+p_compost:"ราชาปุ๋ยหมัก",pd_compost:"ปุ๋ยหมักจากศัตรูพืช +25%",p_lettuce:"ผักกาดสำรอง",pd_lettuce:"ผักกาด +3 หัว",p_quick:"มือไว",pd_quick:"ผักทุกชนิดโจมตีเร็วขึ้น 12%",
+p_cool:"ถ่านใหม่",pd_cool:"อุปกรณ์ชาร์จเร็วขึ้น 30%",p_shield:"รั้วสวน",pd_shield:"ศัตรู 3 ตัวถัดไปกินผักกาดไม่ได้",p_sharp:"หินลับมีด",pd_sharp:"ผักทุกชนิดสร้างความเสียหายเพิ่ม 12%",
+mod_fast:"ศัตรูพืชเทอร์โบ",modd_fast:"ศัตรูพืชเดินเร็วขึ้น 30%",mod_rich:"ดินอุดม",modd_rich:"ปุ๋ยหมักสองเท่า แต่ศัตรูพืชพลังชีวิตเพิ่ม 60%",mod_nowater:"ไม่มีอุปกรณ์",modd_nowater:"วันนี้บัวรดน้ำกับหุ่นไล่กาเสีย",
+mod_golden:"ตื่นทอง",modd_golden:"มีด้วงทองทุกระลอก",mod_cheap5:"สวนประหยัด",modd_cheap5:"เมล็ดถูกลง 40% แต่เลเวลสูงสุด 5",mod_bossy:"วันบอส",modd_bossy:"มีบอสทุก 5 ระลอก",
+mis_kills:"กำจัดศัตรูพืช {0} ตัว",mis_merges:"รวมผัก {0} ครั้ง",mis_lvl:"ปลูกผักเลเวล {0}",mis_win:"ชนะสวนหนึ่งแห่ง",mis_water:"ใช้บัวรดน้ำ {0} ครั้ง",mis_boss:"ล้มบอส {0} ตัว",
+mis_ewave:"ไปถึงระลอก {0} ในโหมดไม่รู้จบ",mis_gold:"จับด้วงทอง {0} ตัว",mis_plant:"ปลูกเมล็ด {0} ครั้ง",mis_perfect:"ชนะสวนโดยไม่เสียผักกาด",
+m_comp:"กองปุ๋ยหมัก",md_comp:"ปุ๋ยหมักเริ่มต้น +10 ต่อเลเวล",m_lives:"ผักกาดเพิ่ม",md_lives:"ผักกาด +1 หัวต่อเลเวล",m_soil:"ดินอุดมสมบูรณ์",md_soil:"โอกาสได้เมล็ดเลเวล 2 +3% ต่อเลเวล",
+say0:"นี่บุฟเฟ่ต์ใช่ไหม?",say1:"ฉันลดน้ำหนักอยู่ เริ่มพรุ่งนี้",say2:"ผักกาด! ของโปรดเลย!",say3:"ไม่มีใครเห็นเราใช่ไหม?",say4:"ใครปลูกหัวหอมเนี่ย?! *ฮึก*",say5:"ถึงหรือยัง?",say6:"ได้กลิ่นสลัด!",say7:"ช้าๆ ได้ผักกาดเล่มงาม",
+oma0:"ผักกาดของยาย!!",oma1:"ชู่ว์! ไปเลย!",oma2:"ไม่มีทางตราบใดที่ยายอยู่!",oma3:"นั่นหัวที่สวยที่สุดเลยนะ!",
+head_win0:"คุณยายปกป้องผักกาด ศัตรูพืชช็อก",head_win1:"แก๊งหอยทากหนีร้องไห้ออกจากสวน",head_win2:"ผักชนะ — สลัดปลอดภัย",
+head_lose0:"หอยทากเรียกร้องสลัดเพิ่ม",head_lose1:"ผักกาดถูกกิน คุณยาย: 'ยายจะกลับมา'",head_lose2:"หนอนจัดปาร์ตี้ผักกาด",
+chest0:"ลัง",chest1:"ลังหายาก!",chest2:"ลังระดับตำนาน!",
+a_kill_k1:"ปราบศัตรูพืช",a_kill_k2:"นักล่าแมลง",a_kill_k3:"ฝันร้ายของหอยทาก",a_kill_k4:"ตำนานแห่งสวน",a_merge_m1:"แม่สื่อ",a_merge_m2:"เครื่องจักรรวมผัก",a_merge_m3:"ปรมาจารย์การรวม",
+a_lvl:"ผักเลเวล {0}",a_won:"กู้ {0} สำเร็จ",a_allstars:"ชาวสวนทองคำ",a_perfect:"ไม่เสียใบเดียว",a_boss_b1:"ผู้ล้มบอส",a_boss_b2:"นักล่าบอส",a_boss_b3:"นักสะสมบอส",a_ewave:"ระลอกไม่รู้จบ {0}",
+a_daily_d1:"นักขุดรายวัน",a_daily_d2:"นักถอนหญ้ารายสัปดาห์",a_streak_3:"กำลังมาแรง",a_streak_7:"หยุดไม่อยู่",a_allveg:"ถุงเมล็ดเต็ม",a_gold10:"นักขุดทอง",a_close:"เฉียดฉิว",a_seller:"พ่อค้าปุ๋ยหมัก",
+ad_kills:"กำจัดศัตรูพืช {0} ตัว",ad_merges:"รวมผัก {0} ครั้ง",ad_lvl:"ปลูกผักให้ถึงเลเวล {0}",ad_won:"ชนะสวนนี้",ad_allstars:"สะสมดาว {0} ดวง",ad_perfect:"ชนะโดยไม่เสียผักกาด",ad_bosses:"ล้มบอส {0} ตัว",
+ad_ewave:"ไปถึงระลอก {0} ในโหมดไม่รู้จบ",ad_daily:"ผ่านภารกิจรายวัน {0} ครั้ง",ad_streak:"ต่อเนื่อง {0} วัน",ad_unl:"ปลดล็อกผักทั้ง {0} ชนิด",ad_gold:"จับด้วงทอง {0} ตัว",ad_close:"ชนะโดยเหลือผักกาดแค่ 1 หัว",ad_sold:"ทำปุ๋ยหมักจากผัก {0} ต้น",
+tut_plant:"แตะ<b>แปลงว่าง</b>เพื่อปลูกผัก!",tut_plant2:"เยี่ยม! ปลูกอีกต้นข้างๆ เลย",tut_merge:"ลากแครอทหนึ่งต้นไปทับอีกต้น!",tut_merged:"<b>เลเวล 2!</b> รวมแล้วผักจะแข็งแกร่งขึ้น",
+tut_pest:"หอยทากอยากกินผักกาดของยาย! ผักจะยิง<b>เอง</b>",tut_comp:"ศัตรูพืชให้<b>ปุ๋ยหมัก</b> ใช้ปลูกผักเพิ่มได้!",tut_plant3:"แตะแปลงว่างเพื่อปลูกผักเพิ่ม!",tut_go:"มาแล้ว! ปกป้องผักกาดของยาย!",
+h_merge:"รวมผักสองต้นที่เหมือนกัน!",h_water:"ศัตรูพืชใกล้แล้ว! แตะ<b>บัวรดน้ำ</b>: ผักจะยิงเร็วขึ้น",h_scare:"แตะ<b>หุ่นไล่กา</b>: ศัตรูพืชทั้งหมดหยุดนิ่ง!",h_full:"แปลงเต็ม! รวมผัก หรือลากผักไปที่<b>ถังปุ๋ยหมัก</b>",
+h_power:"ใช้ปุ๋ยหมักตรงนี้: ผักชนิดนั้น<b>ทุกต้น</b>จะแข็งแกร่งขึ้น!",h_next:"พร้อมไหม? เรียกระลอกถัดไปก่อนเวลาเพื่อรับปุ๋ยหมักโบนัส!",h_speed:"แตะ <b>x2</b> เพื่อเร่งความเร็วเกม",h_swap:"รวมได้เฉพาะผักชนิดเดียวกันที่เลเวลเท่ากันเท่านั้น!",h_lock:"ชนะสวนของคุณยายก่อน!",
+pn_cater:"หนอนผีเสื้อ",pi_cater:"เร็ว แต่อ่อนแอ",pn_beetle:"ด้วง",pi_beetle:"มีเกราะ! อัปเลเวลผักของคุณ",pn_crow:"อีกา",pi_crow:"บินได้ หัวหอมทำให้ช้าได้น้อยลง",pn_mole:"ตุ่น",pi_mole:"ขุดลงดินและตีไม่โดนตอนนั้น",pn_gold:"ด้วงทอง",pi_gold:"จับมัน: แจ็กพอตและปุ๋ย!",
+h_water2:"เคล็ดลับ: <b>บัวรดน้ำ</b>ทำให้ผักทุกต้นยิงเร็วขึ้นชั่วคราว",h_scare2:"เคล็ดลับ: <b>หุ่นไล่กา</b>ทำให้ศัตรูพืชทั้งหมดหยุดนิ่งครู่หนึ่ง",h_plantbed:"เคล็ดลับ: แตะแปลงว่างเพื่อปลูกตรงนั้นพอดี"
+};
+
 TR.tr={
 tagline:"Sebzeleri birleştir. Marulu kurtar!",play:"OYNA",gardens:"Bahçeler",endless:"Sonsuz",daily:"Günlük",shed:"Kulübe",achievements:"Başarılar",club:"Bahçe Kulübü",
 missions:"Bugünün görevleri",allMissions:"Tüm görevler tamam! +100",best:"Rekor",bestWave:"En iyi dalga",winPrev:"Önce önceki bahçeyi kazan",endlessInfo:"Ne kadar dayanabilirsin? Dalgalar hiç bitmez.",
@@ -797,6 +1040,54 @@ a_lvl:"{0}. seviye sebze",a_won:"{0} kurtarıldı",a_allstars:"Altın bahçıvan
 a_daily_d1:"Günlük kazıcı",a_daily_d2:"Haftalık çapacı",a_streak_3:"Alev alev",a_streak_7:"Durdurulamaz",a_allveg:"Dolu çanta",a_gold10:"Altın avcısı",a_close:"Kıl payı",a_seller:"Kompost satıcısı",
 ad_kills:"{0} zararlı yen",ad_merges:"{0} kez birleştir",ad_lvl:"Bir sebzeyi {0}. seviyeye çıkar",ad_won:"Bu bahçeyi kazan",ad_allstars:"{0} yıldız topla",ad_perfect:"Marul kaybetmeden kazan",ad_bosses:"{0} patron yen",
 ad_ewave:"Sonsuz modda {0}. dalgaya ulaş",ad_daily:"{0} günlük meydan okuma tamamla",ad_streak:"{0} günlük seri",ad_unl:"{0} sebzenin hepsini aç",ad_gold:"{0} altın böcek yakala",ad_close:"Tek marul kalmışken kazan",ad_sold:"{0} sebzeyi kompost yap"
+};
+
+TR.vi={
+tagline:"Ghép rau củ. Cứu lấy rau xà lách!",play:"CHƠI",gardens:"Khu vườn",endless:"Vô tận",daily:"Hằng ngày",shed:"Nhà kho",achievements:"Cúp",club:"CLB Làm vườn",
+missions:"Nhiệm vụ hôm nay",allMissions:"Xong hết nhiệm vụ! +100",best:"Cao nhất",bestWave:"Đợt cao nhất",winPrev:"Hãy thắng khu vườn trước",endlessInfo:"Bạn trụ được bao lâu? Các đợt không bao giờ dừng.",
+back:"Quay lại",waves:"{0} đợt",seedBag:"Túi hạt giống",bagInfo:"Chọn 3–5 loại rau. Ít loại = dễ ghép hơn!",toBeat:"Vượt qua {0}: {1}",start:"Bắt đầu!",bagMin:"Ít nhất 3 loại rau",bagMax:"Tối đa 5 loại rau",
+getReady:"Bảo vệ xà lách!",poweredUp:"{0} mạnh hơn! (+{1})",maxPower:"Mạnh tối đa!",needComp:"Cần {0} phân ủ",wave:"Đợt",plant:"Gieo",full:"Đầy",nextWave:"Đợt tiếp theo",
+lvl:"Lv",wow:"WOW!",jackpot:"TRÚNG LỚN!",bossDown:"ĐÃ HẠ TRÙM!",blocked:"Chặn rồi!",lastWave:"Đợt cuối!",mestFound:"Phân bón!",mestHint:"Kéo phân bón vào rau: +1 cấp!",
+shell:"Khiên vỏ ốc!",summon:"Quạ quạ!",revived:"Chiến tiếp!",perkTitle:"Chọn một phần thưởng",perkInfo:"Có hiệu lực đến hết khu vườn này.",paused:"Tạm dừng",resume:"Tiếp tục",
+soundOn:"Âm thanh: bật",soundOff:"Âm thanh: tắt",musicOn:"Nhạc: bật",musicOff:"Nhạc: tắt",restart:"Chơi lại",quit:"Thoát",reviveTitle:"Sâu bọ đang thắng!",
+reviveInfo:"Bà còn xà lách trong nhà kho. Xem quảng cáo để nhận +5 xà lách và đẩy lùi sâu bọ.",reviveBtn:"+5 xà lách",noThanks:"Không, cảm ơn",adFail:"Hiện chưa có quảng cáo",
+paper:"BÁO MẦM NON HẰNG NGÀY",newBest:"KỶ LỤC MỚI!",reachedWave:"Bạn đã đến đợt {0}",passed:"Bạn đã vượt {0}!",nextR:"Tiếp theo: {0} ({1})",topClub:"Bạn đứng số 1 CLB Làm vườn!",nextRW:"Tiếp theo: {0} (đợt {1})",
+double:"Nhân đôi: +{0}",next:"Khu vườn tiếp theo",again:"Thử lại",home:"Menu",you:"Bạn",clubInfo:"Đánh bại các chú lùn giữ vườn của CLB! (Đây là chú lùn, không phải người chơi thật.)",
+upInfo:"+10% sát thương mỗi cấp",freeCoins:"Xu miễn phí",freeCoinsInfo:"Xem quảng cáo: +60 xu (mỗi 10 phút)",tabVeg:"Rau củ",tabGarden:"Khu vườn",needCoins:"Không đủ xu",unlocked:"Đã mở {0}!",
+misDone:"Hoàn thành nhiệm vụ!",day:"Ngày {0}",loginTitle:"Quà hằng ngày",loginInfo:"Quay lại mỗi ngày để nhận quà lớn hơn!",claim:"Nhận",
+dailyInfo:"Hôm nay ai cũng có cùng thử thách. 15 đợt. Thắng để nhận +60 xu và giữ chuỗi ngày!",dailyDone:"Hôm nay đã xong! Thử đạt điểm cao hơn nhé.",settings:"Cài đặt",language:"Ngôn ngữ",
+introTitle:"Xà lách của bà gặp nguy!",introText:"Lũ sâu bọ đói đang bò vào vườn. Trồng và ghép rau để chặn chúng lại!",defend:"Bảo vệ khu vườn!",
+dmg:"sát thương",maxLvl:"Đã đạt cấp tối đa!",fullInfo:"Luống đã đầy — hãy ghép rau!",cooldown:"Đang nạp…",sellInfo:"Kéo rau vào đây để ủ phân",goldenSeed:"Hạt vàng",
+f_grandma:"Vườn của bà",f_allot:"Vườn bên kênh",f_green:"Nhà kính",f_autumn:"Vườn cây mùa thu",f_winter:"Vườn mùa đông",f_moon:"Vườn ánh trăng",
+v_carrot:"Cà rốt",v_tomato:"Cà chua",v_onion:"Hành tây",v_corn:"Ngô",v_sun:"Hướng dương",v_chili:"Ớt",v_pumpkin:"Bí ngô",
+st_dart:"Bắn phi tiêu cà rốt vào một con sâu",st_lob:"Ném cà chua văng trúng cả nhóm",st_aura:"Làm sâu gần đó khóc: chậm lại",st_pop:"Súng máy bỏng ngô: siêu nhanh",st_fire:"Cầu lửa cháy dai dẳng",st_slam:"Đòn nặng, xuyên giáp",st_eco:"Tạo thêm phân ủ cho bạn",
+b_baron:"Nam tước Nhớt",bs_baron:"Đeo kính một mắt. Và rất đói.",b_queen:"Nữ hoàng Quạ",bs_queen:"Dẫn theo bạn bè. Rất nhiều bạn bè.",b_megamol:"Chuột chũi Khổng lồ",bs_megamol:"Đào xuyên dưới phòng tuyến!",
+p_tears:"Nước mắt cá sấu",pd_tears:"Hành làm chậm mạnh hơn và xa hơn",p_pierce:"Cà rốt nhọn",pd_pierce:"Phi tiêu xuyên thêm một con sâu",p_ketchup:"Bùng nổ tương cà",pd_ketchup:"Vệt cà chua rộng hơn 40%",
+p_popcorn:"Tiệc bỏng ngô",pd_popcorn:"Ngô bắn nhanh hơn 30%",p_spicy:"Siêu cay",pd_spicy:"Cháy lâu hơn và đau hơn",p_pump:"Sức mạnh bí ngô",pd_pump:"Bí ngô đánh mạnh hơn 40%",
+p_sunny:"Ngày nắng",pd_sunny:"Hướng dương tạo thêm 50% phân ủ",p_soil:"Đất tốt",pd_soil:"15% hạt mới mọc ở cấp 2",p_cheap:"Giảm giá hạt",pd_cheap:"Hạt rẻ hơn 20%",
+p_compost:"Vua phân ủ",pd_compost:"+25% phân ủ từ sâu bọ",p_lettuce:"Xà lách dự phòng",pd_lettuce:"+3 cây xà lách",p_quick:"Tay nhanh",pd_quick:"Mọi loại rau tấn công nhanh hơn 12%",
+p_cool:"Pin mới",pd_cool:"Dụng cụ nạp nhanh hơn 30%",p_shield:"Hàng rào",pd_shield:"3 con sâu tiếp theo không ăn được xà lách",p_sharp:"Đá mài",pd_sharp:"Mọi loại rau gây thêm 12% sát thương",
+mod_fast:"Sâu tốc độ",modd_fast:"Sâu bọ đi nhanh hơn 30%",mod_rich:"Đất màu mỡ",modd_rich:"Phân ủ gấp đôi, nhưng sâu bọ trâu hơn 60%",mod_nowater:"Không dụng cụ",modd_nowater:"Hôm nay bình tưới và bù nhìn bị hỏng",
+mod_golden:"Cơn sốt vàng",modd_golden:"Mỗi đợt có một bọ cánh cứng vàng",mod_cheap5:"Vườn tiết kiệm",modd_cheap5:"Hạt rẻ hơn 40%, nhưng tối đa cấp 5",mod_bossy:"Ngày của trùm",modd_bossy:"Cứ 5 đợt có một trùm",
+mis_kills:"Hạ {0} sâu bọ",mis_merges:"Ghép {0} lần",mis_lvl:"Trồng một rau cấp {0}",mis_win:"Thắng một khu vườn",mis_water:"Dùng bình tưới {0} lần",mis_boss:"Hạ {0} trùm",
+mis_ewave:"Đến đợt {0} ở chế độ Vô tận",mis_gold:"Bắt {0} bọ cánh cứng vàng",mis_plant:"Gieo {0} hạt",mis_perfect:"Thắng một khu vườn mà không mất xà lách",
+m_comp:"Đống phân ủ",md_comp:"+10 phân ủ ban đầu mỗi cấp",m_lives:"Thêm xà lách",md_lives:"+1 cây xà lách mỗi cấp",m_soil:"Đất phì nhiêu",md_soil:"+3% cơ hội hạt cấp 2 mỗi cấp",
+say0:"Đây là tiệc buffet hả?",say1:"Tôi đang ăn kiêng. Từ mai.",say2:"Xà lách! Món khoái khẩu!",say3:"Không ai thấy tụi mình đâu nhỉ?",say4:"Ai trồng HÀNH ở đây vậy?! *sụt sịt*",say5:"Tới chưa?",say6:"Ngửi thấy mùi salad!",say7:"Chậm mà chắc, xà lách là của ta.",
+oma0:"Xà lách của bà!!",oma1:"Xùy! Xùy!",oma2:"Có bà ở đây thì đừng hòng!",oma3:"Cây đẹp nhất của bà đó!",
+head_win0:"Bà giữ được xà lách, sâu bọ choáng váng",head_win1:"Băng ốc sên khóc lóc bỏ chạy",head_win2:"Rau củ chiến thắng — salad an toàn",
+head_lose0:"Ốc sên đòi thêm salad",head_lose1:"Xà lách bị ăn. Bà: 'Bà sẽ quay lại'",head_lose2:"Sâu róm mở tiệc xà lách",
+chest0:"Thùng",chest1:"Thùng hiếm!",chest2:"THÙNG HUYỀN THOẠI!",
+a_kill_k1:"Diệt sâu bọ",a_kill_k2:"Thợ săn bọ",a_kill_k3:"Ác mộng của ốc sên",a_kill_k4:"Huyền thoại khu vườn",a_merge_m1:"Bà mối",a_merge_m2:"Cỗ máy ghép",a_merge_m3:"Bậc thầy hợp nhất",
+a_lvl:"Rau cấp {0}",a_won:"Đã cứu {0}",a_allstars:"Người làm vườn vàng",a_perfect:"Không mất chiếc lá nào",a_boss_b1:"Hạ trùm",a_boss_b2:"Thợ săn trùm",a_boss_b3:"Nhà sưu tầm trùm",a_ewave:"Đợt vô tận {0}",
+a_daily_d1:"Người đào mỗi ngày",a_daily_d2:"Người nhổ cỏ mỗi tuần",a_streak_3:"Đang bùng cháy",a_streak_7:"Không thể cản",a_allveg:"Túi hạt đầy đủ",a_gold10:"Thợ đào vàng",a_close:"Suýt soát",a_seller:"Nhà buôn phân ủ",
+ad_kills:"Hạ {0} sâu bọ",ad_merges:"Ghép {0} lần",ad_lvl:"Nâng một rau lên cấp {0}",ad_won:"Thắng khu vườn này",ad_allstars:"Thu thập {0} sao",ad_perfect:"Thắng mà không mất xà lách",ad_bosses:"Hạ {0} trùm",
+ad_ewave:"Đến đợt {0} ở chế độ Vô tận",ad_daily:"Hoàn thành {0} thử thách hằng ngày",ad_streak:"Chuỗi {0} ngày",ad_unl:"Mở khóa cả {0} loại rau",ad_gold:"Bắt {0} bọ cánh cứng vàng",ad_close:"Thắng khi chỉ còn 1 xà lách",ad_sold:"Ủ phân {0} cây rau",
+tut_plant:"Chạm vào <b>luống trống</b> để gieo rau!",tut_plant2:"Tốt lắm! Gieo thêm một cây ngay bên cạnh.",tut_merge:"Kéo một củ cà rốt lên củ kia!",tut_merged:"<b>Cấp 2!</b> Ghép lại giúp rau mạnh hơn.",
+tut_pest:"Một con ốc sên muốn ăn xà lách của bà! Rau sẽ <b>tự động</b> bắn.",tut_comp:"Sâu bọ cho <b>phân ủ</b>. Dùng nó để gieo thêm!",tut_plant3:"Chạm vào luống trống để gieo thêm rau!",tut_go:"Chúng đến rồi! Bảo vệ xà lách của bà!",
+h_merge:"Ghép hai cây rau giống nhau!",h_water:"Sâu bọ tới gần! Chạm <b>bình tưới</b>: rau bắn nhanh hơn.",h_scare:"Chạm <b>bù nhìn</b>: mọi sâu bọ đứng hình!",h_full:"Luống đầy! Hãy ghép, hoặc kéo một cây rau vào <b>thùng phân ủ</b>.",
+h_power:"Tiêu phân ủ ở đây: <b>tất cả</b> rau loại đó mạnh hơn!",h_next:"Sẵn sàng chưa? Gọi đợt tiếp sớm để nhận thêm phân ủ!",h_speed:"Chạm <b>x2</b> để tăng tốc trò chơi.",h_swap:"Chỉ hai cây rau giống nhau cùng cấp mới ghép được!",h_lock:"Hãy thắng Vườn của bà trước!",
+pn_cater:"Sâu róm",pi_cater:"nhanh nhưng yếu.",pn_beetle:"Bọ cánh cứng",pi_beetle:"có giáp! Hãy nâng cấp rau.",pn_crow:"Quạ",pi_crow:"bay được, hành ít làm chậm nó.",pn_mole:"Chuột chũi",pi_mole:"đào dưới đất, lúc đó không bắn trúng được.",pn_gold:"Bọ cánh cứng vàng",pi_gold:"bắt nó: trúng lớn và phân bón!",
+h_water2:"Mẹo: <b>bình tưới</b> giúp mọi cây rau bắn nhanh hơn trong chốc lát.",h_scare2:"Mẹo: <b>bù nhìn</b> làm mọi sâu bọ đứng yên một lúc.",h_plantbed:"Mẹo: chạm vào luống trống để gieo đúng chỗ đó."
 };
 
 TR.zh={
@@ -1858,7 +2149,7 @@ function introPest(k){if(!S.seenP)S.seenP={};if(S.seenP[k]||PEST[k].boss||k==='s
 /* ================= UI ================= */
 let lang='en';
 function t(k,...a){let s=(TR[lang]&&TR[lang][k])||TR.en[k]||k;a.forEach((v,i)=>{s=s.split('{'+i+'}').join(v)});return s}
-const fmtN=n=>{try{return Math.floor(n).toLocaleString(lang==='zh'?'zh-CN':lang)}catch(e){return String(Math.floor(n))}};
+const fmtN=n=>{try{return Math.floor(n).toLocaleString(lang==='zh'?'zh-CN':(lang==='ar'||lang==='bn')?'en':lang)}catch(e){return String(Math.floor(n))}};
 const UI={sel:null,drag:null,mestDrag:null,state:'boot',paused:false,screen:null,sess:0,msent:{},hud:{},firstRunThisSession:true,lastCommercial:0};
 const ICON={
  lettuce:'<svg viewBox="0 0 40 40"><circle cx="20" cy="22" r="14" fill="#7ee26b" stroke="#2b2d4e" stroke-width="3"/><path d="M11 20q9-10 18 0M14 27q6-7 12 0" fill="none" stroke="#4fae43" stroke-width="3" stroke-linecap="round"/></svg>',
@@ -2163,13 +2454,13 @@ function showDaily(){const tk=todayKey();if(S.daily.date!==tk){S.daily.date=tk;S
   onClick('#back',goHome);onClick('#go',()=>startRun(fi,'daily',{}));measure('daily','challenge','visible')}
 
 /* ---------- settings ---------- */
-const LANGS=[['en','English'],['nl','Nederlands'],['de','Deutsch'],['fr','Français'],['es','Español'],['it','Italiano'],['pt','Português'],['ru','Русский'],['tr','Türkçe'],['pl','Polski'],['ja','日本語'],['ko','한국어'],['zh','中文']];
+const LANGS=[['en','English'],['nl','Nederlands'],['de','Deutsch'],['fr','Français'],['es','Español'],['it','Italiano'],['pt','Português'],['ru','Русский'],['tr','Türkçe'],['pl','Polski'],['ja','日本語'],['ko','한국어'],['zh','中文'],['hi','हिन्दी'],['bn','বাংলা'],['id','Bahasa Indonesia'],['vi','Tiếng Việt'],['th','ไทย'],['ar','العربية']];
 function showSettings(back){const ls=LANGS.map(([k,n])=>'<button class="lang'+(k===lang?' on':'')+'" data-l="'+k+'">'+n+'</button>').join('');
   show('<h2>'+t('settings')+'</h2><div class="row"><button class="btn blue" id="snd">'+(S.muted?t('soundOff'):t('soundOn'))+'</button><button class="btn blue" id="mus">'+(S.music?t('musicOn'):t('musicOff'))+'</button></div><div class="sub">'+t('language')+'</div><div class="langs">'+ls+'</div><div class="ver">Veggie Siege v'+VERSION+'</div><button class="btn gray" id="back">'+t('back')+'</button>','set');
   onClick('#snd',()=>{S.muted=!S.muted;Snd.apply();save();showSettings(back)});onClick('#mus',()=>{S.music=!S.music;Snd.apply();save();showSettings(back)});
   onClick('[data-l]',e=>{lang=e.dataset.l;S.lang=lang;save();applyI18n();measure('settings','lang-'+lang,'selected');showSettings(back)});onClick('#back',back)}
-function applyI18n(){document.documentElement.lang=lang;document.querySelectorAll('[data-i]').forEach(e=>e.textContent=t(e.dataset.i));vIconCache.x=0;UI.hud={}}
-function detectLang(){let l=null;try{if(window.PokiSDK&&PokiSDK.getLanguage)l=PokiSDK.getLanguage()}catch(e){}if(!l)l=(navigator.language||'en');l=String(l).slice(0,2).toLowerCase();return TR[l]?l:'en'}
+function applyI18n(){document.documentElement.lang=lang;document.documentElement.dir=lang==='ar'?'rtl':'ltr';document.querySelectorAll('[data-i]').forEach(e=>e.textContent=t(e.dataset.i));vIconCache.x=0;UI.hud={}}
+function detectLang(){let l=null;try{if(window.PokiSDK&&PokiSDK.getLanguage)l=PokiSDK.getLanguage()}catch(e){}if(!l)l=(navigator.language||'en');l=String(l).slice(0,2).toLowerCase();if(l==='in')l='id';return TR[l]?l:'en'}
 
 /* ---------- intro (opener b) ---------- */
 function showIntro(done){const c=document.createElement('canvas');c.width=640;c.height=300;const x=c.getContext('2d');x.scale(2,2);
