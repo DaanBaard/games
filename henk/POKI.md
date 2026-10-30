@@ -1,6 +1,6 @@
 # Henk op Poki
 
-Henk draait als één `index.html` zonder externe bestanden (lettertype Fredoka zit ingebakken), 16:9-vriendelijk en speelbaar op telefoon (sleep links om te kruipen, tik rechts om te schieten).
+Henk draait als één `index.html` zonder externe bestanden (lettertype Fredoka zit ingebakken). Het beeld schaalt mee met elk formaat (liggend, staand, iframe dat van grootte verandert) en is speelbaar op telefoon (sleep links om te kruipen, tik rechts om te schieten).
 
 ## Uploaden
 1. Zip de map `henk/` (alleen `index.html` is nodig) en upload die in Poki for Developers (Poki Inspector / nieuwe versie).
