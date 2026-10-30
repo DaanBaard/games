@@ -4,6 +4,7 @@ export const LANGS={en:'English',nl:'Nederlands',de:'Deutsch',fr:'Français',es:
 
 export const TR={
 en:{
+  areas:{jungle:'Jungle',snow:'Snow',desert:'Desert',rainforest:'Rainforest'},areaHints:{jungle:'',snow:'Cold! You get hungry faster.',desert:'Hot! You get thirsty faster and water is scarce.',rainforest:'Rain: you get thirsty more slowly, but more poachers roam here.'},travelTo:'Travelling to {area}...',adultTitle:'You are an adult!',gateOpen:'The gate to {area} is open. Follow the beam of light.',gateFind:'The gate to {area} is open: follow the beam of light.',gateLocked:'This gate opens when you are an adult',prEatKb:'<kbd>Click</kbd> or <kbd>E</kbd> to eat the cricket',prEatTouch:'Tap <kbd>Tongue</kbd> to eat the cricket',prWater:'Thirsty! Follow the arrow to the water',nextStage:'{n} more crickets to become {stage}',wasAdult:'You were a fully grown gecko!',
   sub:'Poachers are hunting you in the jungle. Catch crickets with your tongue, drink at the lake and climb trees to escape.',
   difficulty:'Difficulty',play:'Play',geckos:'Geckos',gfx:'Graphics',gfxQ:['Low','High','Ultra'],language:'Language',
   keys:'<span><kbd>WASD</kbd> walk</span><span><kbd>Mouse</kbd> look</span><span><kbd>Shift</kbd> sprint</span><span><kbd>Space</kbd> jump</span><span><kbd>Click</kbd>/<kbd>E</kbd> tongue</span><span><kbd>F</kbd> drink</span>',
@@ -26,6 +27,7 @@ en:{
   questDone:'Quest done! +{v}',stages:['Baby','Young','Adult'],
   shopChosen:'Selected',shopOwned:'Owned',shopPrice:'{p} coins',shopSelect:'Choose this gecko',shopLocked:'Still locked',shopUnlock:'Unlock: {u}.',shopBuy:'Buy for {p}',shopNeed:'You need {n} more coins. Catch crickets to earn coins.'},
 nl:{
+  areas:{jungle:'Jungle',snow:'Sneeuw',desert:'Woestijn',rainforest:'Regenwoud'},areaHints:{jungle:'',snow:'Koud! Je krijgt sneller honger.',desert:'Heet! Je krijgt sneller dorst en water is schaars.',rainforest:'Regen: je krijgt minder snel dorst, maar er lopen meer stropers rond.'},travelTo:'Op weg naar {area}...',adultTitle:'Je bent volwassen!',gateOpen:'De poort naar {area} is open. Volg de lichtstraal.',gateFind:'De poort naar {area} is open: volg de lichtstraal.',gateLocked:'Deze poort gaat open als je volwassen bent',prEatKb:'<kbd>Klik</kbd> of <kbd>E</kbd> om de krekel te eten',prEatTouch:'Tik op <kbd>Tong</kbd> om de krekel te eten',prWater:'Dorst! Volg de pijl naar het water',nextStage:'Nog {n} krekels tot {stage}',wasAdult:'Je was een volwassen gekko!',
   sub:'Stropers jagen op je in de jungle. Vang krekels met je tong, drink bij het meer en klim de bomen in om te ontsnappen.',
   difficulty:'Moeilijkheid',play:'Spelen',geckos:'Gekko\'s',gfx:'Graphics',gfxQ:['Laag','Hoog','Ultra'],language:'Taal',
   keys:'<span><kbd>WASD</kbd> lopen</span><span><kbd>Muis</kbd> kijken</span><span><kbd>Shift</kbd> sprinten</span><span><kbd>Spatie</kbd> springen</span><span><kbd>Klik</kbd>/<kbd>E</kbd> tong</span><span><kbd>F</kbd> drinken</span>',
@@ -48,6 +50,7 @@ nl:{
   questDone:'Opdracht klaar! +{v}',stages:['Baby','Jong','Volwassen'],
   shopChosen:'Gekozen',shopOwned:'In bezit',shopPrice:'{p} munten',shopSelect:'Kies deze gekko',shopLocked:'Nog op slot',shopUnlock:'Vrijspelen: {u}.',shopBuy:'Koop voor {p}',shopNeed:'Je hebt nog {n} munten nodig. Vang krekels om munten te verdienen.'},
 de:{
+  areas:{jungle:'Dschungel',snow:'Schnee',desert:'Wüste',rainforest:'Regenwald'},areaHints:{jungle:'',snow:'Kalt! Du bekommst schneller Hunger.',desert:'Heiß! Du bekommst schneller Durst und Wasser ist knapp.',rainforest:'Regen: Du bekommst langsamer Durst, aber hier sind mehr Wilderer unterwegs.'},travelTo:'Unterwegs nach {area}...',adultTitle:'Du bist erwachsen!',gateOpen:'Das Tor nach {area} ist offen. Folge dem Lichtstrahl.',gateFind:'Das Tor nach {area} ist offen: Folge dem Lichtstrahl.',gateLocked:'Dieses Tor öffnet sich, wenn du erwachsen bist',prEatKb:'<kbd>Klick</kbd> oder <kbd>E</kbd>, um die Grille zu fressen',prEatTouch:'Tippe auf <kbd>Zunge</kbd>, um die Grille zu fressen',prWater:'Durst! Folge dem Pfeil zum Wasser',nextStage:'Noch {n} Grillen bis {stage}',wasAdult:'Du warst ein erwachsener Gecko!',
   sub:'Wilderer jagen dich im Dschungel. Fang Grillen mit deiner Zunge, trink am See und klettere auf Bäume, um zu entkommen.',
   difficulty:'Schwierigkeit',play:'Spielen',geckos:'Geckos',gfx:'Grafik',gfxQ:['Niedrig','Hoch','Ultra'],language:'Sprache',
   keys:'<span><kbd>WASD</kbd> laufen</span><span><kbd>Maus</kbd> umsehen</span><span><kbd>Shift</kbd> sprinten</span><span><kbd>Leertaste</kbd> springen</span><span><kbd>Klick</kbd>/<kbd>E</kbd> Zunge</span><span><kbd>F</kbd> trinken</span>',
@@ -70,6 +73,7 @@ de:{
   questDone:'Aufgabe erledigt! +{v}',stages:['Baby','Jung','Erwachsen'],
   shopChosen:'Gewählt',shopOwned:'Im Besitz',shopPrice:'{p} Münzen',shopSelect:'Diesen Gecko wählen',shopLocked:'Noch gesperrt',shopUnlock:'Freischalten: {u}.',shopBuy:'Kaufen für {p}',shopNeed:'Dir fehlen noch {n} Münzen. Fang Grillen, um Münzen zu verdienen.'},
 fr:{
+  areas:{jungle:'Jungle',snow:'Neige',desert:'Désert',rainforest:'Forêt tropicale'},areaHints:{jungle:'',snow:'Froid ! Tu as faim plus vite.',desert:'Chaud ! Tu as soif plus vite et l\'eau est rare.',rainforest:'Pluie : tu as soif moins vite, mais il y a plus de braconniers.'},travelTo:'En route vers : {area}...',adultTitle:'Tu es adulte !',gateOpen:'Le portail vers : {area} est ouvert. Suis le rayon de lumière.',gateFind:'Le portail vers : {area} est ouvert, suis le rayon de lumière.',gateLocked:'Ce portail s\'ouvre quand tu es adulte',prEatKb:'<kbd>Clic</kbd> ou <kbd>E</kbd> pour manger le grillon',prEatTouch:'Touche <kbd>Langue</kbd> pour manger le grillon',prWater:'Soif ! Suis la flèche jusqu\'à l\'eau',nextStage:'Encore {n} grillons avant : {stage}',wasAdult:'Tu étais un gecko adulte !',
   sub:'Des braconniers te traquent dans la jungle. Attrape des grillons avec ta langue, bois au lac et grimpe aux arbres pour t\'échapper.',
   difficulty:'Difficulté',play:'Jouer',geckos:'Geckos',gfx:'Graphismes',gfxQ:['Bas','Élevé','Ultra'],language:'Langue',
   keys:'<span><kbd>WASD</kbd> marcher</span><span><kbd>Souris</kbd> regarder</span><span><kbd>Maj</kbd> sprinter</span><span><kbd>Espace</kbd> sauter</span><span><kbd>Clic</kbd>/<kbd>E</kbd> langue</span><span><kbd>F</kbd> boire</span>',
@@ -92,6 +96,7 @@ fr:{
   questDone:'Mission réussie ! +{v}',stages:['Bébé','Jeune','Adulte'],
   shopChosen:'Choisi',shopOwned:'Possédé',shopPrice:'{p} pièces',shopSelect:'Choisir ce gecko',shopLocked:'Verrouillé',shopUnlock:'À débloquer : {u}.',shopBuy:'Acheter pour {p}',shopNeed:'Il te manque {n} pièces. Attrape des grillons pour gagner des pièces.'},
 es:{
+  areas:{jungle:'Jungla',snow:'Nieve',desert:'Desierto',rainforest:'Selva tropical'},areaHints:{jungle:'',snow:'¡Frío! Te da hambre más rápido.',desert:'¡Calor! Te da sed más rápido y hay poca agua.',rainforest:'Lluvia: te da sed más despacio, pero hay más cazadores.'},travelTo:'Viajando a: {area}...',adultTitle:'¡Eres adulto!',gateOpen:'El portal a {area} está abierto. Sigue el rayo de luz.',gateFind:'El portal a {area} está abierto: sigue el rayo de luz.',gateLocked:'Este portal se abre cuando seas adulto',prEatKb:'<kbd>Clic</kbd> o <kbd>E</kbd> para comerte el grillo',prEatTouch:'Toca <kbd>Lengua</kbd> para comerte el grillo',prWater:'¡Sed! Sigue la flecha hasta el agua',nextStage:'{n} grillos más para ser {stage}',wasAdult:'¡Eras un geco adulto!',
   sub:'Los cazadores furtivos te persiguen en la selva. Atrapa grillos con la lengua, bebe en el lago y trepa a los árboles para escapar.',
   difficulty:'Dificultad',play:'Jugar',geckos:'Gecos',gfx:'Gráficos',gfxQ:['Bajo','Alto','Ultra'],language:'Idioma',
   keys:'<span><kbd>WASD</kbd> andar</span><span><kbd>Ratón</kbd> mirar</span><span><kbd>Shift</kbd> correr</span><span><kbd>Espacio</kbd> saltar</span><span><kbd>Clic</kbd>/<kbd>E</kbd> lengua</span><span><kbd>F</kbd> beber</span>',
@@ -114,6 +119,7 @@ es:{
   questDone:'¡Misión cumplida! +{v}',stages:['Bebé','Joven','Adulto'],
   shopChosen:'Elegido',shopOwned:'Tuyo',shopPrice:'{p} monedas',shopSelect:'Elegir este geco',shopLocked:'Bloqueado',shopUnlock:'Desbloquear: {u}.',shopBuy:'Comprar por {p}',shopNeed:'Te faltan {n} monedas. Atrapa grillos para ganar monedas.'},
 pt:{
+  areas:{jungle:'Selva',snow:'Neve',desert:'Deserto',rainforest:'Floresta tropical'},areaHints:{jungle:'',snow:'Frio! Você fica com fome mais rápido.',desert:'Calor! Você fica com sede mais rápido e a água é escassa.',rainforest:'Chuva: você fica com sede mais devagar, mas há mais caçadores.'},travelTo:'Indo para: {area}...',adultTitle:'Você é adulta!',gateOpen:'O portal para {area} está aberto. Siga o raio de luz.',gateFind:'O portal para {area} está aberto: siga o raio de luz.',gateLocked:'Este portal abre quando você for adulta',prEatKb:'<kbd>Clique</kbd> ou <kbd>E</kbd> para comer o grilo',prEatTouch:'Toque em <kbd>Língua</kbd> para comer o grilo',prWater:'Sede! Siga a seta até a água',nextStage:'Mais {n} grilos para ficar {stage}',wasAdult:'Você era uma lagartixa adulta!',
   sub:'Caçadores furtivos te perseguem na selva. Pegue grilos com a língua, beba no lago e suba nas árvores para fugir.',
   difficulty:'Dificuldade',play:'Jogar',geckos:'Lagartixas',gfx:'Gráficos',gfxQ:['Baixo','Alto','Ultra'],language:'Idioma',
   keys:'<span><kbd>WASD</kbd> andar</span><span><kbd>Mouse</kbd> olhar</span><span><kbd>Shift</kbd> correr</span><span><kbd>Espaço</kbd> pular</span><span><kbd>Clique</kbd>/<kbd>E</kbd> língua</span><span><kbd>F</kbd> beber</span>',
@@ -136,6 +142,7 @@ pt:{
   questDone:'Missão cumprida! +{v}',stages:['Bebê','Jovem','Adulta'],
   shopChosen:'Escolhida',shopOwned:'Sua',shopPrice:'{p} moedas',shopSelect:'Escolher esta lagartixa',shopLocked:'Bloqueada',shopUnlock:'Desbloquear: {u}.',shopBuy:'Comprar por {p}',shopNeed:'Faltam {n} moedas. Pegue grilos para ganhar moedas.'},
 it:{
+  areas:{jungle:'Giungla',snow:'Neve',desert:'Deserto',rainforest:'Foresta pluviale'},areaHints:{jungle:'',snow:'Freddo! Ti viene fame più in fretta.',desert:'Caldo! Ti viene sete più in fretta e l\'acqua scarseggia.',rainforest:'Pioggia: ti viene sete più lentamente, ma ci sono più bracconieri.'},travelTo:'In viaggio verso: {area}...',adultTitle:'Sei adulto!',gateOpen:'Il portale per {area} è aperto. Segui il raggio di luce.',gateFind:'Il portale per {area} è aperto: segui il raggio di luce.',gateLocked:'Questo portale si apre quando sei adulto',prEatKb:'<kbd>Clic</kbd> o <kbd>E</kbd> per mangiare il grillo',prEatTouch:'Tocca <kbd>Lingua</kbd> per mangiare il grillo',prWater:'Sete! Segui la freccia fino all\'acqua',nextStage:'Ancora {n} grilli per diventare {stage}',wasAdult:'Eri un geco adulto!',
   sub:'I bracconieri ti danno la caccia nella giungla. Cattura grilli con la lingua, bevi al lago e arrampicati sugli alberi per fuggire.',
   difficulty:'Difficoltà',play:'Gioca',geckos:'Gechi',gfx:'Grafica',gfxQ:['Bassa','Alta','Ultra'],language:'Lingua',
   keys:'<span><kbd>WASD</kbd> cammina</span><span><kbd>Mouse</kbd> guarda</span><span><kbd>Shift</kbd> scatta</span><span><kbd>Spazio</kbd> salta</span><span><kbd>Clic</kbd>/<kbd>E</kbd> lingua</span><span><kbd>F</kbd> bevi</span>',
@@ -158,6 +165,7 @@ it:{
   questDone:'Missione compiuta! +{v}',stages:['Cucciolo','Giovane','Adulto'],
   shopChosen:'Scelto',shopOwned:'Posseduto',shopPrice:'{p} monete',shopSelect:'Scegli questo geco',shopLocked:'Bloccato',shopUnlock:'Sblocca: {u}.',shopBuy:'Compra per {p}',shopNeed:'Ti servono ancora {n} monete. Cattura grilli per guadagnare monete.'},
 pl:{
+  areas:{jungle:'Dżungla',snow:'Śnieg',desert:'Pustynia',rainforest:'Las deszczowy'},areaHints:{jungle:'',snow:'Zimno! Szybciej robisz się głodny.',desert:'Gorąco! Szybciej chce ci się pić, a wody jest mało.',rainforest:'Deszcz: wolniej chce ci się pić, ale jest tu więcej kłusowników.'},travelTo:'W drodze: {area}...',adultTitle:'Jesteś dorosły!',gateOpen:'Brama do celu {area} jest otwarta. Idź za promieniem światła.',gateFind:'Brama do celu {area} jest otwarta: idź za promieniem światła.',gateLocked:'Ta brama otworzy się, gdy będziesz dorosły',prEatKb:'<kbd>Klik</kbd> lub <kbd>E</kbd>, aby zjeść świerszcza',prEatTouch:'Dotknij <kbd>Język</kbd>, aby zjeść świerszcza',prWater:'Pragnienie! Idź za strzałką do wody',nextStage:'Jeszcze {n} świerszczy do etapu {stage}',wasAdult:'Byłeś dorosłym gekonem!',
   sub:'Kłusownicy polują na ciebie w dżungli. Łap świerszcze językiem, pij nad jeziorem i wspinaj się na drzewa, aby uciec.',
   difficulty:'Poziom trudności',play:'Graj',geckos:'Gekony',gfx:'Grafika',gfxQ:['Niska','Wysoka','Ultra'],language:'Język',
   keys:'<span><kbd>WASD</kbd> chodzenie</span><span><kbd>Mysz</kbd> rozglądanie</span><span><kbd>Shift</kbd> sprint</span><span><kbd>Spacja</kbd> skok</span><span><kbd>Klik</kbd>/<kbd>E</kbd> język</span><span><kbd>F</kbd> picie</span>',
@@ -180,6 +188,7 @@ pl:{
   questDone:'Zadanie wykonane! +{v}',stages:['Maluch','Młody','Dorosły'],
   shopChosen:'Wybrany',shopOwned:'Posiadany',shopPrice:'{p} monet',shopSelect:'Wybierz tego gekona',shopLocked:'Zablokowany',shopUnlock:'Odblokuj: {u}.',shopBuy:'Kup za {p}',shopNeed:'Brakuje ci {n} monet. Łap świerszcze, aby zarabiać monety.'},
 tr:{
+  areas:{jungle:'Orman',snow:'Kar',desert:'Çöl',rainforest:'Yağmur ormanı'},areaHints:{jungle:'',snow:'Soğuk! Daha çabuk acıkırsın.',desert:'Sıcak! Daha çabuk susarsın ve su az.',rainforest:'Yağmur: daha yavaş susarsın ama daha çok avcı var.'},travelTo:'Yolculuk: {area}...',adultTitle:'Artık yetişkinsin!',gateOpen:'{area} kapısı açık. Işık huzmesini takip et.',gateFind:'{area} kapısı açık: ışık huzmesini takip et.',gateLocked:'Bu kapı yetişkin olunca açılır',prEatKb:'Böceği yemek için <kbd>Tık</kbd> ya da <kbd>E</kbd>',prEatTouch:'Böceği yemek için <kbd>Dil</kbd> düğmesine dokun',prWater:'Susadın! Oku takip ederek suya git',nextStage:'{stage} olmak için {n} böcek daha',wasAdult:'Yetişkin bir kertenkeleydin!',
   sub:'Kaçak avcılar ormanda peşinde. Dilinle cırcır böcekleri yakala, gölden su iç ve kaçmak için ağaçlara tırman.',
   difficulty:'Zorluk',play:'Oyna',geckos:'Kertenkeleler',gfx:'Grafik',gfxQ:['Düşük','Yüksek','Ultra'],language:'Dil',
   keys:'<span><kbd>WASD</kbd> yürü</span><span><kbd>Fare</kbd> bak</span><span><kbd>Shift</kbd> koş</span><span><kbd>Boşluk</kbd> zıpla</span><span><kbd>Tık</kbd>/<kbd>E</kbd> dil</span><span><kbd>F</kbd> iç</span>',
@@ -202,6 +211,7 @@ tr:{
   questDone:'Görev tamam! +{v}',stages:['Bebek','Genç','Yetişkin'],
   shopChosen:'Seçildi',shopOwned:'Sende',shopPrice:'{p} altın',shopSelect:'Bu kertenkeleyi seç',shopLocked:'Kilitli',shopUnlock:'Kilidi aç: {u}.',shopBuy:'{p} altına al',shopNeed:'{n} altın daha gerekiyor. Altın kazanmak için böcek yakala.'},
 ru:{
+  areas:{jungle:'Джунгли',snow:'Снега',desert:'Пустыня',rainforest:'Тропический лес'},areaHints:{jungle:'',snow:'Холодно! Голод приходит быстрее.',desert:'Жарко! Жажда приходит быстрее, а воды мало.',rainforest:'Дождь: жажда приходит медленнее, но браконьеров больше.'},travelTo:'В путь: {area}...',adultTitle:'Ты взрослый!',gateOpen:'Ворота в локацию «{area}» открыты. Иди за лучом света.',gateFind:'Ворота в локацию «{area}» открыты: иди за лучом света.',gateLocked:'Эти ворота откроются, когда ты станешь взрослым',prEatKb:'<kbd>Клик</kbd> или <kbd>E</kbd>, чтобы съесть сверчка',prEatTouch:'Нажми <kbd>Язык</kbd>, чтобы съесть сверчка',prWater:'Жажда! Иди по стрелке к воде',nextStage:'Ещё {n} сверчков до стадии «{stage}»',wasAdult:'Ты был взрослым гекконом!',
   sub:'Браконьеры охотятся на тебя в джунглях. Лови сверчков языком, пей у озера и забирайся на деревья, чтобы сбежать.',
   difficulty:'Сложность',play:'Играть',geckos:'Гекконы',gfx:'Графика',gfxQ:['Низкая','Высокая','Ультра'],language:'Язык',
   keys:'<span><kbd>WASD</kbd> ходить</span><span><kbd>Мышь</kbd> смотреть</span><span><kbd>Shift</kbd> бег</span><span><kbd>Пробел</kbd> прыжок</span><span><kbd>Клик</kbd>/<kbd>E</kbd> язык</span><span><kbd>F</kbd> пить</span>',
@@ -224,6 +234,7 @@ ru:{
   questDone:'Задание выполнено! +{v}',stages:['Малыш','Юный','Взрослый'],
   shopChosen:'Выбран',shopOwned:'Есть',shopPrice:'{p} монет',shopSelect:'Выбрать этого геккона',shopLocked:'Закрыт',shopUnlock:'Открыть: {u}.',shopBuy:'Купить за {p}',shopNeed:'Не хватает {n} монет. Лови сверчков, чтобы заработать монеты.'},
 ja:{
+  areas:{jungle:'ジャングル',snow:'雪原',desert:'砂漠',rainforest:'熱帯雨林'},areaHints:{jungle:'',snow:'寒い！おなかがすくのが早くなる。',desert:'暑い！のどがかわくのが早く、水も少ない。',rainforest:'雨：のどがかわきにくいけど、密猟者が多い。'},travelTo:'{area}へ移動中...',adultTitle:'大人になった！',gateOpen:'{area}へのゲートが開いた。光の柱を目指そう。',gateFind:'{area}へのゲートが開いている：光の柱を目指そう。',gateLocked:'このゲートは大人になると開く',prEatKb:'<kbd>クリック</kbd>か<kbd>E</kbd>でコオロギを食べよう',prEatTouch:'<kbd>舌</kbd>をタップしてコオロギを食べよう',prWater:'のどがカラカラ！矢印をたどって水へ',nextStage:'{stage}まであとコオロギ{n}匹',wasAdult:'大人のヤモリになっていた！',
   sub:'ジャングルで密猟者がきみを狙っている。舌でコオロギをつかまえ、湖で水を飲み、木に登って逃げよう。',
   difficulty:'難易度',play:'プレイ',geckos:'ヤモリ',gfx:'グラフィック',gfxQ:['低','高','ウルトラ'],language:'言語',
   keys:'<span><kbd>WASD</kbd> 移動</span><span><kbd>マウス</kbd> 視点</span><span><kbd>Shift</kbd> ダッシュ</span><span><kbd>スペース</kbd> ジャンプ</span><span><kbd>クリック</kbd>/<kbd>E</kbd> 舌</span><span><kbd>F</kbd> 水を飲む</span>',
@@ -246,6 +257,7 @@ ja:{
   questDone:'ミッション達成！ +{v}',stages:['ベビー','子ども','大人'],
   shopChosen:'選択中',shopOwned:'所持',shopPrice:'{p}コイン',shopSelect:'このヤモリを選ぶ',shopLocked:'ロック中',shopUnlock:'解放条件: {u}。',shopBuy:'{p}で買う',shopNeed:'あと{n}コイン必要。コオロギをつかまえてコインを集めよう。'},
 ko:{
+  areas:{jungle:'정글',snow:'설원',desert:'사막',rainforest:'열대우림'},areaHints:{jungle:'',snow:'추워요! 배가 더 빨리 고파요.',desert:'더워요! 목이 더 빨리 마르고 물이 부족해요.',rainforest:'비: 목이 덜 마르지만 밀렵꾼이 더 많아요.'},travelTo:'{area}(으)로 이동 중...',adultTitle:'어른이 되었어요!',gateOpen:'{area}(으)로 가는 문이 열렸어요. 빛줄기를 따라가세요.',gateFind:'{area}(으)로 가는 문이 열려 있어요: 빛줄기를 따라가세요.',gateLocked:'이 문은 어른이 되면 열려요',prEatKb:'<kbd>클릭</kbd>하거나 <kbd>E</kbd>를 눌러 귀뚜라미를 먹으세요',prEatTouch:'<kbd>혀</kbd>를 눌러 귀뚜라미를 먹으세요',prWater:'목말라요! 화살표를 따라 물로 가세요',nextStage:'{stage}까지 귀뚜라미 {n}마리 더',wasAdult:'어른 도마뱀붙이였어요!',
   sub:'정글에서 밀렵꾼들이 너를 쫓고 있어. 혀로 귀뚜라미를 잡고, 호수에서 물을 마시고, 나무에 올라 도망쳐!',
   difficulty:'난이도',play:'플레이',geckos:'도마뱀붙이',gfx:'그래픽',gfxQ:['낮음','높음','울트라'],language:'언어',
   keys:'<span><kbd>WASD</kbd> 이동</span><span><kbd>마우스</kbd> 시점</span><span><kbd>Shift</kbd> 달리기</span><span><kbd>스페이스</kbd> 점프</span><span><kbd>클릭</kbd>/<kbd>E</kbd> 혀</span><span><kbd>F</kbd> 마시기</span>',
@@ -268,6 +280,7 @@ ko:{
   questDone:'미션 완료! +{v}',stages:['아기','청소년','어른'],
   shopChosen:'선택됨',shopOwned:'보유',shopPrice:'{p} 코인',shopSelect:'이 도마뱀붙이 선택',shopLocked:'잠김',shopUnlock:'해금 조건: {u}.',shopBuy:'{p}에 구매',shopNeed:'코인이 {n}개 더 필요해요. 귀뚜라미를 잡아 코인을 모으세요.'},
 zh:{
+  areas:{jungle:'丛林',snow:'雪地',desert:'沙漠',rainforest:'热带雨林'},areaHints:{jungle:'',snow:'好冷！饿得更快。',desert:'好热！渴得更快，水也很少。',rainforest:'下雨：渴得更慢，但偷猎者更多。'},travelTo:'正在前往{area}...',adultTitle:'你长大了！',gateOpen:'通往{area}的传送门已打开。跟着光柱走。',gateFind:'通往{area}的传送门已打开：跟着光柱走。',gateLocked:'长大成年后这扇门才会打开',prEatKb:'<kbd>点击</kbd>或按<kbd>E</kbd>吃掉蟋蟀',prEatTouch:'点<kbd>舌头</kbd>吃掉蟋蟀',prWater:'口渴了！跟着箭头去找水',nextStage:'再吃{n}只蟋蟀变成{stage}',wasAdult:'你曾是一只成年壁虎！',
   sub:'偷猎者在丛林里追捕你。用舌头抓蟋蟀，在湖边喝水，爬上树逃跑吧。',
   difficulty:'难度',play:'开始',geckos:'壁虎',gfx:'画质',gfxQ:['低','高','极致'],language:'语言',
   keys:'<span><kbd>WASD</kbd> 移动</span><span><kbd>鼠标</kbd> 视角</span><span><kbd>Shift</kbd> 冲刺</span><span><kbd>空格</kbd> 跳跃</span><span><kbd>点击</kbd>/<kbd>E</kbd> 舌头</span><span><kbd>F</kbd> 喝水</span>',
