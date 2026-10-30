@@ -16,8 +16,11 @@ window.__pokiReady = new Promise(function (res) {
 </script>
 <style>
 /* fonts ship with the game (no external requests): Lilita One and Nunito, SIL Open Font License */
-@font-face{font-family:"Lilita One";font-style:normal;font-weight:400;font-display:swap;src:url(lib/fonts/lilita-one-latin.woff2) format("woff2")}
-@font-face{font-family:"Nunito";font-style:normal;font-weight:200 1000;font-display:swap;src:url(lib/fonts/nunito-latin.woff2) format("woff2")}
+@font-face{font-family:"Lilita One";font-style:normal;font-weight:400;font-display:swap;src:url(lib/fonts/lilita-one-latin.woff2) format("woff2");unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:"Lilita One";font-style:normal;font-weight:400;font-display:swap;src:url(lib/fonts/lilita-one-latin-ext.woff2) format("woff2");unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C4,U+2113,U+2C60-2C7F,U+A720-A7FF}
+@font-face{font-family:"Nunito";font-style:normal;font-weight:200 1000;font-display:swap;src:url(lib/fonts/nunito-latin.woff2) format("woff2");unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:"Nunito";font-style:normal;font-weight:200 1000;font-display:swap;src:url(lib/fonts/nunito-latin-ext.woff2) format("woff2");unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C4,U+2113,U+2C60-2C7F,U+A720-A7FF}
+@font-face{font-family:"Nunito";font-style:normal;font-weight:200 1000;font-display:swap;src:url(lib/fonts/nunito-cyrillic.woff2) format("woff2");unicode-range:U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116}
 </style>
 </head>
 <body>
@@ -114,6 +117,7 @@ button:focus-visible{outline:3px solid var(--leaf);outline-offset:2px}
 .revive{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;margin:0 0 10px;background:var(--coin);color:#2a1d00}
 .revive[hidden]{display:none}.revive svg{width:22px;height:22px}.revive small{font-weight:700;opacity:.75}
 .ver{margin-left:auto;font-size:11px;opacity:.6}
+select.lang{appearance:none;-webkit-appearance:none;padding-right:12px;cursor:pointer}select.lang option{background:#0c1d14;color:var(--ink)}
 
 #shop{justify-content:flex-end;align-items:stretch;background:linear-gradient(270deg,rgba(6,17,10,.9) 0%,rgba(6,17,10,.6) 45%,transparent 70%)}
 .shopCol{width:min(470px,100%);display:flex;flex-direction:column;gap:14px;margin-right:clamp(0px,3vw,40px);min-height:0}
@@ -164,6 +168,13 @@ button:focus-visible{outline:3px solid var(--leaf);outline-offset:2px}
   .pill{font-size:17px}
   .keys{display:none}
 }
+/* content taller than the screen scrolls instead of being cut off at the top (small Poki frames) */
+#menu,.center{align-items:flex-start}.menuCol,.center .card{margin-block:auto}
+@media (max-height:620px) and (min-width:721px){
+  .logo{font-size:46px}.sub{display:none}.menuCol{gap:10px}.keys{display:none}
+  .modeBtn{padding:7px 10px}.play{padding:11px 18px;font-size:24px}
+  .card{padding:16px;gap:10px}.card h2{font-size:34px}
+}
 @media (prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;transition-duration:.01ms!important}}
 </style>
 
@@ -178,12 +189,12 @@ button:focus-visible{outline:3px solid var(--leaf);outline-offset:2px}
       <div class="stat" id="sThirst"><svg viewBox="0 0 24 24"><path fill="var(--water)" d="M12 2.5S5 10.3 5 14.8A7 7 0 0 0 19 14.8C19 10.3 12 2.5 12 2.5z"/></svg><div class="track"><div class="fill" style="background:var(--water)"></div></div></div>
       <div class="stat" id="sStamina"><svg viewBox="0 0 24 24"><path fill="var(--stamina)" d="M13.5 2 4 13.5h6.5L9.5 22 20 9.8h-6.6z"/></svg><div class="track"><div class="fill" style="background:var(--stamina)"></div></div></div>
       <div class="growth"><span id="growthLabel"><b>Baby</b></span><div class="track"><div class="fill" id="growthFill" style="background:var(--leaf)"></div></div></div>
-      <div class="quest" id="quest"><small>Opdracht</small><span id="questText">-</span></div>
+      <div class="quest" id="quest"><small data-i18n="quest">Opdracht</small><span id="questText">-</span></div>
     </div>
     <div class="topright">
       <div class="iconbtns">
-        <button class="iconbtn" id="muteBtn" aria-label="Geluid aan of uit"></button>
-        <button class="iconbtn" id="pauseBtn" aria-label="Pauze"><svg viewBox="0 0 24 24"><rect x="6" y="5" width="4" height="14" rx="1.2" fill="#f2f7e8"/><rect x="14" y="5" width="4" height="14" rx="1.2" fill="#f2f7e8"/></svg></button>
+        <button class="iconbtn" id="muteBtn" data-i18n-aria="muteAria" aria-label="Geluid aan of uit"></button>
+        <button class="iconbtn" id="pauseBtn" data-i18n-aria="pauseAria" aria-label="Pauze"><svg viewBox="0 0 24 24"><rect x="6" y="5" width="4" height="14" rx="1.2" fill="#f2f7e8"/><rect x="14" y="5" width="4" height="14" rx="1.2" fill="#f2f7e8"/></svg></button>
       </div>
       <div class="pill"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="#ffc93c"/><circle cx="12" cy="12" r="7" fill="none" stroke="#c98a12" stroke-width="1.6"/><path d="M9.5 9.5c1.5-2 5-1.4 5 .9 0 2.4-5 1.6-5 4 0 2 3.4 2.4 5 .8" stroke="#a86f0a" stroke-width="1.6" fill="none" stroke-linecap="round"/></svg><span id="hudCoins">0</span></div>
       <div class="pill" id="hudTime">0:00</div>
@@ -200,43 +211,43 @@ button:focus-visible{outline:3px solid var(--leaf);outline-offset:2px}
   <div id="touch" hidden>
     <div id="joy"><div id="joyKnob"></div></div>
     <div class="tbtns">
-      <button class="tbtn" id="tDrink">Drink</button>
-      <button class="tbtn" id="tSprint">Sprint</button>
-      <button class="tbtn" id="tJump">Spring</button>
-      <button class="tbtn big" id="tTongue">Tong</button>
+      <button class="tbtn" id="tDrink" data-i18n="tDrink">Drink</button>
+      <button class="tbtn" id="tSprint" data-i18n="tSprint">Sprint</button>
+      <button class="tbtn" id="tJump" data-i18n="tJump">Spring</button>
+      <button class="tbtn big" id="tTongue" data-i18n="tTongue">Tong</button>
     </div>
   </div>
 
   <div id="menu" class="screen" hidden>
     <div class="menuCol">
       <h1 class="logo">Gekko<span>Survival</span></h1>
-      <p class="sub">Stropers jagen op je in de jungle. Vang krekels met je tong, drink bij het meer en klim de bomen in om te ontsnappen.</p>
-      <p class="label">Moeilijkheid</p>
+      <p class="sub" data-i18n="sub">Stropers jagen op je in de jungle. Vang krekels met je tong, drink bij het meer en klim de bomen in om te ontsnappen.</p>
+      <p class="label" data-i18n="difficulty">Moeilijkheid</p>
       <div class="modes" id="modes"></div>
       <div class="row">
-        <button class="play" id="playBtn">Spelen</button>
-        <button class="ghost" id="shopBtn"><svg viewBox="0 0 24 24"><path d="M4 15c3-1 4-5 8-5 3 0 4 2 7 1M7 15l-1 3M10 13.5l1 4M15 11l1 4M18 11.5l2 2" stroke="#b9e44f" stroke-width="2" fill="none" stroke-linecap="round"/><circle cx="6" cy="14" r="1" fill="#b9e44f"/></svg>Gekko's</button>
+        <button class="play" id="playBtn" data-i18n="play">Spelen</button>
+        <button class="ghost" id="shopBtn"><svg viewBox="0 0 24 24"><path d="M4 15c3-1 4-5 8-5 3 0 4 2 7 1M7 15l-1 3M10 13.5l1 4M15 11l1 4M18 11.5l2 2" stroke="#b9e44f" stroke-width="2" fill="none" stroke-linecap="round"/><circle cx="6" cy="14" r="1" fill="#b9e44f"/></svg><span data-i18n="geckos">Gekko's</span></button>
       </div>
-      <div class="menuFoot"><span class="coinsBig"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="#ffc93c"/><circle cx="12" cy="12" r="7" fill="none" stroke="#c98a12" stroke-width="1.6"/></svg><span id="menuCoins">0</span></span><span id="menuBest"></span><button class="ghost gfx" id="gfxBtn">Grafiek</button><span class="ver">v1.1</span></div>
-      <div class="keys"><span><kbd>WASD</kbd> lopen</span><span><kbd>Muis</kbd> kijken</span><span><kbd>Shift</kbd> sprinten</span><span><kbd>Spatie</kbd> springen</span><span><kbd>Klik</kbd>/<kbd>E</kbd> tong</span><span><kbd>F</kbd> drinken</span></div>
+      <div class="menuFoot"><span class="coinsBig"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="#ffc93c"/><circle cx="12" cy="12" r="7" fill="none" stroke="#c98a12" stroke-width="1.6"/></svg><span id="menuCoins">0</span></span><span id="menuBest"></span><button class="ghost gfx" id="gfxBtn">Graphics</button><select class="ghost gfx lang" id="langSel" data-i18n-aria="language" aria-label="Taal"></select><span class="ver">v1.2</span></div>
+      <div class="keys" data-i18n-html="keys"><span><kbd>WASD</kbd> lopen</span><span><kbd>Muis</kbd> kijken</span><span><kbd>Shift</kbd> sprinten</span><span><kbd>Spatie</kbd> springen</span><span><kbd>Klik</kbd>/<kbd>E</kbd> tong</span><span><kbd>F</kbd> drinken</span></div>
     </div>
   </div>
 
   <div id="shop" class="screen" hidden>
     <div class="shopCol">
-      <div class="shopHead"><h2>Gekko's</h2><span class="coinsBig"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="#ffc93c"/><circle cx="12" cy="12" r="7" fill="none" stroke="#c98a12" stroke-width="1.6"/></svg><span id="shopCoins">0</span></span></div>
+      <div class="shopHead"><h2 data-i18n="geckos">Gekko's</h2><span class="coinsBig"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="#ffc93c"/><circle cx="12" cy="12" r="7" fill="none" stroke="#c98a12" stroke-width="1.6"/></svg><span id="shopCoins">0</span></span></div>
       <div class="skins" id="skins"></div>
       <div class="shopMsg" id="shopMsg"></div>
-      <div class="shopAction"><button class="play" id="shopAct">Kies</button><button class="ghost" id="shopBack">Terug</button></div>
+      <div class="shopAction"><button class="play" id="shopAct">Kies</button><button class="ghost" id="shopBack" data-i18n="back">Terug</button></div>
     </div>
   </div>
 
   <div id="pause" class="screen center" hidden>
     <div class="card">
-      <h2>Pauze</h2>
-      <p>De stropers wachten even.</p>
-      <button class="ghost gfx" id="gfxBtn2" style="justify-content:center">Grafiek</button>
-      <div class="row"><button class="play" id="resumeBtn">Verder</button><button class="ghost" id="quitBtn">Menu</button></div>
+      <h2 data-i18n="pauseTitle">Pauze</h2>
+      <p data-i18n="pauseText">De stropers wachten even.</p>
+      <button class="ghost gfx" id="gfxBtn2" style="justify-content:center">Graphics</button>
+      <div class="row"><button class="play" id="resumeBtn" data-i18n="resume">Verder</button><button class="ghost" id="quitBtn" data-i18n="menu">Menu</button></div>
     </div>
   </div>
 
@@ -245,13 +256,13 @@ button:focus-visible{outline:3px solid var(--leaf);outline-offset:2px}
       <h2 class="bad" id="overTitle">Gevangen!</h2>
       <p id="overText"></p>
       <div class="results">
-        <div class="res"><b id="rTime">0:00</b><span>Overleefd</span></div>
-        <div class="res"><b id="rCrickets">0</b><span>Krekels</span></div>
-        <div class="res coin"><b id="rCoins">0</b><span>Munten</span></div>
+        <div class="res"><b id="rTime">0:00</b><span data-i18n="survived">Overleefd</span></div>
+        <div class="res"><b id="rCrickets">0</b><span data-i18n="crickets">Krekels</span></div>
+        <div class="res coin"><b id="rCoins">0</b><span data-i18n="coins">Munten</span></div>
       </div>
       <div class="newbest" id="rBest"></div>
-      <button class="play revive" id="reviveBtn" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="5" width="20" height="14" rx="3" fill="none" stroke="currentColor" stroke-width="2"/><path d="M10 9l5 3-5 3z" fill="currentColor"/></svg>Nog een kans <small>(reclame)</small></button>
-      <div class="row"><button class="play" id="againBtn">Opnieuw</button><button class="ghost" id="menuBtn">Menu</button></div>
+      <button class="play revive" id="reviveBtn" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="5" width="20" height="14" rx="3" fill="none" stroke="currentColor" stroke-width="2"/><path d="M10 9l5 3-5 3z" fill="currentColor"/></svg><span data-i18n="revive">Nog een kans</span> <small data-i18n="ad">(reclame)</small></button>
+      <div class="row"><button class="play" id="againBtn" data-i18n="again">Opnieuw</button><button class="ghost" id="menuBtn" data-i18n="menu">Menu</button></div>
     </div>
   </div>
 
@@ -260,6 +271,7 @@ button:focus-visible{outline:3px solid var(--leaf);outline-offset:2px}
 
 <script type="module">
 // three.js r170 and the addons used below, bundled into lib/three-bundle.js (no CDN, works offline on Poki)
+import { TR, LANGS } from './i18n.js';
 import { THREE, Sky, Reflector, mergeGeometries, mergeVertices, EffectComposer, RenderPass, GTAOPass, UnrealBloomPass, ShaderPass, OutputPass } from './lib/three-bundle.js';
 
 /* =====================================================================
@@ -290,6 +302,12 @@ const SAVE_KEY='gekko-survival-v1';
 let save={coins:0,owned:['dag'],skin:'dag',best:{},mode:'easy',tutorial:false,muted:false};
 try{const s=JSON.parse(localStorage.getItem(SAVE_KEY));if(s&&typeof s==='object')save={...save,...s};}catch(e){}
 function persist(){try{localStorage.setItem(SAVE_KEY,JSON.stringify(save));}catch(e){}}
+
+/* Language: a saved choice wins, otherwise Poki's language, otherwise the browser's; English when we do not have it. */
+let lang='en';
+function detectLang(){let l=null;try{if(window.PokiSDK?.getLanguage)l=window.PokiSDK.getLanguage();}catch(e){}if(!l)l=navigator.language||'en';l=String(l).slice(0,2).toLowerCase();return TR[l]?l:'en';}
+const L=()=>TR[lang]||TR.en;
+function t(key,vars){let v=L()[key];if(v===undefined)v=TR.en[key];if(typeof v==='string'&&vars)v=v.replace(/\{(\w+)\}/g,(m,k)=>k in vars?vars[k]:m);return v;}
 
 /* Poki SDK. Every call is guarded so the game also runs without the SDK (own site, local preview).
    gameplayStart/Stop are only sent on a real change; during ads the sound is muted and input is ignored. */
@@ -1004,7 +1022,10 @@ const tongue={t:-1,dur:.32,target:null,from:new V3(),to:new V3(),cool:0,
   tip:new THREE.Mesh(new THREE.SphereGeometry(.011,12,10),new THREE.MeshPhysicalMaterial({color:'#ff5c80',roughness:.2,clearcoat:1}))};
 tongue.mesh.visible=tongue.tip.visible=false;scene.add(tongue.mesh,tongue.tip);
 function geckoScale(){return .92+PL.growth*.45;}
-function stageName(){return PL.growth<.34?'Baby':PL.growth<.8?'Jong':'Volwassen';}
+const STAGE_KEYS=['baby','jong','volwassen'];
+const stageIdx=()=>PL.growth<.34?0:PL.growth<.8?1:2;
+function stageName(){return L().stages[stageIdx()];}
+const stageKey=()=>STAGE_KEYS[stageIdx()];
 
 /* =====================================================================
    Crickets
@@ -1199,21 +1220,16 @@ function tryClimbOrCollide(np,prev,move,moving){
 let state='loading',mode=save.mode in MODES?save.mode:'easy',CFG=MODES[mode];
 let nextSpawn=0,quest=null,questIdx=0,tipIdx=0,tipT=0,lostTimer=0,wasChased=false,alertCool=0,hudT=0,climbedHigh=0,maxChase=0;
 const QUESTS=[
-  {text:'Vang 5 krekels met je tong',coins:15,init:()=>({n:PL.crickets}),done:q=>PL.crickets-q.n>=5},
-  {text:'Drink aan het water tot je dorst vol is',coins:10,done:()=>PL.thirst>=99&&PL.drinking},
-  {text:'Klim 6 meter hoog in een boom',coins:15,done:()=>PL.climb&&PL.climb.type==='tree'&&PL.climb.h>=6},
-  {text:'Vang een gouden krekel',coins:20,init:()=>({g:goldEaten}),done:q=>goldEaten>q.g},
-  {text:'Ontsnap aan een stroper die je achtervolgt',coins:20,init:()=>({e:escapes}),done:q=>escapes>q.e},
-  {text:'Bereik de top van de oude tempel',coins:30,done:()=>PL.pos.y>templeTop-.1&&Math.hypot(PL.pos.x-TEMPLE.x,PL.pos.z-TEMPLE.z)<4},
-  {text:'Word een volwassen gekko',coins:25,done:()=>PL.growth>=.8},
-  {text:'Overleef 4 minuten',coins:25,done:()=>PL.time>=240},
+  {i:0,coins:15,init:()=>({n:PL.crickets}),done:q=>PL.crickets-q.n>=5},
+  {i:1,coins:10,done:()=>PL.thirst>=99&&PL.drinking},
+  {i:2,coins:15,done:()=>PL.climb&&PL.climb.type==='tree'&&PL.climb.h>=6},
+  {i:3,coins:20,init:()=>({g:goldEaten}),done:q=>goldEaten>q.g},
+  {i:4,coins:20,init:()=>({e:escapes}),done:q=>escapes>q.e},
+  {i:5,coins:30,done:()=>PL.pos.y>templeTop-.1&&Math.hypot(PL.pos.x-TEMPLE.x,PL.pos.z-TEMPLE.z)<4},
+  {i:6,coins:25,done:()=>PL.growth>=.8},
+  {i:7,coins:25,done:()=>PL.time>=240},
 ];
 let goldEaten=0,escapes=0;
-const TIPS_KB=['Loop met <kbd>WASD</kbd> en kijk rond met de muis.','Zie je een krekel? <kbd>Klik</kbd> of druk <kbd>E</kbd> om hem met je tong te vangen. Eten geeft munten.',
-  'Dorst? Ga naar het water en houd <kbd>F</kbd> ingedrukt.','Loop tegen een boom of muur om te klimmen. Hoog in een boom kan een stroper je niet pakken.','<kbd>Shift</kbd> is sprinten, <kbd>Spatie</kbd> is springen. Verstop je in hoog gras of varens.'];
-const TIPS_TOUCH=['Loop met de joystick links en sleep rechts om rond te kijken.','Zie je een krekel? Tik op <kbd>Tong</kbd> om hem te vangen. Eten geeft munten.',
-  'Dorst? Ga naar het water en houd <kbd>Drink</kbd> ingedrukt.','Loop tegen een boom of muur om te klimmen. Hoog in een boom kan een stroper je niet pakken.','Gebruik <kbd>Sprint</kbd> om te ontsnappen. Verstop je in hoog gras of varens.'];
-
 function show(id,on){$(id).hidden=!on;}
 function setScreen(s){state=s;show('menu',s==='menu');show('shop',s==='shop');show('pause',s==='pause');show('over',s==='over');
   show('hud',s==='play'||s==='pause');show('touch',isTouch&&s==='play');if(s!=='play'&&document.pointerLockElement)document.exitPointerLock?.();}
@@ -1234,20 +1250,19 @@ function startGame(){
   measure('run',EV.runs<=10?'run'+EV.runs:'run11+','start');measure('mode',mode,'start');measure('skin',save.skin,'play');onboarding('start');
   setScreen('play');Poki.start();
 }
-function newQuest(){const q=QUESTS[questIdx%QUESTS.length];quest={...q,data:q.init?q.init():{}};$('questText').textContent=q.text+` (+${q.coins})`;}
+function newQuest(){const q=QUESTS[questIdx%QUESTS.length];quest={...q,data:q.init?q.init():{}};$('questText').textContent=L().quests[q.i]+` (+${q.coins})`;}
 function spawnPoacher(){const p=landSpot(PL.pos.x,PL.pos.z,42,70)||landSpot(0,0,20,100);if(!p)return;poachers.push(new Poacher(p.x,p.z));}
 function setPause(on){if(on&&state==='play'){setScreen('pause');Poki.stop();if(!document.hidden)measure('button','pause','interact');}else if(!on&&state==='pause'){setScreen('play');Poki.start();}}
 function gameOver(reason){if(PL.dead)return;PL.dead=true;Poki.stop();
-  measure('gameover',mode,reason);measure('gameover-time',mode,timeKey(PL.time));measure('gameover-stage',mode,stageName().toLowerCase());
+  measure('gameover',mode,reason);measure('gameover-time',mode,timeKey(PL.time));measure('gameover-stage',mode,stageKey());
   if(PL.revived)measure('revive',mode,'died-again');
-  const T={caught:['Gevangen!','Een stroper ving je met zijn net. Klim sneller een boom in of verstop je in het gras.'],
-    hunger:['Uitgehongerd','Je maag was leeg. Vang vaker krekels met je tong.'],thirst:['Uitgedroogd','Je had te veel dorst. Drink op tijd bij het water.']}[reason];
+  const T=L().over[reason];
   if(reason==='caught'){AU.sfx.caught();dropNet();}
   const prev=save.best[mode]||0;const nb=PL.time>prev;if(nb){save.best[mode]=Math.floor(PL.time);if(prev>0)measure('record',mode,'new');}
-  let unlockMsg='';if(mode==='master'&&PL.time>=300&&!save.owned.includes('koning')){save.owned.push('koning');measure('skin','koning','unlocked');unlockMsg=' Je hebt de Regenwoudkoning vrijgespeeld!';}
+  let unlockMsg='';if(mode==='master'&&PL.time>=300&&!save.owned.includes('koning')){save.owned.push('koning');measure('skin','koning','unlocked');unlockMsg=t('kingWon');}
   persist();
   setTimeout(()=>{$('overTitle').textContent=T[0];$('overText').textContent=T[1]+unlockMsg;$('rTime').textContent=fmtTime(PL.time);$('rCrickets').textContent=PL.crickets;$('rCoins').textContent='+'+PL.coins;
-    $('rBest').textContent=nb?'Nieuw record op '+CFG.name+'!':'Record '+CFG.name+': '+fmtTime(prev);
+    $('rBest').textContent=nb?t('newRecord',{mode:CFG.name}):t('recordMode',{mode:CFG.name,t:fmtTime(prev)});
     const canRevive=!PL.revived&&Poki.hasRewarded();$('reviveBtn').hidden=!canRevive;if(canRevive)measure('button','revive','visible');
     setScreen('over');measure('screen','gameover','visible');},reason==='caught'?1300:600);
 }
@@ -1272,7 +1287,7 @@ function floater(worldPos,text,cls=''){const v=worldPos.clone().project(camera);
    ===================================================================== */
 // playtime only counts while gameplay is active (not in menus, pause or ads)
 setInterval(()=>{if(state!=='play'||PL.dead||adBusy||document.hidden)return;EV.playSec++;const m=PLAY_MARKS[EV.mi];
-  if(m!==undefined&&EV.playSec>=m*60){EV.mi++;const mk='m'+m;measure('playtime',isNewPlayer?'new':'returning',mk);measure('progress',mk,stageName().toLowerCase());}},1000);
+  if(m!==undefined&&EV.playSec>=m*60){EV.mi++;const mk='m'+m;measure('playtime',isNewPlayer?'new':'returning',mk);measure('progress',mk,stageKey());}},1000);
 const camF=new V3(),camR=new V3(),move=new V3(),np=new V3(),tq=new THREE.Quaternion(),basis=new THREE.Matrix4();
 function orient(up,fwd,dt,k=12){_v.copy(fwd).addScaledVector(up,-fwd.dot(up));if(_v.lengthSq()<1e-6)_v.set(0,0,1);_v.normalize();_w.crossVectors(up,_v).normalize();
   basis.makeBasis(_w,up,_v);tq.setFromRotationMatrix(basis);gecko.root.quaternion.slerp(tq,1-Math.exp(-k*dt));}
@@ -1361,7 +1376,7 @@ function eatCricket(c){onboarding('first-cricket');if(c.gold)measure('cricket','
   const before=stageName();PL.growth=Math.min(1,PL.growth+(c.gold?.06:.03));
   const v=addCoins((c.gold?10:2)*CFG.coinMult*pk.coins);AU.sfx.eat();c.gold?AU.sfx.gold():AU.sfx.coin();if(c.gold)goldEaten++;
   floater(PL.pos.clone().add(_v.set(0,.25,0)),'+'+v,'');
-  if(stageName()!==before){AU.sfx.grow();measure('growth',stageName().toLowerCase(),'reached');measure('growth-time',stageName().toLowerCase(),timeKey(PL.time));floater(PL.pos.clone().add(_v.set(0,.5,0)),stageName()+'!','green');}
+  if(stageName()!==before){AU.sfx.grow();measure('growth',stageKey(),'reached');measure('growth-time',stageKey(),timeKey(PL.time));floater(PL.pos.clone().add(_v.set(0,.5,0)),stageName()+'!','green');}
   setTimeout(()=>{if(state==='play'||state==='pause')spawnCricket(c,PL.pos);},R(2500,6000));}
 function updateCrickets(dt){for(const c of crickets){if(!c.alive||(tongue.target===c&&tongue.t/tongue.dur>=.5))continue;
   const d=c.pos.distanceTo(PL.pos);
@@ -1495,15 +1510,15 @@ function updateHUD(dt){hudT-=dt;if(hudT>0)return;hudT=.1;
   setStat('health',PL.health,PL.maxHealth);setStat('hunger',PL.hunger);setStat('thirst',PL.thirst);setStat('stamina',PL.stamina);
   $('growthFill').style.width=(PL.growth*100)+'%';$('growthLabel').innerHTML='<b>'+stageName()+'</b>';
   $('hudCoins').textContent=save.coins;$('hudTime').textContent=fmtTime(PL.time);
-  const al=$('alert');if(PL.chased){al.hidden=false;al.className='';al.textContent='Een stroper zit achter je aan! Klim omhoog of verstop je';}
-  else if(PL.hidden&&PL.sus){al.hidden=false;al.className='hidden-status';al.textContent='Verstopt, blijf stil';}
-  else if(PL.sus){al.hidden=false;al.className='';al.textContent='Een stroper hoort iets...';}else al.hidden=true;
-  let pr='';if(PL.canDrink&&PL.thirst<97&&!PL.drinking)pr=isTouch?'Houd <kbd>Drink</kbd> ingedrukt om te drinken':'Houd <kbd>F</kbd> ingedrukt om te drinken';
-  else if(PL.drinking)pr='Drinken...';else if(PL.climb&&PL.climb.type==='tree'&&PL.climb.h>=PL.climb.t.climbMax-.05)pr='Veilig in de boom. Spring met <kbd>'+(isTouch?'Spring':'Spatie')+'</kbd> om los te laten';
+  const al=$('alert');if(PL.chased){al.hidden=false;al.className='';al.textContent=t('alertChased');}
+  else if(PL.hidden&&PL.sus){al.hidden=false;al.className='hidden-status';al.textContent=t('alertHidden');}
+  else if(PL.sus){al.hidden=false;al.className='';al.textContent=t('alertSus');}else al.hidden=true;
+  let pr='';if(PL.canDrink&&PL.thirst<97&&!PL.drinking)pr=t(isTouch?'prDrinkTouch':'prDrinkKb');
+  else if(PL.drinking)pr=t('prDrinking');else if(PL.climb&&PL.climb.type==='tree'&&PL.climb.h>=PL.climb.t.climbMax-.05)pr=t(isTouch?'prSafeTouch':'prSafeKb');
   if(pr!==promptKey){promptKey=pr;$('prompt').hidden=!pr;$('prompt').innerHTML=pr;}
   $('thirstFx').style.opacity=PL.thirst<20||PL.hunger<20?.9:0;
   drawMinimap();}
-function updateTips(dt){if(tipIdx>=5){$('tip').style.opacity=0;return;}tipT-=dt;if(tipT<=0){const T=isTouch?TIPS_TOUCH:TIPS_KB;$('tip').innerHTML=T[tipIdx];$('tip').style.opacity=1;tipIdx++;tipT=7;
+function updateTips(dt){if(tipIdx>=5){$('tip').style.opacity=0;return;}tipT-=dt;if(tipT<=0){const T=isTouch?L().tipsTouch:L().tipsKb;$('tip').innerHTML=T[tipIdx];$('tip').style.opacity=1;tipIdx++;tipT=7;
   if(tipIdx>=5){setTimeout(()=>$('tip').style.opacity=0,7000);save.tutorial=true;persist();}}}
 function updateTargetRing(){const ring=$('targetRing');if(state!=='play'||tongue.t>=0){ring.hidden=true;return;}const t=findTarget();if(!t){ring.hidden=true;return;}
   const v=t.pos.clone().add(_v.set(0,.03,0)).project(camera);if(v.z>1){ring.hidden=true;return;}ring.hidden=false;ring.style.left=((v.x*.5+.5)*innerWidth)+'px';ring.style.top=((-v.y*.5+.5)*innerHeight)+'px';}
@@ -1522,7 +1537,7 @@ function updateGame(dt){
   else if(PL.hunger>55&&PL.thirst>55)PL.health=Math.min(PL.maxHealth,PL.health+dt*1.5);
   updatePoachers(dt);
   nextSpawn-=dt;if(nextSpawn<=0){nextSpawn=CFG.every;if(poachers.length<CFG.max){spawnPoacher();}}
-  if(quest&&quest.done(quest.data)){measure('quest','q'+(questIdx%QUESTS.length+1),'complete');if(questIdx===0)onboarding('first-quest');const v=addCoins(quest.coins);AU.sfx.quest();floater(PL.pos.clone().add(_v.set(0,.45,0)),'Opdracht klaar! +'+v,'green');questIdx++;newQuest();}
+  if(quest&&quest.done(quest.data)){measure('quest','q'+(questIdx%QUESTS.length+1),'complete');if(questIdx===0)onboarding('first-quest');const v=addCoins(quest.coins);AU.sfx.quest();floater(PL.pos.clone().add(_v.set(0,.45,0)),t('questDone',{v}),'green');questIdx++;newQuest();}
   updateTips(dt);updateHUD(dt);
 }
 const clock=new THREE.Clock();let time=0;
@@ -1564,12 +1579,12 @@ function buildComposer(){const pr=renderer.getPixelRatio();
 buildComposer();
 /* adaptive quality: drop the most expensive effects when the frame rate stays low */
 let perfT=0,perfN=0,perfAcc=0,resScale=1,perfSkip=3,perfGood=0;
-const GFX=['Laag','Hoog','Ultra'];
+const GFX=['Laag','Hoog','Ultra']; // stable keys for measuring; labels come from the language table
 function applyQuality(q){QUALITY=clamp(q,0,2);if(gtao)gtao.enabled=QUALITY>=2;if(waterMirror){waterMirror.visible=QUALITY>=2;waterSimple.visible=QUALITY<2;}
   bloom.enabled=QUALITY>=1;grade.uniforms.uShafts.value=QUALITY>=1?1:0;nearGrass.geo.instanceCount=Math.round(nearGrass.N*[.45,.75,1][QUALITY]);
   const pr=Math.min(devicePixelRatio,[1,1.25,LOW?1.25:1.75][QUALITY])*resScale;renderer.setPixelRatio(pr);composer.setPixelRatio(pr);
   const sm=[1024,2048,LOW?2048:4096][QUALITY];if(sun.shadow.mapSize.x!==sm){sun.shadow.mapSize.set(sm,sm);if(sun.shadow.map){sun.shadow.map.dispose();sun.shadow.map=null;}}
-  onResize();for(const id of ['gfxBtn','gfxBtn2'])$(id).textContent='Grafiek: '+GFX[QUALITY];}
+  onResize();for(const id of ['gfxBtn','gfxBtn2'])$(id).textContent=t('gfx')+': '+L().gfxQ[QUALITY];}
 for(const id of ['gfxBtn','gfxBtn2'])$(id).onclick=()=>{AU.init();AU.sfx.click();const q=(QUALITY+1)%3;save.gfx=q;measure('gfx','select',GFX[q].toLowerCase());persist();resScale=1;applyQuality(q);perfT=perfAcc=perfN=0;perfSkip=3;};
 function setRes(){const pr=Math.min(devicePixelRatio,[1,1.25,LOW?1.25:1.75][QUALITY])*resScale;renderer.setPixelRatio(pr);composer.setPixelRatio(pr);onResize();}
 function adaptQuality(dt){if(perfSkip>0){perfSkip-=dt;return;}perfAcc+=dt;perfN++;perfT+=dt;if(perfT<2.5)return;const avg=perfAcc/perfN;perfT=perfAcc=perfN=0;
@@ -1604,19 +1619,29 @@ const _sr=new V3(),_su=new V3();
    Menus
    ===================================================================== */
 function renderModes(){const el=$('modes');el.innerHTML='';for(const [k,m] of Object.entries(MODES)){const b=document.createElement('button');b.className='modeBtn';b.dataset.mode=k;b.setAttribute('aria-pressed',k===mode);
-  const best=save.best[k];b.innerHTML=`<b>${m.name}</b><span>${m.desc}</span><em>${best?'Record '+fmtTime(best):'x'+m.coinMult+' munten'}</em>`;
+  const best=save.best[k];b.innerHTML=`<b>${m.name}</b><span>${m.desc}</span><em>${best?t('record',{t:fmtTime(best)}):t('coinMult',{m:m.coinMult})}</em>`;
   b.onclick=()=>{mode=k;save.mode=k;persist();measure('mode',k,'selected');AU.init();AU.sfx.click();renderModes();};el.appendChild(b);}
-  $('menuCoins').textContent=save.coins;const best=save.best[mode];$('menuBest').textContent=best?'Record '+MODES[mode].name+': '+fmtTime(best):'';}
+  $('menuCoins').textContent=save.coins;const best=save.best[mode];$('menuBest').textContent=best?t('recordMode',{mode:MODES[mode].name,t:fmtTime(best)}):'';}
 let shopSel=save.skin;
+function applyLang(l){lang=TR[l]?l:'en';document.documentElement.lang=lang;const T=L();
+  for(const k in MODES){MODES[k].name=T.modes[k][0];MODES[k].desc=T.modes[k][1];}
+  for(const s of SKINS){s.name=T.skins[s.id][0];s.perk=T.skins[s.id][1];if(s.id==='koning')s.unlock=T.kingUnlock;}
+  document.querySelectorAll('[data-i18n]').forEach(el=>el.textContent=t(el.dataset.i18n));
+  document.querySelectorAll('[data-i18n-html]').forEach(el=>el.innerHTML=t(el.dataset.i18nHtml));
+  document.querySelectorAll('[data-i18n-aria]').forEach(el=>el.setAttribute('aria-label',t(el.dataset.i18nAria)));
+  for(const id of ['gfxBtn','gfxBtn2'])$(id).textContent=t('gfx')+': '+T.gfxQ[QUALITY];
+  $('langSel').value=lang;$('hudMode').textContent=CFG.name;renderModes();if(state==='shop')renderShop();}
+{const sel=$('langSel');for(const [k,n] of Object.entries(LANGS)){const o=document.createElement('option');o.value=k;o.textContent=n;sel.appendChild(o);}
+  sel.onchange=()=>{save.lang=sel.value;persist();applyLang(sel.value);measure('lang',sel.value,'selected');};}
 function renderShop(){const el=$('skins');el.innerHTML='';$('shopCoins').textContent=save.coins;
   for(const s of SKINS){const owned=save.owned.includes(s.id);const b=document.createElement('button');b.className='skin';b.setAttribute('aria-pressed',s.id===shopSel);
-    const status=owned?(save.skin===s.id?'<i class="owned">Gekozen</i>':'<i class="owned">In bezit</i>'):s.price<0?`<i class="lock">${s.unlock}</i>`:`<i>${s.price} munten</i>`;
+    const status=owned?(save.skin===s.id?`<i class="owned">${t('shopChosen')}</i>`:`<i class="owned">${t('shopOwned')}</i>`):s.price<0?`<i class="lock">${s.unlock}</i>`:`<i>${t('shopPrice',{p:s.price})}</i>`;
     b.innerHTML=`<div class="sw" style="background:linear-gradient(135deg,${s.dorsal},${s.flank} 55%,${s.belly})"></div><b>${s.name}</b><span>${s.perk}</span>${status}`;
     b.onclick=()=>{shopSel=s.id;AU.sfx.click();previewSkin(s);renderShop();};el.appendChild(b);}
   const s=skinById(shopSel),owned=save.owned.includes(s.id),act=$('shopAct');$('shopMsg').textContent='';
-  if(owned){act.textContent=save.skin===s.id?'Gekozen':'Kies deze gekko';act.disabled=save.skin===s.id;}
-  else if(s.price<0){act.textContent='Nog op slot';act.disabled=true;$('shopMsg').textContent='Vrijspelen: '+s.unlock+'.';}
-  else{act.textContent='Koop voor '+s.price;act.disabled=save.coins<s.price;if(save.coins<s.price)$('shopMsg').textContent=`Je hebt nog ${s.price-save.coins} munten nodig. Vang krekels om munten te verdienen.`;}}
+  if(owned){act.textContent=save.skin===s.id?t('shopChosen'):t('shopSelect');act.disabled=save.skin===s.id;}
+  else if(s.price<0){act.textContent=t('shopLocked');act.disabled=true;$('shopMsg').textContent=t('shopUnlock',{u:s.unlock});}
+  else{act.textContent=t('shopBuy',{p:s.price});act.disabled=save.coins<s.price;if(save.coins<s.price)$('shopMsg').textContent=t('shopNeed',{n:s.price-save.coins});}}
 function previewSkin(s){gecko.setMaterial(skinMaterial(s),s.eye,s.crest);}
 $('shopAct').onclick=()=>{const s=skinById(shopSel);if(save.owned.includes(s.id)){save.skin=s.id;}else if(s.price>=0&&save.coins>=s.price){save.coins-=s.price;save.owned.push(s.id);measure('skin',s.id,'bought');save.skin=s.id;AU.sfx.gold();}
   persist();curSkin=skinById(save.skin);renderShop();};
@@ -1638,13 +1663,13 @@ addEventListener('resize',onResize);
 /* =====================================================================
    Boot
    ===================================================================== */
-applyQuality(QUALITY);placeGeckoAtSpawn();camPos.copy(PL.pos).add(_v.set(2,1,2));setupCrickets(14);renderModes();
+applyLang(save.lang||detectLang());applyQuality(QUALITY);placeGeckoAtSpawn();camPos.copy(PL.pos).add(_v.set(2,1,2));setupCrickets(14);renderModes();
 {const wp=new Poacher(SPAWN.x+2,SPAWN.z+2);const ws=waterSimple&&waterSimple.visible,wm=waterMirror&&waterMirror.visible;if(waterSimple)waterSimple.visible=true;if(waterMirror)waterMirror.visible=true;
  for(const f of farTiles)f.m.visible=true;renderer.compile(scene,camera);renderer.shadowMap.needsUpdate=true;
  if(waterSimple)waterSimple.visible=ws;if(waterMirror)waterMirror.visible=wm;wp.dispose();}
 setScreen('menu');requestAnimationFrame(frame);
 setTimeout(()=>{$('loading').style.opacity=0;setTimeout(()=>$('loading').remove(),650);},150);
-pokiInit.then(()=>{Poki.loaded();measure('screen','menu','visible');onboarding('loaded');});
+pokiInit.then(()=>{if(!save.lang&&detectLang()!==lang)applyLang(detectLang());measure('lang',lang,'start');Poki.loaded();measure('screen','menu','visible');onboarding('loaded');});
 window.__gekko={PL,renderer,scene,updatePlayer,treeRadius,poachers,crickets,trees,boxes,rocks,startGame,setMode:m=>{mode=m;},get state(){return state;},camera,gecko,keys,get camYaw(){return camYaw;},set camYaw(v){camYaw=v;}};
 </script>
 </body>
