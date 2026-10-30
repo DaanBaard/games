@@ -536,7 +536,7 @@ const FIELD_W = 124, FIELD_H = 86;
 const BASE_SPEED = 250;
 const SPRING_EVERY = 2.0, SPRING_MAX = 5, PUFF_MAX = 42;
 const SKEY = 'drizzlings_save_v1'; // old key kept on purpose so existing progress survives the rename
-const VERSION = '0.9';
+const VERSION = '0.10';
 
 const fullW = t => Math.pow(2, t - 1);
 const cloudR = w => 18 + 7 * (Math.log2(Math.max(w, 0.2)) + 1);
@@ -544,7 +544,7 @@ const tierOf = w => Math.max(1, Math.ceil(Math.log2(Math.max(w, 1e-6)) - 1e-6) +
 const isFull = c => c.water >= fullW(c.tier) - 1e-6;
 
 // ---------- state
-const S = { coins: 0, built: new Set(), flags: { collected: 0, rained: 0, harvested: 0, merged: 0 }, zone: 0, time: 0, boost: 0, goldT: 55, stash: {}, miss: [], mi: 0, stars: 0, hat: -1, w: 0, pw: {}, orbT: 0 };
+const S = { coins: 0, built: new Set(), flags: { collected: 0, rained: 0, harvested: 0, merged: 0 }, zone: 0, time: 0, boost: 0, goldT: 55, stash: {}, miss: [], mi: 0, stars: 0, hat: -1, w: 0, pw: {}, orbT: 0, zs: 0 }; // zs: play time (S.time) at which the current island started
 const P = { x: 0, y: 30, vx: 0, vy: 0, r: 26, look: 0, squash: 0, hover: 0, fullCd: 0, face: 1, flap: 0, blink: 0, nextBlink: 2 };
 let fields = [], springs = [], puffs = [], trail = [], bees = [], hives = [], parts = [], floaters = [], coinFx = [], toasts = [];
 let rainers = [], homes = [], orbs = []; // v0.9: rain helpers (UFO, toucan), helper homes, power-up orbs
@@ -566,6 +566,7 @@ const SDK_STUB = {
   commercialBreak: () => Promise.resolve(), rewardedBreak: () => Promise.resolve(false), measure() {}
 };
 let pokiLive = false;
+const EVQ = []; // v0.10: game events from before the SDK is live (e.g. a slow mobile load) wait here instead of being dropped
 const poki = () => (pokiLive && window.PokiSDK) || SDK_STUB;
 const SDK = {
   playing: false, ad: false,
@@ -583,17 +584,38 @@ const SDK = {
     let p; try { p = poki().rewardedBreak(() => AU.setAdMute(true)); } catch (e) { p = null; }
     return Promise.resolve(p).catch(() => false).then(ok => { this.breakEnd(); return !!ok; });
   },
-  measure(c, w, a) { try { const k = poki(); if (k.measure) k.measure(c, w, a); } catch (e) {} }
+  measure(c, w, a) {
+    const clean = v => String(v).replace(/[\/^]/g, '-').slice(0, 60);
+    c = clean(c); w = clean(w); a = clean(a);
+    if (!pokiLive) { if (EVQ.length < 80) EVQ.push([c, w, a]); return; }
+    try { const k = poki(); if (k.measure) k.measure(c, w, a); } catch (e) {}
+  },
+  flush() { EVQ.splice(0).forEach(e => this.measure(e[0], e[1], e[2])); }
 };
 
 // ---------- Game Events (Poki measure) — same approach as Sprout Squad:
 // progress funnels (start/complete), time checkpoints to see where players stop,
 // visible/interact pairs per feature, and one-off "reached" milestones.
-const EV = { once: new Set(), sessT: 0, mi: 0, isNew: true };
+const EV = { once: new Set(), sessT: 0, mi: 0, isNew: true, lastDay: 0 };
 const islandKey = z => 'island' + (z + 1);
 const TIME_MARKS = [1, 2, 3, 4, 5, 7, 10, 15, 20, 30, 45, 60, 90, 120];
 function ev(c, w, a) { SDK.measure(c, w, a); }
 function evOnce(c, w, a) { const k = c + '|' + w + '|' + a; if (EV.once.has(k)) return; EV.once.add(k); SDK.measure(c, w, a); }
+// v0.10: duration buckets ('lt5m' = under 5 minutes), a per-version funnel so a release can be compared with the
+// previous one, and island/world timing on play time (S.time), so it also adds up over several visits
+const MIN_KEYS = [1, 2, 3, 5, 8, 12, 20, 30, 45, 60, 90, 120];
+function minKey(sec) { const m = sec / 60; for (const k of MIN_KEYS) if (m < k) return 'lt' + k + 'm'; return '120m-plus'; }
+function vMark(what) { evOnce('version', 'v' + VERSION, what); }
+function islandComplete(z) {
+  ev('island', islandKey(z), 'complete');
+  if (S.zs !== null) ev('island-time', islandKey(z), minKey(S.time - S.zs));   // how long this island took
+  ev('island-reach', islandKey(z), minKey(S.time));                            // total play time to finish it
+  S.zs = S.time;
+}
+function worldComplete(z) {
+  const id = WORLDS[worldOf(z)].id;
+  ev('world', id, 'complete'); ev('world-time', id, minKey(S.time));
+}
 function trackTime(dt) {
   if (!started) return;
   EV.sessT += dt;
@@ -603,6 +625,7 @@ function trackTime(dt) {
     ev('time', EV.isNew ? 'new' : 'returning', 'm' + m);      // playtime histogram, first visit vs. returning
     ev('progress', 'm' + m, islandKey(S.zone));                 // which island players are on at minute m
     ev('builds', 'm' + m, 'b' + Math.min(S.built.size, 150));    // how far they built by minute m
+    if ([1, 3, 5, 10, 20, 30].includes(m)) vMark('m' + m);
   }
 }
 function tutStep(step) {
@@ -924,7 +947,7 @@ cv.addEventListener('pointermove', e => {
 });
 const endJoy = e => { if (e.pointerId === joy.id) { joy.active = false; joy.vx = joy.vy = 0; } pressedBtn = null; };
 cv.addEventListener('pointerup', endJoy); cv.addEventListener('pointercancel', endJoy);
-document.addEventListener('visibilitychange', () => { AU.apply(); if (document.hidden && started && !modal && !SDK.ad) { ev('pause', 'tab', 'hidden'); openModal('pause'); } });
+document.addEventListener('visibilitychange', () => { AU.apply(); if (document.hidden && started) ev('leave', islandKey(S.zone), minKey(EV.sessT)); if (document.hidden && started && !modal && !SDK.ad) { ev('pause', 'tab', 'hidden'); openModal('pause'); } });
 
 function readInput() {
   let x = 0, y = 0;
@@ -940,7 +963,7 @@ function readInput() {
 function onFirstInput() {
   if (started || !bootDone) return;
   started = true; SDK.start();
-  ev('session', EV.isNew ? 'new' : 'returning', 'start');
+  ev('session', EV.isNew ? 'new' : 'returning', 'start'); vMark('start');
   tutStep('start');
   ev('island', islandKey(S.zone), 'start');
 }
@@ -1113,19 +1136,19 @@ function build(p) {
   floater(p.x, p.y - 70, label, '#fff', 30);
   if (islandDone(p.z)) { celebrate(T('islandDone'), T('z' + p.z)); ev('island', islandKey(p.z), 'all-built'); }
   else toast(praise(), '', '#ffe36b');
-  ev('build', p.id, 'interact');
+  ev('build', p.id, 'interact'); ev('build-type', p.type, islandKey(p.z));
   tutStep('build'); tutStep('complete');
   if (p.type === 'bridge') {
-    ev('island', islandKey(p.z), 'complete');
+    islandComplete(p.z);
     ev('island', islandKey(p.to), 'start');
     setTimeout(() => { if (!modal) openModal('zone', { zone: p.to }); else pendingZone = p.to; }, 1100);
   }
   if (p.type === 'fountain' || p.type === 'gate') {
     // world finale: after the cheer Pip launches to the next world
-    ev('island', islandKey(p.z), 'complete'); ev('milestone', p.type, 'reached');
+    islandComplete(p.z); worldComplete(p.z); ev('milestone', p.type, 'reached');
     pendingTrans = worldOf(p.to); transAt = S.time + 1.6;
   }
-  if (p.type === 'tree') { ev('island', islandKey(p.z), 'complete'); ev('milestone', 'tree', 'reached'); setTimeout(() => openModal('final'), 1200); }
+  if (p.type === 'tree') { islandComplete(p.z); worldComplete(p.z); ev('milestone', 'tree', 'reached'); vMark('finished'); setTimeout(() => openModal('final'), 1200); }
   save();
 }
 let pendingZone = -1;
@@ -1204,7 +1227,7 @@ function startTrans(to) {
   const near = src && d2(src.x, src.y, P.x, P.y) < 500 * 500;
   trans = { t: 0, to, from: S.w, sx: near ? src.x : P.x, sy: near ? src.y : P.y, moved: false, landed: false };
   SDK.stop(); keys.clear(); joy.active = false; AU.launch(); shake(6);
-  ev('world', WORLDS[to].id, 'start');
+  ev('world', WORLDS[to].id, 'start'); ev('island', islandKey(WORLDS[to].z0), 'start');
 }
 function updateTrans(dt) {
   const tr = trans; tr.t += dt;
@@ -3053,6 +3076,7 @@ function openModal(type, data) {
   if (modal) return;
   modal = Object.assign({ type, t: 0, focus: 0, kb: !isTouch, btns: [] }, data || {});
   SDK.stop(); keys.clear(); joy.active = false;
+  ev('screen', type, 'visible');
   if (type === 'zone') { modal.bonus = Math.round(Math.max(60, incomeRate * 60) + 40 * (data.zone || 1)); ev('rewarded', 'island-bonus', 'visible'); }
 }
 // menus work with the keyboard too: arrows / WASD move the focus, Enter or Space presses the focused button
@@ -3106,7 +3130,7 @@ function drawModal() {
     button(bx, py + 230 * u, bw, bh, T('nothanks'), COL.blue, COL.blueLip, () => { closeModal(); SDK.start(); });
     button(bx, py + 320 * u, bw, bh, T('watch'), COL.purple, COL.purpleLip, () => {
       ev('rewarded', 'double-coins', 'interact');
-      SDK.rewarded().then(ok => { if (ok) { S.boost = 90; toast(T('x2title'), T('x2sub'), '#ffe36b'); AU.lucky(); } closeModal(); SDK.start(); });
+      SDK.rewarded().then(ok => { ev('rewarded', 'double-coins', ok ? 'success' : 'fail'); if (ok) { S.boost = 90; toast(T('x2title'), T('x2sub'), '#ffe36b'); AU.lucky(); } closeModal(); SDK.start(); });
     }, { video: true });
     modal.def = () => { closeModal(); SDK.start(); };
   } else if (modal.type === 'zone') {
@@ -3121,7 +3145,7 @@ function drawModal() {
     button(bx, py + 290 * u, bw, bh, T('cont'), COL.orange, COL.orangeLip, () => { closeModal(); SDK.commercial().then(() => SDK.start()); });
     button(bx + bw * 0.08, py + 375 * u, bw * 0.84, bh * 0.82, T('bonus') + ' +' + fmt(modal.bonus), COL.purple, COL.purpleLip, () => {
       const b = modal.bonus; ev('rewarded', 'island-bonus', 'interact');
-      SDK.rewarded().then(ok => { if (ok) { spawnCoins(P.x, P.y - 40, b, 'player'); burst(P.x, P.y, 30, 'confetti', ['#ffd23f', '#ff6fa8', '#4cc3ff'], 300, 1.2); AU.lucky(); } closeModal(); SDK.start(); });
+      SDK.rewarded().then(ok => { ev('rewarded', 'island-bonus', ok ? 'success' : 'fail'); if (ok) { spawnCoins(P.x, P.y - 40, b, 'player'); burst(P.x, P.y, 30, 'confetti', ['#ffd23f', '#ff6fa8', '#4cc3ff'], 300, 1.2); AU.lucky(); } closeModal(); SDK.start(); });
     }, { video: true, size: 26 * u });
     modal.def = () => { closeModal(); SDK.commercial().then(() => SDK.start()); };
   } else if (modal.type === 'final') {
@@ -3146,7 +3170,7 @@ function drawModal() {
 S.paidMap = {};
 function save() {
   try {
-    localStorage.setItem(SKEY, JSON.stringify({ v: 1, c: S.coins, b: [...S.built], p: S.paidMap, f: S.flags, z: S.zone, t: S.time, st: S.stash, g: S.goldT, px: P.x, py: P.y, ms: S.miss, mi: S.mi, sr: S.stars, h: S.hat, w: S.w, pw: S.pw, ot: S.orbT }));
+    localStorage.setItem(SKEY, JSON.stringify({ v: 1, c: S.coins, b: [...S.built], p: S.paidMap, f: S.flags, z: S.zone, t: S.time, st: S.stash, g: S.goldT, px: P.x, py: P.y, ms: S.miss, mi: S.mi, sr: S.stars, h: S.hat, w: S.w, pw: S.pw, ot: S.orbT, zs: S.zs, day: Math.floor(Date.now() / 864e5) }));
   } catch (e) {}
 }
 function saveSettings() { try { localStorage.setItem(SKEY + '_s', JSON.stringify({ on: AU.on, m: AU.music })); } catch (e) {} }
@@ -3165,6 +3189,7 @@ function load() {
     S.miss = Array.isArray(d.ms) ? d.ms.filter(m => m && M_TYPES.includes(m.t)) : []; S.mi = d.mi || 0; S.stars = d.sr || 0;
     S.hat = typeof d.h === 'number' ? Math.min(d.h, hatsOwned() - 1) : -1;
     S.w = d.w || 0; S.pw = d.pw && typeof d.pw === 'object' ? d.pw : {}; S.orbT = d.ot || 0;
+    S.zs = typeof d.zs === 'number' ? d.zs : null; EV.lastDay = d.day || 0; // saves from before v0.10: island start unknown
     return S.built.size > 0 || S.flags.harvested > 0;
   } catch (e) { return false; }
 }
@@ -3174,6 +3199,11 @@ window.addEventListener('pagehide', save);
 function boot() {
   const had = load();
   EV.isNew = !had;
+  ev('session', had ? 'returning' : 'new', 'loaded'); vMark('load');
+  if (had && EV.lastDay) {
+    const d = Math.floor(Date.now() / 864e5) - EV.lastDay;
+    ev('session', 'return', d <= 0 ? 'sameday' : d === 1 ? 'day1' : d <= 3 ? 'day2-3' : d <= 7 ? 'day4-7' : 'day8plus');
+  }
   // replay saved builds in pad order so zones, springs, fields and hives come back correctly
   const keep = new Set(S.built); S.built = new Set(); S.zone = 0;
   resetWorld();
@@ -3221,7 +3251,7 @@ function startGame() {
     if (!ok || !window.PokiSDK) return; // offline, ad blocker or own site: the game stays fully playable, rewards are never granted
     let p; try { p = PokiSDK.init(); } catch (e) { p = null; }
     return Promise.resolve(p).catch(() => {}).then(() => {
-      pokiLive = true;
+      pokiLive = true; SDK.flush();
       // SDK arrived after the game had already started: report what it missed
       if (bootDone) { try { PokiSDK.gameLoadingFinished(); if (SDK.playing) PokiSDK.gameplayStart(); } catch (e) {} }
     });
