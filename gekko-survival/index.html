@@ -1,8 +1,26 @@
-<!doctype html><html lang="nl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"><title>Gekko Survival</title></head><body>
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <title>Gekko Survival</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lilita+One&family=Nunito:wght@600;700;800;900&display=swap">
+<script>
+/* Poki SDK async laden. Niet op de eigen gamesite (github.io): daar meldt de SDK
+   "unauthorized hosting" en mislukken zijn verzoeken. */
+window.__pokiReady = new Promise(function (res) {
+  if (/(^|\.)github\.io$/i.test(location.hostname)) { res(false); return; }
+  var s = document.createElement('script'); s.src = 'https://game-cdn.poki.com/scripts/v2/poki-sdk.js'; s.async = true;
+  s.onload = function () { res(true); }; s.onerror = function () { res(false); }; setTimeout(function () { res(false); }, 6000);
+  document.head.appendChild(s);
+});
+</script>
+<style>
+/* fonts ship with the game (no external requests): Lilita One and Nunito, SIL Open Font License */
+@font-face{font-family:"Lilita One";font-style:normal;font-weight:400;font-display:swap;src:url(lib/fonts/lilita-one-latin.woff2) format("woff2")}
+@font-face{font-family:"Nunito";font-style:normal;font-weight:200 1000;font-display:swap;src:url(lib/fonts/nunito-latin.woff2) format("woff2")}
+</style>
+</head>
+<body>
 <style>
 /* Jungle HUD: dark canopy-glass panels over a full-bleed 3D scene. One lime accent, coin gold, danger red. Single dark look by design. */
 :root{
@@ -93,6 +111,8 @@ button:focus-visible{outline:3px solid var(--leaf);outline-offset:2px}
 .coinsBig{display:inline-flex;align-items:center;gap:6px;font-family:var(--display);font-size:22px;color:var(--coin)}
 .coinsBig svg{width:22px;height:22px}
 .ghost.gfx{padding:8px 12px;font-size:13px;border-radius:12px}
+.revive{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;margin:0 0 10px;background:var(--coin);color:#2a1d00}
+.revive[hidden]{display:none}.revive svg{width:22px;height:22px}.revive small{font-weight:700;opacity:.75}
 .ver{margin-left:auto;font-size:11px;opacity:.6}
 
 #shop{justify-content:flex-end;align-items:stretch;background:linear-gradient(270deg,rgba(6,17,10,.9) 0%,rgba(6,17,10,.6) 45%,transparent 70%)}
@@ -197,7 +217,7 @@ button:focus-visible{outline:3px solid var(--leaf);outline-offset:2px}
         <button class="play" id="playBtn">Spelen</button>
         <button class="ghost" id="shopBtn"><svg viewBox="0 0 24 24"><path d="M4 15c3-1 4-5 8-5 3 0 4 2 7 1M7 15l-1 3M10 13.5l1 4M15 11l1 4M18 11.5l2 2" stroke="#b9e44f" stroke-width="2" fill="none" stroke-linecap="round"/><circle cx="6" cy="14" r="1" fill="#b9e44f"/></svg>Gekko's</button>
       </div>
-      <div class="menuFoot"><span class="coinsBig"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="#ffc93c"/><circle cx="12" cy="12" r="7" fill="none" stroke="#c98a12" stroke-width="1.6"/></svg><span id="menuCoins">0</span></span><span id="menuBest"></span><button class="ghost gfx" id="gfxBtn">Grafiek</button><span class="ver">v1.0</span></div>
+      <div class="menuFoot"><span class="coinsBig"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="#ffc93c"/><circle cx="12" cy="12" r="7" fill="none" stroke="#c98a12" stroke-width="1.6"/></svg><span id="menuCoins">0</span></span><span id="menuBest"></span><button class="ghost gfx" id="gfxBtn">Grafiek</button><span class="ver">v1.1</span></div>
       <div class="keys"><span><kbd>WASD</kbd> lopen</span><span><kbd>Muis</kbd> kijken</span><span><kbd>Shift</kbd> sprinten</span><span><kbd>Spatie</kbd> springen</span><span><kbd>Klik</kbd>/<kbd>E</kbd> tong</span><span><kbd>F</kbd> drinken</span></div>
     </div>
   </div>
@@ -230,6 +250,7 @@ button:focus-visible{outline:3px solid var(--leaf);outline-offset:2px}
         <div class="res coin"><b id="rCoins">0</b><span>Munten</span></div>
       </div>
       <div class="newbest" id="rBest"></div>
+      <button class="play revive" id="reviveBtn" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="5" width="20" height="14" rx="3" fill="none" stroke="currentColor" stroke-width="2"/><path d="M10 9l5 3-5 3z" fill="currentColor"/></svg>Nog een kans <small>(reclame)</small></button>
       <div class="row"><button class="play" id="againBtn">Opnieuw</button><button class="ghost" id="menuBtn">Menu</button></div>
     </div>
   </div>
@@ -237,20 +258,9 @@ button:focus-visible{outline:3px solid var(--leaf);outline-offset:2px}
   <div id="loading"><div>Gekko Survival<div class="bar"><i></i></div></div></div>
 </div>
 
-<script type="importmap">
-{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"}}
-</script>
 <script type="module">
-import * as THREE from 'three';
-import { Sky } from 'three/addons/objects/Sky.js';
-import { Reflector } from 'three/addons/objects/Reflector.js';
-import { mergeGeometries, mergeVertices } from 'three/addons/utils/BufferGeometryUtils.js';
-import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
-import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
-import { GTAOPass } from 'three/addons/postprocessing/GTAOPass.js';
-import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
-import { ShaderPass } from 'three/addons/postprocessing/ShaderPass.js';
-import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
+// three.js r170 and the addons used below, bundled into lib/three-bundle.js (no CDN, works offline on Poki)
+import { THREE, Sky, Reflector, mergeGeometries, mergeVertices, EffectComposer, RenderPass, GTAOPass, UnrealBloomPass, ShaderPass, OutputPass } from './lib/three-bundle.js';
 
 /* =====================================================================
    Helpers
@@ -281,13 +291,31 @@ let save={coins:0,owned:['dag'],skin:'dag',best:{},mode:'easy',tutorial:false,mu
 try{const s=JSON.parse(localStorage.getItem(SAVE_KEY));if(s&&typeof s==='object')save={...save,...s};}catch(e){}
 function persist(){try{localStorage.setItem(SAVE_KEY,JSON.stringify(save));}catch(e){}}
 
-/* Poki SDK hooks: only active when the game runs on Poki with the SDK loaded */
-const Poki={
-  start(){try{window.PokiSDK?.gameplayStart();}catch(e){}},
-  stop(){try{window.PokiSDK?.gameplayStop();}catch(e){}},
-  loaded(){try{window.PokiSDK?.gameLoadingFinished();}catch(e){}},
-  async brk(){try{if(window.PokiSDK)await window.PokiSDK.commercialBreak();}catch(e){}},
+/* Poki SDK. Every call is guarded so the game also runs without the SDK (own site, local preview).
+   gameplayStart/Stop are only sent on a real change; during ads the sound is muted and input is ignored. */
+const sdk=()=>window.PokiSDK;
+let adBusy=false;
+const Poki={playing:false,
+  init(){return Promise.resolve(window.__pokiReady).catch(()=>false).then(()=>{try{if(sdk()?.init)return Promise.resolve(sdk().init()).catch(()=>{});}catch(e){}});},
+  start(){if(this.playing)return;this.playing=true;try{sdk()?.gameplayStart();}catch(e){}},
+  stop(){if(!this.playing)return;this.playing=false;try{sdk()?.gameplayStop();}catch(e){}},
+  loaded(){try{sdk()?.gameLoadingFinished();}catch(e){}},
+  hasRewarded(){return typeof sdk()?.rewardedBreak==='function';},
+  async brk(){if(!sdk()?.commercialBreak)return;this.stop();adBusy=true;AU.duck(true);try{await sdk().commercialBreak(()=>{});}catch(e){}adBusy=false;AU.duck(false);},
+  async reward(){if(!this.hasRewarded())return false;this.stop();adBusy=true;AU.duck(true);let ok=false;try{ok=!!(await sdk().rewardedBreak(()=>{}));}catch(e){}adBusy=false;AU.duck(false);return ok;},
 };
+const pokiInit=Poki.init();
+
+/* Poki game events (measure), same approach as the other games on the site: a first-time onboarding funnel,
+   run starts, playtime checkpoints, survival and growth milestones, how and when runs end, and visible/interact pairs. */
+const EV={once:{},playSec:0,mi:0,runs:0,runSec:0,si:0};
+const isNewPlayer=(()=>{try{return !localStorage.getItem('gekko_seen');}catch(e){return true;}})();
+try{localStorage.setItem('gekko_seen','1');}catch(e){}
+const PLAY_MARKS=[.5,1,2,3,5,7,10,15,20,30,45,60],SURVIVE_MARKS=[1,2,3,4,5,7,10,15];
+function measure(c,w,a){try{if(typeof sdk()?.measure==='function')sdk().measure(String(c),String(w),String(a));}catch(e){}}
+function measureOnce(c,w,a){const k=c+'|'+w+'|'+a;if(EV.once[k])return;EV.once[k]=true;measure(c,w,a);}
+function onboarding(step){if(isNewPlayer)measureOnce('tutorial','onboarding',step);}
+const timeKey=t=>t<30?'s0-30':t<60?'s30-60':t<120?'m1-2':t<180?'m2-3':t<300?'m3-5':t<600?'m5-10':'m10+';
 
 /* =====================================================================
    Game data: modes and skins
@@ -1084,7 +1112,8 @@ const AU={ctx:null,master:null,amb:null,
     chirp(v){for(let i=0;i<3;i++)AU.tone(4300,.035,{vol:.05*v,delay:i*.055});},quest(){[523,659,784,1047].forEach((f,i)=>AU.tone(f,.22,{vol:.1,type:'triangle',delay:i*.09}));},
     grow(){AU.tone(300,.5,{vol:.12,to:900,type:'triangle'});},caught(){AU.tone(400,.5,{vol:.2,to:120,type:'sawtooth'});},
     click(){AU.tone(800,.05,{vol:.06,type:'triangle'});}},
-  setMuted(m){save.muted=m;persist();if(this.master)this.master.gain.value=m?0:.7;drawMute();}};
+  setMuted(m){save.muted=m;persist();if(this.master)this.master.gain.value=m?0:.7;drawMute();},
+  duck(on){if(this.master)this.master.gain.value=on||save.muted?0:.7;}};
 function drawMute(){$('muteBtn').innerHTML=save.muted?'<svg viewBox="0 0 24 24"><path d="M4 9h4l5-4v14l-5-4H4z" fill="#f2f7e8"/><path d="M16 9l5 6M21 9l-5 6" stroke="#ff5b4a" stroke-width="2" stroke-linecap="round"/></svg>'
   :'<svg viewBox="0 0 24 24"><path d="M4 9h4l5-4v14l-5-4H4z" fill="#f2f7e8"/><path d="M16 8.5a5 5 0 0 1 0 7M18.5 6a8.5 8.5 0 0 1 0 12" stroke="#f2f7e8" stroke-width="2" fill="none" stroke-linecap="round"/></svg>';}
 drawMute();
@@ -1094,12 +1123,13 @@ drawMute();
    ===================================================================== */
 const keys={};let camYaw=SPAWN.face+Math.PI,camPitch=.32,camDist=1.15;let jumpQ=false,tongueQ=false;
 const touch={x:0,y:0,sprint:false,drink:false,joyId:null,camId:null,cx:0,cy:0};
-addEventListener('keydown',e=>{if(e.repeat&&(e.code==='Space'))return;keys[e.code]=true;AU.init();
+addEventListener('keydown',e=>{if(['Space','ArrowUp','ArrowDown','ArrowLeft','ArrowRight'].includes(e.code))e.preventDefault();if(adBusy)return;if(e.repeat&&(e.code==='Space'))return;keys[e.code]=true;AU.init();
   if(state==='play'){if(e.code==='Space'){jumpQ=true;e.preventDefault();}if(e.code==='KeyE')tongueQ=true;if(e.code==='Escape'||e.code==='KeyP')setPause(true);}
   else if(state==='pause'&&(e.code==='Escape'||e.code==='KeyP'))setPause(false);});
 addEventListener('keyup',e=>{keys[e.code]=false;});
 addEventListener('blur',()=>{for(const k in keys)keys[k]=false;if(state==='play')setPause(true);});
-document.addEventListener('visibilitychange',()=>{if(document.hidden&&state==='play')setPause(true);});
+document.addEventListener('visibilitychange',()=>{if(document.hidden){measure('leave',state==='play'||state==='pause'?'run':state,state==='play'||state==='pause'?timeKey(PL.time):'none');}
+  if(document.hidden&&state==='play')setPause(true);});
 const cvs=renderer.domElement;let dragging=false,lx=0,ly=0;
 cvs.addEventListener('mousedown',e=>{AU.init();if(state!=='play')return;
   if(document.pointerLockElement!==cvs){try{const p=cvs.requestPointerLock();p&&p.catch&&p.catch(()=>{});}catch(err){}}
@@ -1200,21 +1230,33 @@ function startGame(){
   setupCrickets(CFG.crickets,mode==='master'?.06:.09);
   goldEaten=0;escapes=0;questIdx=0;newQuest();tipIdx=save.tutorial?99:0;tipT=1;lostTimer=0;wasChased=false;maxChase=0;
   $('hudMode').textContent=CFG.name;$('floaters').innerHTML='';
+  PL.revived=false;EV.runSec=0;EV.si=0;EV.runs++;EV.flags={};
+  measure('run',EV.runs<=10?'run'+EV.runs:'run11+','start');measure('mode',mode,'start');measure('skin',save.skin,'play');onboarding('start');
   setScreen('play');Poki.start();
 }
 function newQuest(){const q=QUESTS[questIdx%QUESTS.length];quest={...q,data:q.init?q.init():{}};$('questText').textContent=q.text+` (+${q.coins})`;}
 function spawnPoacher(){const p=landSpot(PL.pos.x,PL.pos.z,42,70)||landSpot(0,0,20,100);if(!p)return;poachers.push(new Poacher(p.x,p.z));}
-function setPause(on){if(on&&state==='play'){setScreen('pause');Poki.stop();}else if(!on&&state==='pause'){setScreen('play');Poki.start();}}
+function setPause(on){if(on&&state==='play'){setScreen('pause');Poki.stop();if(!document.hidden)measure('button','pause','interact');}else if(!on&&state==='pause'){setScreen('play');Poki.start();}}
 function gameOver(reason){if(PL.dead)return;PL.dead=true;Poki.stop();
+  measure('gameover',mode,reason);measure('gameover-time',mode,timeKey(PL.time));measure('gameover-stage',mode,stageName().toLowerCase());
+  if(PL.revived)measure('revive',mode,'died-again');
   const T={caught:['Gevangen!','Een stroper ving je met zijn net. Klim sneller een boom in of verstop je in het gras.'],
     hunger:['Uitgehongerd','Je maag was leeg. Vang vaker krekels met je tong.'],thirst:['Uitgedroogd','Je had te veel dorst. Drink op tijd bij het water.']}[reason];
   if(reason==='caught'){AU.sfx.caught();dropNet();}
-  const prev=save.best[mode]||0;const nb=PL.time>prev;if(nb)save.best[mode]=Math.floor(PL.time);
-  let unlockMsg='';if(mode==='master'&&PL.time>=300&&!save.owned.includes('koning')){save.owned.push('koning');unlockMsg=' Je hebt de Regenwoudkoning vrijgespeeld!';}
+  const prev=save.best[mode]||0;const nb=PL.time>prev;if(nb){save.best[mode]=Math.floor(PL.time);if(prev>0)measure('record',mode,'new');}
+  let unlockMsg='';if(mode==='master'&&PL.time>=300&&!save.owned.includes('koning')){save.owned.push('koning');measure('skin','koning','unlocked');unlockMsg=' Je hebt de Regenwoudkoning vrijgespeeld!';}
   persist();
   setTimeout(()=>{$('overTitle').textContent=T[0];$('overText').textContent=T[1]+unlockMsg;$('rTime').textContent=fmtTime(PL.time);$('rCrickets').textContent=PL.crickets;$('rCoins').textContent='+'+PL.coins;
-    $('rBest').textContent=nb?'Nieuw record op '+CFG.name+'!':'Record '+CFG.name+': '+fmtTime(prev);setScreen('over');},reason==='caught'?1300:600);
+    $('rBest').textContent=nb?'Nieuw record op '+CFG.name+'!':'Record '+CFG.name+': '+fmtTime(prev);
+    const canRevive=!PL.revived&&Poki.hasRewarded();$('reviveBtn').hidden=!canRevive;if(canRevive)measure('button','revive','visible');
+    setScreen('over');measure('screen','gameover','visible');},reason==='caught'?1300:600);
 }
+async function revive(){if(adBusy||state!=='over')return;measure('button','revive','interact');const ok=await Poki.reward();measure('ad','revive',ok?'success':'fail');
+  if(!ok||state!=='over')return;
+  PL.revived=true;PL.dead=false;PL.health=Math.max(PL.health,PL.maxHealth*.6);PL.hunger=Math.max(PL.hunger,60);PL.thirst=Math.max(PL.thirst,60);PL.inv=3;PL.vel.set(0,0,0);
+  if(netDome){scene.remove(netDome);netDome=null;}
+  for(const p of poachers)p.dispose();poachers.length=0;for(let i=0;i<CFG.start;i++)spawnPoacher();nextSpawn=CFG.every;
+  measure('revive',mode,'used');setScreen('play');Poki.start();}
 let netDome=null;
 function dropNet(){if(netDome)scene.remove(netDome);netDome=new THREE.Mesh(new THREE.SphereGeometry(.4,16,10,0,6.28,0,Math.PI/2),netMat);netDome.position.copy(PL.pos);scene.add(netDome);}
 function addCoins(n){const v=Math.max(1,Math.round(n));PL.coins+=v;save.coins+=v;persist();return v;}
@@ -1228,6 +1270,9 @@ function floater(worldPos,text,cls=''){const v=worldPos.clone().project(camera);
 /* =====================================================================
    Update: player
    ===================================================================== */
+// playtime only counts while gameplay is active (not in menus, pause or ads)
+setInterval(()=>{if(state!=='play'||PL.dead||adBusy||document.hidden)return;EV.playSec++;const m=PLAY_MARKS[EV.mi];
+  if(m!==undefined&&EV.playSec>=m*60){EV.mi++;const mk='m'+m;measure('playtime',isNewPlayer?'new':'returning',mk);measure('progress',mk,stageName().toLowerCase());}},1000);
 const camF=new V3(),camR=new V3(),move=new V3(),np=new V3(),tq=new THREE.Quaternion(),basis=new THREE.Matrix4();
 function orient(up,fwd,dt,k=12){_v.copy(fwd).addScaledVector(up,-fwd.dot(up));if(_v.lengthSq()<1e-6)_v.set(0,0,1);_v.normalize();_w.crossVectors(up,_v).normalize();
   basis.makeBasis(_w,up,_v);tq.setFromRotationMatrix(basis);gecko.root.quaternion.slerp(tq,1-Math.exp(-k*dt));}
@@ -1311,12 +1356,12 @@ function updateTongue(dt){tongue.cool-=dt;
     tongue.mesh.quaternion.setFromUnitVectors(Y,d.normalize());tongue.tip.position.copy(tip);
     if(tongue.target&&tongue.target.alive&&k>=.5){const c=tongue.target;c.pos.copy(tip);c.g.position.copy(tip);c.g.scale.setScalar(1.45*Math.max(.2,ext));}
     if(k>=1){tongue.t=-1;tongue.mesh.visible=tongue.tip.visible=false;if(tongue.target&&tongue.target.alive)eatCricket(tongue.target);tongue.target=null;}}}
-function eatCricket(c){c.alive=false;c.g.visible=false;c.g.scale.setScalar(1.45);const pk=perks();
+function eatCricket(c){onboarding('first-cricket');if(c.gold)measure('cricket','gold','eaten');c.alive=false;c.g.visible=false;c.g.scale.setScalar(1.45);const pk=perks();
   PL.hunger=Math.min(100,PL.hunger+(c.gold?30:17));PL.health=Math.min(PL.maxHealth,PL.health+4);PL.crickets++;
   const before=stageName();PL.growth=Math.min(1,PL.growth+(c.gold?.06:.03));
   const v=addCoins((c.gold?10:2)*CFG.coinMult*pk.coins);AU.sfx.eat();c.gold?AU.sfx.gold():AU.sfx.coin();if(c.gold)goldEaten++;
   floater(PL.pos.clone().add(_v.set(0,.25,0)),'+'+v,'');
-  if(stageName()!==before){AU.sfx.grow();floater(PL.pos.clone().add(_v.set(0,.5,0)),stageName()+'!','green');}
+  if(stageName()!==before){AU.sfx.grow();measure('growth',stageName().toLowerCase(),'reached');measure('growth-time',stageName().toLowerCase(),timeKey(PL.time));floater(PL.pos.clone().add(_v.set(0,.5,0)),stageName()+'!','green');}
   setTimeout(()=>{if(state==='play'||state==='pause')spawnCricket(c,PL.pos);},R(2500,6000));}
 function updateCrickets(dt){for(const c of crickets){if(!c.alive||(tongue.target===c&&tongue.t/tongue.dur>=.5))continue;
   const d=c.pos.distanceTo(PL.pos);
@@ -1467,7 +1512,9 @@ function updateTargetRing(){const ring=$('targetRing');if(state!=='play'||tongue
    Main update
    ===================================================================== */
 function updateGame(dt){
-  PL.time+=dt;PL.inv-=dt;const pk=perks();
+  PL.time+=dt;
+  if(PL.speed>.5)onboarding('move');if(PL.drinking)onboarding('first-drink');if(PL.climb)onboarding('first-climb');
+  {const m=SURVIVE_MARKS[EV.si];if(m!==undefined&&PL.time>=m*60){EV.si++;measure('survive',mode,'m'+m);}}PL.inv-=dt;const pk=perks();
   updatePlayer(dt);updateTongue(dt);jumpQ=false;
   PL.hunger=Math.max(0,PL.hunger-dt*100/CFG.hungerT*pk.hunger*(PL.speed>5?1.3:1));
   PL.thirst=Math.max(0,PL.thirst-dt*100/CFG.thirstT*(PL.speed>5?1.3:1)*(PL.drinking?0:1));
@@ -1475,7 +1522,7 @@ function updateGame(dt){
   else if(PL.hunger>55&&PL.thirst>55)PL.health=Math.min(PL.maxHealth,PL.health+dt*1.5);
   updatePoachers(dt);
   nextSpawn-=dt;if(nextSpawn<=0){nextSpawn=CFG.every;if(poachers.length<CFG.max){spawnPoacher();}}
-  if(quest&&quest.done(quest.data)){const v=addCoins(quest.coins);AU.sfx.quest();floater(PL.pos.clone().add(_v.set(0,.45,0)),'Opdracht klaar! +'+v,'green');questIdx++;newQuest();}
+  if(quest&&quest.done(quest.data)){measure('quest','q'+(questIdx%QUESTS.length+1),'complete');if(questIdx===0)onboarding('first-quest');const v=addCoins(quest.coins);AU.sfx.quest();floater(PL.pos.clone().add(_v.set(0,.45,0)),'Opdracht klaar! +'+v,'green');questIdx++;newQuest();}
   updateTips(dt);updateHUD(dt);
 }
 const clock=new THREE.Clock();let time=0;
@@ -1523,10 +1570,10 @@ function applyQuality(q){QUALITY=clamp(q,0,2);if(gtao)gtao.enabled=QUALITY>=2;if
   const pr=Math.min(devicePixelRatio,[1,1.25,LOW?1.25:1.75][QUALITY])*resScale;renderer.setPixelRatio(pr);composer.setPixelRatio(pr);
   const sm=[1024,2048,LOW?2048:4096][QUALITY];if(sun.shadow.mapSize.x!==sm){sun.shadow.mapSize.set(sm,sm);if(sun.shadow.map){sun.shadow.map.dispose();sun.shadow.map=null;}}
   onResize();for(const id of ['gfxBtn','gfxBtn2'])$(id).textContent='Grafiek: '+GFX[QUALITY];}
-for(const id of ['gfxBtn','gfxBtn2'])$(id).onclick=()=>{AU.init();AU.sfx.click();const q=(QUALITY+1)%3;save.gfx=q;persist();resScale=1;applyQuality(q);perfT=perfAcc=perfN=0;perfSkip=3;};
+for(const id of ['gfxBtn','gfxBtn2'])$(id).onclick=()=>{AU.init();AU.sfx.click();const q=(QUALITY+1)%3;save.gfx=q;measure('gfx','select',GFX[q].toLowerCase());persist();resScale=1;applyQuality(q);perfT=perfAcc=perfN=0;perfSkip=3;};
 function setRes(){const pr=Math.min(devicePixelRatio,[1,1.25,LOW?1.25:1.75][QUALITY])*resScale;renderer.setPixelRatio(pr);composer.setPixelRatio(pr);onResize();}
 function adaptQuality(dt){if(perfSkip>0){perfSkip-=dt;return;}perfAcc+=dt;perfN++;perfT+=dt;if(perfT<2.5)return;const avg=perfAcc/perfN;perfT=perfAcc=perfN=0;
-  if(avg>1/48){perfGood=0;if(resScale>.7){resScale=Math.max(.7,resScale-.15);setRes();}else if(QUALITY>0){resScale=.85;applyQuality(QUALITY-1);}perfSkip=1.5;}
+  if(avg>1/48){perfGood=0;if(resScale>.7){resScale=Math.max(.7,resScale-.15);setRes();}else if(QUALITY>0){resScale=.85;applyQuality(QUALITY-1);measure('gfx','auto-drop',GFX[QUALITY].toLowerCase());}perfSkip=1.5;}
   else if(avg<1/57&&resScale<1){if(++perfGood>=4){perfGood=0;resScale=Math.min(1,resScale+.15);setRes();perfSkip=1.5;}}else perfGood=0;}
 const _sunScr=new V3(),_camDir=new V3();
 let lastTs=0,dtS=1/60;
@@ -1558,7 +1605,7 @@ const _sr=new V3(),_su=new V3();
    ===================================================================== */
 function renderModes(){const el=$('modes');el.innerHTML='';for(const [k,m] of Object.entries(MODES)){const b=document.createElement('button');b.className='modeBtn';b.dataset.mode=k;b.setAttribute('aria-pressed',k===mode);
   const best=save.best[k];b.innerHTML=`<b>${m.name}</b><span>${m.desc}</span><em>${best?'Record '+fmtTime(best):'x'+m.coinMult+' munten'}</em>`;
-  b.onclick=()=>{mode=k;save.mode=k;persist();AU.init();AU.sfx.click();renderModes();};el.appendChild(b);}
+  b.onclick=()=>{mode=k;save.mode=k;persist();measure('mode',k,'selected');AU.init();AU.sfx.click();renderModes();};el.appendChild(b);}
   $('menuCoins').textContent=save.coins;const best=save.best[mode];$('menuBest').textContent=best?'Record '+MODES[mode].name+': '+fmtTime(best):'';}
 let shopSel=save.skin;
 function renderShop(){const el=$('skins');el.innerHTML='';$('shopCoins').textContent=save.coins;
@@ -1571,17 +1618,18 @@ function renderShop(){const el=$('skins');el.innerHTML='';$('shopCoins').textCon
   else if(s.price<0){act.textContent='Nog op slot';act.disabled=true;$('shopMsg').textContent='Vrijspelen: '+s.unlock+'.';}
   else{act.textContent='Koop voor '+s.price;act.disabled=save.coins<s.price;if(save.coins<s.price)$('shopMsg').textContent=`Je hebt nog ${s.price-save.coins} munten nodig. Vang krekels om munten te verdienen.`;}}
 function previewSkin(s){gecko.setMaterial(skinMaterial(s),s.eye,s.crest);}
-$('shopAct').onclick=()=>{const s=skinById(shopSel);if(save.owned.includes(s.id)){save.skin=s.id;}else if(s.price>=0&&save.coins>=s.price){save.coins-=s.price;save.owned.push(s.id);save.skin=s.id;AU.sfx.gold();}
+$('shopAct').onclick=()=>{const s=skinById(shopSel);if(save.owned.includes(s.id)){save.skin=s.id;}else if(s.price>=0&&save.coins>=s.price){save.coins-=s.price;save.owned.push(s.id);measure('skin',s.id,'bought');save.skin=s.id;AU.sfx.gold();}
   persist();curSkin=skinById(save.skin);renderShop();};
-$('shopBtn').onclick=()=>{AU.init();AU.sfx.click();shopSel=save.skin;renderShop();setScreen('shop');};
+$('shopBtn').onclick=()=>{AU.init();AU.sfx.click();measure('button','shop','interact');measure('screen','shop','visible');shopSel=save.skin;renderShop();setScreen('shop');};
 $('shopBack').onclick=()=>{AU.sfx.click();curSkin=skinById(save.skin);previewSkin(curSkin);renderModes();setScreen('menu');};
-$('playBtn').onclick=()=>{AU.init();startGame();};
+$('playBtn').onclick=async()=>{if(adBusy)return;AU.init();measure('button','start','interact');await Poki.brk();startGame();};
 $('resumeBtn').onclick=()=>setPause(false);
-$('quitBtn').onclick=()=>toMenu();
+$('quitBtn').onclick=()=>{measure('button','quit','interact');measure('quit',mode,timeKey(PL.time));toMenu();};
 $('pauseBtn').onclick=()=>setPause(true);
 $('muteBtn').onclick=()=>{AU.init();AU.setMuted(!save.muted);};
-$('againBtn').onclick=async()=>{await Poki.brk();startGame();};
-$('menuBtn').onclick=()=>toMenu();
+$('againBtn').onclick=async()=>{if(adBusy)return;measure('button','restart','interact');await Poki.brk();startGame();};
+$('reviveBtn').onclick=()=>revive();
+$('menuBtn').onclick=()=>{measure('button','menu','interact');toMenu();};
 function toMenu(){Poki.stop();for(const p of poachers)p.dispose();poachers.length=0;if(netDome){scene.remove(netDome);netDome=null;}PL.dead=false;PL.drinking=false;PL.speed=0;PL.growth=0;
   curSkin=skinById(save.skin);previewSkin(curSkin);placeGeckoAtSpawn();renderModes();setupCrickets(14);setScreen('menu');}
 function onResize(){camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight);composer.setSize(innerWidth,innerHeight);if(waterMirror)waterMirror.getRenderTarget().setSize(Math.round(innerWidth*.5),Math.round(innerHeight*.5));}
@@ -1595,7 +1643,9 @@ applyQuality(QUALITY);placeGeckoAtSpawn();camPos.copy(PL.pos).add(_v.set(2,1,2))
  for(const f of farTiles)f.m.visible=true;renderer.compile(scene,camera);renderer.shadowMap.needsUpdate=true;
  if(waterSimple)waterSimple.visible=ws;if(waterMirror)waterMirror.visible=wm;wp.dispose();}
 setScreen('menu');requestAnimationFrame(frame);
-setTimeout(()=>{$('loading').style.opacity=0;setTimeout(()=>$('loading').remove(),650);Poki.loaded();},150);
+setTimeout(()=>{$('loading').style.opacity=0;setTimeout(()=>$('loading').remove(),650);},150);
+pokiInit.then(()=>{Poki.loaded();measure('screen','menu','visible');onboarding('loaded');});
 window.__gekko={PL,renderer,scene,updatePlayer,treeRadius,poachers,crickets,trees,boxes,rocks,startGame,setMode:m=>{mode=m;},get state(){return state;},camera,gecko,keys,get camYaw(){return camYaw;},set camYaw(v){camYaw=v;}};
 </script>
-</body></html>
+</body>
+</html>
