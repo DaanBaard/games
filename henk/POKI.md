@@ -4,7 +4,7 @@ Henk draait als één `index.html` zonder externe bestanden (lettertype Fredoka 
 
 ## Uploaden
 1. Zip de map `henk/` (alleen `index.html` is nodig) en upload die in Poki for Developers (Poki Inspector / nieuwe versie).
-2. Thumbnail: maak er één op basis van `thumb.png` (Poki vraagt vierkant, bijv. 1080×1080).
+2. Thumbnail: `poki/henk_thumb_1080.png` (vierkant, 1080×1080).
 3. De Poki SDK wordt alleen geladen buiten GitHub Pages en zonder `?test=1`. Op github.io en in tests draait een stub die meteen doorgaat.
 
 ## SDK-momenten
