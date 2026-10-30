@@ -1,5 +1,5 @@
 <!doctype html>
-<!-- Veggie Siege v0.3 -->
+<!-- Veggie Siege v0.4 -->
 <html lang="en">
 <head>
 <meta charset="utf-8">
@@ -194,7 +194,7 @@ button{font:inherit;color:inherit;border:none;background:none;cursor:pointer}
 <div id="load"><b>Veggie Siege</b><i></i><small id="ver0" style="color:#fff"></small></div>
 <script>
 'use strict';
-const VERSION='0.3';
+const VERSION='0.4';
 const $=id=>document.getElementById(id);
 const cv=$('c'),ctx=cv.getContext('2d');
 const TAU=Math.PI*2;
@@ -922,6 +922,20 @@ Object.assign(TR.pl,{h_water2:"Wskazówka: dzięki <b>konewce</b> wszystkie warz
 Object.assign(TR.ja,{h_water2:"ヒント：<b>じょうろ</b>を使うと、しばらく全部のやさいの攻撃が速くなるよ。",h_scare2:"ヒント：<b>かかし</b>を使うと、害虫がぜんぶ少しの間止まるよ。"});
 Object.assign(TR.ko,{h_water2:"팁: <b>물뿌리개</b>를 쓰면 잠시 동안 모든 채소가 더 빨리 공격해요.",h_scare2:"팁: <b>허수아비</b>는 잠깐 동안 모든 해충을 멈춰요."});
 Object.assign(TR.zh,{h_water2:"提示：<b>浇水壶</b>能让所有蔬菜在一段时间内射得更快。",h_scare2:"提示：<b>稻草人</b>能让所有害虫定住片刻。"});
+
+Object.assign(TR.en,{tut_plant:"Tap an <b>empty bed</b> to plant a veggie!",tut_plant2:"Nice! Plant one more right next to it.",tut_plant3:"Tap empty beds to plant more veggies!",h_plantbed:"Tip: tap an empty bed to plant exactly there."});
+Object.assign(TR.nl,{tut_plant:"Tik op een <b>leeg bedje</b> om een groente te zaaien!",tut_plant2:"Top! Zaai er nog één vlak ernaast.",tut_plant3:"Tik op lege bedjes om meer groenten te zaaien!",h_plantbed:"Tip: tik op een leeg bedje om precies daar te zaaien."});
+Object.assign(TR.de,{tut_plant:"Tippe auf ein <b>leeres Beet</b>, um Gemüse zu säen!",tut_plant2:"Super! Säe noch eins direkt daneben.",tut_plant3:"Tippe auf leere Beete, um mehr Gemüse zu säen!",h_plantbed:"Tipp: Tippe auf ein leeres Beet, um genau dort zu säen."});
+Object.assign(TR.fr,{tut_plant:"Touche un <b>bac vide</b> pour semer un légume !",tut_plant2:"Bravo ! Sèmes-en un autre juste à côté.",tut_plant3:"Touche des bacs vides pour semer plus de légumes !",h_plantbed:"Astuce : touche un bac vide pour semer exactement là."});
+Object.assign(TR.es,{tut_plant:"¡Toca un <b>bancal vacío</b> para sembrar una verdura!",tut_plant2:"¡Bien! Siembra otra justo al lado.",tut_plant3:"¡Toca bancales vacíos para sembrar más verduras!",h_plantbed:"Consejo: toca un bancal vacío para sembrar justo ahí."});
+Object.assign(TR.it,{tut_plant:"Tocca un'<b>aiuola vuota</b> per seminare una verdura!",tut_plant2:"Ottimo! Seminane un'altra proprio accanto.",tut_plant3:"Tocca le aiuole vuote per seminare altre verdure!",h_plantbed:"Consiglio: tocca un'aiuola vuota per seminare proprio lì."});
+Object.assign(TR.pt,{tut_plant:"Toque em um <b>canteiro vazio</b> para plantar uma verdura!",tut_plant2:"Boa! Plante mais uma bem ao lado.",tut_plant3:"Toque em canteiros vazios para plantar mais verduras!",h_plantbed:"Dica: toque em um canteiro vazio para plantar bem ali."});
+Object.assign(TR.ru,{tut_plant:"Нажми на <b>пустую грядку</b>, чтобы посадить овощ!",tut_plant2:"Отлично! Посади ещё один рядом.",tut_plant3:"Нажимай на пустые грядки, чтобы сажать ещё!",h_plantbed:"Совет: нажми на пустую грядку, чтобы посадить именно там."});
+Object.assign(TR.tr,{tut_plant:"Sebze ekmek için <b>boş bir tarha</b> dokun!",tut_plant2:"Harika! Hemen yanına bir tane daha ek.",tut_plant3:"Daha çok sebze için boş tarhlara dokun!",h_plantbed:"İpucu: tam oraya ekmek için boş bir tarha dokun."});
+Object.assign(TR.pl,{tut_plant:"Stuknij <b>pustą grządkę</b>, by posiać warzywo!",tut_plant2:"Super! Posiej jeszcze jedno tuż obok.",tut_plant3:"Stukaj puste grządki, by siać więcej warzyw!",h_plantbed:"Wskazówka: stuknij pustą grządkę, by posiać dokładnie tam."});
+Object.assign(TR.ja,{tut_plant:"<b>空いているはたけ</b>をタップしてやさいを植えよう！",tut_plant2:"いいね！すぐとなりにもう1つ植えよう。",tut_plant3:"空いているはたけをタップしてもっと植えよう！",h_plantbed:"ヒント：空いているはたけをタップすると、そこに植えられるよ。"});
+Object.assign(TR.ko,{tut_plant:"<b>빈 밭</b>을 눌러 채소를 심으세요!",tut_plant2:"좋아요! 바로 옆에 하나 더 심어요.",tut_plant3:"빈 밭을 눌러 채소를 더 심으세요!",h_plantbed:"팁: 빈 밭을 누르면 바로 그 자리에 심어요."});
+Object.assign(TR.zh,{tut_plant:"点一块<b>空菜畦</b>种下蔬菜！",tut_plant2:"很好！在旁边再种一棵。",tut_plant3:"点空菜畦种更多蔬菜！",h_plantbed:"提示：点空菜畦就能种在那里。"});
 
 /* ================= DATA ================= */
 const COLS=9,ROWS=7;
@@ -1715,6 +1729,7 @@ function drawWorld(dt){const c=ctx;c.setTransform(L.dpr,0,0,L.dpr,0,0);
   if(UI.drag){const dv=UI.drag.v;for(const v of R.veg)if(v&&canMerge(dv,v)){c.save();circ(c,bx(v.x),by(v.y),T*.48+Math.sin(gT*8)*T*.03);c.lineWidth=T*.07;c.strokeStyle='#ffe14d';c.shadowColor='#ffe14d';c.shadowBlur=T*.3;c.stroke();c.restore()}
     const ci=cellAt(UI.drag.px,UI.drag.py);if(ci>=0&&R.P.beds.includes(ci)){c.fillStyle='rgba(255,255,255,.28)';rr(c,bx(ci%COLS)+T*.08,by(Math.floor(ci/COLS))+T*.08,T*.84,T*.84,T*.2);c.fill()}}
   if(UI.mestDrag){for(const v of R.veg)if(v&&v.l<lvlCap()){circ(c,bx(v.x),by(v.y),T*.46);c.lineWidth=T*.05;c.strokeStyle='#ffe14d';c.stroke()}}
+  drawPlantable(c);
   drawCrate(c,gT);
   const ents=[];for(const v of R.veg)if(v&&!(UI.drag&&UI.drag.v===v))ents.push([v.y,0,v]);for(const p of R.pests)ents.push([p.y+(p.fly?.5:0),1,p]);
   ents.sort((a,b)=>a[0]-b[0]);
@@ -1727,9 +1742,25 @@ function drawWorld(dt){const c=ctx;c.setTransform(L.dpr,0,0,L.dpr,0,0);
   drawFX(c,dt);
   if(UI.drag){const v=UI.drag.v;drawVeg(c,v.t,v.l,UI.drag.px,UI.drag.py-T*.2,T*1.12,gT,{ph:v.id})}
   if(UI.mestDrag){drawMest(c,UI.mestDrag.px,UI.mestDrag.py,T*.5)}
+  if(UI.seedDrag&&UI.seedDrag.moved)drawSeedBag(c,UI.seedDrag.px,UI.seedDrag.py-T*.25,T*.42);
   if(R.waterT>0){c.fillStyle='rgba(76,195,255,'+(.08+.04*Math.sin(gT*6))+')';rr(c,L.bx,L.by,COLS*T,ROWS*T,T*.32);c.fill()}
   if(R.stunT>0){c.save();c.globalCompositeOperation='lighter';c.fillStyle='rgba(180,220,255,'+(.08*Math.min(1,R.stunT))+')';c.fillRect(0,0,L.W,L.H);c.restore()}
   c.restore()}
+
+/* ---------- planting where you want: hints on empty beds ---------- */
+function drawSeedBag(c,x,y,r){const lw=Math.max(2,r*.1);softShadow(c,x,y+r*.9,r*.7,r*.2,.3);c.save();c.translate(x,y);
+  c.beginPath();c.moveTo(-r*.55,-r*.35);c.quadraticCurveTo(-r*.75,r*.7,0,r*.72);c.quadraticCurveTo(r*.75,r*.7,r*.55,-r*.35);c.closePath();
+  const g=c.createLinearGradient(0,-r*.4,0,r*.7);g.addColorStop(0,'#f2d5a0');g.addColorStop(1,'#c99a5b');c.fillStyle=g;c.fill();c.lineWidth=lw;c.strokeStyle=INK;c.stroke();
+  c.beginPath();c.moveTo(-r*.55,-r*.35);c.quadraticCurveTo(0,-r*.6,r*.55,-r*.35);c.lineWidth=lw*1.3;c.stroke();
+  leaf(c,0,r*.2,r*.42,-.4,lw*.7,'#7ee26b');leaf(c,0,r*.2,r*.38,.5,lw*.7,'#5fd06a');c.restore()}
+function drawPlantable(c){const T=L.T;const dragging=UI.seedDrag&&UI.seedDrag.moved;const can=R.comp>=seedCost();if(!can&&!dragging)return;
+  const hov=dragging?cellAt(UI.seedDrag.px,UI.seedDrag.py):-1;const pulse=.5+.5*Math.sin(gT*3);
+  for(const i of R.P.beds){if(R.veg[i])continue;const x=bx(i%COLS+.5),y=by(Math.floor(i/COLS)+.45);
+    if(dragging){c.save();rr(c,bx(i%COLS)+T*.1,by(Math.floor(i/COLS))+T*.1,T*.8,T*.72,T*.18);c.lineWidth=T*(i===hov?.08:.045);c.strokeStyle=i===hov?'#ffe14d':'rgba(255,255,255,.75)';
+      if(i===hov){c.shadowColor='#ffe14d';c.shadowBlur=T*.3;c.fillStyle='rgba(255,240,150,.25)';c.fill()}c.stroke();c.restore()}
+    c.save();c.globalAlpha=dragging?.9:.28+.3*pulse;c.translate(x,y);const s=T*(.09+(dragging?0:.015*pulse));
+    c.fillStyle='#fff6c2';c.beginPath();c.ellipse(0,0,s*.7,s,0,0,TAU);c.fill();c.lineWidth=Math.max(1,T*.02);c.strokeStyle='rgba(43,45,78,.6)';c.stroke();
+    c.strokeStyle='#5fd06a';c.lineWidth=Math.max(1.5,T*.03);c.lineCap='round';c.beginPath();c.moveTo(0,-s*.9);c.quadraticCurveTo(s*.3,-s*1.6,s*.9,-s*1.5);c.stroke();c.restore()}}
 
 /* ================= COACH: Poki-style onboarding =================
    Learn by doing: one action at a time, a pointing hand, a spotlight and a short line from Grandma.
@@ -1754,6 +1785,7 @@ function coachTick(){if(!CO.on)return;if(CO.until&&performance.now()>CO.until){c
   const h=$('hand'),sp=$('spot');
   if(CO.hand&&!UI.paused&&!(R&&R.perkPending)){const H=CO.hand;let cls='';
     if(H.k==='tap'){const r=elRect(H.el);setPos(h,r.x+r.w*.55,r.y+r.h*.42);cls='tap'}
+    else if(H.k==='tapCell'){const [x2,y2]=cellC(H.i);setPos(h,x2+L.T*.05,y2);cls='tap'}
     else if(H.k==='drag'){const a=H.va?H.va.i:H.a;const [ax,ay]=cellC(a);let tx,ty;
       if(H.toEl){const r=elRect(H.toEl);tx=r.x+r.w/2;ty=r.y+r.h/2}else{const [x2,y2]=cellC(H.vb?H.vb.i:H.b);tx=x2;ty=y2}
       setPos(h,ax,ay);h.style.setProperty('--dx',(tx-ax)+'px');h.style.setProperty('--dy',(ty-ay)+'px');cls='drag'}
@@ -1772,24 +1804,24 @@ function bump(id){const e=$(id);if(!e)return;const p=e.closest('.pill')||e;p.cla
 /* ---------- guided first steps ---------- */
 function gMeasure(s,a){measure('tutorial',(GSTEPS.indexOf(s)+1)+'-'+s,a)}
 function gStep(s){if(R.g)gMeasure(R.g,'complete');R.g=s;gMeasure(s,'start');const buy=$('bBuy');
-  if(s==='plant1')coach({txt:t('tut_plant'),hand:{k:'tap',el:buy},spot:{el:buy}});
-  else if(s==='plant2')coach({txt:t('tut_plant2'),hand:{k:'tap',el:buy},spot:{el:buy}});
+  if(s==='plant1')coach({txt:t('tut_plant'),hand:{k:'tapCell',i:BED_A},spot:{cells:[BED_A],pad:6}});
+  else if(s==='plant2'){const b=R.veg[BED_B]?freeBeds()[0]:BED_B;R.gB=b;coach({txt:t('tut_plant2'),hand:{k:'tapCell',i:b},spot:{cells:[b],pad:6}})}
   else if(s==='merge'){const a=R.veg.find(v=>v&&v.t==='carrot'),b=R.veg.find(v=>v&&v!==a&&canMerge(a,v));
     if(!a||!b){gStep('pest');return}coach({txt:t('tut_merge'),hand:{k:'drag',va:a,vb:b},spot:{cells:[a,b],pad:10}})}
   else if(s==='pest'){reveal('lives');R.omaMad=1.5;const p=spawnPest({k:'snail'});p.spd=.5;p.hp=p.mhp=Math.min(p.mhp,20);p.say=t('say2');p.talk=4;
     coach({txt:t('tut_pest'),top:true})}
   else if(s==='comp'){reveal('comp');reveal('score',true);bump('vComp');coach({txt:t('tut_comp'),spot:{el:$('vComp').closest('.pill'),pad:6}});setTimeout(()=>{if(R&&R.g==='comp')gStep('plant3')},2800)}
-  else if(s==='plant3'){R.g3=R.plants;coach({txt:t('tut_plant3'),hand:{k:'tap',el:buy},spot:{el:buy}})}
+  else if(s==='plant3'){R.g3=R.plants;const b=bestBed();coach({txt:t('tut_plant3'),hand:b>=0?{k:'tapCell',i:b}:{k:'tap',el:buy}})}
   else if(s==='go'){reveal('wave');coach({txt:t('tut_go'),dur:2.6,top:true});R.nextT=1.5;gMeasure('go','complete');R.g=null;S.tut=1;save();measure('tutorial','done','complete')}}
 function guideBuy(){// returns true when the click was handled by the guide
   if(!R||!R.g)return false;
   if(R.g==='plant1'){buySeed('carrot',BED_A);return true}
-  if(R.g==='plant2'){buySeed('carrot',BED_B);return true}
+  if(R.g==='plant2'){buySeed('carrot',R.gB!=null?R.gB:BED_B);return true}
   if(R.g==='merge'||R.g==='pest'||R.g==='comp'){sfx('click');return true}
   return false}
 function guideEvent(ev,a){if(!R||!R.guide)return;
   if(ev==='plant'){R.lastPlantT=R.time;if(R.g==='plant1')gStep('plant2');else if(R.g==='plant2')gStep('merge');
-    else if(R.g==='plant3'&&(R.plants-R.g3>=2||R.comp<seedCost()||!freeBeds().length))gStep('go');coachOff('plant')}
+    else if(R.g==='plant3'){if(R.plants-R.g3>=2||R.comp<seedCost()||!freeBeds().length)gStep('go');else{const b=bestBed();if(b>=0)CO.hand={k:'tapCell',i:b}}}coachOff('plant')}
   else if(ev==='merge'){R.lastMergeT=R.time;if(R.g==='merge'){gMeasure('merge','complete');R.g='merged';coach({txt:t('tut_merged'),spot:{cells:[a],pad:12}});
       setTimeout(()=>{if(R&&R.g==='merged'){R.g=null;gStep('pest')}},1900)}else coachOff('merge')}
   else if((ev==='kill'||ev==='eat')&&R.g==='pest')setTimeout(()=>{if(R&&R.g==='pest')gStep('comp')},350);
@@ -1811,7 +1843,7 @@ function guideTick(dt){if(!R||!R.guide||R.g||R.over||R.perkPending||UI.paused)re
   if((H.merge||0)<4&&R.time-Math.max(R.lastMergeT,R.lastPlantT)>10){const vs=R.veg.filter(Boolean);let pr=null;
     for(const a of vs){for(const b of vs)if(canMerge(a,b)){pr=[a,b];break}if(pr)break}
     if(pr){H.merge=(H.merge||0)+1;coach({key:'merge',txt:t('h_merge'),hand:{k:'drag',va:pr[0],vb:pr[1]},dur:3.6});return}}
-  if((H.plant||0)<3&&R.time-R.lastPlantT>9&&R.comp>=seedCost()&&freeBeds().length){H.plant=(H.plant||0)+1;coach({key:'plant',hand:{k:'tap',el:$('bBuy')},dur:3});return}}
+  if((H.plant||0)<3&&R.time-R.lastPlantT>9&&R.comp>=seedCost()&&freeBeds().length){H.plant=(H.plant||0)+1;coach({key:'plant',txt:H.plant===1?t('h_plantbed'):'',hand:{k:'tapCell',i:bestBed()},dur:3.5});return}}
 
 /* ---------- path arrows while explaining the pests ---------- */
 function drawPathArrows(c){const T=L.T;c.save();c.lineWidth=T*.09;c.lineCap='round';c.lineJoin='round';
@@ -2153,10 +2185,23 @@ function showIntro(done){const c=document.createElement('canvas');c.width=640;c.
 function ptr(e){return{x:e.clientX,y:e.clientY}}
 function overEl(el,p){if(!el||el.classList.contains('hide'))return false;const r=el.getBoundingClientRect();return p.x>=r.left-6&&p.x<=r.right+6&&p.y>=r.top-6&&p.y<=r.bottom+6}
 cv.addEventListener('pointerdown',e=>{Snd.resume();if(UI.state!=='run'||!R||UI.paused||R.over)return;const p=ptr(e);const ci=cellAt(p.x,p.y);
-  if(ci>=0&&R.veg[ci]){UI.drag={v:R.veg[ci],sx:p.x,sy:p.y,px:p.x,py:p.y,moved:false};try{cv.setPointerCapture(e.pointerId)}catch(_){}}else UI.sel=null});
+  if(ci>=0&&R.veg[ci]){UI.drag={v:R.veg[ci],sx:p.x,sy:p.y,px:p.x,py:p.y,moved:false};try{cv.setPointerCapture(e.pointerId)}catch(_){}}
+  else{UI.sel=null;if(ci>=0&&R.P.beds.includes(ci))UI.tapBed={ci,sx:p.x,sy:p.y}}});
+/* ---------- choose where to plant: tap an empty bed, or drag from the Plant button ---------- */
+function plantAt(ci,how){if(!R||R.over||UI.paused||ci<0||!R.P.beds.includes(ci)||R.veg[ci])return false;
+  if(R.g==='merge'||R.g==='pest'||R.g==='comp'||R.g==='merged'){sfx('click');return false}
+  const force=(R.g==='plant1'||R.g==='plant2')?'carrot':null;const c=seedCost();
+  if(R.comp<c){sfx('click');toast(t('needComp',c));return false}
+  const v=buySeed(force,ci);if(v){measure('plant',how,'bed');if(!S.chosePlant){S.chosePlant=1;measure('milestone','first-chosen-bed','reached')}}return !!v}
+function bestBed(){const fb=freeBeds();if(!fb.length)return -1;let best=fb[0],bs=1e9;for(const i of fb){const x=i%COLS+.5,y=Math.floor(i/COLS)+.5;
+  for(const P of R.P.paths)P.pts.forEach((q,k)=>{const d=Math.hypot(q[0]-x,q[1]-y)+k*.04;if(d<bs){bs=d;best=i}})}return best}
+$('bBuy').addEventListener('pointerdown',e=>{if(!R||R.over||UI.paused)return;Snd.resume();UI.seedDrag={sx:e.clientX,sy:e.clientY,px:e.clientX,py:e.clientY,moved:false}});
 window.addEventListener('pointermove',e=>{const p=ptr(e);if(UI.drag){UI.drag.px=p.x;UI.drag.py=p.y;if(Math.hypot(p.x-UI.drag.sx,p.y-UI.drag.sy)>8)UI.drag.moved=true;$('bSell').classList.toggle('hot',overEl($('bSell'),p))}
-  if(UI.mestDrag){UI.mestDrag.px=p.x;UI.mestDrag.py=p.y}});
+  if(UI.mestDrag){UI.mestDrag.px=p.x;UI.mestDrag.py=p.y}
+  if(UI.seedDrag){const d=UI.seedDrag;d.px=p.x;d.py=p.y;if(Math.hypot(p.x-d.sx,p.y-d.sy)>12)d.moved=true}});
 window.addEventListener('pointerup',e=>{const p=ptr(e);
+  if(UI.tapBed){const tb=UI.tapBed;UI.tapBed=null;if(Math.hypot(p.x-tb.sx,p.y-tb.sy)<14&&cellAt(p.x,p.y)===tb.ci)plantAt(tb.ci,'tap')}
+  if(UI.seedDrag){const d=UI.seedDrag;UI.seedDrag=null;if(d.moved){UI.skipBuyClick=1;setTimeout(()=>UI.skipBuyClick=0,50);const ci=cellAt(p.x,p.y);if(ci>=0)plantAt(ci,'drag')}}
   if(UI.drag){const d=UI.drag;UI.drag=null;$('bSell').classList.remove('hot');if(!R||R.over)return;
     if(!d.moved){UI.sel=UI.sel===d.v?null:d.v;if(UI.sel){const v=d.v;toast(img(vegIcon(v.t,v.l),'ti')+'<b>'+t('v_'+v.t)+'</b> '+t('lvl')+' '+v.l+(VEG[v.t].kind==='eco'?' · +'+Math.ceil(vProd(v))+'/6s':' · '+t('dmg')+' '+Math.round(vDmg(v))),1400)}return}
     if(overEl($('bSell'),p)){sellVeg(d.v);measure('button','sell','interact');return}
@@ -2164,7 +2209,7 @@ window.addEventListener('pointerup',e=>{const p=ptr(e);
     if(o&&canMerge(d.v,o))doMerge(d.v,o);else if(o&&o.t===d.v.t&&o.l===d.v.l){toast(t('maxLvl'))}else{if(o&&(S.hSwap||0)<3){S.hSwap=(S.hSwap||0)+1;toast(t('h_swap'),2600);measure('hint','swap','shown')}moveVeg(d.v,ci);sfx('click')}}
   if(UI.mestDrag){UI.mestDrag=null;const ci=cellAt(p.x,p.y);if(ci>=0&&R&&R.veg[ci]){if(!useMest(R.veg[ci]))toast(t('maxLvl'))}}});
 $('bMest').addEventListener('pointerdown',e=>{if(!R||R.mest<=0)return;Snd.resume();UI.mestDrag={px:e.clientX,py:e.clientY};e.preventDefault()});
-$('bBuy').addEventListener('click',()=>{Snd.resume();if(!R||R.over||UI.paused)return;if(guideBuy())return;
+$('bBuy').addEventListener('click',()=>{Snd.resume();if(!R||R.over||UI.paused||UI.skipBuyClick)return;if(guideBuy())return;
   const v=buySeed();if(!v){sfx('click');if(!freeBeds().length)toast(t('fullInfo'));else toast(t('needComp',seedCost()))}});
 $('bWater').addEventListener('click',()=>{if(R&&!useWater()){if(R.mod==='nowater')toast(t('mod_nowater'));else toast(t('cooldown'))}});
 $('bScare').addEventListener('click',()=>{if(R&&!useScare()){if(R.mod==='nowater')toast(t('mod_nowater'));else toast(t('cooldown'))}});
