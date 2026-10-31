@@ -163,15 +163,26 @@ select.lang{appearance:none;-webkit-appearance:none;padding-right:12px;cursor:po
 .card .row .play{font-size:22px;padding:12px}
 
 #travel .card{min-width:260px;justify-items:center}
-#travel .bar{width:220px;height:8px;border-radius:5px;background:rgba(255,255,255,.1);overflow:hidden}#travel .bar i{display:block;height:100%;width:0;background:var(--leaf);transition:width .2s}
+
 #banner{position:absolute;left:50%;top:24%;transform:translateX(-50%);max-width:min(520px,calc(100vw - 32px));padding:12px 18px;border-radius:16px;background:var(--glass-strong);border:1px solid var(--line);display:grid;gap:4px;text-align:center;animation:bannerIn .4s ease-out}
 #banner b{font-family:var(--display);font-weight:400;font-size:22px;color:var(--leaf)}#banner span{font-weight:700;font-size:14px;line-height:1.35}
 @keyframes bannerIn{from{opacity:0;transform:translate(-50%,-12px)}}
 #loading{position:absolute;inset:0;display:grid;place-items:center;background:var(--canopy);z-index:9;transition:opacity .6s}
-#loading div{display:grid;gap:12px;justify-items:center;font-family:var(--display);font-size:30px}
-#loading .bar{width:200px;height:8px;border-radius:5px;background:rgba(255,255,255,.1);overflow:hidden}
-#loading .bar i{display:block;height:100%;width:30%;background:var(--leaf);animation:load 1s ease-in-out infinite alternate}
-@keyframes load{to{transform:translateX(233%)}}
+#loading .ld{display:grid;gap:10px;justify-items:center;font-family:var(--display);font-size:30px}
+/* loading bar with a little gecko walking along its front edge */
+.ldTrack{position:relative;width:min(260px,70vw);padding-top:26px}
+.ldTrack .bar{width:100%;height:8px;border-radius:5px;background:rgba(255,255,255,.1);overflow:hidden}
+.ldTrack .bar i{display:block;height:100%;width:0;background:var(--leaf);transition:width .25s ease-out}
+.ldGecko{position:absolute;top:0;left:0;width:44px;transform:translateX(-50%);transition:left .25s ease-out}
+.ldGecko svg{display:block;width:44px;height:22px;fill:var(--leaf);stroke:var(--leaf);stroke-width:3;stroke-linecap:round;animation:ldBob .3s ease-in-out infinite alternate}
+.ldGecko .tl{fill:none;stroke-width:3.4;animation:ldTail .6s ease-in-out infinite alternate;transform-origin:18px 16px}
+.ldGecko .ey{fill:#14260d;stroke:none}
+.ldGecko .lgA,.ldGecko .lgB{fill:none;transform-origin:32px 16px}
+.ldGecko .lgA{animation:ldLeg .3s ease-in-out infinite alternate}.ldGecko .lgB{animation:ldLeg .3s ease-in-out infinite alternate-reverse}
+@keyframes ldLeg{from{transform:rotate(-14deg)}to{transform:rotate(14deg)}}
+@keyframes ldTail{from{transform:rotate(-12deg)}to{transform:rotate(12deg)}}
+@keyframes ldBob{from{transform:rotate(-4deg)}to{transform:rotate(4deg)}}
+.ldPct{font-family:var(--display);font-size:18px;color:var(--leaf);font-variant-numeric:tabular-nums}
 
 @media (max-width:720px){
   #menu{align-items:flex-end;background:linear-gradient(0deg,rgba(6,17,10,.92) 0%,rgba(6,17,10,.7) 55%,transparent 85%)}
@@ -248,7 +259,7 @@ select.lang{appearance:none;-webkit-appearance:none;padding-right:12px;cursor:po
         <button class="play" id="playBtn" data-i18n="play">Spelen</button>
         <button class="ghost" id="shopBtn"><svg viewBox="0 0 24 24"><path d="M4 15c3-1 4-5 8-5 3 0 4 2 7 1M7 15l-1 3M10 13.5l1 4M15 11l1 4M18 11.5l2 2" stroke="#b9e44f" stroke-width="2" fill="none" stroke-linecap="round"/><circle cx="6" cy="14" r="1" fill="#b9e44f"/></svg><span data-i18n="geckos">Gekko's</span></button>
       </div>
-      <div class="menuFoot"><span class="coinsBig"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="#ffc93c"/><circle cx="12" cy="12" r="7" fill="none" stroke="#c98a12" stroke-width="1.6"/></svg><span id="menuCoins">0</span></span><span id="menuBest"></span><button class="ghost gfx" id="gfxBtn">Graphics</button><select class="ghost gfx lang" id="langSel" data-i18n-aria="language" aria-label="Taal"></select><span class="ver">v1.6</span></div>
+      <div class="menuFoot"><span class="coinsBig"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="#ffc93c"/><circle cx="12" cy="12" r="7" fill="none" stroke="#c98a12" stroke-width="1.6"/></svg><span id="menuCoins">0</span></span><span id="menuBest"></span><button class="ghost gfx" id="gfxBtn">Graphics</button><select class="ghost gfx lang" id="langSel" data-i18n-aria="language" aria-label="Taal"></select><span class="ver">v1.7</span></div>
       <div class="keys" data-i18n-html="keys"><span><kbd>WASD</kbd> lopen</span><span><kbd>Muis</kbd> kijken</span><span><kbd>Shift</kbd> sprinten</span><span><kbd>Spatie</kbd> springen</span><span><kbd>Klik</kbd>/<kbd>E</kbd> tong</span><span><kbd>F</kbd> drinken</span></div>
     </div>
   </div>
@@ -304,10 +315,10 @@ select.lang{appearance:none;-webkit-appearance:none;padding-right:12px;cursor:po
   </div>
 
   <div id="travel" class="screen center" hidden>
-    <div class="card"><h2 id="travelTitle"></h2><div class="bar"><i id="travelBar"></i></div></div>
+    <div class="card"><h2 id="travelTitle"></h2><div class="ldTrack"><div class="ldGecko" id="travelGecko"><svg viewBox="0 0 64 32" aria-hidden="true"><g class="lgA"><path d="M24 12 18 4M40 20 46 28"/></g><g class="lgB"><path d="M40 12 46 4M24 20 18 28"/></g><path class="tl" d="M18 16C12 16 8 20 2 19"/><ellipse cx="31" cy="16" rx="14" ry="5.2"/><ellipse cx="49" cy="16" rx="6.5" ry="5"/><circle cx="51" cy="12.6" r="1.6" class="ey"/><circle cx="51" cy="19.4" r="1.6" class="ey"/></svg></div><div class="bar"><i id="travelBar"></i></div></div><span class="ldPct" id="travelPct">0%</span></div>
   </div>
 
-  <div id="loading"><div>Gekko Survival<div class="bar"><i></i></div></div></div>
+  <div id="loading"><div class="ld">Gekko Survival<div class="ldTrack"><div class="ldGecko" id="ldGecko"><svg viewBox="0 0 64 32" aria-hidden="true"><g class="lgA"><path d="M24 12 18 4M40 20 46 28"/></g><g class="lgB"><path d="M40 12 46 4M24 20 18 28"/></g><path class="tl" d="M18 16C12 16 8 20 2 19"/><ellipse cx="31" cy="16" rx="14" ry="5.2"/><ellipse cx="49" cy="16" rx="6.5" ry="5"/><circle cx="51" cy="12.6" r="1.6" class="ey"/><circle cx="51" cy="19.4" r="1.6" class="ey"/></svg></div><div class="bar"><i id="ldBar"></i></div></div><span class="ldPct" id="ldPct">0%</span></div></div>
 </div>
 
 <script type="module">
@@ -319,6 +330,12 @@ import { THREE, Sky, Reflector, mergeGeometries, mergeVertices, EffectComposer, 
    Helpers
    ===================================================================== */
 const V3 = THREE.Vector3;
+/* Loading bar in whole percents, with the little gecko walking at its front edge (boot and travel screens) */
+function setBar(id,p){const v=Math.round(Math.max(0,Math.min(1,p))*100),b=document.getElementById(id+'Bar');if(!b)return;
+  if(+b.dataset.v>v)return;b.dataset.v=v;b.style.width=v+'%';document.getElementById(id+'Gecko').style.left=v+'%';document.getElementById(id+'Pct').textContent=v+'%';}
+const bootProg=p=>setBar('ld',p);
+const bootYield=()=>new Promise(r=>requestAnimationFrame(()=>setTimeout(r,0)));
+bootProg(.05);
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
 const lerp=(a,b,t)=>a+(b-a)*t;
 const smoothstep=(e0,e1,x)=>{const t=clamp((x-e0)/(e1-e0),0,1);return t*t*(3-2*t);};
@@ -466,12 +483,22 @@ function canvasTex(w,h,draw,{color=true,repeat=true}={}){
   const c=document.createElement('canvas');c.width=w;c.height=h;const g=c.getContext('2d');draw(g,w,h);
   const t=new THREE.CanvasTexture(c);if(color)t.colorSpace=THREE.SRGBColorSpace;
   if(repeat)t.wrapS=t.wrapT=THREE.RepeatWrapping;t.anisotropy=MAX_ANISO;return t;}
-function normalFromCanvas(src,strength,{flip=true}={}){const w=src.width,h=src.height;const d=src.getContext('2d').getImageData(0,0,w,h).data;
-  const c=document.createElement('canvas');c.width=w;c.height=h;const g=c.getContext('2d');const img=g.createImageData(w,h);
-  const L=(x,y)=>{x=(x+w)%w;y=(y+h)%h;const i=(y*w+x)*4;return (d[i]*.3+d[i+1]*.59+d[i+2]*.11)/255;};
-  for(let y=0;y<h;y++)for(let x=0;x<w;x++){const dx=(L(x+1,y)-L(x-1,y))*strength,dy=(L(x,y+1)-L(x,y-1))*strength*(flip?1:-1);const l=Math.hypot(dx,dy,1);const i=(y*w+x)*4;
-    img.data[i]=(-dx/l*.5+.5)*255;img.data[i+1]=(dy/l*.5+.5)*255;img.data[i+2]=(1/l*.5+.5)*255;img.data[i+3]=255;}
-  g.putImageData(img,0,0);const t=new THREE.CanvasTexture(c);t.wrapS=t.wrapT=THREE.RepeatWrapping;t.anisotropy=MAX_ANISO;return t;}
+/* Normal maps are derived from the painted canvases on the GPU: one draw into a render target instead of reading
+   the canvas back with getImageData and looping over every pixel in JS (that took most of the loading time). */
+const nrmMat=new THREE.ShaderMaterial({uniforms:{map:{value:null},texel:{value:new THREE.Vector2()},strength:{value:1},srcDir:{value:1},flip:{value:1}},depthTest:false,depthWrite:false,toneMapped:false,
+  vertexShader:`varying vec2 vUv;void main(){vUv=uv;gl_Position=vec4(position.xy,0.,1.);}`,
+  fragmentShader:`uniform sampler2D map;uniform vec2 texel;uniform float strength,srcDir,flip;varying vec2 vUv;
+    float L(vec2 o){return dot(texture2D(map,vUv+o*texel).rgb,vec3(.3,.59,.11));}
+    void main(){float dx=(L(vec2(1.,0.))-L(vec2(-1.,0.)))*strength;float dy=(L(vec2(0.,-srcDir))-L(vec2(0.,srcDir)))*strength*flip;
+      gl_FragColor=vec4(normalize(vec3(-dx,dy,1.))*.5+.5,1.);}`});
+const nrmScene=new THREE.Scene(),nrmCam=new THREE.OrthographicCamera(-1,1,1,-1,0,1);nrmScene.add(new THREE.Mesh(new THREE.PlaneGeometry(2,2),nrmMat));
+// flip: sign of the vertical slope (as before); flipY: whether the colour map using this normal map is uploaded flipped
+function normalFromCanvas(src,strength,{flip=true,flipY=true}={}){const w=src.width,h=src.height;
+  const s=new THREE.CanvasTexture(src);s.flipY=flipY;s.wrapS=s.wrapT=THREE.RepeatWrapping;s.minFilter=s.magFilter=THREE.NearestFilter;s.generateMipmaps=false;s.colorSpace=THREE.NoColorSpace;
+  const rt=new THREE.WebGLRenderTarget(w,h,{wrapS:THREE.RepeatWrapping,wrapT:THREE.RepeatWrapping,generateMipmaps:true,minFilter:THREE.LinearMipmapLinearFilter,magFilter:THREE.LinearFilter,depthBuffer:false,anisotropy:MAX_ANISO});
+  const u=nrmMat.uniforms;u.map.value=s;u.texel.value.set(1/w,1/h);u.strength.value=strength;u.srcDir.value=flipY?1:-1;u.flip.value=flip?1:-1;
+  const prev=renderer.getRenderTarget();renderer.setRenderTarget(rt);renderer.render(nrmScene,nrmCam);renderer.setRenderTarget(prev);s.dispose();u.map.value=null;
+  rt.texture.anisotropy=MAX_ANISO;rt.texture.userData.rt=rt;return rt.texture;}
 function tiled(w,h,x,y,r,fn){for(const dx of [-w,0,w])for(const dy of [-h,0,h]){const X=x+dx,Y=y+dy;if(X>-r&&X<w+r&&Y>-r&&Y<h+r)fn(X,Y);}}
 
 const barkTex=canvasTex(512,1024,(g,w,h)=>{
@@ -530,6 +557,7 @@ const waterNormal=(()=>{const N=256;const c=document.createElement('canvas');c.w
     const n=new V3(-dx*1.4,-dy*1.4,1).normalize();const i=(y*N+x)*4;img.data[i]=(n.x*.5+.5)*255;img.data[i+1]=(n.y*.5+.5)*255;img.data[i+2]=(n.z*.5+.5)*255;img.data[i+3]=255;}
   g.putImageData(img,0,0);const t=new THREE.CanvasTexture(c);t.wrapS=t.wrapT=THREE.RepeatWrapping;return t;})();
 
+bootProg(.2);await bootYield();
 /* =====================================================================
    Areas: the jungle and three worlds behind gates. Each area is rebuilt from its own seed, so a return trip finds the same world.
    ===================================================================== */
@@ -592,7 +620,7 @@ const AREAS=[
   map:{water:[60,120,110],shore:[110,100,70],land:[36,70,30],grass:[50,90,35],high:[80,84,70],tree:'rgba(15,35,10,.6)',stone:'#c6c2b0'}},
 ];
 let areaIdx=0,AREA=AREAS[0];
-function loadProg(p){const i=document.querySelector('#loading .bar i');if(i){i.style.animation='none';i.style.width=Math.round(p*100)+'%';}}
+const loadProg=p=>bootProg(.3+p*.5);
 const areaName=i=>{const a=L().areas;return a?a[AREAS[i].id]:AREAS[i].id;};
 const N2=(n,m=1)=>Math.round((LOW?n[1]:n[0])*m);
 
@@ -1209,6 +1237,7 @@ function buildWorldMap(A){const N=300,c=document.createElement('canvas');c.width
   g.putImageData(img,0,0);g.fillStyle=M.tree;for(const t of trees)if(t.kind!=='palm'){g.beginPath();g.arc((t.x+HALF),(t.z+HALF),t.kind==='big'?2.2:1.1,0,6.28);g.fill();}
   g.fillStyle=M.stone;for(const b of boxes)g.fillRect(b.minX+HALF,b.minZ+HALF,b.maxX-b.minX,b.maxZ-b.minZ);return c;}
 
+bootProg(.3);await bootYield();
 await buildWorld(0,loadProg);
 
 /* =====================================================================
@@ -1242,7 +1271,7 @@ function paintSkin(sk){
 const skinScales=(()=>{const c=document.createElement('canvas');c.width=1024;c.height=512;const g=c.getContext('2d');g.fillStyle='#5a5a5a';g.fillRect(0,0,1024,512);
   for(let y=0;y<512;y+=4.2){const belly=y>300&&y<460;const r0=belly?2.6:3.3;const row=Math.round(y/4.2);for(let x=(row%2)*3.5;x<1024;x+=belly?6:7){
     const r=r0*R(.75,1.25)*(x<90?.7:1);const big=!belly&&rnd()<.04;const rr=big?r*1.9:r;const gr=g.createRadialGradient(x-rr*.3,y-rr*.3,0,x,y,rr);gr.addColorStop(0,'#ececec');gr.addColorStop(.7,'#9a9a9a');gr.addColorStop(1,'rgba(90,90,90,0)');g.fillStyle=gr;g.fillRect(x-rr,y-rr,rr*2,rr*2);}}
-  const t=normalFromCanvas(c,7,{flip:false});t.flipY=false;return t;})();
+  return normalFromCanvas(c,7,{flip:false,flipY:false});})();
 const skinMats={};
 function skinMaterial(sk){if(skinMats[sk.id])return skinMats[sk.id];
   const tex=paintSkin(sk);tex.flipY=false;
@@ -1344,6 +1373,7 @@ class Gecko{
   mouthWorld(out){return this.root.localToWorld(out.copy(this.P[0]).add(_p.set(0,-.004,.004)));}
 }
 
+bootProg(.85);
 /* =====================================================================
    Player state
    ===================================================================== */
@@ -1590,7 +1620,7 @@ function placeGeckoAtSpawn(){PL.pos.set(SPAWN.x,terrainH(SPAWN.x,SPAWN.z),SPAWN.
   gecko.root.position.copy(PL.pos);gecko.root.quaternion.setFromAxisAngle(Y,PL.yaw);}
 
 async function startGame(){
-  if(areaIdx!==0){if(traveling)return;traveling=true;setScreen('travel');$('travelTitle').textContent=t('travelTo',{area:areaName(0)});await buildWorld(0,p=>$('travelBar').style.width=Math.round(p*100)+'%');warmUp();traveling=false;}
+  if(areaIdx!==0){if(traveling)return;traveling=true;setScreen('travel');$('travelTitle').textContent=t('travelTo',{area:areaName(0)});travelBar(0);await buildWorld(0,p=>travelBar(p*.95));warmUp();traveling=false;}
   perfSkip=3;hideBanner();
   AU.init();CFG=MODES[mode];save.mode=mode;persist();const pk=perks();
   Object.assign(PL,{health:pk.health,maxHealth:pk.health,hunger:100,thirst:100,stamina:100,growth:0,inv:2,crickets:0,coins:0,time:0,dead:false,regrab:0,drinking:false,seen:false});
@@ -1607,6 +1637,7 @@ async function startGame(){
 }
 /* ---- areas: gates, travel and the banner ---- */
 let traveling=false,bannerT=0;
+function travelBar(p){if(p===0)$('travelBar').dataset.v=0;setBar('travel',p);}
 function setHudArea(){$('hudMode').textContent=CFG.name+' \u00b7 '+areaName(areaIdx);}
 function showBanner(title,text,sec=6){$('bannerTitle').textContent=title;$('bannerText').textContent=text;const b=$('banner');b.hidden=false;b.style.animation='none';void b.offsetWidth;b.style.animation='';bannerT=sec;}
 function hideBanner(){$('banner').hidden=true;bannerT=0;}
@@ -1621,15 +1652,15 @@ function checkGates(dt){gateCool-=dt;lockMsgT-=dt;if(gateCool>0||PL.climb||trave
       travel(g.to);return;}}}
 function warmUp(){for(const f of farTiles)f.m.visible=true;renderer.compile(scene,camera);renderer.shadowMap.needsUpdate=true;}
 async function travel(to){if(traveling)return;traveling=true;const from=areaIdx;Poki.stop();PL.drinking=false;
-  setScreen('travel');$('travelTitle').textContent=t('travelTo',{area:areaName(to)});$('travelBar').style.width='0%';
+  setScreen('travel');$('travelTitle').textContent=t('travelTo',{area:areaName(to)});travelBar(0);
   await Poki.brk();
   for(const p of poachers)p.dispose();poachers.length=0;if(netDome){scene.remove(netDome);netDome=null;}
-  await buildWorld(to,p=>$('travelBar').style.width=Math.round(p*100)+'%');
+  await buildWorld(to,p=>travelBar(p*.95));
   const g=gates.find(q=>q.to===from)||gates[0];if(g)placeAtGate(g);else placeGeckoAtSpawn();
   lastPL.copy(PL.pos);visOff.set(0,0,0);
   for(let i=0;i<CFG.start+Math.floor(areaIdx/2);i++)spawnPoacher();spawnGuard();nextSpawn=CFG.every;
   setupCrickets(CFG.crickets,mode==='master'?.06:.09);
-  warmUp();$('travelBar').style.width='100%';
+  warmUp();travelBar(1);
   measure('area',AREAS[to].id,to>from?'enter':'return');
   gateCool=2.5;PL.inv=Math.max(PL.inv,2);traveling=false;setHudArea();setScreen('play');Poki.start();perfSkip=3;
   const hint=L().areaHints?.[AREAS[to].id]||'';const fg=gates.find(q=>q.fwd);
@@ -2148,13 +2179,20 @@ addEventListener('resize',onResize);
    Boot
    ===================================================================== */
 applyLang(save.lang||detectLang());applyQuality(QUALITY);placeGeckoAtSpawn();camPos.copy(PL.pos).add(_v.set(2,1,2));setupCrickets(14);renderModes();
+bootProg(.9);await bootYield();
+// Compile every shader before the menu shows. compileAsync lets the GPU driver compile in parallel (KHR_parallel_shader_compile)
+// while the page keeps painting; the bar creeps on meanwhile. A timeout keeps a stuck driver from blocking the game.
 {const wp=new Poacher(SPAWN.x+2,SPAWN.z+2);const ws=waterSimple&&waterSimple.visible,wm=waterMirror&&waterMirror.visible;if(waterSimple)waterSimple.visible=true;if(waterMirror)waterMirror.visible=true;
- for(const f of farTiles)f.m.visible=true;renderer.compile(scene,camera);renderer.shadowMap.needsUpdate=true;
+ for(const f of farTiles)f.m.visible=true;
+ let k=.9;const creep=setInterval(()=>bootProg(k=Math.min(.99,k+.01)),120);
+ try{await Promise.race([renderer.compileAsync(scene,camera),new Promise(r=>setTimeout(r,6000))]);}catch(e){renderer.compile(scene,camera);}
+ clearInterval(creep);renderer.shadowMap.needsUpdate=true;
  if(waterSimple)waterSimple.visible=ws;if(waterMirror)waterMirror.visible=wm;wp.dispose();}
+bootProg(1);
 setScreen('menu');requestAnimationFrame(frame);
-setTimeout(()=>{$('loading').style.opacity=0;setTimeout(()=>$('loading').remove(),650);},150);
+setTimeout(()=>{$('loading').style.opacity=0;setTimeout(()=>$('loading').remove(),650);},250);
 pokiInit.then(()=>{if(!save.lang&&detectLang()!==lang)applyLang(detectLang());measure('lang',lang,'start');Poki.loaded();measure('screen','menu','visible');onboarding('loaded');});
-window.__gekko={cages,get CAMP(){return CAMP;},get NEST(){return NEST;},save,finale,renderShop,setShopTab:v=>{shopTab=v;},travel,buildWorld,gates,AREAS,get areaIdx(){return areaIdx;},get SPAWN(){return SPAWN;},stageIdx,PL,renderer,scene,updatePlayer,treeRadius,groundAt,poachers,crickets,trees,boxes,rocks,startGame,setMode:m=>{mode=m;},get state(){return state;},camera,gecko,keys,get camYaw(){return camYaw;},set camYaw(v){camYaw=v;},set camPitch(v){camPitch=v;},set camDist(v){camDist=v;}};
+window.__gekko={normalFromCanvas,cages,get CAMP(){return CAMP;},get NEST(){return NEST;},save,finale,renderShop,setShopTab:v=>{shopTab=v;},travel,buildWorld,gates,AREAS,get areaIdx(){return areaIdx;},get SPAWN(){return SPAWN;},stageIdx,PL,renderer,scene,updatePlayer,treeRadius,groundAt,poachers,crickets,trees,boxes,rocks,startGame,setMode:m=>{mode=m;},get state(){return state;},camera,gecko,keys,get camYaw(){return camYaw;},set camYaw(v){camYaw=v;},set camPitch(v){camPitch=v;},set camDist(v){camDist=v;}};
 </script>
 </body>
 </html>
