@@ -117,7 +117,7 @@ button:focus-visible{outline:3px solid var(--leaf);outline-offset:2px}
 .coinsBig{display:inline-flex;align-items:center;gap:6px;font-family:var(--display);font-size:22px;color:var(--coin)}
 .coinsBig svg{width:22px;height:22px}
 .ghost.gfx{padding:8px 12px;font-size:13px;border-radius:12px}
-.revive{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;margin:0 0 10px;background:var(--coin);color:#2a1d00}
+.revive{flex:0 0 auto;display:flex;align-items:center;justify-content:center;gap:8px;width:100%;margin:0 0 10px;background:var(--coin);color:#2a1d00}
 .revive[hidden]{display:none}.revive svg{width:22px;height:22px}.revive small{font-weight:700;opacity:.75}
 .ver{margin-left:auto;font-size:11px;opacity:.6}
 select.lang{appearance:none;-webkit-appearance:none;padding-right:12px;cursor:pointer}select.lang option{background:#0c1d14;color:var(--ink)}
@@ -203,6 +203,19 @@ select.lang{appearance:none;-webkit-appearance:none;padding-right:12px;cursor:po
   .modeBtn{padding:7px 10px}.play{padding:11px 18px;font-size:24px}
   .card{padding:16px;gap:10px}.card h2{font-size:34px}
 }
+/* short frames (Poki's small desktop frame, phones in landscape): compact menu, cards and HUD so nothing falls off */
+@media (max-height:440px){
+  .logo{font-size:34px}.sub,.keys,p.label{display:none}.menuCol{gap:8px}
+  .modes{grid-template-columns:repeat(4,1fr);gap:6px}.modeBtn{padding:6px 8px}.modeBtn b{font-size:15px}.modeBtn span{display:none}.modeBtn em{font-size:10px}
+  .play{padding:9px 16px;font-size:22px}.ghost{padding:9px 14px}.ghost.gfx{padding:6px 10px}
+  .card{padding:12px 16px;gap:8px}.card h2{font-size:30px}.card p{font-size:13px;line-height:1.3}.card .row .play{font-size:19px;padding:8px}
+  .res b{font-size:19px}.stars{font-size:24px}
+  #shop{align-items:center}.shopCol{gap:8px;max-height:100%}.shopHead h2{font-size:26px}.skins{grid-template-columns:repeat(auto-fill,minmax(190px,1fr))}.skin{padding:7px}.shopAction .play{font-size:18px;padding:8px 14px}.shopMsg{min-height:0}.tabs button{padding:5px 10px;font-size:12px}
+  .stats{width:min(185px,40vw);padding:7px 9px;gap:4px}.stat{gap:6px;grid-template-columns:15px 1fr}.stat svg{width:15px;height:15px}
+  .growth{font-size:10px}.growth b{font-size:12px}.quest{font-size:11px;padding-top:4px}.quest small{font-size:9px}
+  .topright{gap:5px}.pill{font-size:15px;padding:3px 9px}.pill svg{width:15px;height:15px}.pill.mode{font-size:9.5px;padding:3px 8px}
+  #minimap{width:88px;height:88px}.iconbtn{width:34px;height:34px}
+}
 @media (prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;transition-duration:.01ms!important}}
 </style>
 
@@ -259,7 +272,7 @@ select.lang{appearance:none;-webkit-appearance:none;padding-right:12px;cursor:po
         <button class="play" id="playBtn" data-i18n="play">Spelen</button>
         <button class="ghost" id="shopBtn"><svg viewBox="0 0 24 24"><path d="M4 15c3-1 4-5 8-5 3 0 4 2 7 1M7 15l-1 3M10 13.5l1 4M15 11l1 4M18 11.5l2 2" stroke="#b9e44f" stroke-width="2" fill="none" stroke-linecap="round"/><circle cx="6" cy="14" r="1" fill="#b9e44f"/></svg><span data-i18n="geckos">Gekko's</span></button>
       </div>
-      <div class="menuFoot"><span class="coinsBig"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="#ffc93c"/><circle cx="12" cy="12" r="7" fill="none" stroke="#c98a12" stroke-width="1.6"/></svg><span id="menuCoins">0</span></span><span id="menuBest"></span><button class="ghost gfx" id="gfxBtn">Graphics</button><select class="ghost gfx lang" id="langSel" data-i18n-aria="language" aria-label="Taal"></select><span class="ver">v1.7</span></div>
+      <div class="menuFoot"><span class="coinsBig"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="#ffc93c"/><circle cx="12" cy="12" r="7" fill="none" stroke="#c98a12" stroke-width="1.6"/></svg><span id="menuCoins">0</span></span><span id="menuBest"></span><button class="ghost gfx" id="gfxBtn">Graphics</button><select class="ghost gfx lang" id="langSel" data-i18n-aria="language" aria-label="Taal"></select><span class="ver">v1.8</span></div>
       <div class="keys" data-i18n-html="keys"><span><kbd>WASD</kbd> lopen</span><span><kbd>Muis</kbd> kijken</span><span><kbd>Shift</kbd> sprinten</span><span><kbd>Spatie</kbd> springen</span><span><kbd>Klik</kbd>/<kbd>E</kbd> tong</span><span><kbd>F</kbd> drinken</span></div>
     </div>
   </div>
@@ -444,7 +457,11 @@ const isTouch=matchMedia('(pointer: coarse)').matches||('ontouchstart' in window
 const LOW=isTouch;
 const renderer=new THREE.WebGLRenderer({antialias:!LOW,powerPreference:'high-performance'});
 renderer.setPixelRatio(Math.min(devicePixelRatio,LOW?1.25:1.75));
-renderer.setSize(innerWidth,innerHeight);
+/* Size of the game area. Read from the #game element, not window.innerWidth: inside the Poki iframe the window size can lag behind
+   (or be 0 while the frame is still hidden) when the event fires. The canvas is stretched by CSS, so a late resize never leaves a gap. */
+const gameEl=$('game');let vw=1,vh=1;
+function viewSize(){vw=Math.max(1,gameEl.clientWidth||innerWidth||1);vh=Math.max(1,gameEl.clientHeight||innerHeight||1);}
+viewSize();renderer.setSize(vw,vh,false);
 renderer.outputColorSpace=THREE.SRGBColorSpace;
 renderer.toneMapping=THREE.ACESFilmicToneMapping;
 renderer.toneMappingExposure=0.97;
@@ -454,7 +471,7 @@ $('game').prepend(renderer.domElement);
 const MAX_ANISO=renderer.capabilities.getMaxAnisotropy();
 
 const scene=new THREE.Scene();
-const camera=new THREE.PerspectiveCamera(58,innerWidth/innerHeight,0.04,1100);camera.layers.enable(1);
+const camera=new THREE.PerspectiveCamera(58,vw/vh,0.04,1100);camera.layers.enable(1);
 const NOREFL=o=>{o.layers.set(1);return o;};
 const FOG_COLOR=new THREE.Color('#90a88e');
 scene.fog=new THREE.FogExp2(FOG_COLOR,0.0058);
@@ -743,7 +760,7 @@ if(!LOW){const n=200;const g=new THREE.PlaneGeometry(WORLD,WORLD,n,n);const p=g.
         gl_FragColor=vec4(col,a);
         #include <fog_fragment>
       }`};
-  waterMirror=new Reflector(g,{shader,textureWidth:Math.round(innerWidth*.5),textureHeight:Math.round(innerHeight*.5),clipBias:.003,multisample:0});
+  waterMirror=new Reflector(g,{shader,textureWidth:Math.round(vw*.5),textureHeight:Math.round(vh*.5),clipBias:.003,multisample:0});
   waterMirror.rotation.x=-Math.PI/2;waterMirror.position.y=WATER_Y+.002;waterMirror.material.transparent=true;waterMirror.material.fog=true;waterMirror.renderOrder=2;
   const u=waterMirror.material.uniforms;u.tNormal.value=waterNormal;u.uSunDir.value.copy(sunDir);u.uSunCol.value.set('#ffd6a0');
   waterMirror.userData.noAO=true;waterMirror.camera.layers.set(0);scene.add(waterMirror);}
@@ -1745,7 +1762,7 @@ const insectName=sp=>L().insects?.[sp.id]?.[0]||sp.id;
    Floating labels
    ===================================================================== */
 function floater(worldPos,text,cls=''){const v=worldPos.clone().project(camera);if(v.z>1)return;const el=document.createElement('div');el.className='floater '+cls;el.textContent=text;
-  el.style.left=((v.x*.5+.5)*innerWidth)+'px';el.style.top=((-v.y*.5+.5)*innerHeight)+'px';$('floaters').appendChild(el);setTimeout(()=>el.remove(),1150);}
+  el.style.left=((v.x*.5+.5)*vw)+'px';el.style.top=((-v.y*.5+.5)*vh)+'px';$('floaters').appendChild(el);setTimeout(()=>el.remove(),1150);}
 
 /* =====================================================================
    Update: player
@@ -2007,7 +2024,7 @@ function updateTips(dt){if(tipIdx>=5){$('tip').style.opacity=0;return;}tipT-=dt;
   if(tipIdx>=5){setTimeout(()=>$('tip').style.opacity=0,7000);save.tutorial=true;persist();}}}
 let ringT=null;
 function updateTargetRing(){const ring=$('targetRing');ringT=null;if(state!=='play'||tongue.t>=0){ring.hidden=true;return;}const t=findTarget();ringT=t;if(!t){ring.hidden=true;return;}
-  const v=t.pos.clone().add(_v.set(0,.03,0)).project(camera);if(v.z>1){ring.hidden=true;return;}ring.hidden=false;ring.style.left=((v.x*.5+.5)*innerWidth)+'px';ring.style.top=((-v.y*.5+.5)*innerHeight)+'px';}
+  const v=t.pos.clone().add(_v.set(0,.03,0)).project(camera);if(v.z>1){ring.hidden=true;return;}ring.hidden=false;ring.style.left=((v.x*.5+.5)*vw)+'px';ring.style.top=((-v.y*.5+.5)*vh)+'px';}
 
 /* =====================================================================
    Main update
@@ -2056,14 +2073,14 @@ const GradeShader={uniforms:{tDiffuse:{value:null},uSun:{value:new THREE.Vector2
     gl_FragColor=vec4(col,1.);}`};
 let composer=null,gtao=null,bloom=null,grade=null,QUALITY=LOW?0:1;if(typeof save.gfx==='number')QUALITY=clamp(save.gfx,0,2);
 function buildComposer(){const pr=renderer.getPixelRatio();
-  const rt=new THREE.WebGLRenderTarget(innerWidth*pr,innerHeight*pr,{type:THREE.HalfFloatType,samples:LOW?0:4});
+  const rt=new THREE.WebGLRenderTarget(vw*pr,vh*pr,{type:THREE.HalfFloatType,samples:LOW?0:4});
   composer=new EffectComposer(renderer,rt);composer.addPass(new RenderPass(scene,camera));
-  if(!LOW){gtao=new GTAOPass(scene,camera,innerWidth,innerHeight);gtao.output=GTAOPass.OUTPUT.Default;gtao.blendIntensity=.85;
+  if(!LOW){gtao=new GTAOPass(scene,camera,vw,vh);gtao.output=GTAOPass.OUTPUT.Default;gtao.blendIntensity=.85;
     gtao.updateGtaoMaterial({radius:.55,distanceExponent:1.6,thickness:1.2,scale:1,samples:12,distanceFallOff:1});gtao.updatePdMaterial({lumaPhi:10,depthPhi:2,normalPhi:3,radius:5,rings:2,samples:12});
     gtao.overrideVisibility=function(){const c=this._visibilityCache;this.scene.traverse(o=>{c.set(o,o.visible);
       if(o.isPoints||o.isLine||o.isSprite||o.userData.noAO||(o.material&&(o.material.alphaTest>0||o.material.transparent)))o.visible=false;});};
     composer.addPass(gtao);}
-  bloom=new UnrealBloomPass(new THREE.Vector2(innerWidth,innerHeight),.32,.55,.92);composer.addPass(bloom);
+  bloom=new UnrealBloomPass(new THREE.Vector2(vw,vh),.32,.55,.92);composer.addPass(bloom);
   grade=new ShaderPass(GradeShader);grade.uniforms.uShafts={value:1};composer.addPass(grade);composer.addPass(new OutputPass());}
 buildComposer();
 /* adaptive quality: drop the most expensive effects when the frame rate stays low */
@@ -2081,7 +2098,9 @@ function adaptQuality(dt){if(perfSkip>0){perfSkip-=dt;return;}perfAcc+=dt;perfN+
   else if(avg<1/57&&resScale<1){if(++perfGood>=4){perfGood=0;resScale=Math.min(1,resScale+.15);setRes();perfSkip=1.5;}}else perfGood=0;}
 const _sunScr=new V3(),_camDir=new V3();
 let lastTs=0,dtS=1/60;
-function frame(ts){requestAnimationFrame(frame);const raw=lastTs?Math.min((ts-lastTs)/1000,.1):1/60;lastTs=ts;
+function frame(ts){requestAnimationFrame(frame);
+  {const w=gameEl.clientWidth,h=gameEl.clientHeight;if(w>0&&h>0&&(w!==vw||h!==vh))onResize();}// a missed resize event never leaves the picture stretched
+  const raw=lastTs?Math.min((ts-lastTs)/1000,.1):1/60;lastTs=ts;
   dtS+=(raw-dtS)*(Math.abs(raw-dtS)>.03?1:.25);const dt=Math.min(dtS,.05);time+=dt;
   if(state==='play'&&!PL.dead)updateGame(dt);
   else if(state==='play'&&PL.dead){updatePoachers(dt);}
@@ -2096,7 +2115,7 @@ function frame(ts){requestAnimationFrame(frame);const raw=lastTs?Math.min((ts-la
   updateFallers(dt);updatePrecip(dt);
   for(const g of gates){const on=gateOpen(g);g.portal.material.uniforms.uTime.value=time;g.portal.material.uniforms.uOn.value=on?1:0;g.beam.visible=g.fwd&&on;g.beam.material.uniforms.uTime.value=time;}
   camera.getWorldDirection(_camDir);_sunScr.copy(camera.position).addScaledVector(sunDir,500).project(camera);
-  grade.uniforms.uSun.value.set(_sunScr.x*.5+.5,_sunScr.y*.5+.5);grade.uniforms.uSunVis.value=smoothstep(.15,.6,_camDir.dot(sunDir));grade.uniforms.uAspect.value=innerWidth/innerHeight;
+  grade.uniforms.uSun.value.set(_sunScr.x*.5+.5,_sunScr.y*.5+.5);grade.uniforms.uSunVis.value=smoothstep(.15,.6,_camDir.dot(sunDir));grade.uniforms.uAspect.value=vw/vh;
   if(state==='play')adaptQuality(dt);
   {const texel=2*SH/sun.shadow.mapSize.x;_sr.crossVectors(Y,sunDir).normalize();_su.crossVectors(sunDir,_sr);const P=PL.pos;
    const a=Math.round(P.dot(_sr)/texel)*texel,b=Math.round(P.dot(_su)/texel)*texel,d=P.dot(sunDir);
@@ -2172,8 +2191,13 @@ $('overShop').onclick=()=>{measure('button','shop-over','interact');toMenu();$('
 $('menuBtn').onclick=()=>{measure('button','menu','interact');toMenu();};
 function toMenu(){Poki.stop();for(const p of poachers)p.dispose();poachers.length=0;if(netDome){scene.remove(netDome);netDome=null;}PL.dead=false;PL.drinking=false;PL.speed=0;PL.growth=0;
   curSkin=skinById(save.skin);previewSkin(curSkin);placeGeckoAtSpawn();renderModes();setupCrickets(14);setScreen('menu');}
-function onResize(){camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight);composer.setSize(innerWidth,innerHeight);if(waterMirror)waterMirror.getRenderTarget().setSize(Math.round(innerWidth*.5),Math.round(innerHeight*.5));}
-addEventListener('resize',onResize);
+function onResize(){viewSize();camera.aspect=vw/vh;camera.updateProjectionMatrix();renderer.setSize(vw,vh,false);composer.setSize(vw,vh);if(waterMirror)waterMirror.getRenderTarget().setSize(Math.round(vw*.5),Math.round(vh*.5));}
+// Poki resizes the iframe (window resize, fullscreen, rotating a phone); listen to all of it and resize once per frame at most.
+let rszQ=0;const queueResize=()=>{if(!rszQ)rszQ=requestAnimationFrame(()=>{rszQ=0;onResize();});};
+addEventListener('resize',queueResize);addEventListener('orientationchange',()=>{queueResize();setTimeout(onResize,300);});
+if(window.visualViewport)visualViewport.addEventListener('resize',queueResize);
+if(window.ResizeObserver)new ResizeObserver(queueResize).observe(gameEl);
+document.addEventListener('fullscreenchange',queueResize);
 
 /* =====================================================================
    Boot
