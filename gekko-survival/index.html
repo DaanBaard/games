@@ -198,6 +198,7 @@ select.lang{appearance:none;-webkit-appearance:none;padding-right:12px;cursor:po
 }
 /* content taller than the screen scrolls instead of being cut off at the top (small Poki frames) */
 #menu,.center{align-items:flex-start}.menuCol,.center .card{margin-block:auto}
+@media (max-height:640px){.sub{display:none}}
 @media (max-height:620px) and (min-width:721px){
   .logo{font-size:46px}.sub{display:none}.menuCol{gap:10px}.keys{display:none}
   .modeBtn{padding:7px 10px}.play{padding:11px 18px;font-size:24px}
@@ -272,7 +273,7 @@ select.lang{appearance:none;-webkit-appearance:none;padding-right:12px;cursor:po
         <button class="play" id="playBtn" data-i18n="play">Spelen</button>
         <button class="ghost" id="shopBtn"><svg viewBox="0 0 24 24"><path d="M4 15c3-1 4-5 8-5 3 0 4 2 7 1M7 15l-1 3M10 13.5l1 4M15 11l1 4M18 11.5l2 2" stroke="#b9e44f" stroke-width="2" fill="none" stroke-linecap="round"/><circle cx="6" cy="14" r="1" fill="#b9e44f"/></svg><span data-i18n="geckos">Gekko's</span></button>
       </div>
-      <div class="menuFoot"><span class="coinsBig"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="#ffc93c"/><circle cx="12" cy="12" r="7" fill="none" stroke="#c98a12" stroke-width="1.6"/></svg><span id="menuCoins">0</span></span><span id="menuBest"></span><button class="ghost gfx" id="gfxBtn">Graphics</button><select class="ghost gfx lang" id="langSel" data-i18n-aria="language" aria-label="Taal"></select><span class="ver">v1.8</span></div>
+      <div class="menuFoot"><span class="coinsBig"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="#ffc93c"/><circle cx="12" cy="12" r="7" fill="none" stroke="#c98a12" stroke-width="1.6"/></svg><span id="menuCoins">0</span></span><span id="menuBest"></span><button class="ghost gfx" id="gfxBtn">Graphics</button><select class="ghost gfx lang" id="langSel" data-i18n-aria="language" aria-label="Taal"></select><span class="ver">v1.9</span></div>
       <div class="keys" data-i18n-html="keys"><span><kbd>WASD</kbd> lopen</span><span><kbd>Muis</kbd> kijken</span><span><kbd>Shift</kbd> sprinten</span><span><kbd>Spatie</kbd> springen</span><span><kbd>Klik</kbd>/<kbd>E</kbd> tong</span><span><kbd>F</kbd> drinken</span></div>
     </div>
   </div>
@@ -1631,8 +1632,13 @@ const QUESTS=[
 ];
 let goldEaten=0,escapes=0;
 function show(id,on){$(id).hidden=!on;}
+/* Menus and cards must fit without scrolling, whatever size Poki gives the frame (it can also scale the frame):
+   when the content is taller than the screen, it is zoomed out until it fits. */
+function fitScreens(){for(const id of ['menu','over','pause','win','travel']){const sc=$(id);if(!sc||sc.hidden)continue;const c=sc.firstElementChild;c.style.zoom='';
+  const cs=getComputedStyle(sc),avail=sc.clientHeight-parseFloat(cs.paddingTop)-parseFloat(cs.paddingBottom),need=c.offsetHeight;
+  if(avail>0&&need>avail)c.style.zoom=Math.max(.5,(avail-6)/need).toFixed(3);}}
 function setScreen(s){state=s;show('menu',s==='menu');show('shop',s==='shop');show('pause',s==='pause');show('over',s==='over');
-  show('travel',s==='travel');show('win',s==='win');show('hud',s==='play'||s==='pause');show('touch',isTouch&&s==='play');if(s!=='play'&&document.pointerLockElement)document.exitPointerLock?.();}
+  show('travel',s==='travel');show('win',s==='win');show('hud',s==='play'||s==='pause');show('touch',isTouch&&s==='play');if(s!=='play'&&document.pointerLockElement)document.exitPointerLock?.();fitScreens();}
 function placeGeckoAtSpawn(){PL.pos.set(SPAWN.x,terrainH(SPAWN.x,SPAWN.z),SPAWN.z);PL.yaw=SPAWN.face;PL.vel.set(0,0,0);PL.climb=null;PL.perch=null;PL.up.set(0,1,0);
   gecko.root.position.copy(PL.pos);gecko.root.quaternion.setFromAxisAngle(Y,PL.yaw);}
 
@@ -2139,7 +2145,7 @@ function applyLang(l){lang=TR[l]?l:'en';document.documentElement.lang=lang;const
   document.querySelectorAll('[data-i18n-html]').forEach(el=>el.innerHTML=t(el.dataset.i18nHtml));
   document.querySelectorAll('[data-i18n-aria]').forEach(el=>el.setAttribute('aria-label',t(el.dataset.i18nAria)));
   for(const id of ['gfxBtn','gfxBtn2'])$(id).textContent=t('gfx')+': '+T.gfxQ[QUALITY];
-  $('langSel').value=lang;setHudArea();refreshGateLabels();renderModes();if(state==='shop')renderShop();}
+  $('langSel').value=lang;setHudArea();refreshGateLabels();renderModes();if(state==='shop')renderShop();fitScreens();}
 {const sel=$('langSel');for(const [k,n] of Object.entries(LANGS)){const o=document.createElement('option');o.value=k;o.textContent=n;sel.appendChild(o);}
   sel.onchange=()=>{save.lang=sel.value;persist();applyLang(sel.value);measure('lang',sel.value,'selected');};}
 let shopTab='skins',skillSel='tong';
@@ -2191,7 +2197,7 @@ $('overShop').onclick=()=>{measure('button','shop-over','interact');toMenu();$('
 $('menuBtn').onclick=()=>{measure('button','menu','interact');toMenu();};
 function toMenu(){Poki.stop();for(const p of poachers)p.dispose();poachers.length=0;if(netDome){scene.remove(netDome);netDome=null;}PL.dead=false;PL.drinking=false;PL.speed=0;PL.growth=0;
   curSkin=skinById(save.skin);previewSkin(curSkin);placeGeckoAtSpawn();renderModes();setupCrickets(14);setScreen('menu');}
-function onResize(){viewSize();camera.aspect=vw/vh;camera.updateProjectionMatrix();renderer.setSize(vw,vh,false);composer.setSize(vw,vh);if(waterMirror)waterMirror.getRenderTarget().setSize(Math.round(vw*.5),Math.round(vh*.5));}
+function onResize(){viewSize();fitScreens();camera.aspect=vw/vh;camera.updateProjectionMatrix();renderer.setSize(vw,vh,false);composer.setSize(vw,vh);if(waterMirror)waterMirror.getRenderTarget().setSize(Math.round(vw*.5),Math.round(vh*.5));}
 // Poki resizes the iframe (window resize, fullscreen, rotating a phone); listen to all of it and resize once per frame at most.
 let rszQ=0;const queueResize=()=>{if(!rszQ)rszQ=requestAnimationFrame(()=>{rszQ=0;onResize();});};
 addEventListener('resize',queueResize);addEventListener('orientationchange',()=>{queueResize();setTimeout(onResize,300);});
@@ -2213,7 +2219,7 @@ bootProg(.9);await bootYield();
  clearInterval(creep);renderer.shadowMap.needsUpdate=true;
  if(waterSimple)waterSimple.visible=ws;if(waterMirror)waterMirror.visible=wm;wp.dispose();}
 bootProg(1);
-setScreen('menu');requestAnimationFrame(frame);
+setScreen('menu');requestAnimationFrame(frame);document.fonts?.ready.then(fitScreens);
 setTimeout(()=>{$('loading').style.opacity=0;setTimeout(()=>$('loading').remove(),650);},250);
 pokiInit.then(()=>{if(!save.lang&&detectLang()!==lang)applyLang(detectLang());measure('lang',lang,'start');Poki.loaded();measure('screen','menu','visible');onboarding('loaded');});
 window.__gekko={normalFromCanvas,cages,get CAMP(){return CAMP;},get NEST(){return NEST;},save,finale,renderShop,setShopTab:v=>{shopTab=v;},travel,buildWorld,gates,AREAS,get areaIdx(){return areaIdx;},get SPAWN(){return SPAWN;},stageIdx,PL,renderer,scene,updatePlayer,treeRadius,groundAt,poachers,crickets,trees,boxes,rocks,startGame,setMode:m=>{mode=m;},get state(){return state;},camera,gecko,keys,get camYaw(){return camYaw;},set camYaw(v){camYaw=v;},set camPitch(v){camPitch=v;},set camDist(v){camDist=v;}};
