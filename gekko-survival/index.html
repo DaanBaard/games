@@ -276,7 +276,7 @@ select.lang{appearance:none;-webkit-appearance:none;padding-right:12px;cursor:po
         <button class="play" id="playBtn" data-i18n="play">Spelen</button>
         <button class="ghost" id="shopBtn"><svg viewBox="0 0 24 24"><path d="M4 15c3-1 4-5 8-5 3 0 4 2 7 1M7 15l-1 3M10 13.5l1 4M15 11l1 4M18 11.5l2 2" stroke="#b9e44f" stroke-width="2" fill="none" stroke-linecap="round"/><circle cx="6" cy="14" r="1" fill="#b9e44f"/></svg><span data-i18n="geckos">Gekko's</span></button>
       </div>
-      <div class="menuFoot"><span class="coinsBig"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="#ffc93c"/><circle cx="12" cy="12" r="7" fill="none" stroke="#c98a12" stroke-width="1.6"/></svg><span id="menuCoins">0</span></span><span id="menuBest"></span><button class="ghost gfx" id="gfxBtn">Graphics</button><select class="ghost gfx lang" id="langSel" data-i18n-aria="language" aria-label="Taal"></select><span class="ver">v1.11</span></div>
+      <div class="menuFoot"><span class="coinsBig"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="#ffc93c"/><circle cx="12" cy="12" r="7" fill="none" stroke="#c98a12" stroke-width="1.6"/></svg><span id="menuCoins">0</span></span><span id="menuBest"></span><button class="ghost gfx" id="gfxBtn">Graphics</button><select class="ghost gfx lang" id="langSel" data-i18n-aria="language" aria-label="Taal"></select><span class="ver">v1.12</span></div>
       <div class="keys" data-i18n-html="keys"><span><kbd>WASD</kbd> lopen</span><span><kbd>Muis</kbd> kijken</span><span><kbd>Shift</kbd> sprinten</span><span><kbd>Spatie</kbd> springen</span><span><kbd>Klik</kbd>/<kbd>E</kbd> tong</span><span><kbd>F</kbd> drinken</span></div>
     </div>
   </div>
@@ -439,10 +439,13 @@ const SPECIES=[
   {id:'ijskrekel',area:1,r:0,col:'#cfe3ee',leg:'#8aa6b8'},{id:'sneeuwkever',area:1,r:1,col:'#2f4a86',leg:'#1c2a4a',beetle:1,metal:.3},{id:'kristalkrekel',area:1,r:2,col:'#a8ecff',metal:.6,glow:'#9fe3ff'},
   {id:'zandkrekel',area:2,r:0,col:'#d2ac6c',leg:'#9a7a44'},{id:'mestkever',area:2,r:1,col:'#2a2420',leg:'#16120e',beetle:1,metal:.45},{id:'robijnkever',area:2,r:2,col:'#e2303e',metal:.6,beetle:1,glow:'#ff6a5a'},
   {id:'boskrekel',area:3,r:0,col:'#4f6a26',leg:'#33461a'},{id:'vuurvliegje',area:3,r:1,col:'#3a3220',leg:'#2a2416',glow:'#e8ff6a',fly:1},{id:'smaragdkever',area:3,r:2,col:'#18c27a',metal:.75,beetle:1,glow:'#5fffb0'},
+  // water insects live on the lakes of every area and have their own page in the book
+  {id:'waterloper',area:4,r:0,col:'#5a4630',leg:'#2e2418',strider:1,water:1},{id:'schrijvertje',area:4,r:1,col:'#202a36',leg:'#10161c',beetle:1,metal:.6,water:1},{id:'parelduiker',area:4,r:2,col:'#8fd8ff',metal:.7,beetle:1,glow:'#c4f2ff',water:1},
 ];
 const RARITY=[{hunger:17,grow:.05,coins:2,need:10},{hunger:22,grow:.06,coins:4,need:5},{hunger:30,grow:.1,coins:10,need:1}];
 const speciesById=id=>SPECIES.find(q=>q.id===id);
-const PAGE_REWARD=[150,250,350,500];
+const PAGE_REWARD=[150,250,350,500,300];const PAGES=5;
+const pageName=a=>a<AREAS.length?areaName(a):(L().areas?.water||'Water');const pageId=a=>a<AREAS.length?AREAS[a].id:'water';
 const pageDone=a=>SPECIES.filter(q=>q.area===a).every(q=>(save.book[q.id]||0)>=RARITY[q.r].need);
 /* Skills, bought with coins; level 3 needs a special insect in the book */
 const SKILLS=[
@@ -599,6 +602,12 @@ const AREAS=[
   water:{shal:[.16,.2,.1],deep:[.012,.07,.065]},
   fx:{leaves:1,snow:0,rain:0,dust:'#fff3c8',dustO:.75,butterflies:1,shafts:1},
   needs:{hunger:1,thirst:1},
+  deco:{flowers:[{k:'daisy',col:'#ff6fa8',cen:'#ffd23a',leaf:'#3f7a22',n:[70,30]},{k:'daisy',col:'#fff6e8',cen:'#ffc21a',leaf:'#3f7a22',n:[60,25]},{k:'heli',col:'#e8321e',col2:'#ffd02a',leaf:'#2f6a1a',leaf2:'#5c9a2e',n:[45,20],cl:[1,4],s:[1.3,2],shadow:1},
+      {k:'orchid',col:'#d070e0',cen:'#fff0a0',leaf:'#3a7020',n:[30,12],cl:[1,3]},{k:'cup',col:'#ff8a1e',col2:'#ffd23a',leaf:'#3f7a22',n:[40,15],lake:1}],
+    plants:[{k:'brom',col:'#e8402a',col2:'#ff7a3a',leaf:'#2f6a1a',leaf2:'#7aa83a',n:[70,30],s:[1.1,1.8],shadow:1}],
+    shrooms:{n:[90,40],kinds:[{k:'shroom',col:'#c8321e',dot:'#fff4e0',h:.09,w:.04},{k:'shroom',col:'#b07a46',h:.13,w:.03,flat:.8},{k:'shroom',col:'#e8d8b0',h:.06,w:.022}]},
+    moss:{n:[170,90],top:['#3f7a14','#4a8a18','#356c12'],side:['#2a4f10','#22420c'],atTree:.45},
+    stones:{n:[150,80],cols:[['#6a665c','#4f7a2a'],['#7a7466','#6a8a3a'],['#5c5850','#5a6a40']]}},
   map:{water:[58,140,170],shore:[150,140,100],land:[46,86,40],grass:[70,110,45],high:[90,92,80],tree:'rgba(30,50,20,.55)',stone:'#d9d2bd'}},
  {id:'snow',seed:7733101,nx:9.4,nz:1.3,hills:16,base:3,dunes:0,rimH:22,rimV:34,
   lakes:[{x:-20,z:10,r:16},{x:60,z:-50,r:12},{x:-70,z:-60,r:11},{x:50,z:70,r:13},{x:-80,z:60,r:10}],temple:{x:-30,z:-34},
@@ -613,6 +622,10 @@ const AREAS=[
   water:{shal:[.14,.2,.24],deep:[.01,.05,.09]},
   fx:{leaves:0,snow:1,rain:0,dust:'#ffffff',dustO:0,butterflies:0,shafts:0},
   needs:{hunger:1.3,thirst:1},
+  deco:{flowers:[{k:'bell',col:'#ffffff',leaf:'#3f6a4a',n:[90,40],cl:[5,14]},{k:'spike',col:'#b05ad0',col2:'#e0a0f0',leaf:'#2f4a36',n:[80,35],h:.18},{k:'cup',col:'#9a7ae0',col2:'#e8dcff',cen:'#ffb21a',leaf:'#3f6a4a',n:[50,20],h:.1}],
+    plants:[{k:'berry',col:'#d8202a',leaf:'#1f3d2a',leaf2:'#2f5a3a',n:[150,60],s:[1.2,1.9],shadow:1},{k:'tuft',leaf:'#8a8a6a',leaf2:'#d8d0b0',n:[220,90],s:[1,1.6]}],
+    moss:{n:[110,60],top:['#eef3f7','#e4ebf1'],side:['#6c7a58','#5f6e50','#7a8068'],atTree:.3},
+    stones:{n:[180,90],cols:[['#6f7680','#eef3f7'],['#5f6670','#e4ebf1'],['#7a828c','#dfe7ee']]}},
   map:{water:[90,150,190],shore:[200,210,220],land:[214,222,230],grass:[214,222,230],high:[150,156,164],tree:'rgba(30,60,45,.6)',stone:'#9aa4ae'}},
  {id:'desert',seed:5150221,nx:4.6,nz:12.2,hills:5,base:2.2,dunes:3.2,rimH:12,rimV:18,
   lakes:[{x:10,z:-20,r:10},{x:-70,z:50,r:8},{x:75,z:40,r:8},{x:-40,z:-80,r:8}],temple:{x:34,z:22},
@@ -627,6 +640,10 @@ const AREAS=[
   water:{shal:[.1,.25,.22],deep:[.005,.09,.1]},
   fx:{leaves:0,snow:0,rain:0,dust:'#f0d8a8',dustO:.55,butterflies:0,shafts:0},
   needs:{hunger:1,thirst:1.35},
+  deco:{flowers:[{k:'cup',col:'#ffd23a',col2:'#ff9a1a',leaf:'#6a7a3a',n:[60,25],cen:'#7a3a10'},{k:'cup',col:'#e04a9a',col2:'#ffb0d8',leaf:'#6a7a3a',n:[45,18]},{k:'daisy',col:'#fff0b0',cen:'#e08a1a',leaf:'#7a8a4a',n:[40,15],h:.12}],
+    plants:[{k:'agave',leaf:'#4a7a6a',leaf2:'#9ac0a8',n:[200,90],s:[.8,1.5],shadow:2},{k:'tuft',leaf:'#a89a5a',leaf2:'#e8d8a0',n:[320,130],s:[1,1.7]}],
+    barrels:{n:[110,55],flower:{k:'cup',col:'#ff5a8a',col2:'#ffd0e0',leaf:'#4f8a3e',h:.02}},
+    stones:{n:[200,100],cols:[['#a8714a','#d9b07a'],['#b8845a','#e6c597'],['#8a5a3a','#c89a6a'],['#d0c0a0','#efe0c0']]}},
   map:{water:[60,170,180],shore:[220,200,150],land:[214,180,120],grass:[190,170,100],high:[170,120,80],tree:'rgba(40,70,30,.6)',stone:'#e6c597'}},
  {id:'rainforest',seed:9902617,nx:14.1,nz:5.2,hills:12,base:2.6,dunes:0,rimH:18,rimV:30,
   lakes:[{x:0,z:-12,r:12},{x:-60,z:30,r:15},{x:58,z:58,r:12},{x:-30,z:-76,r:10},{x:80,z:-40,r:13},{x:-95,z:-25,r:9},{x:30,z:-62,r:8},{x:-12,z:72,r:9}],temple:{x:34,z:20},
@@ -641,6 +658,12 @@ const AREAS=[
   water:{shal:[.18,.17,.08],deep:[.03,.06,.03]},
   fx:{leaves:1,snow:0,rain:1,dust:'#d8ecd0',dustO:.45,butterflies:1,shafts:1},
   needs:{hunger:1,thirst:.7},
+  deco:{flowers:[{k:'orchid',col:'#e060c8',cen:'#fff0a0',leaf:'#2f6a1c',n:[60,25],cl:[2,5]},{k:'orchid',col:'#ffffff',cen:'#c03aa0',leaf:'#2f6a1c',n:[40,15],cl:[1,4]},{k:'heli',col:'#ff4a1e',col2:'#ffe03a',leaf:'#245a17',leaf2:'#4d8a22',n:[70,30],cl:[1,4],s:[1.4,2.1],shadow:1},
+      {k:'daisy',col:'#ff9ad0',cen:'#ffe04a',leaf:'#2f6a1c',n:[50,20]}],
+    plants:[{k:'brom',col:'#ff3a6a',col2:'#ffb03a',leaf:'#245a17',leaf2:'#6a9a2a',n:[110,50],s:[1.2,1.9],shadow:1},{k:'brom',col:'#c02020',col2:'#ff5a2a',leaf:'#2f6a1c',leaf2:'#8ab03a',n:[60,25],s:[.6,1.1],near:'tree'}],
+    shrooms:{n:[140,60],kinds:[{k:'shroom',col:'#c8321e',dot:'#fff4e0',h:.09,w:.04},{k:'shroom',col:'#9fe8ff',h:.07,w:.026,glow:1,stem:'#d8f4ff'},{k:'shroom',col:'#f0a03a',h:.11,w:.035,flat:.7}]},
+    moss:{n:[260,120],top:['#3a7a12','#448a16','#2f6a0e','#4f9418'],side:['#1f420c','#284e10'],atTree:.5},
+    stones:{n:[110,60],cols:[['#55524a','#3f7a1c'],['#605c52','#4f8a24']]}},
   map:{water:[60,120,110],shore:[110,100,70],land:[36,70,30],grass:[50,90,35],high:[80,84,70],tree:'rgba(15,35,10,.6)',stone:'#c6c2b0'}},
 ];
 let areaIdx=0,AREA=AREAS[0];
@@ -794,7 +817,8 @@ function addLeaf(x,y,z,scale,hue=0,c=null){_e.set(R(0,6.28),R(0,6.28),R(0,6.28))
   leafCtr.push(c?c[0]:x,c?c[1]:y-1,c?c[2]:z);
   leafC.push(new THREE.Color().setHSL(AREA.leafH+hue+R(-.03,.03),R(AREA.leafS[0],AREA.leafS[1]),R(AREA.leafL[0],AREA.leafL[1])));}
 const trunkGeos=[],palmGeos=[],frondGeos=[],lianaGeos=[],pineGeos=[],cactusGeos=[];
-function trunkGeo(rB,rT,H,x0,y0,z0,seed){
+let _ts=0;
+function trunkGeo(rB,rT,H,x0,y0,z0,seed){_ts=seed;
   const g=new THREE.CylinderGeometry(rT,rB,H,16,Math.max(4,Math.round(H/1.5)),true);g.translate(0,H/2,0);
   const p=g.attributes.position,uv=g.attributes.uv;
   for(let i=0;i<p.count;i++){const x=p.getX(i),y=p.getY(i),z=p.getZ(i);const r=Math.hypot(x,z)||1;
@@ -833,24 +857,24 @@ function placeTree(x,z,kind){
       const cc=[to.x,to.y+.5,to.z];for(let k=0;k<26;k++){const a2=R(0,6.28),r2=R(.3,1)*2.9;addLeaf(to.x+Math.cos(a2)*r2,to.y+R(-.5,1.9)*(1.1-r2/3.2),to.z+Math.sin(a2)*r2,R(1.5,2.5),0,cc);}
       if(rnd()<B.lianas)lianaGeos.push(lianaGeo(to,new V3(to.x+R(-1.5,1.5),0,to.z+R(-1.5,1.5))));}
     {const cc=[x,top.y+1.2,z];for(let k=0;k<22;k++)addLeaf(x+R(-3.2,3.2),top.y+R(.3,2.6),z+R(-3.2,3.2),R(1.8,2.6),0,cc);}
-    trees.push({x,z,base,rB,rT,H,top:H-.3,climbMax:H-.45,canopy:H*.7,kind,yOff:-.3,flare:true,fins,branches});
+    trees.push({x,z,base,rB,rT,H,top:H-.3,climbMax:H-.45,canopy:H*.7,kind,yOff:-.3,flare:true,fins,branches,seed:_ts});
   }else if(kind==='small'){
     const H=R(4,7),rB=R(.16,.26),rT=rB*.5;
     trunkGeos.push(trunkGeo(rB,rT,H,x,base-.2,z,R(0,99)));
     const n=RI(18,28),cc=[x,base+H*.8,z];for(let k=0;k<n;k++){const t=R(.55,1.05);addLeaf(x+R(-1.6,1.6)*t,base+H*t,z+R(-1.6,1.6)*t,R(1,1.7),0,cc);}
-    trees.push({x,z,base,rB,rT,H,top:H-.2,climbMax:H-.35,canopy:H*.6,kind,yOff:-.2,flare:true,fins:null,branches:null});
+    trees.push({x,z,base,rB,rT,H,top:H-.2,climbMax:H-.35,canopy:H*.6,kind,yOff:-.2,flare:true,fins:null,branches:null,seed:_ts});
   }else if(kind==='bare'){
     const H=R(8,12),rB=R(.35,.5),rT=rB*.42,seed=R(0,99);
     trunkGeos.push(trunkGeo(rB,rT,H,x,base-.3,z,seed));const nb=RI(4,6),branches=[];
     for(let i=0;i<nb;i++){const a=i/nb*6.28+R(-.4,.4),L=R(2.5,4.2);const from=new V3(x,base+H*R(.5,.85),z);const to=new V3(x+Math.cos(a)*L,from.y+R(1.2,2.6),z+Math.sin(a)*L);
       trunkGeos.push(branchGeo(from,to,rT*.9,rT*.3));branches.push(branchInfo(from,to,rT*.9,rT*.3,a));
       const tw=new V3().lerpVectors(from,to,R(.55,.8)),a2=a+R(-.9,.9),l2=R(.8,1.4);trunkGeos.push(branchGeo(tw,new V3(tw.x+Math.cos(a2)*l2,tw.y+R(.6,1.2),tw.z+Math.sin(a2)*l2),rT*.3,rT*.1));}
-    trees.push({x,z,base,rB,rT,H,top:H-.3,climbMax:H-.45,canopy:H*.7,kind,yOff:-.3,flare:true,fins:null,branches});
+    trees.push({x,z,base,rB,rT,H,top:H-.3,climbMax:H-.45,canopy:H*.7,kind,yOff:-.3,flare:true,fins:null,branches,seed:_ts});
   }else if(kind==='pine'){
     const H=R(8,14),rB=R(.22,.3),rT=rB*.35;
     trunkGeos.push(trunkGeo(rB,rT,H,x,base-.2,z,R(0,99)));
     const tiers=RI(4,6),sd=R(0,99);for(let k=0;k<tiers;k++){const t=k/tiers;pineGeos.push(pineCone(x,base+H*(.22+t*.62),z,lerp(R(2,2.6)*H/11,.55,t),lerp(H*.34,H*.22,t),sd+k));}
-    trees.push({x,z,base,rB,rT,H,top:H-.2,climbMax:H-.35,canopy:H*.35,kind,yOff:-.2,flare:true,fins:null,branches:null});
+    trees.push({x,z,base,rB,rT,H,top:H-.2,climbMax:H-.35,canopy:H*.35,kind,yOff:-.2,flare:true,fins:null,branches:null,seed:_ts});
   }else if(kind==='cactus'){
     const H=R(3.5,6.5),rB=R(.28,.38),rT=rB*.95;
     cactusGeos.push(cactusPart(x,base-.2,z,rB,H+.2-rB*.4));
@@ -864,7 +888,7 @@ function placeTree(x,z,kind){
     for(let i=0;i<nb;i++){const a=i/nb*6.28+R(-.4,.4),L=R(2.2,3.8);const from=new V3(x,base+H*R(.55,.8),z);const to=new V3(x+Math.cos(a)*L,from.y+R(1.1,2),z+Math.sin(a)*L);
       trunkGeos.push(branchGeo(from,to,rT*.85,rT*.35));branches.push(branchInfo(from,to,rT*.85,rT*.35,a));
       const cc=[to.x,to.y-.6,to.z];for(let k=0;k<16;k++){const a2=R(0,6.28),r2=Math.sqrt(rnd())*2.6;addLeaf(to.x+Math.cos(a2)*r2,to.y+R(.1,.6),to.z+Math.sin(a2)*r2,R(1.2,1.8),0,cc);}}
-    trees.push({x,z,base,rB,rT,H,top:H-.2,climbMax:H-.35,canopy:H*.85,kind,yOff:-.2,flare:true,fins:null,branches});
+    trees.push({x,z,base,rB,rT,H,top:H-.2,climbMax:H-.35,canopy:H*.85,kind,yOff:-.2,flare:true,fins:null,branches,seed:_ts});
   }else{
     const H=R(7,11),rB=.24,rT=.16,lean=R(-.12,.12);
     const g=new THREE.CylinderGeometry(rT,rB,H,10,6,true);g.translate(0,H/2,0);const uv=g.attributes.uv;for(let i=0;i<uv.count;i++)uv.setY(i,uv.getY(i)*H/1.2);
@@ -971,7 +995,24 @@ function templeDecor(){TI.decor=true;const i=TI.i,o=TI.o,rot=TI.rot;
 }
 function updateTemple(dt){if(TI&&!TI.decor)templeDecor();for(const q of templeTorches){q.t+=dt;const f=1+Math.sin(q.t*13)*.08+Math.sin(q.t*7.3)*.06;q.fl.scale.set(1,f*1.1,1);q.gl.scale.setScalar(.9*f);}
   if(TI)templeLight.intensity=6*(1+Math.sin(time*9)*.05);}
-const rockGeos=[];
+const rockGeos=[],mossGeos=[],plantRockGeos=[];
+/* Walkable lumps (boulders, stones, moss cushions, barrel cacti). The collider uses the same noise that shaped the mesh,
+   so feet rest exactly on the visible surface. A grid keeps groundAt cheap with hundreds of them. */
+const rockGrid=new Map(),RGC=6;
+function rockCellAdd(r){const e=r.s*1.15;for(let i=Math.floor((r.x-e)/RGC);i<=Math.floor((r.x+e)/RGC);i++)for(let j=Math.floor((r.z-e)/RGC);j<=Math.floor((r.z+e)/RGC);j++){const k=i+','+j;let l=rockGrid.get(k);if(!l)rockGrid.set(k,l=[]);l.push(r);}}
+function rockTop(r,x,z){const dx=(x-r.x)/r.s,dz=(z-r.z)/r.s;if(dx*dx+dz*dz>(1+r.n*.5)**2)return -Infinity;let f=1,ux,uz,q;
+  for(let i=0;i<4;i++){ux=dx/f;uz=dz/f;q=Math.max(0,1-ux*ux-uz*uz);f=1+(fbm(ux*r.fq+r.sd,uz*r.fq+Math.sqrt(q)*.7,3)-.5)*r.n;}
+  ux=dx/f;uz=dz/f;q=1-ux*ux-uz*uz;if(q<=0)return -Infinity;return r.cy+r.sy*f*Math.sqrt(q);}
+// o: {detail, n (noise amount), fq (noise frequency), sink (part below ground), cTop, cSide, geos, jit (colour jitter)}
+function makeRock(x,z,s,sy,o={}){const h=o.base??terrainH(x,z),n=o.n??.24,fq=o.fq??1.3,sd=R(0,50);
+  let g=new THREE.IcosahedronGeometry(1,o.detail??4);g.deleteAttribute('normal');g.deleteAttribute('uv');g=mergeVertices(g);const p=g.attributes.position;
+  for(let k=0;k<p.count;k++){_p.fromBufferAttribute(p,k);const f=1+(fbm(_p.x*fq+sd,_p.z*fq+_p.y*.7,3)-.5)*n;p.setXYZ(k,_p.x*s*f,_p.y*sy*f,_p.z*s*f);}
+  g.computeVertexNormals();const nn=g.attributes.normal;const col=new Float32Array(p.count*3);const mc=new THREE.Color(o.cTop),rc=new THREE.Color(o.cSide),c=new THREE.Color();const jit=o.jit??.1;
+  const tb=o.topBand??[.35,.8];
+  for(let k=0;k<p.count;k++){const m=smoothstep(tb[0],tb[1],nn.getY(k)+(fbm(p.getX(k)*2+sd,p.getZ(k)*2,2)-.5));c.copy(rc).lerp(mc,m);if(o.stripe)c.lerp(_col.set(o.stripe),smoothstep(.6,.9,Math.abs(Math.sin(Math.atan2(p.getZ(k),p.getX(k))*o.ribs)))*.5);
+    const v=1-jit+R(0,jit*2);col[k*3]=c.r*v;col[k*3+1]=c.g*v;col[k*3+2]=c.b*v;}
+  g.setAttribute('color',new THREE.BufferAttribute(col,3));const cy=h-sy*(o.sink??.25);g.translate(x,cy,z);(o.geos||rockGeos).push(prep(g,['position','normal','uv','color']));
+  const r={x,z,cy,s,sy,sd,n,fq};rocks.push(r);rockCellAdd(r);return r;}
 
 /* Gates between areas: a stone arch with a swirling portal. The forward gate opens once the gecko is adult; the way back is always open. */
 const gates=[];let gateCool=0,lockMsgT=0;
@@ -1056,8 +1097,8 @@ function addMerged(list,mat,{cast=true,receive=true}={}){if(!list.length)return 
   for(const g of list)g.dispose();list.length=0;return out;}
 // Same for world-wide InstancedMeshes; small plants also get a draw distance (they are invisible in the haze beyond it anyway).
 const farTiles=[];
-function tileInstanced(im,far=0){const geo=im.geometry,n=im.count,buckets=new Map(),_t=new THREE.Matrix4(),c=new V3();
-  for(let i=0;i<n;i++){im.getMatrixAt(i,_t);c.setFromMatrixPosition(_t);const k=Math.floor(c.x/TILE)+','+Math.floor(c.z/TILE);if(!buckets.has(k))buckets.set(k,[]);buckets.get(k).push(i);}
+function tileInstanced(im,far=0,tile=TILE){const geo=im.geometry,n=im.count,buckets=new Map(),_t=new THREE.Matrix4(),c=new V3();
+  for(let i=0;i<n;i++){im.getMatrixAt(i,_t);c.setFromMatrixPosition(_t);const k=Math.floor(c.x/tile)+','+Math.floor(c.z/tile);if(!buckets.has(k))buckets.set(k,[]);buckets.get(k).push(i);}
   for(const idx of buckets.values()){const g=new THREE.BufferGeometry();g.index=geo.index;
     for(const [name,a] of Object.entries(geo.attributes)){if(a.isInstancedBufferAttribute){const s=a.itemSize,arr=new a.array.constructor(idx.length*s);idx.forEach((j,o)=>{for(let q=0;q<s;q++)arr[o*s+q]=a.array[j*s+q];});g.setAttribute(name,new THREE.InstancedBufferAttribute(arr,s));}else g.setAttribute(name,a);}
     const t=new THREE.InstancedMesh(g,im.material,idx.length);idx.forEach((j,o)=>{im.getMatrixAt(j,_t);t.setMatrixAt(o,_t);if(im.instanceColor){im.getColorAt(j,_col);t.setColorAt(o,_col);}});
@@ -1066,16 +1107,21 @@ function tileInstanced(im,far=0){const geo=im.geometry,n=im.count,buckets=new Ma
 const _col=new THREE.Color();
 function cullFarTiles(){const cp=camera.position;for(const f of farTiles){const b=f.m.boundingSphere;f.m.visible=Math.hypot(b.center.x-cp.x,b.center.z-cp.z)-b.radius<f.far;}}
 const windUniforms={uTime:{value:0},uPlayer:{value:new V3()}};
-function addWind(mat,amp,instanced){mat.onBeforeCompile=sh=>{sh.uniforms.uTime=windUniforms.uTime;sh.uniforms.uPlayer=windUniforms.uPlayer;
+// push: instanced plants lean away from the gecko when it walks through them
+function addWind(mat,amp,instanced,push=false){mat.onBeforeCompile=sh=>{sh.uniforms.uTime=windUniforms.uTime;sh.uniforms.uPlayer=windUniforms.uPlayer;
   sh.vertexShader='uniform float uTime;uniform vec3 uPlayer;\n'+sh.vertexShader.replace('#include <begin_vertex>',`#include <begin_vertex>
   vec4 wpw = ${instanced?'modelMatrix * instanceMatrix * vec4(position,1.0)':'modelMatrix * vec4(position,1.0)'};
   float sway = sin(uTime*1.6 + wpw.x*.35 + wpw.z*.27) + .5*sin(uTime*2.7 + wpw.x*.9);
-  transformed.x += sway*${amp.toFixed(3)}*(.4+.6*clamp(position.y,0.,3.));`);};}
+  transformed.x += sway*${amp.toFixed(3)}*(.4+.6*clamp(position.y,0.,3.));
+  ${push&&instanced?`{vec3 ic=(modelMatrix*instanceMatrix*vec4(0.,0.,0.,1.)).xyz;vec2 dp=ic.xz-uPlayer.xz;float dd=length(dp);
+   float pk=(1.-smoothstep(.15,.8,dd))*step(abs(ic.y-uPlayer.y),1.)*clamp(position.y*2.5,0.,1.);
+   vec3 wo=vec3(dp.x/max(dd,.05),-.35,dp.y/max(dd,.05))*pk*.2;float s2=dot(instanceMatrix[0].xyz,instanceMatrix[0].xyz);
+   transformed+=transpose(mat3(instanceMatrix))*wo/s2;}`:''}`);};}
 const barkMat=new THREE.MeshStandardMaterial({map:barkTex,vertexColors:true,normalMap:barkN,normalScale:new THREE.Vector2(1.4,1.4),roughness:.9});
 const lianaMat=new THREE.MeshStandardMaterial({color:'#4e5a2c',roughness:.9});
 const palmMat=new THREE.MeshStandardMaterial({map:palmBarkTex,normalMap:palmN,roughness:.88});
 const frondMat=new THREE.MeshStandardMaterial({map:frondTex,alphaTest:.45,alphaToCoverage:!LOW,side:THREE.DoubleSide,roughness:.62,emissive:'#24400a',emissiveMap:frondTex,emissiveIntensity:.35});addWind(frondMat,.05,false);
-const fernMat=new THREE.MeshStandardMaterial({map:fernTex,alphaTest:.45,alphaToCoverage:!LOW,side:THREE.DoubleSide,roughness:.66,color:'#d8f0c0',emissive:'#203a08',emissiveMap:fernTex,emissiveIntensity:.3});addWind(fernMat,.03,true);
+const fernMat=new THREE.MeshStandardMaterial({map:fernTex,alphaTest:.45,alphaToCoverage:!LOW,side:THREE.DoubleSide,roughness:.66,color:'#d8f0c0',emissive:'#203a08',emissiveMap:fernTex,emissiveIntensity:.3});addWind(fernMat,.03,true,true);
 const fernGeo=(()=>{const parts=[];for(let k=0;k<9;k++){const f=frondGeo(R(.75,1.05),R(.32,.4),R(.5,.8),R(.7,1));f.rotateY(k/9*6.28+R(-.2,.2));parts.push(prep(f));}return mergeGeometries(parts);})();
 const earTex=canvasTex(256,512,(g,w,h)=>{g.strokeStyle='#4f7a2a';g.lineWidth=7;g.beginPath();g.moveTo(128,h);g.lineTo(128,h*.62);g.stroke();
   const gr=g.createLinearGradient(0,0,w,0);gr.addColorStop(0,'#2d5a1a');gr.addColorStop(.5,'#5b8f2e');gr.addColorStop(1,'#2d5a1a');g.fillStyle=gr;
@@ -1085,7 +1131,7 @@ const earTex=canvasTex(256,512,(g,w,h)=>{g.strokeStyle='#4f7a2a';g.lineWidth=7;g
 const earGeo=(()=>{const parts=[];for(let k=0;k<5;k++){const g=new THREE.PlaneGeometry(1,1.6,2,10);const p=g.attributes.position;
     for(let i=0;i<p.count;i++){const u=p.getX(i),t=p.getY(i)/1.6+.5;p.setXYZ(i,u*(.7+.3*smoothstep(.35,.6,t)),t*1.05-Math.max(0,t-.45)**2*1.3-Math.abs(u)*.12,t*.75);}
     g.computeVertexNormals();g.rotateY(k/5*6.28+R(-.3,.3));parts.push(prep(g));}return mergeGeometries(parts);})();
-const earMat=new THREE.MeshStandardMaterial({map:earTex,alphaTest:.45,alphaToCoverage:!LOW,side:THREE.DoubleSide,roughness:.55,emissive:'#24400a',emissiveMap:earTex,emissiveIntensity:.3});addWind(earMat,.035,true);
+const earMat=new THREE.MeshStandardMaterial({map:earTex,alphaTest:.45,alphaToCoverage:!LOW,side:THREE.DoubleSide,roughness:.55,emissive:'#24400a',emissiveMap:earTex,emissiveIntensity:.3});addWind(earMat,.035,true,true);
 const stoneMat=new THREE.MeshStandardMaterial({map:stoneTex,normalMap:stoneN,normalScale:new THREE.Vector2(1.3,1.3),vertexColors:true,roughness:.88});
 const rockMat=new THREE.MeshStandardMaterial({vertexColors:true,roughness:.82});
 const pineMat=new THREE.MeshStandardMaterial({vertexColors:true,roughness:.86});
@@ -1215,7 +1261,7 @@ const butterflies=[];
 const frameYield=()=>new Promise(r=>requestAnimationFrame(()=>setTimeout(r,0)));
 let worldMap=null;
 function clearWorld(){world.traverse(o=>{if(o.geometry)o.geometry.dispose();if(o.isSprite){o.material.map?.dispose();o.material.dispose();}if(o.material&&o.material!==stoneMat&&(o.material.uniforms?.uOn||o.material.uniforms?.uCol))o.material.dispose();});world.clear();
-  trees.length=boxes.length=rocks.length=exclusion.length=gates.length=farTiles.length=0;coverGrid.clear();leafM.length=leafC.length=leafCtr.length=0;stoneGeos.length=rockGeos.length=0;
+  rockGrid.clear();trees.length=boxes.length=rocks.length=exclusion.length=gates.length=farTiles.length=0;coverGrid.clear();leafM.length=leafC.length=leafCtr.length=0;stoneGeos.length=rockGeos.length=0;
   for(const L of [trunkGeos,palmGeos,frondGeos,lianaGeos,pineGeos,cactusGeos])L.length=0;}
 function applyAreaEnv(A){const k=A.sky;sunDir.setFromSphericalCoords(1,THREE.MathUtils.degToRad(90-k.elev),THREE.MathUtils.degToRad(k.az));
   setSky(skyMesh,k);buildEnv(k);sun.color.set(k.sun);sun.intensity=k.sunI;hemi.color.set(k.hemiS);hemi.groundColor.set(k.hemiG);hemi.intensity=k.hemiI;
@@ -1226,6 +1272,93 @@ function applyAreaEnv(A){const k=A.sky;sunDir.setFromSphericalCoords(1,THREE.Mat
   barkMat.color.set(A.bark);nearGrass.uTint.value.fromArray(A.grass?A.grass.tint:[1,1,1]);
   fallers.im.visible=!!A.fx.leaves;snowfall.m.visible=!!A.fx.snow;rain.m.visible=!!A.fx.rain;dust.material.color.set(A.fx.dust).multiplyScalar(2.2);dust.material.opacity=A.fx.dustO;dust.visible=A.fx.dustO>0;
   for(const b of butterflies)b.g.visible=!!A.fx.butterflies;}
+/* =====================================================================
+   Decoration per area: flowers, rosette plants, mushrooms, moss cushions and loose stones.
+   Soft plants bend away from the gecko (addWind push); stones, moss and barrel cacti are walkable lumps (makeRock).
+   ===================================================================== */
+const _dc=new THREE.Color(),_dn=new V3(),_dv=new V3();
+// one coloured part: drops uv, adds a flat vertex colour
+function vpart(g,c){g=prep(g,['position','normal']);return colorize(g,_dc.set(c));}
+// gradient along y from c0 (bottom) to c1 (top)
+function vgrad(g,c0,c1,y0,y1){g=prep(g,['position','normal']);const p=g.attributes.position,a=new Float32Array(p.count*3),A=new THREE.Color(c0),B=new THREE.Color(c1);
+  for(let i=0;i<p.count;i++){_dc.copy(A).lerp(B,clamp((p.getY(i)-y0)/(y1-y0),0,1));a[i*3]=_dc.r;a[i*3+1]=_dc.g;a[i*3+2]=_dc.b;}g.setAttribute('color',new THREE.BufferAttribute(a,3));return g;}
+// tapered, curved strap leaf from the origin along +z, rising then arching over
+function strapLeaf(len,wid,rise,droop,c0,c1,seg=6){const g=new THREE.PlaneGeometry(1,1,1,seg);const p=g.attributes.position;
+  for(let i=0;i<p.count;i++){const u=p.getX(i),t=p.getY(i)+.5;const w=wid*(1-t*.85)*(t<.08?.6+t*5:1);p.setXYZ(i,u*w,t*len*rise-t*t*len*droop,t*len*(1-rise*.3));}
+  g.computeVertexNormals();return vgrad(g,c0,c1,0,len*Math.max(.2,rise-droop*.5));}
+function stem(h,c,r=.006,bend=0){const g=new THREE.CylinderGeometry(r*.75,r,h,4,3,true);g.translate(0,h/2,0);if(bend){const p=g.attributes.position;for(let i=0;i<p.count;i++){const y=p.getY(i)/h;p.setZ(i,p.getZ(i)+y*y*bend);}}return vpart(g,c);}
+function petalRing(n,len,wid,cup,col,cen){const parts=[];for(let k=0;k<n;k++){const g=new THREE.PlaneGeometry(wid,len,1,2);g.translate(0,len/2+.004,0);g.rotateX(-Math.PI/2+cup);g.rotateY(k/n*6.2832);parts.push(vpart(g,col));}
+  if(cen){const c=new THREE.IcosahedronGeometry(Math.max(.006,wid*.45),1);c.scale(1,.6,1);parts.push(vpart(c,cen));}return mergeGeometries(parts);}
+const FLOWERS={
+  daisy:(o)=>{const h=o.h||.3,P=[stem(h,o.leaf),petalRing(o.n||10,.03,.013,.25,o.col,o.cen||'#ffd23a').translate(0,h,0)];
+    for(const sd of [-1,1]){const l=strapLeaf(.09,.025,.6,.3,o.leaf,o.leaf2||o.leaf,3);l.rotateY(sd*1.4);P.push(l);}return P;},
+  cup:(o)=>{const h=o.h||.16,c=new THREE.CylinderGeometry(.026,.006,.035,7,2,true);const p=c.attributes.position;for(let i=0;i<p.count;i++){const a=Math.atan2(p.getZ(i),p.getX(i));p.setY(i,p.getY(i)+Math.max(0,Math.cos(a*3.5))*.008*(p.getY(i)>0?1:0));}
+    c.translate(0,h+.017,0);const P=[stem(h,o.leaf),vgrad(c,o.col2||o.col,o.col,h,h+.035)];if(o.cen){const s=new THREE.IcosahedronGeometry(.006,0);s.translate(0,h+.012,0);P.push(vpart(s,o.cen));}
+    for(const sd of [-1,1]){const l=strapLeaf(.08,.02,.8,.35,o.leaf,o.leaf,3);l.rotateY(sd*1.6+.3);P.push(l);}return P;},
+  bell:(o)=>{const h=o.h||.14,P=[stem(h,o.leaf,.004,.04)];const b=new THREE.ConeGeometry(.012,.024,6,1,true);b.rotateX(Math.PI);b.translate(0,h-.016,.04);P.push(vpart(b,o.col));
+    const s=new THREE.IcosahedronGeometry(.005,0);s.translate(0,h-.002,.038);P.push(vpart(s,o.leaf));for(const sd of [-1,1]){const l=strapLeaf(.11,.012,1.1,.4,o.leaf,o.leaf,3);l.rotateY(sd*.5);P.push(l);}return P;},
+  spike:(o)=>{const h=o.h||.24,P=[stem(h,o.leaf)];const n=9;for(let k=0;k<n;k++){const t=k/(n-1),r=.011*(1-t*.6);const s=new THREE.IcosahedronGeometry(r,0);const a=k*2.4;s.translate(Math.cos(a)*r*.8,h*(.55+t*.45),Math.sin(a)*r*.8);P.push(vpart(s,t>.8&&o.col2?o.col2:o.col));}
+    for(let k=0;k<3;k++){const l=strapLeaf(.08,.014,.7,.2,o.leaf,o.leaf,2);l.rotateY(k*2.1);P.push(l);}return P;},
+  heli:(o)=>{const h=o.h||.55,P=[stem(h,o.leaf,.01)];for(let k=0;k<6;k++){const b=new THREE.ConeGeometry(.018,.085,4,1);b.translate(0,.042,0);b.rotateZ((k%2?1:-1)*1.05);b.translate(0,h*.62+k*.045,0);P.push(vgrad(b,o.col,o.col2||o.col,h*.62+k*.045-.04,h*.62+k*.045+.04));}
+    for(let k=0;k<3;k++){const l=strapLeaf(.42,.09,.9,.55,o.leaf,o.leaf2||o.leaf,6);l.rotateY(k*2.2+.4);P.push(l);}return P;},
+  orchid:(o)=>{const h=o.h||.28,P=[stem(h,o.leaf,.004,.08)];for(let k=0;k<3;k++){const t=.62+k*.17;const f=petalRing(5,.022,.016,.6,o.col,o.cen||'#fff2a0');f.rotateX(.9);f.translate(0,h*t,.08*t*t);P.push(f);}
+    for(let k=0;k<3;k++){const l=strapLeaf(.13,.035,.35,.25,o.leaf,o.leaf2||o.leaf,4);l.rotateY(k*2.1);P.push(l);}return P;},
+  berry:(o)=>{const P=[];for(let k=0;k<5;k++){const a=k*1.26+R(-.2,.2),h=R(.16,.28);const s=stem(h,'#4a3a2a',.005,.03);s.rotateY(a);P.push(s);
+      for(let q=0;q<4;q++){const l=strapLeaf(.05,.02,.5,.1,o.leaf,o.leaf2||o.leaf,1);l.rotateY(a+q*1.6);l.translate(Math.sin(a)*h*.08,h*(.5+q*.12),Math.cos(a)*h*.08);P.push(l);}
+      for(let q=0;q<3;q++){const b=new THREE.IcosahedronGeometry(.011,1);b.translate(Math.sin(a)*.025+R(-.012,.012),h-.005+R(-.01,.01),Math.cos(a)*.025+R(-.012,.012));P.push(vpart(b,o.col));}}return P;},
+  // rosettes
+  brom:(o)=>{const P=[],n=13;for(let k=0;k<n;k++){const inner=k>=9,L=inner?R(.16,.22):R(.32,.46);const l=strapLeaf(L,inner?.05:.075,inner?1.1:.95,inner?.2:.7,inner?o.col:o.leaf,inner?o.col2||o.col:o.leaf2,6);
+      l.rotateX(-.12);l.rotateY(k*2.4);P.push(l);}return P;},
+  agave:(o)=>{const P=[],n=15;for(let k=0;k<n;k++){const L=R(.45,.75)*(k<5?.7:1);const l=strapLeaf(L,.11,1.25-k*.03,.25+k*.012,o.leaf,o.leaf2,5);l.rotateY(k*2.4);P.push(l);}return P;},
+  tuft:(o)=>{const P=[];for(let k=0;k<11;k++){const l=strapLeaf(R(.18,.32),.012,1.4,R(.3,.7),o.leaf,o.leaf2,3);l.rotateY(k*2.4+R(-.3,.3));P.push(l);}return P;},
+  shroom:(o)=>{const h=o.h||.1,P=[];const st=new THREE.CylinderGeometry(.011,.015,h,6,1,true);st.translate(0,h/2,0);P.push(vpart(st,o.stem||'#efe6d2'));
+    const cp=new THREE.SphereGeometry(o.w||.035,10,5,0,6.2832,0,Math.PI/2);cp.scale(1,o.flat||.6,1);cp.translate(0,h-.004,0);const g=prep(cp,['position','normal']);const p=g.attributes.position,a=new Float32Array(p.count*3),C=new THREE.Color(o.col),D=new THREE.Color(o.dot||o.col);
+    for(let i=0;i<p.count;i++){const dot=o.dot&&hash2(Math.floor(p.getX(i)*160),Math.floor(p.getZ(i)*160))>.82;_dc.copy(dot?D:C);a[i*3]=_dc.r;a[i*3+1]=_dc.g;a[i*3+2]=_dc.b;}g.setAttribute('color',new THREE.BufferAttribute(a,3));P.push(g);
+    const gl=new THREE.CircleGeometry((o.w||.035)*.95,10);gl.rotateX(Math.PI/2);gl.translate(0,h-.005,0);P.push(vpart(gl,o.gill||'#d9ccb0'));return P;},
+};
+function plantGeo(o){const P=FLOWERS[o.k](o);for(let i=0;i<P.length;i++)if(P[i].index)P[i]=P[i].toNonIndexed();return mergeGeometries(P);}
+const plantMat=new THREE.MeshStandardMaterial({vertexColors:true,side:THREE.DoubleSide,roughness:.7});addWind(plantMat,.02,true,true);
+const shroomMat=new THREE.MeshStandardMaterial({vertexColors:true,roughness:.6});
+const glowShroomMat=new THREE.MeshStandardMaterial({vertexColors:true,roughness:.5,emissive:'#3fd8ff',emissiveIntensity:.55});
+const mossTex=canvasTex(256,256,(g,w,h)=>{g.fillStyle='#c8c8c8';g.fillRect(0,0,w,h);for(let i=0;i<7000;i++){const v=RI(110,255);g.fillStyle=`rgb(${v},${v},${v})`;tiled(w,h,R(0,w),R(0,h),3,(X,Y)=>g.fillRect(X,Y,R(1,2.6),R(1,2.6)));}});
+const mossMat=new THREE.MeshStandardMaterial({vertexColors:true,map:mossTex,normalMap:normalFromCanvas(mossTex.image,3.5),normalScale:new THREE.Vector2(1.6,1.6),roughness:1,envMapIntensity:.45});
+// uv for lumps that carry a texture: planar from above (moss) or wrapped around (barrel cactus)
+function lumpUV(g,mode,cx,cz){const p=g.attributes.position,uv=new Float32Array(p.count*2);for(let i=0;i<p.count;i++){const x=p.getX(i)-cx,z=p.getZ(i)-cz;
+  if(mode==='cyl'){uv[i*2]=(Math.atan2(z,x)/6.2832+.5)*3;uv[i*2+1]=p.getY(i)*1.6;}else{uv[i*2]=p.getX(i)*2.2;uv[i*2+1]=p.getZ(i)*2.2;}}g.setAttribute('uv',new THREE.BufferAttribute(uv,2));return g;}
+function lump(x,z,s,sy,o,mode){const L=o.geos;const before=L.length;const r=makeRock(x,z,s,sy,o);const g=L[before];if(g)lumpUV(g,mode,x,z);return r;}
+// place a soft or rigid plant; returns false when the spot is no good
+function plantOk(x,z,lo=.35,hi=14){const h=terrainH(x,z);return h>lo&&h<hi&&!excluded(x,z,.6)&&!insideBox(x,z,.3)&&Math.abs(x)<HALF-12&&Math.abs(z)<HALF-12;}
+function decorate(A){const D=A.deco;if(!D)return;const bins=new Map();
+  const put=(spec,x,z,s,tilt=.12)=>{let b=bins.get(spec);if(!b)bins.set(spec,b=[]);const h=terrainH(x,z),tn=terrainNormal(x,z,_dn);
+    _q.setFromUnitVectors(Y0,_dv.copy(tn).lerp(Y0,1-tilt).normalize()).multiply(_e2q.setFromAxisAngle(Y0,R(0,6.28)));_s.setScalar(s);_p.set(x,h-.01,z);b.push(new THREE.Matrix4().compose(_p,_q,_s));};
+  /* flowers grow in patches: pick patch centres, then scatter around them */
+  (D.flowers||[]).forEach((f,fi)=>{const n=N2(f.n,9);let placed=0;for(let t=0;t<n*4&&placed<n;t++){let cx=R(-HALF+14,HALF-14),cz=R(-HALF+14,HALF-14);
+      if(t<2&&fi<3){const a=R(0,6.28),d=R(3.5,9);cx=SPAWN.x+Math.cos(a)*d;cz=SPAWN.z+Math.sin(a)*d;}// a first patch close to the start point
+      if(!plantOk(cx,cz,f.lo??.45,f.hi??12))continue;
+      if(f.lake){const L=lakeNear({x:cx,z:cz});if(Math.hypot(cx-L.x,cz-L.z)>L.r*2.2)continue;}
+      const m=RI(f.cl?.[0]??4,f.cl?.[1]??12),rad=R(.8,2.8);for(let k=0;k<m&&placed<n;k++){const a=R(0,6.28),d=rad*Math.sqrt(rnd()),x=cx+Math.cos(a)*d,z=cz+Math.sin(a)*d;if(!plantOk(x,z,f.lo??.45,f.hi??12))continue;put(f,x,z,R(f.s?.[0]??1.5,f.s?.[1]??2.3),.4);placed++;}}});
+  for(const f of D.plants||[]){const n=N2(f.n,3);for(let i=0,t=0;i<n&&t<n*10;t++){let x=R(-HALF+12,HALF-12),z=R(-HALF+12,HALF-12);if(t<3&&!f.near){const a=R(0,6.28),d=R(3,10);x=SPAWN.x+Math.cos(a)*d;z=SPAWN.z+Math.sin(a)*d;}if(!plantOk(x,z,f.lo??.4,f.hi??12))continue;
+      if(f.near==='tree'){const tr=pick(trees);if(!tr)break;const a=R(0,6.28),d=trunkR(tr,.2,a)+R(.6,2.2);const px=tr.x+Math.cos(a)*d,pz=tr.z+Math.sin(a)*d;if(!plantOk(px,pz))continue;put(f,px,pz,R(f.s[0],f.s[1]),.5);i++;continue;}
+      put(f,x,z,R(f.s[0],f.s[1]),.5);addCover(x,z,.5*f.s[1]);i++;}}
+  /* mushrooms hug the trunk feet (inside the trunk collider, so the gecko never walks through them) */
+  if(D.shrooms){const S=D.shrooms;const cand=trees.filter(t=>t.seed!==undefined);for(let i=0,n=N2(S.n,1.6);i<n&&cand.length;i++){const t=pick(cand),a0=R(0,6.28),spec=pick(S.kinds);
+      for(let k=0,m=RI(2,5);k<m;k++){const a=a0+R(-.35,.35),hy=R(.05,.25),rr=trunkR(t,hy,a)*.96;const x=t.x+Math.cos(a)*rr,z=t.z+Math.sin(a)*rr;if(terrainH(x,z)<.3)continue;put(spec,x,z,R(.7,1.4),.2);}}}
+  /* walkable lumps: moss cushions, loose stones, barrel cacti */
+  if(D.moss){const M=D.moss;for(let i=0,t=0,n=N2(M.n,2.8);i<n&&t<n*8;t++){let x,z;
+      if(rnd()<(M.atTree??.4)&&trees.length){const tr=pick(trees);if(tr.kind==='palm'||tr.kind==='cactus')continue;const a=R(0,6.28),d=trunkR(tr,.15,a)*R(.85,1.05);x=tr.x+Math.cos(a)*d;z=tr.z+Math.sin(a)*d;}
+      else if(rnd()<.35&&rocks.length){const r=pick(rocks);if(r.s<.6)continue;const a=R(0,6.28);x=r.x+Math.cos(a)*r.s*R(.85,1.15);z=r.z+Math.sin(a)*r.s*R(.85,1.15);}
+      else{x=R(-HALF+14,HALF-14);z=R(-HALF+14,HALF-14);if(fbm(x*.05+7,z*.05-3,2)<.48)continue;}
+      if(!plantOk(x,z,.3,16))continue;const s=R(.22,.62);lump(x,z,s,s*R(.18,.32),{detail:2,n:.4,fq:2.2,sink:.35,cTop:pick(M.top),cSide:pick(M.side),geos:mossGeos,jit:.14,topBand:[-.2,.5]},'top');i++;}}
+  if(D.stones){const S=D.stones;for(let i=0,t=0,n=N2(S.n,2.8);i<n&&t<n*8;t++){const cx=R(-HALF+14,HALF-14),cz=R(-HALF+14,HALF-14);if(!plantOk(cx,cz,-.4,20))continue;
+      const m=RI(1,5),cs=pick(S.cols);for(let k=0;k<m&&i<n;k++){const x=cx+R(-1.4,1.4),z=cz+R(-1.4,1.4);if(!plantOk(x,z,-.4,20))continue;const s=R(.1,.38)*(k?1:1.4);
+        makeRock(x,z,s,s*R(.35,.7),{detail:2,n:.3,fq:1.6,sink:.3,cTop:cs[1],cSide:cs[0],jit:.12});i++;}}}
+  if(D.barrels){const B=D.barrels;for(let i=0,t=0,n=N2(B.n,1.5);i<n&&t<n*10;t++){const x=R(-HALF+14,HALF-14),z=R(-HALF+14,HALF-14);if(!plantOk(x,z,.6,10))continue;
+      const s=R(.2,.42);lump(x,z,s,s*R(1,1.35),{detail:3,n:.1,fq:.8,sink:.15,cTop:'#9cc25a',cSide:'#4f8a3e',geos:plantRockGeos,jit:.05,topBand:[.8,1]},'cyl');
+      if(rnd()<.7){const f=B.flower;put(f,x,z,R(.8,1.1),0);const b=bins.get(f);b[b.length-1].elements[13]+=s*R(1,1.35)*.82;}i++;}}
+  for(const [spec,list] of bins){if(!list.length)continue;if(!spec.geo)spec.geo=plantGeo(spec);const mat=spec.k==='shroom'?(spec.glow?glowShroomMat:shroomMat):plantMat;
+    const im=new THREE.InstancedMesh(spec.geo,mat,list.length);list.forEach((m,i)=>{im.setMatrixAt(i,m);im.setColorAt(i,_col.setScalar(R(.82,1.12)));});
+    im.castShadow=!LOW&&spec.shadow===2;im.receiveShadow=true;NOREFL(im);tileInstanced(im,LOW?45:(spec.far||70),150);}}
+const _e2q=new THREE.Quaternion();
 async function buildWorld(idx,prog=()=>{}){
   const A=AREAS[idx];areaTex(A);prog(.05);await frameYield();
   clearWorld();areaIdx=idx;AREA=A;rnd=mulberry32(A.seed);LAKES=A.lakes;TEMPLE=A.temple;
@@ -1266,15 +1399,14 @@ async function buildWorld(idx,prog=()=>{}){
     const im=new THREE.InstancedMesh(earGeo,earMat,M.length);const c=new THREE.Color();M.forEach((m,i)=>{im.setMatrixAt(i,m);im.setColorAt(i,c.setHSL(R(.22,.28),R(.4,.6),R(.42,.58)));});im.castShadow=!LOW;im.receiveShadow=true;NOREFL(im);tileInstanced(im,LOW?80:120);}
   /* Rocks */
   for(let i=0,t=0,n=N2([45,30],A.rocks);i<n&&t<3000;t++){const x=R(-HALF+16,HALF-16),z=R(-HALF+16,HALF-16),h=terrainH(x,z);if(h<-.6||excluded(x,z,2))continue;
-    const s=R(.4,2.1),sy=s*R(.4,.7);let g=new THREE.IcosahedronGeometry(1,4);g.deleteAttribute('normal');g.deleteAttribute('uv');g=mergeVertices(g);const p=g.attributes.position;const sd=R(0,50);
-    for(let k=0;k<p.count;k++){_p.fromBufferAttribute(p,k);const f=1+(fbm(_p.x*1.3+sd,_p.z*1.3+_p.y*.7,3)-.5)*.24;p.setXYZ(k,_p.x*s*f,_p.y*sy*f,_p.z*s*f);}
-    g.computeVertexNormals();const nn=g.attributes.normal;const col=new Float32Array(p.count*3);const mc=new THREE.Color(A.rockTop),rc=new THREE.Color(A.rockC);
-    for(let k=0;k<p.count;k++){const m=smoothstep(.35,.8,nn.getY(k)+(fbm(p.getX(k)*2,p.getZ(k)*2,2)-.5));const c=rc.clone().lerp(mc,m);const v=R(.88,1.08);col[k*3]=c.r*v;col[k*3+1]=c.g*v;col[k*3+2]=c.b*v;}
-    g.setAttribute('color',new THREE.BufferAttribute(col,3));const cy=h-sy*.25;g.translate(x,cy,z);rockGeos.push(prep(g,['position','normal','uv','color']));rocks.push({x,z,cy,s:s*.92,sy:sy*.92});i++;}
+    const s=R(.4,2.1);makeRock(x,z,s,s*R(.4,.7),{cTop:A.rockTop,cSide:A.rockC});i++;
+    /* a few loose stones around each boulder */
+    for(let k=0,m=RI(1,4);k<m;k++){const a=R(0,6.28),d=s*R(1.05,1.6),sx=x+Math.cos(a)*d,sz=z+Math.sin(a)*d;if(terrainH(sx,sz)<-.3)continue;const ss=R(.12,.32);makeRock(sx,sz,ss,ss*R(.5,.75),{detail:2,cTop:A.rockTop,cSide:A.rockC,sink:.3});}}
+  decorate(A);
   prog(.6);await frameYield();
   /* merged meshes */
   addMerged(trunkGeos,barkMat);addMerged(lianaGeos,lianaMat,{cast:false});addMerged(palmGeos,palmMat);addMerged(frondGeos,frondMat);
-  addMerged(pineGeos,pineMat);addMerged(cactusGeos,cactusMat);addMerged(stoneGeos,stoneMat);addMerged(rockGeos,rockMat);
+  addMerged(pineGeos,pineMat);addMerged(cactusGeos,cactusMat);addMerged(stoneGeos,stoneMat);addMerged(rockGeos,rockMat);addMerged(mossGeos,mossMat,{cast:false});addMerged(plantRockGeos,cactusMat);
   if(leafM.length){const geo=new THREE.PlaneGeometry(1.6,1.6);geo.setAttribute('aCenter',new THREE.InstancedBufferAttribute(new Float32Array(leafCtr),3));
     const im=new THREE.InstancedMesh(geo,leafMat,leafM.length);leafM.forEach((m,i)=>{im.setMatrixAt(i,m);im.setColorAt(i,leafC[i]);});
     im.castShadow=true;im.receiveShadow=true;im.userData.noAO=true;tileInstanced(im);}
@@ -1375,7 +1507,7 @@ const corneaMat=new THREE.MeshPhysicalMaterial({color:'#ffffff',roughness:0,meta
 const nostrilMat=new THREE.MeshStandardMaterial({color:'#140c08',roughness:.6});
 const pupilMat=new THREE.MeshPhysicalMaterial({color:'#050505',roughness:.1,clearcoat:1});
 const liteEyeMat=new THREE.MeshPhysicalMaterial({color:'#b88a2a',roughness:.15,clearcoat:1});
-const Y=new V3(0,1,0),_fp=new V3();
+const Y=new V3(0,1,0),_fp=new V3(),_fq=new V3();
 class Gecko{
   // lite: a cheaper gecko for the caged and rescued family members (no toes, simple eyes)
   constructor(mat,eyeColor='#c9a028',lite=false){
@@ -1400,7 +1532,7 @@ class Gecko{
     this.crest=new THREE.Group();this.head.add(this.crest);
     if(!lite)for(const sd of [-1,1])for(let k=0;k<6;k++){const c=new THREE.Mesh(new THREE.ConeGeometry(.0035,.009,5),mat);c.position.set(sd*(.018-k*.001),.019,.02-k*.009);c.rotation.z=-sd*.6;this.crest.add(c);}
     this.legs=[];for(const [sd,front] of [[1,true],[-1,true],[1,false],[-1,false]])this.legs.push(this.makeLeg(sd,front));
-    this.phase=0;this.t=R(0,9);this.walk=0;this.look=0;this.drink=0;this.climbing=0;this.open=0;
+    this.phase=0;this.t=R(0,9);this.walk=0;this.swimK=0;this.look=0;this.drink=0;this.climbing=0;this.open=0;
     this.setMaterial(mat,eyeColor,false);this.update(0,0);
   }
   makeLeg(side,front){const mat=this.mat;const hip=new THREE.Group();const up=new THREE.Group();hip.add(up);
@@ -1413,12 +1545,13 @@ class Gecko{
       const pad=new THREE.Mesh(PAD_GEO,mat);pad.scale.set(1,.45,1.1);pad.position.z=.021;tg.add(pad);
       tg.rotation.y+=side*Math.PI/2*(front?.55:.75)*-1+side*Math.PI/2;foot.add(tg);}
     for(const m of [upper,lower])m.castShadow=true;
-    this.root.add(hip);return{hip,up,knee,foot,side,front,parts:[upper,lower,...foot.children.flatMap(c=>c.children)]};}
+    this.root.add(hip);return{hip,up,knee,foot,side,front,toe:foot.children[2]?.children[1]||null,parts:[upper,lower,...foot.children.flatMap(c=>c.children)]};}
   setMaterial(mat,eyeColor,crest){this.mat=mat;this.mesh.material=mat;for(const l of this.legs)for(const p of l.parts)p.material=mat;for(const c of this.crest.children)c.material=mat;for(const l of this.lids||[])l.material=mat;
     if(!this.lite){this.eyeMat.color.set(eyeColor);this.eyeMat.emissive.set(eyeColor);}this.crest.visible=!!crest;}
   update(dt,speed,o={}){
     this.t+=dt;this.walk=damp(this.walk,clamp(speed/2.6,0,1.25),9,dt);const w=Math.min(this.walk,1);
-    this.phase+=dt*(speed*8.5+(o.climbing&&speed>.1?4:0));
+    this.swimK=damp(this.swimK,o.swim?1:0,6,dt);const sk=this.swimK;
+    this.phase+=dt*(speed*8.5*(1-sk*.45)+(o.climbing&&speed>.1?4:0)+sk*2.6);
     this.drink=damp(this.drink,o.drinking?1:0,8,dt);this.look=damp(this.look,o.look||0,4,dt);
     const breathe=Math.sin(this.t*3)*.0015;
     // Lizard gait: a standing wave bends the trunk between the shoulders and hips in step with the diagonal leg pairs
@@ -1429,8 +1562,12 @@ class Gecko{
       const idle=Math.sin(this.t*1.1-s*3.4)*.03*smoothstep(.45,1,s)*(1-w);
       const curl=o.idleCurl?Math.sin(s*4)*.0:0;
       const x=und+idle+curl+(s<.22?this.look*(.22-s)*.6:0);
-      const y=.056-.004*w+(s<.2?(.2-s)*.07:0)-(s>.5?(s-.5)*.06:0)+(s<.26?-this.drink*(.26-s)*.32:0)+(s>.2&&s<.5?breathe:0);
-      this.P[i].set(x,y,.22-s*.55);}
+      let y=.056-.004*w+(s<.2?(.2-s)*.07:0)-(s>.5?(s-.5)*.06:0)+(s<.26?-this.drink*(.26-s)*.32:0)+(s>.2&&s<.5?breathe:0);
+      let xx=x;
+      // Swimming: legs fold back and a travelling wave runs from the neck to the tail tip, growing toward the tail; the head stays up.
+      if(sk>.001){const As=.012+.016*w,xs=As*Math.sin(this.phase*.9-s*7.5)*(.15+s*1.7)+(s<.22?this.look*(.22-s)*.6:0);
+        const ys=.05+(s<.2?(.2-s)*.11:0)-(s>.6?(s-.6)*.03:0)+Math.sin(this.t*2.3)*.0025+(s<.26?-this.drink*(.26-s)*.32:0);xx=lerp(x,xs,sk);y=lerp(y,ys,sk);}
+      this.P[i].set(xx,y,.22-s*.55);}
     const pos=this.pos,nor=this.nor;let k=0;
     for(let i=0;i<NS;i++){const s=i/(NS-1);const T=this.T[i].subVectors(this.P[Math.max(i-1,0)],this.P[Math.min(i+1,NS-1)]).normalize();
       const S=this.S[i].crossVectors(Y,T).normalize(),U=this.U[i].crossVectors(T,S);
@@ -1446,11 +1583,16 @@ class Gecko{
       const off=(L.front===(L.side>0))?0:Math.PI;const c=this.phase+off;
       // sprawled limbs: the elbow/knee rides above the body line and lifts high in the swing, the lower leg plants almost straight down
       const swing=Math.sin(c)*.85*w,lift=Math.max(0,Math.cos(c))*w;const base=L.front?.55:-.5;
-      L.up.rotation.set(0,-L.side*(swing+base),L.side*(.12*w-.1*(1-w)+lift*.6));L.knee.rotation.z=-L.side*(.12*w-.12*(1-w)+lift*.4);
-      L.foot.rotation.set(0,L.side*(swing+base)*.6,-L.up.rotation.z-L.knee.rotation.z);}
-    // Feet follow the ground: a foot that would end up below the surface lifts its leg until it rests on top.
-    if(o.ground){this.root.updateMatrixWorld(true);const sc=this.root.scale.x;
-      for(const L of this.legs)for(let it=0;it<4;it++){L.foot.getWorldPosition(_fp);const d=o.ground(_fp.x,_fp.z,_fp.y)+.007*sc-_fp.y;if(d<=.0005)break;
+      let ry=-L.side*(swing+base),rz=L.side*(.12*w-.1*(1-w)+lift*.6),kz=-L.side*(.12*w-.12*(1-w)+lift*.4),fy=L.side*(swing+base)*.6;
+      if(sk>.001){const pad=L.front?0:Math.sin(c)*.35*(.3+.7*w);// hind feet give a lazy paddle, front legs lie against the chest
+        ry=lerp(ry,-L.side*((L.front?-1.05:-1.2)+pad),sk);rz=lerp(rz,L.side*.32,sk);kz=lerp(kz,-L.side*.9,sk);fy=lerp(fy,0,sk);}
+      L.up.rotation.set(0,ry,rz);L.knee.rotation.z=kz;
+      L.foot.rotation.set(0,fy,-L.up.rotation.z-L.knee.rotation.z);}
+    // Feet follow the surface (ground, rock, bark or wall): a foot or its middle toe that would end up inside lifts its leg until it rests on top.
+    // o.surf(p) gives how deep a world point lies inside the surface (negative = outside).
+    const surf=o.surf||(o.ground?(p=>o.ground(p.x,p.z,p.y)-p.y):null);
+    if(surf&&this.swimK<.5){this.root.updateMatrixWorld(true);const sc=this.root.scale.x,mg=.007*sc;
+      for(const L of this.legs)for(let it=0;it<6;it++){L.foot.getWorldPosition(_fp);let d=surf(_fp)+mg;if(L.toe){L.toe.getWorldPosition(_fq);d=Math.max(d,surf(_fq)+mg*.5);}if(d<=.0005)break;
         L.up.rotation.z+=L.side*Math.min(.8,d/(.048*sc));L.foot.rotation.z=-L.up.rotation.z-L.knee.rotation.z;L.hip.updateMatrixWorld(true);}}
   }
   mouthWorld(out){return this.root.localToWorld(out.copy(this.P[0]).add(_p.set(0,-.004,.004)));}
@@ -1486,7 +1628,20 @@ const insectMats={};
 function insectMat(sp){if(insectMats[sp.id])return insectMats[sp.id];if(sp.id==='krekel')return insectMats[sp.id]=[cricketMat,cricketLegMat];if(sp.id==='goudkrekel')return insectMats[sp.id]=[goldMat,goldMat];
   const b=new THREE.MeshPhysicalMaterial({color:sp.col,roughness:sp.metal?.25:.45,metalness:sp.metal||.05,clearcoat:sp.beetle?1:.2,emissive:sp.glow&&sp.r===2?sp.col:'#000',emissiveIntensity:sp.r===2?.35:0});
   const l=sp.leg?new THREE.MeshStandardMaterial({color:sp.leg,roughness:.6}):b;return insectMats[sp.id]=[b,l];}
-function makeInsect(sp){const g=new THREE.Group();const [m,lm]=insectMat(sp);
+// Water strider: slim body riding on six long splayed legs, dimples where the feet press the water
+function makeStrider(sp){const g=new THREE.Group();const [m,lm]=insectMat(sp);const parts=[],lp=[];
+  const add=(geo,mat,x,y,z,rx,ry,rz,sx=1,sy=1,sz=1)=>{const o=new THREE.Object3D();o.position.set(x,y,z);o.rotation.set(rx,ry,rz);o.scale.set(sx,sy,sz);o.updateMatrix();const gg=geo.clone().applyMatrix4(o.matrix);
+    for(const n of Object.keys(gg.attributes))if(!['position','normal','uv'].includes(n))gg.deleteAttribute(n);(mat===m?parts:lp).push(gg.index?gg.toNonIndexed():gg);};
+  const sph=new THREE.SphereGeometry(1,10,8);add(sph,m,0,.022,0,0,0,0,.007,.006,.042);add(sph,m,0,.024,.045,0,0,0,.006,.006,.008);
+  const leg=new THREE.CylinderGeometry(.0012,.0016,1,4);
+  for(const sd of [-1,1]){add(leg,lm,sd*.012,.02,.03,1.2,0,sd*.9,1,.05,1);// short front legs
+    add(leg,lm,sd*.045,.016,.012,0,0,sd*1.32,1,.09,1);add(leg,lm,sd*.08,.006,.04,1.25,sd*.5,sd*.3,1,.09,1);// middle legs: up and forward
+    add(leg,lm,sd*.04,.016,-.03,0,0,sd*1.35,1,.075,1);add(leg,lm,sd*.07,.006,-.075,-1.3,-sd*.4,sd*.2,1,.09,1);}// hind legs: back
+  g.add(new THREE.Mesh(mergeGeometries(parts),m),new THREE.Mesh(mergeGeometries(lp),lm));
+  g.add(new THREE.Mesh(mergeGeometries([[-.12,.08],[.12,.08],[-.1,-.11],[.1,-.11]].map(([x,z])=>new THREE.CircleGeometry(.012,12).rotateX(-Math.PI/2).translate(x,.001,z))),dimpleMat));
+  g.scale.setScalar(1.1);return g;}
+const dimpleMat=new THREE.MeshBasicMaterial({color:'#ffffff',transparent:true,opacity:.35,depthWrite:false});
+function makeInsect(sp){if(sp.strider)return makeStrider(sp);const g=new THREE.Group();const [m,lm]=insectMat(sp);
   const body=new THREE.Mesh(new THREE.SphereGeometry(1,12,10),m);body.scale.set(.016,.014,.038);body.position.y=.024;g.add(body);
   const head=new THREE.Mesh(new THREE.SphereGeometry(.012,10,8),m);head.position.set(0,.026,.04);g.add(head);
   const wings=new THREE.Mesh(new THREE.SphereGeometry(1,10,8),m);wings.scale.set(.014,.006,.032);wings.position.set(0,.036,-.008);g.add(wings);
@@ -1511,7 +1666,13 @@ function landSpot(cx,cz,rMin,rMax){for(let t=0;t<40;t++){const a=R(0,6.28),d=R(r
 function templeFree(x,z){if(!TI||!inTempleXZ(x,z)||Math.abs(x-TI.x)>TI.i-.35||Math.abs(z-TI.z)>TI.i-.35)return false;for(const b of boxes)if(b.top>TI.F+.2&&b.bottom<TI.F+.5&&x>b.minX-.15&&x<b.maxX+.15&&z>b.minZ-.15&&z<b.maxZ+.15)return false;return true;}
 function spawnTempleCricket(c){for(let t=0;t<30;t++){const x=TI.x+R(-5.5,5.5),z=TI.z+R(-5.5,5.5);if(!templeFree(x,z))continue;c.pos.set(x,TI.F,z);break;}c.vel.set(0,0,0);c.yaw=R(0,6.28);c.alive=true;c.g.visible=true;c.hopT=R(1,4);c.g.position.copy(c.pos);}
 function spawnCricket(c,near){const p=landSpot(near.x,near.z,4,28);if(!p)return;c.pos.copy(p);c.vel.set(0,0,0);c.yaw=R(0,6.28);c.alive=true;c.g.visible=true;c.hopT=R(1,4);}
+const noShadow=g=>{g.traverse(o=>{o.castShadow=false;});return g;};
+function lakeNear(p){let best=null,bd=1e9;for(const L of LAKES){const d=Math.hypot(L.x-p.x,L.z-p.z)-L.r;if(d<bd){bd=d;best=L;}}return best;}
+function spawnWaterBug(c,near){const L=lakeNear(near);if(!L)return;c.lake=L;for(let t=0;t<30;t++){const a=R(0,6.28),d=L.r*Math.sqrt(R(.02,.85));const x=L.x+Math.cos(a)*d,z=L.z+Math.sin(a)*d;
+    if(terrainH(x,z)<-.22){c.pos.set(x,WATER_Y+(c.sp.strider?.004:-.012),z);break;}}c.vel.set(0,0,0);c.yaw=R(0,6.28);c.alive=true;c.g.visible=true;c.hopT=R(.5,2);c.g.position.copy(c.pos);}
+const WATER_SP=()=>SPECIES.filter(q=>q.water);
 function setupCrickets(n,golden=.08){for(const c of crickets)scene.remove(c.g);crickets.length=0;const S=SPECIES.filter(q=>q.area===areaIdx);
+  {const W=WATER_SP();for(let i=0,m=LOW?5:8;i<m;i++){const u=rnd();const sp=W[u<golden*.8?2:u<golden*.8+.26?1:0];const c={g:noShadow(makeInsect(sp)),sp,gold:sp.r===2,water:true,pos:new V3(),vel:new V3(),yaw:0,alive:true,hopT:0,chirp:1e9,spin:R(-1,1)};scene.add(c.g);spawnWaterBug(c,PL.pos);crickets.push(c);}}
   if(TI)for(let i=0;i<7;i++){const sp=i<5||areaIdx===0?SPECIES[2]:S[2];const c={g:makeInsect(sp),sp,gold:true,temple:true,pos:new V3(),vel:new V3(),yaw:0,alive:true,hopT:0,chirp:R(2,9)};scene.add(c.g);spawnTempleCricket(c);crickets.push(c);}
   for(let i=0;i<n;i++){const u=rnd();const sp=S[u<golden?2:u<golden+.22?1:0];const c={g:makeInsect(sp),sp,gold:sp.r===2,pos:new V3(),vel:new V3(),yaw:0,alive:true,hopT:0,chirp:R(2,9)};scene.add(c.g);spawnCricket(c,PL.pos);crickets.push(c);}}
 
@@ -1707,7 +1868,7 @@ tb('tDrink',()=>touch.drink=true,()=>touch.drink=false);tb('tCamo',()=>camoQ=tru
    Ground, climbing, collision
    ===================================================================== */
 function groundAt(x,z,y){let h=terrainH(x,z);
-  for(const r of rocks){const dx=x-r.x,dz=z-r.z,q=1-(dx*dx+dz*dz)/(r.s*r.s);if(q>0){const ry=r.cy+r.sy*Math.sqrt(q);if(ry>h)h=ry;}}
+  {const l=rockGrid.get(Math.floor(x/RGC)+','+Math.floor(z/RGC));if(l)for(const r of l){const ry=rockTop(r,x,z);if(ry>h)h=ry;}}
   for(const b of boxes)if(x>b.minX&&x<b.maxX&&z>b.minZ&&z<b.maxZ&&b.top<=y+.4&&b.top>h)h=b.top;
   if(h<WATER_Y-.07)h=WATER_Y-.07;
   perch=null;perchBr=null;
@@ -1722,8 +1883,20 @@ function branchTop(br,x,z){const px=x-br.ax,pz=z-br.az,s=(px*br.dx+pz*br.dz)/br.
 // Ease the gecko toward the middle of the branch it walks on.
 function branchPull(br,p,k){const px=p.x-br.ax,pz=p.z-br.az,off=(px*br.dz-pz*br.dx)/br.L2;p.x-=br.dz*off*k;p.z+=br.dx*off*k;}
 // Collider radius that follows the visible trunk, including the root flare and bark bulges (see trunkGeo).
-function treeRadius(t,hy){const ly=hy-t.yOff;const r0=lerp(t.rB,t.rT,clamp(ly/t.H,0,1));
+function treeRadius(t,hy,a){if(a!==undefined)return trunkR(t,hy,a);const ly=hy-t.yOff;const r0=lerp(t.rB,t.rT,clamp(ly/t.H,0,1));
   const flare=t.flare&&ly<2?Math.max(0,2-ly)**2*.18/Math.max(t.rB,.2):0;return r0*(1.13+flare)+.01;}
+// Radius of the visible trunk mesh at height hy above t.base, at angle a = atan2(dz,dx): the bark noise and root flare of trunkGeo,
+// interpolated between its vertices the way the triangles are. Feet and body then rest on the bark instead of in it or above it.
+function trunkVR(t,i,j,dy,da){const y=i*dy,ang=j*da,r0=lerp(t.rB,t.rT,y/t.H);
+  const n=fbm(Math.cos(ang)*1.6+t.seed,Math.sin(ang)*1.6+y*.25,3),fl=y<2?(2-y)**2*.18:0;return r0*(1+(n-.5)*.35+fl/Math.max(t.rB,.2));}
+function trunkR(t,hy,a){const ly=hy-t.yOff;
+  if(t.kind==='palm')return lerp(t.rB,t.rT,clamp(ly/t.H,0,1))*.97+.012;
+  const S=t.kind==='cactus'?24:16,da=6.2832/S;let fa=a/da;fa-=Math.floor(fa/S)*S;const j=Math.floor(fa),u=fa-j;
+  if(t.kind==='cactus')return t.rB*(1+.08*lerp(j%2?-1:1,j%2?1:-1,u))+.012;
+  if(t.seed===undefined)return treeRadius(t,hy);
+  const rows=Math.max(4,Math.round(t.H/1.5)),dy=t.H/rows,yy=clamp(ly,0,t.H-.001)/dy,i=Math.floor(yy),v=yy-i;
+  const a0=lerp(trunkVR(t,i,j,dy,da),trunkVR(t,i,j+1,dy,da),u),a1=lerp(trunkVR(t,i+1,j,dy,da),trunkVR(t,i+1,j+1,dy,da),u);
+  return lerp(a0,a1,v)*(1-.019*Math.sin(Math.PI*u))+.012;}
 const _v=new V3(),_w=new V3(),_n=new V3(),_prev=new V3();let perch=null,perchBr=null;
 const geckoR=()=>.13*geckoScale();
 // Resolve one small step from prev to np. Pushes are taken toward the side prev was on, so a fast step can never pop out the far side.
@@ -1731,7 +1904,7 @@ function tryClimbOrCollide(np,prev,move,moving){
   const GR=geckoR();
   for(let pass=0;pass<2;pass++){const grab=pass===0;
   for(const t of trees){const dx=np.x-t.x,dz=np.z-t.z;if(Math.abs(dx)>4||Math.abs(dz)>4)continue;const hy=np.y-t.base;if(hy>t.top-.02)continue;
-    const tr=treeRadius(t,hy),rr=tr+GR;let d=Math.hypot(dx,dz);
+    const tr=trunkR(t,hy,Math.atan2(dz,dx)),rr=tr+GR;let d=Math.hypot(dx,dz);
     if(d<rr){const toward=moving?-(dx*move.x+dz*move.z)/(d||1):0;
       if(grab&&toward>.3&&PL.regrab<=0&&hy<t.climbMax-.1){PL.climb={type:'tree',t,a:Math.atan2(dz,dx),h:Math.max(hy,.06)};PL.vel.set(0,0,0);return true;}
       let ux=dx,uz=dz;if(d<1e-4){ux=prev.x-t.x;uz=prev.z-t.z;d=Math.hypot(ux,uz)||1;}
@@ -1906,7 +2079,7 @@ function addCoins(n){const v=Math.max(1,Math.round(n));PL.coins+=v;save.coins+=v
 function addToBook(sp){const first=!save.book[sp.id];const had=pageDone(sp.area);save.book[sp.id]=(save.book[sp.id]||0)+1;
   if(first){measure('book',sp.id,'new');setTimeout(()=>floater(PL.pos.clone().add(_v.set(0,.5,0)),t('bookNew',{n:insectName(sp)}),'green'),350);}
   if(!had&&pageDone(sp.area)&&!save.pages[sp.area]){save.pages[sp.area]=true;const r=PAGE_REWARD[sp.area];save.coins+=r;PL.coins+=r;AU.sfx.quest();
-    showBanner(t('pageDone',{area:areaName(sp.area)}),t('pageReward',{n:r}),6);measure('book',AREAS[sp.area].id,'complete');}
+    showBanner(t('pageDone',{area:pageName(sp.area)}),t('pageReward',{n:r}),6);measure('book',pageId(sp.area),'complete');}
   persist();}
 const insectName=sp=>L().insects?.[sp.id]?.[0]||sp.id;
 
@@ -1925,6 +2098,15 @@ setInterval(()=>{if(state!=='play'||PL.dead||adBusy||document.hidden)return;EV.p
 const camF=new V3(),camR=new V3(),move=new V3(),np=new V3(),tq=new THREE.Quaternion(),basis=new THREE.Matrix4();
 function orient(up,fwd,dt,k=12){_v.copy(fwd).addScaledVector(up,-fwd.dot(up));if(_v.lengthSq()<1e-6)_v.set(0,0,1);_v.normalize();_w.crossVectors(up,_v).normalize();
   basis.makeBasis(_w,up,_v);tq.setFromRotationMatrix(basis);gecko.root.quaternion.slerp(tq,1-Math.exp(-k*dt));}
+/* Water rings: the swimming gecko and the water insects leave expanding rings on the surface */
+const rippleMat=new THREE.MeshBasicMaterial({color:'#eef6f0',transparent:true,opacity:.5,depthWrite:false});
+const RIPPLE_GEO=new THREE.RingGeometry(.9,1,40).rotateX(-Math.PI/2);
+const ripples=[];let swimRipT=0,swimSeen=false;
+function ripple(x,z,size,op=.45){let r=ripples.find(q=>q.t>=q.life);if(!r){if(ripples.length>=48)return;r={m:NOREFL(new THREE.Mesh(RIPPLE_GEO,rippleMat.clone())),t:0,life:1};r.m.renderOrder=3;r.m.userData.noAO=true;scene.add(r.m);ripples.push(r);}
+  r.t=0;r.life=R(1,1.4);r.size=size;r.op=op;r.m.position.set(x,WATER_Y+.008,z);r.m.visible=true;r.m.scale.setScalar(size*.25);r.m.material.opacity=op;}
+function updateRipples(dt){for(const r of ripples){if(r.t>=r.life){r.m.visible=false;continue;}r.t+=dt;const k=Math.min(1,r.t/r.life);r.m.scale.setScalar(r.size*(.25+k*1.6));r.m.material.opacity=r.op*(1-k)*(1-k);}}
+function enterWater(){AU.noise(.35,900,.22,'lowpass');AU.noise(.18,2400,.08,'bandpass',.05);const sc=geckoScale();for(let i=0;i<3;i++)ripple(PL.pos.x+R(-.1,.1),PL.pos.z+R(-.1,.1),.3*sc*(1+i*.5),.6);
+  if(!swimSeen&&state==='play'){swimSeen=true;floater(PL.pos.clone().add(_v.set(0,.3,0)),t('swimFloat'),'blue');measureOnce('swim',AREAS[areaIdx].id,'first');}}
 function updatePlayer(dt){
   const pk=perks();let ix=0,iy=0;
   if(keys.KeyW||keys.ArrowUp)iy+=1;if(keys.KeyS||keys.ArrowDown)iy-=1;if(keys.KeyD||keys.ArrowRight)ix+=1;if(keys.KeyA||keys.ArrowLeft)ix-=1;
@@ -1943,7 +2125,7 @@ function updatePlayer(dt){
   if(PL.drinking){PL.thirst=Math.min(100,PL.thirst+22*dt);if(Math.random()<dt*5)AU.sfx.drink();}
 
   if(PL.climb){updateClimb(dt,ix,iy,moving,sprint);return;}
-  const speed=(sprint?7.2:3.5)*pk.speed*(PL.inWater?.5:1)*(.85+sc*.2)*(mode==='easy'?1.05:1);
+  const speed=(sprint?7.2:3.5)*pk.speed*(PL.swim?.62:PL.inWater?.55:1)*(.85+sc*.2)*(mode==='easy'?1.05:1);
   const acc=PL.onGround?16:4;
   PL.vel.x=damp(PL.vel.x,move.x*speed,acc,dt);PL.vel.z=damp(PL.vel.z,move.z*speed,acc,dt);
   if(moving){const ty=Math.atan2(move.x,move.z);let d=ty-PL.yaw;d=Math.atan2(Math.sin(d),Math.cos(d));PL.yaw+=d*(1-Math.exp(-14*dt));}
@@ -1956,14 +2138,20 @@ function updatePlayer(dt){
   const lim=HALF-16;np.x=clamp(np.x,-lim,lim);np.z=clamp(np.z,-lim,lim);
   let g=groundAt(np.x,np.z,PL.pos.y);
   if(perchBr&&PL.onGround&&PL.vel.y<=0){branchPull(perchBr,np,1-Math.exp(-5*dt));g=groundAt(np.x,np.z,PL.pos.y);}
+  // Deep water: the gecko floats with its back at the surface and swims instead of walking over the lake bed.
+  const swimY=WATER_Y-.045*sc,wasSwim=PL.swim;
+  PL.swim=g<swimY&&terrainH(np.x,np.z)<WATER_Y-.1*sc&&np.y<swimY+.35;
+  if(PL.swim){g=swimY;perch=null;perchBr=null;}
   if(np.y<=g){np.y=g;PL.vel.y=Math.max(PL.vel.y,0);PL.onGround=true;}
   else if(PL.onGround&&PL.vel.y<=0&&np.y-g<.3){np.y=g;PL.vel.y=0;}
   else PL.onGround=false;
   PL.perch=PL.onGround?perch:null;
+  if(PL.swim&&!wasSwim)enterWater();
+  if(PL.swim){swimRipT-=dt;if(swimRipT<=0){swimRipT=PL.speed>.4?.3:1.2;ripple(PL.pos.x,PL.pos.z,.26*sc,PL.speed>.4?.32:.2);}}
   PL.pos.copy(np);PL.speed=Math.hypot(PL.vel.x,PL.vel.z);
   gecko.root.position.copy(PL.pos);
   const tn=terrainNormal(PL.pos.x,PL.pos.z,_n);tn.lerp(Y,.2).normalize();
-  orient(PL.onGround&&!PL.perch?tn:Y,_p.set(Math.sin(PL.yaw),0,Math.cos(PL.yaw)),dt);
+  orient(PL.onGround&&!PL.perch&&!PL.swim?tn:Y,_p.set(Math.sin(PL.yaw),0,Math.cos(PL.yaw)),dt);
   PL.up.copy(Y);
 }
 /* Camouflage (leaf-tailed gecko only): on a trunk or a branch, press C / Camo to turn into bark. Poachers then only notice you
@@ -1984,6 +2172,7 @@ function updateClimb(dt,ix,iy,moving,sprint){
   if(c.type==='tree'){const t=c.t;n.set(Math.cos(c.a),0,Math.sin(c.a));const tan=_w.set(-Math.sin(c.a),0,Math.cos(c.a));
     const lat=ix*Math.sign(camR.dot(tan)||1);c.h+=iy*sp*dt;
     const rr=treeRadius(t,c.h);c.a+=lat*sp*dt/(rr+.05);
+    const gsc=geckoScale();let br=0;for(const k of [-.34,-.22,-.08,.06,.18])br=Math.max(br,trunkR(t,c.h+k*gsc,c.a));
     if(c.h>t.climbMax)c.h=t.climbMax;
     if(iy>.3){const y=t.base+c.h;
       if(t.branches)for(const br of t.branches){let da=c.a-br.ang;da=Math.atan2(Math.sin(da),Math.cos(da));if(Math.abs(da)*rr>br.r0+.12)continue;
@@ -1992,7 +2181,8 @@ function updateClimb(dt,ix,iy,moving,sprint){
       if(c.h>=t.climbMax){stepOff(t.x+n.x*.04,t.base+t.top,t.z+n.z*.04,Math.atan2(-n.x,-n.z));return;}}
     const gy=terrainH(t.x+n.x*(rr+.1),t.z+n.z*(rr+.1));
     if(c.h+t.base<=gy+.02&&iy<0){PL.climb=null;PL.regrab=.5;PL.pos.set(t.x+n.x*(rr+.18),gy,t.z+n.z*(rr+.18));PL.yaw=Math.atan2(n.x,n.z);return;}
-    PL.pos.set(t.x+n.x*(rr+.025),t.base+c.h,t.z+n.z*(rr+.025));
+    {const px=t.x+n.x*(br+.012*gsc),pz=t.z+n.z*(br+.012*gsc),gy=terrainH(px,pz)+.05*gsc;if(t.base+c.h<gy)c.h=gy-t.base;// never under the slope on the uphill side
+     PL.pos.set(px,t.base+c.h,pz);c.r=br;}
     fwd.copy(Y).addScaledVector(tan,lat*.9).addScaledVector(Y,iy<0?-.2:0);
   }else{const b=c.b;n.set(c.nx,0,c.nz);const tan=_w.set(-c.nz,0,c.nx);
     const lat=ix*Math.sign(camR.dot(tan)||1);c.y+=iy*sp*dt;c.lat+=lat*sp*dt*(c.nx?tan.z:tan.x);
@@ -2023,18 +2213,31 @@ function updateTongue(dt){tongue.cool-=dt;
     const ext=k<.5?k*2:2-k*2;const tip=_p.lerpVectors(mouth,tongue.to,ext);
     const d=_v.subVectors(tip,mouth);const L=d.length();tongue.mesh.visible=tongue.tip.visible=L>.01;tongue.mesh.position.copy(mouth);tongue.mesh.scale.set(1,L,1);
     tongue.mesh.quaternion.setFromUnitVectors(Y,d.normalize());tongue.tip.position.copy(tip);
-    if(tongue.target&&tongue.target.alive&&k>=.5){const c=tongue.target;c.pos.copy(tip);c.g.position.copy(tip);c.g.scale.setScalar(1.45*Math.max(.2,ext));}
+    if(tongue.target&&tongue.target.alive&&k>=.5){const c=tongue.target;c.pos.copy(tip);c.g.position.copy(tip);c.g.scale.setScalar((c.sp.strider?1.1:1.45)*Math.max(.2,ext));}
     if(k>=1){tongue.t=-1;tongue.mesh.visible=tongue.tip.visible=false;if(tongue.target&&tongue.target.alive)eatCricket(tongue.target);tongue.target=null;}}}
-function eatCricket(c){onboarding('first-cricket');if(c.gold)measure('cricket','gold','eaten');c.alive=false;c.g.visible=false;c.g.scale.setScalar(1.45);const pk=perks();const Rv=RARITY[c.sp.r];
+function eatCricket(c){onboarding('first-cricket');if(c.gold)measure('cricket','gold','eaten');c.alive=false;c.g.visible=false;c.g.scale.setScalar(c.sp.strider?1.1:1.45);const pk=perks();const Rv=RARITY[c.sp.r];
   PL.hunger=Math.min(100,PL.hunger+Rv.hunger);PL.health=Math.min(PL.maxHealth,PL.health+4);PL.crickets++;
   const before=stageName();PL.growth=Math.min(1,PL.growth+Rv.grow*pk.grow);
   const v=addCoins(Rv.coins*CFG.coinMult*pk.coins);addToBook(c.sp);AU.sfx.eat();c.gold?AU.sfx.gold():AU.sfx.coin();if(c.gold)goldEaten++;
   floater(PL.pos.clone().add(_v.set(0,.25,0)),'+'+v,'');
   if(stageName()!==before){AU.sfx.grow();if(stageIdx()===2)announceGate();measure('growth',stageKey(),'reached');measure('growth-time',stageKey(),timeKey(PL.time));floater(PL.pos.clone().add(_v.set(0,.5,0)),stageName()+'!','green');}
   if(c.temple){const area=areaIdx;setTimeout(()=>{if((state==='play'||state==='pause')&&areaIdx===area&&TI&&crickets.includes(c))spawnTempleCricket(c);},R(25000,40000));return;}
-  setTimeout(()=>{if(state==='play'||state==='pause')spawnCricket(c,PL.pos);},R(2500,6000));}
-function updateCrickets(dt){for(const c of crickets){if(!c.alive||(tongue.target===c&&tongue.t/tongue.dur>=.5))continue;
-  const d=c.pos.distanceTo(PL.pos);
+  setTimeout(()=>{if(state==='play'||state==='pause')c.water?spawnWaterBug(c,PL.pos):spawnCricket(c,PL.pos);},R(2500,6000));}
+function updateWaterBug(c,d,nearL,dt){
+  if(d>50&&nearL&&nearL!==c.lake&&state==='play'){spawnWaterBug(c,PL.pos);return;}c.g.visible=d<45;if(d>70)return;
+  c.hopT-=dt;const flee=d<(PL.swim?1.3:1.6)&&state==='play'&&mode!=='easy';
+  if(c.hopT<=0||flee&&c.hopT>.25){let a=flee?Math.atan2(c.pos.x-PL.pos.x,c.pos.z-PL.pos.z)+R(-.7,.7):R(0,6.28);const sp=c.sp.strider?(flee?R(1.8,2.6):R(.7,1.6)):(flee?R(1,1.5):R(.3,.7));
+    c.vel.set(Math.sin(a)*sp,0,Math.cos(a)*sp);c.hopT=flee?R(.5,.9):c.sp.strider?R(.6,2.2):R(.3,1);if(!c.sp.strider)c.spin=R(-4,4);if(d<30)ripple(c.pos.x,c.pos.z,.09,.35);}
+  const k=Math.exp(-(c.sp.strider?2.2:1.2)*dt);c.vel.x*=k;c.vel.z*=k;
+  if(!c.sp.strider){/* whirligigs spin in tight circles */const sp=Math.hypot(c.vel.x,c.vel.z),a=Math.atan2(c.vel.x,c.vel.z)+c.spin*dt;c.vel.set(Math.sin(a)*sp,0,Math.cos(a)*sp);}
+  const nx=c.pos.x+c.vel.x*dt,nz=c.pos.z+c.vel.z*dt;
+  if(terrainH(nx,nz)>-.18){const L=c.lake;const a=Math.atan2(L.x-c.pos.x,L.z-c.pos.z);const sp=Math.max(.4,Math.hypot(c.vel.x,c.vel.z));c.vel.set(Math.sin(a)*sp,0,Math.cos(a)*sp);}
+  else{c.pos.x=nx;c.pos.z=nz;}
+  const sp=Math.hypot(c.vel.x,c.vel.z);if(sp>.05)c.yaw=Math.atan2(c.vel.x,c.vel.z);
+  c.pos.y=WATER_Y+(c.sp.strider?.004:-.012+Math.sin(time*6+c.spin)*.002);c.g.position.copy(c.pos);c.g.rotation.y=c.yaw;
+  if(!c.sp.strider&&sp>.2&&d<25&&rnd()<dt*3)ripple(c.pos.x,c.pos.z,.07,.3);}
+function updateCrickets(dt){const nearL=lakeNear(PL.pos);for(const c of crickets){if(!c.alive||(tongue.target===c&&tongue.t/tongue.dur>=.5))continue;
+  const d=c.pos.distanceTo(PL.pos);if(c.water){updateWaterBug(c,d,nearL,dt);continue;}
   if(d>48&&state==='play'&&!c.temple){spawnCricket(c,PL.pos);continue;}
   c.hopT-=dt;const gH=(x,z)=>c.temple?TI.F:terrainH(x,z);const g=gH(c.pos.x,c.pos.z);
   if(c.pos.y<=g+.001&&c.hopT<=0){const flee=d<(PL.speed>5?3.2:1.6)&&state==='play'&&mode!=='easy';let a=flee?Math.atan2(c.pos.x-PL.pos.x,c.pos.z-PL.pos.z)+R(-.6,.6):R(0,6.28);
@@ -2062,12 +2265,12 @@ function updatePoachers(dt){
     if(PL.dead)sees=false;
     p.alert=clamp(p.alert+(sees?dt*(dist<6?2.6:1.3):-dt*.25),0,1.2);
     if(sees){p.last.copy(PL.pos);p.lost=0;}
-    const unreachable=geckoHeightAboveGround()>1.65;
+    const unreachable=geckoHeightAboveGround()>1.65||(PL.swim&&terrainH(PL.pos.x,PL.pos.z)<-.5);
     let target=null,spd=0;
     if(p.state==='patrol'){if(p.alert>=1){p.state='chase';AU.sfx.alert();p.shout=1.2;}
       else if(p.alert>.25){target=PL.pos;spd=.9;}else{if(p.home)guardTrip(p,dt);if(!p.wp||Math.hypot(p.wp.x-p.pos.x,p.wp.z-p.pos.z)<1.5){p.wp=p.trip&&p.trip.there?landSpot(p.trip.x,p.trip.z,1,8):p.trip?new V3(p.trip.x,0,p.trip.z):p.home?landSpot(p.home.x,p.home.z,3,11):landSpot(PL.pos.x,PL.pos.z,10,38)||landSpot(p.pos.x,p.pos.z,5,25);}target=p.wp;spd=p.trip&&!p.trip.there?1.75:1.45;}}
     if(p.state==='chase'){anyChase=true;p.lost+=sees?0:dt;target=sees?PL.pos:p.last;spd=CFG.chase;
-      if(unreachable&&dist<4){spd=0;p.wait+=dt;target=PL.pos;if(p.wait>CFG.wait){p.state='patrol';p.alert=0;p.wait=0;p.wp=landSpot(p.pos.x,p.pos.z,25,40);escapes++;}}else p.wait=Math.max(0,p.wait-dt*.5);
+      if(unreachable&&(dist<4||PL.swim&&dist<10)){spd=0;p.wait+=dt;target=PL.pos;if(p.wait>CFG.wait){p.state='patrol';p.alert=0;p.wait=0;p.wp=landSpot(p.pos.x,p.pos.z,25,40);escapes++;}}else p.wait=Math.max(0,p.wait-dt*.5);
       if(p.lost>(PL.camo?1.2:mode==='master'?7:4.5)){p.state='search';p.searchT=PL.camo?2.5:5;if(PL.camo){p.alert=Math.min(p.alert,.5);const a=R(0,6.28);p.last.set(p.pos.x+Math.cos(a)*R(5,9),0,p.pos.z+Math.sin(a)*R(5,9));}}}
     if(p.state==='search'){target=p.last;spd=1.9;p.searchT-=dt;if(p.alert>=1&&sees)p.state='chase';
       if(p.searchT<0){p.state='patrol';p.alert=.2;escapes++;}}
@@ -2233,6 +2436,12 @@ function updateGame(dt){
   updateTips(dt);updateHUD(dt);
 }
 const footGround=(x,z,y)=>groundAt(x,z,y+.12);
+const footSurf=p=>groundAt(p.x,p.z,p.y+.12)-p.y;
+// While climbing: how deep a point lies inside the trunk or wall being climbed (or the ground under it)
+const climbSurf=p=>{const c=PL.climb;let d=terrainH(p.x,p.z)-p.y;if(!c)return d;
+  if(c.type==='tree'){const t=c.t,dx=p.x-t.x,dz=p.z-t.z;return Math.max(d,trunkR(t,p.y-t.base,Math.atan2(dz,dx))-Math.hypot(dx,dz));}
+  const b=c.b;if(p.y<b.bottom||p.y>b.top+.02)return d;
+  const w=c.nx>0?b.maxX-p.x:c.nx<0?p.x-b.minX:c.nz>0?b.maxZ-p.z:p.z-b.minZ;const lat=c.nx?(p.z>b.minZ&&p.z<b.maxZ):(p.x>b.minX&&p.x<b.maxX);return lat?Math.max(d,w):d;};
 const clock=new THREE.Clock();let time=0;
 function updateButterflies(dt){for(const b of butterflies){b.t+=dt;if(b.p.distanceTo(PL.pos)>26||b.home.lengthSq()===0){const s=landSpot(PL.pos.x,PL.pos.z,3,20);if(s){b.home.copy(s);b.p.copy(s).add(_v.set(0,R(.5,2),0));}}
   const tx=b.home.x+Math.sin(b.t*.4)*3,tz=b.home.z+Math.cos(b.t*.33)*3,ty=b.home.y+1.1+Math.sin(b.t*.9)*.6;b.v.x=damp(b.v.x,tx-b.p.x,1.2,dt);b.v.y=damp(b.v.y,ty-b.p.y+Math.sin(b.t*7)*.6,2,dt);b.v.z=damp(b.v.z,tz-b.p.z,1.2,dt);
@@ -2292,10 +2501,10 @@ function frame(ts){requestAnimationFrame(frame);
   if(state==='play'&&!PL.dead)updateGame(dt);
   else if(state==='play'&&PL.dead){updatePoachers(dt);}
   if(state==='menu'||state==='shop'){gecko.root.position.copy(PL.pos);menuCamera(dt);gecko.update(dt,0,{look:Math.sin(time*.7)*.6,ground:footGround});}
-  else{if(state==='play')smoothVisual(dt);gecko.update(dt,PL.speed,{drinking:PL.drinking,climbing:!!PL.climb,ground:PL.climb?null:footGround});if(state==='play'||state==='over')updateCamera(dt);}
+  else{if(state==='play')smoothVisual(dt);gecko.update(dt,PL.speed,{drinking:PL.drinking,climbing:!!PL.climb,swim:PL.swim&&!PL.climb,surf:PL.climb?climbSurf:footSurf});if(state==='play'||state==='over')updateCamera(dt);}
   gecko.root.scale.setScalar(geckoScale());gecko.root.visible=!(PL.dead&&state==='over');
   if(PL.inv>0&&state==='play'&&!PL.dead)gecko.root.visible=Math.floor(time*14)%2===0;
-  if(state!=='pause'){updateCamp(state==='win'?0:dt);updateTemple(dt);updateCrickets(dt);updateButterflies(dt);updateDust(dt);AU.update(dt);}
+  if(state!=='pause'){updateCamp(state==='win'?0:dt);updateTemple(dt);updateCrickets(dt);updateRipples(dt);updateButterflies(dt);updateDust(dt);AU.update(dt);}
   updateTargetRing();
   windUniforms.uTime.value=time;windUniforms.uPlayer.value.copy(PL.pos);shaftMat.uniforms.uCam.value.copy(camera.position);
   waterNormal.offset.set(time*.012,time*.008);waterU.uTime.value=time;if(waterMirror)waterMirror.material.uniforms.uTime.value=time;nearGrass.uCenter.value.set(PL.pos.x,PL.pos.z);clouds.offset.set(time*.002,time*.0007);
@@ -2354,11 +2563,11 @@ function renderSkills(el){const T=L();
   else{act.textContent=t('shopUpgrade',{p:st.cost});act.disabled=!st.ok;
     $('shopMsg').textContent=st.need?t('skillNeeds',{n:insectName(speciesById(k.req))})+' ('+areaName(speciesById(k.req).area)+')':save.coins<st.cost?t('shopNeed',{n:st.cost-save.coins}):t('skillLv',{n:st.lv+1});}}
 function renderBook(el){const T=L();$('shopMsg').textContent='';
-  for(let a=0;a<AREAS.length;a++){const S=SPECIES.filter(q=>q.area===a);const n=S.filter(q=>(save.book[q.id]||0)>=RARITY[q.r].need).length;
-    const h=document.createElement('div');h.className='pageHead';h.innerHTML=`<span>${areaName(a)} <small>${n}/3</small></span><small class="${save.pages[a]?'done':''}">${save.pages[a]?t('bookRewardDone'):t('bookReward',{n:PAGE_REWARD[a]})}</small>`;el.appendChild(h);
+  for(let a=0;a<PAGES;a++){const S=SPECIES.filter(q=>q.area===a);const n=S.filter(q=>(save.book[q.id]||0)>=RARITY[q.r].need).length;
+    const h=document.createElement('div');h.className='pageHead';h.innerHTML=`<span>${pageName(a)} <small>${n}/3</small></span><small class="${save.pages[a]?'done':''}">${save.pages[a]?t('bookRewardDone'):t('bookReward',{n:PAGE_REWARD[a]})}</small>`;el.appendChild(h);
     for(const q of S){const c=save.book[q.id]||0;const d=document.createElement('div');d.className='skin'+(c?'':' unknown');
       d.innerHTML=c?`<div class="sw" style="background:radial-gradient(circle at 40% 35%,${q.glow||q.col},${q.col} 55%,${q.leg||q.col})"></div><b>${insectName(q)}</b><span>${T.rarity[q.r]}</span><i class="${c>=RARITY[q.r].need?'owned':''}">${Math.min(c,RARITY[q.r].need)}/${RARITY[q.r].need}</i>`
-        :`<div class="sw">?</div><b>???</b><span>${T.rarity[q.r]} · ${areaName(a)}</span><i>0/${RARITY[q.r].need}</i>`;el.appendChild(d);}}}
+        :`<div class="sw">?</div><b>???</b><span>${T.rarity[q.r]} · ${pageName(a)}</span><i>0/${RARITY[q.r].need}</i>`;el.appendChild(d);}}}
 function canBuySkin(){return SKINS.some(s=>s.price>0&&!save.owned.includes(s.id)&&save.coins>=s.price)||SKILLS.some(k=>skillState(k).ok);}
 function updateShopBadge(){const b=canBuySkin();for(const id of ['shopBtn','overShop'])$(id).classList.toggle('badge',b);}
 function previewSkin(s){gecko.setMaterial(skinMaterial(s),s.eye,s.crest);}
@@ -2403,7 +2612,7 @@ bootProg(1);
 setScreen('menu');requestAnimationFrame(frame);document.fonts?.ready.then(fitScreens);
 setTimeout(()=>{$('loading').style.opacity=0;setTimeout(()=>$('loading').remove(),650);},250);
 pokiInit.then(()=>{if(!save.lang&&detectLang()!==lang)applyLang(detectLang());measure('lang',lang,'start');Poki.loaded();measure('screen','menu','visible');onboarding('loaded');});
-window.__gekko={get TI(){return TI;},step:(dt,n)=>{for(let i=0;i<n;i++){updateGame(dt);updateCamp(dt);updateCrickets(dt);}},get gnaw(){return gnaw;},get camoQ(){return camoQ;},set camoQ(v){camoQ=v;},updateCamera,smoothVisual,setCamo,mmIcon,drawMinimap,get NESTp(){return NEST;},setupCrickets,normalFromCanvas,cages,get CAMP(){return CAMP;},get NEST(){return NEST;},save,finale,renderShop,setShopTab:v=>{shopTab=v;},travel,buildWorld,gates,AREAS,get areaIdx(){return areaIdx;},get SPAWN(){return SPAWN;},stageIdx,PL,renderer,scene,updatePlayer,treeRadius,groundAt,poachers,crickets,trees,boxes,rocks,startGame,setMode:m=>{mode=m;},get state(){return state;},camera,gecko,keys,get camYaw(){return camYaw;},set camYaw(v){camYaw=v;},set camPitch(v){camPitch=v;},set camDist(v){camDist=v;}};
+window.__gekko={get TI(){return TI;},step:(dt,n)=>{for(let i=0;i<n;i++){updateGame(dt);updateCamp(dt);updateCrickets(dt);}},get gnaw(){return gnaw;},get camoQ(){return camoQ;},set camoQ(v){camoQ=v;},updateCamera,smoothVisual,setCamo,mmIcon,drawMinimap,get NESTp(){return NEST;},setupCrickets,normalFromCanvas,cages,get CAMP(){return CAMP;},get NEST(){return NEST;},save,finale,renderShop,setShopTab:v=>{shopTab=v;},travel,buildWorld,gates,AREAS,get areaIdx(){return areaIdx;},get SPAWN(){return SPAWN;},stageIdx,PL,renderer,scene,updatePlayer,treeRadius,trunkR,rockTop,footSurf,climbSurf,updateClimb,get rockGrid(){return rockGrid;},ripples,get LAKES(){return LAKES;},groundAt,poachers,crickets,trees,boxes,rocks,startGame,setMode:m=>{mode=m;},get state(){return state;},camera,gecko,keys,get camYaw(){return camYaw;},set camYaw(v){camYaw=v;},set camPitch(v){camPitch=v;},set camDist(v){camDist=v;}};
 </script>
 </body>
 </html>
