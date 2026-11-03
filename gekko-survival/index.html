@@ -120,7 +120,9 @@ button:focus-visible{outline:3px solid var(--leaf);outline-offset:2px}
 .coinsBig svg{width:22px;height:22px}
 .ghost.gfx{padding:8px 12px;font-size:13px;border-radius:12px}
 .revive{flex:0 0 auto;display:flex;align-items:center;justify-content:center;gap:8px;width:100%;margin:0 0 10px;background:var(--coin);color:#2a1d00}
-.revive[hidden]{display:none}.revive svg{width:22px;height:22px}.revive small{font-weight:700;opacity:.75}
+.revive[hidden]{display:none}
+.adRow{display:flex;gap:10px;flex-wrap:wrap;margin:0 0 10px}.adRow[hidden]{display:none}.adRow .revive{flex:1 1 170px;width:auto;margin:0;font-size:20px;padding:12px 14px;gap:6px;flex-wrap:wrap}.adRow .revive span{white-space:nowrap}.adRow .revive small{font-size:13px;white-space:nowrap}.revive svg{flex:0 0 auto}
+.adCoins{margin-left:auto;color:var(--coin);padding:8px 12px}.adCoins[hidden]{display:none}.adCoins svg{width:20px;height:20px}.adCoins:disabled{opacity:.5}.revive svg{width:22px;height:22px}.revive small{font-weight:700;opacity:.75}
 .ver{margin-left:auto;font-size:11px;opacity:.6}
 select.lang{appearance:none;-webkit-appearance:none;padding-right:12px;cursor:pointer}select.lang option{background:#0c1d14;color:var(--ink)}
 
@@ -276,14 +278,14 @@ select.lang{appearance:none;-webkit-appearance:none;padding-right:12px;cursor:po
         <button class="play" id="playBtn" data-i18n="play">Spelen</button>
         <button class="ghost" id="shopBtn"><svg viewBox="0 0 24 24"><path d="M4 15c3-1 4-5 8-5 3 0 4 2 7 1M7 15l-1 3M10 13.5l1 4M15 11l1 4M18 11.5l2 2" stroke="#b9e44f" stroke-width="2" fill="none" stroke-linecap="round"/><circle cx="6" cy="14" r="1" fill="#b9e44f"/></svg><span data-i18n="geckos">Gekko's</span></button>
       </div>
-      <div class="menuFoot"><span class="coinsBig"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="#ffc93c"/><circle cx="12" cy="12" r="7" fill="none" stroke="#c98a12" stroke-width="1.6"/></svg><span id="menuCoins">0</span></span><span id="menuBest"></span><button class="ghost gfx" id="gfxBtn">Graphics</button><select class="ghost gfx lang" id="langSel" data-i18n-aria="language" aria-label="Taal"></select><span class="ver">v1.12</span></div>
+      <div class="menuFoot"><span class="coinsBig"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="#ffc93c"/><circle cx="12" cy="12" r="7" fill="none" stroke="#c98a12" stroke-width="1.6"/></svg><span id="menuCoins">0</span></span><span id="menuBest"></span><button class="ghost gfx" id="gfxBtn">Graphics</button><select class="ghost gfx lang" id="langSel" data-i18n-aria="language" aria-label="Taal"></select><span class="ver">v1.13</span></div>
       <div class="keys" data-i18n-html="keys"><span><kbd>WASD</kbd> lopen</span><span><kbd>Muis</kbd> kijken</span><span><kbd>Shift</kbd> sprinten</span><span><kbd>Spatie</kbd> springen</span><span><kbd>Klik</kbd>/<kbd>E</kbd> tong</span><span><kbd>F</kbd> drinken</span></div>
     </div>
   </div>
 
   <div id="shop" class="screen" hidden>
     <div class="shopCol">
-      <div class="shopHead"><h2 data-i18n="geckos">Gekko's</h2><span class="coinsBig"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="#ffc93c"/><circle cx="12" cy="12" r="7" fill="none" stroke="#c98a12" stroke-width="1.6"/></svg><span id="shopCoins">0</span></span></div>
+      <div class="shopHead"><h2 data-i18n="geckos">Gekko's</h2><button class="ghost adCoins" id="adCoinsBtn" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="5" width="20" height="14" rx="3" fill="none" stroke="currentColor" stroke-width="2"/><path d="M10 9l5 3-5 3z" fill="currentColor"/></svg><span id="adCoinsTxt"></span></button><span class="coinsBig"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="#ffc93c"/><circle cx="12" cy="12" r="7" fill="none" stroke="#c98a12" stroke-width="1.6"/></svg><span id="shopCoins">0</span></span></div>
       <div class="tabs" id="shopTabs"><button data-tab="skins" data-i18n="geckos">Gekko's</button><button data-tab="skills" data-i18n="skillsTab">Vaardigheden</button><button data-tab="book" data-i18n="bookTab">Insectenboek</button></div>
       <div class="skins" id="skins"></div>
       <div class="shopMsg" id="shopMsg"></div>
@@ -311,7 +313,10 @@ select.lang{appearance:none;-webkit-appearance:none;padding-right:12px;cursor:po
       </div>
       <div class="newbest" id="rBest"></div>
       <p class="nextStage" id="rNext"></p>
-      <button class="play revive" id="reviveBtn" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="5" width="20" height="14" rx="3" fill="none" stroke="currentColor" stroke-width="2"/><path d="M10 9l5 3-5 3z" fill="currentColor"/></svg><span data-i18n="revive">Nog een kans</span> <small data-i18n="ad">(reclame)</small></button>
+      <div class="adRow" id="adRow" hidden>
+        <button class="play revive" id="reviveBtn" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="5" width="20" height="14" rx="3" fill="none" stroke="currentColor" stroke-width="2"/><path d="M10 9l5 3-5 3z" fill="currentColor"/></svg><span data-i18n="revive">Nog een kans</span> <small data-i18n="ad">(reclame)</small></button>
+        <button class="play revive" id="doubleBtn" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="5" width="20" height="14" rx="3" fill="none" stroke="currentColor" stroke-width="2"/><path d="M10 9l5 3-5 3z" fill="currentColor"/></svg><span data-i18n="doubleCoins">Munten x2</span> <small id="doubleAmt"></small></button>
+      </div>
       <div class="row"><button class="play" id="againBtn" data-i18n="again">Opnieuw</button><button class="ghost" id="overShop"><span data-i18n="geckos">Gekko's</span></button><button class="ghost" id="menuBtn" data-i18n="menu">Menu</button></div>
     </div>
   </div>
@@ -1964,7 +1969,7 @@ async function startGame(){
   setupCrickets(CFG.crickets,mode==='master'?.06:.09);
   goldEaten=0;escapes=0;questIdx=0;newQuest();tipIdx=save.tutorial?99:0;tipT=1;lostTimer=0;wasChased=false;maxChase=0;
   setHudArea();$('floaters').innerHTML='';
-  PL.revived=false;EV.runSec=0;EV.si=0;EV.runs++;EV.flags={};
+  PL.revived=false;PL.doubled=false;EV.runSec=0;EV.si=0;EV.runs++;EV.flags={};
   measure('run',EV.runs<=10?'run'+EV.runs:'run11+','start');measure('mode',mode,'start');measure('skin',save.skin,'play');onboarding('start');
   setScreen('play');Poki.start();
 }
@@ -2065,8 +2070,14 @@ function gameOver(reason){if(PL.dead)return;PL.dead=true;Poki.stop();
     $('rBest').textContent=nb?t('newRecord',{mode:CFG.name}):t('recordMode',{mode:CFG.name,t:fmtTime(prev)});
     const si=stageIdx();$('rNext').textContent=si<2?t('nextStage',{n:Math.ceil((STAGE_AT[si+1]-PL.growth)/(GROW_CRICKET*perks().grow)-1e-6),stage:L().stages[si+1]}):t('wasAdult');updateShopBadge();
     const canRevive=!PL.revived&&Poki.hasRewarded();$('reviveBtn').hidden=!canRevive;if(canRevive)measure('button','revive','visible');
+    const canDouble=!PL.doubled&&PL.coins>=5&&Poki.hasRewarded();$('doubleBtn').hidden=!canDouble;$('doubleAmt').textContent='(+'+PL.coins+')';if(canDouble)measure('button','double-coins','visible');
+    $('adRow').hidden=!canRevive&&!canDouble;
     setScreen('over');measure('screen','gameover','visible');},reason==='caught'?1300:600);
 }
+/* Rewarded: double the coins earned this run (once per run). Coins are only added when the ad was watched to the end. */
+async function doubleCoins(){if(adBusy||state!=='over'||PL.doubled)return;measure('button','double-coins','interact');const ok=await Poki.reward();measure('ad','double-coins',ok?'success':'fail');
+  if(!ok||state!=='over'||PL.doubled)return;PL.doubled=true;const n=PL.coins;save.coins+=n;PL.coins+=n;persist();AU.sfx.gold();
+  $('rCoins').textContent='+'+PL.coins;$('doubleBtn').hidden=true;$('adRow').hidden=$('reviveBtn').hidden;updateShopBadge();}
 async function revive(){if(adBusy||state!=='over')return;measure('button','revive','interact');const ok=await Poki.reward();measure('ad','revive',ok?'success':'fail');
   if(!ok||state!=='over')return;
   PL.revived=true;PL.dead=false;PL.health=Math.max(PL.health,PL.maxHealth*.6);PL.hunger=100;PL.thirst=100;PL.inv=3;PL.vel.set(0,0,0);
@@ -2540,7 +2551,15 @@ function applyLang(l){lang=TR[l]?l:'en';document.documentElement.lang=lang;const
   sel.onchange=()=>{save.lang=sel.value;persist();applyLang(sel.value);measure('lang',sel.value,'selected');};}
 let shopTab='skins',skillSel='tong';
 for(const b of $('shopTabs').children)b.onclick=()=>{shopTab=b.dataset.tab;AU.sfx.click();measure('screen','shop-'+shopTab,'visible');renderShop();};
-function renderShop(){const el=$('skins');el.innerHTML='';$('shopCoins').textContent=save.coins;
+/* Rewarded in the shop: free coins, with a short cooldown so it stays a bonus and not a coin tap. */
+const AD_COINS=75,AD_COINS_CD=120;let adCoinsAt=-1e9;
+function adCoinsLeft(){return Math.max(0,Math.ceil(AD_COINS_CD-(performance.now()-adCoinsAt)/1000));}
+function renderAdCoins(){const b=$('adCoinsBtn');const on=Poki.hasRewarded()&&shopTab!=='book';const was=b.hidden;b.hidden=!on;if(!on)return;const left=adCoinsLeft();
+  b.disabled=left>0||adBusy;$('adCoinsTxt').textContent=left>0?fmtTime(left):t('freeCoins',{n:AD_COINS});if(was&&left===0)measure('button','free-coins','visible');}
+setInterval(()=>{if(state==='shop'&&!$('adCoinsBtn').hidden)renderAdCoins();},1000);
+$('adCoinsBtn').onclick=async()=>{if(adBusy||adCoinsLeft()>0)return;measure('button','free-coins','interact');const ok=await Poki.reward();measure('ad','free-coins',ok?'success':'fail');
+  if(ok){adCoinsAt=performance.now();save.coins+=AD_COINS;persist();AU.sfx.gold();}if(state==='shop')renderShop();};
+function renderShop(){const el=$('skins');el.innerHTML='';$('shopCoins').textContent=save.coins;renderAdCoins();
   for(const b of $('shopTabs').children)b.setAttribute('aria-pressed',b.dataset.tab===shopTab);
   $('shopAct').hidden=shopTab==='book';
   if(shopTab==='skills')return renderSkills(el);if(shopTab==='book')return renderBook(el);
@@ -2583,6 +2602,7 @@ $('pauseBtn').onclick=()=>setPause(true);
 $('muteBtn').onclick=()=>{AU.init();AU.setMuted(!save.muted);};
 $('againBtn').onclick=async()=>{if(adBusy)return;measure('button','restart','interact');await Poki.brk();startGame();};
 $('reviveBtn').onclick=()=>revive();
+$('doubleBtn').onclick=()=>doubleCoins();
 $('overShop').onclick=()=>{measure('button','shop-over','interact');toMenu();$('shopBtn').onclick();};
 $('menuBtn').onclick=()=>{measure('button','menu','interact');toMenu();};
 function toMenu(){Poki.stop();setCamo(false);for(const p of poachers)p.dispose();poachers.length=0;if(netDome){scene.remove(netDome);netDome=null;}PL.dead=false;PL.drinking=false;PL.speed=0;PL.growth=0;
