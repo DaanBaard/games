@@ -1,5 +1,5 @@
 <!doctype html>
-<!-- Veggie Siege v0.7 -->
+<!-- Veggie Siege v0.7.1 -->
 <html lang="en">
 <head>
 <meta charset="utf-8">
@@ -208,7 +208,7 @@ button{font:inherit;color:inherit;border:none;background:none;cursor:pointer}
 <div id="load"><b>Veggie Siege</b><i></i><small id="ver0" style="color:#fff"></small></div>
 <script>
 'use strict';
-const VERSION='0.7';
+const VERSION='0.7.1';
 const $=id=>document.getElementById(id);
 const cv=$('c'),ctx=cv.getContext('2d');
 const TAU=Math.PI*2;
@@ -2539,17 +2539,33 @@ function gnomeIcon(i){const k='g'+i;if(pIconCache[k])return pIconCache[k];const 
 function img(src,cls){return '<img class="'+(cls||'vi')+'" src="'+src+'" alt="">'}
 
 /* ---------- layout ---------- */
+// "Next wave" and "Golden seed" sit in the free space around the garden, never on the path or the veggies
+function placeFloat(W,H,top,bot){const nb=$('bNext'),gb=$('bGold');const rem=parseFloat(document.documentElement.style.fontSize)||16;
+  const hg=L.T*.32,bT=L.by-hg,bB=L.by+ROWS*L.T+hg,bL=L.bx-hg,bR=L.bx+COLS*L.T+hg;const bh=2.9*rem,nw=12.5*rem,gw=10.5*rem;
+  const set=(e,o)=>{e.style.left=o.left!=null?o.left+'px':'auto';e.style.right=o.right!=null?o.right+'px':'auto';e.style.top=o.top+'px';e.style.transform=o.c?'translateX(-50%)':'none'};
+  const above=bT-(top-12),below=(H-bot)-bB,side=Math.min(bL,W-bR);
+  if(above>=bh+10){set(nb,{left:W/2,c:1,top:bT-bh-Math.min(14,(above-bh)/2)})}
+  else if(side>=nw+16){set(nb,{right:W-bL+12,top:L.by})}
+  else if(below>=bh+10){set(nb,{left:W/2,c:1,top:bB+Math.min(10,(below-bh)/2)})}
+  else set(nb,{left:W/2,c:1,top:Math.max(top-6,L.by-L.T*.3)});
+  if(side>=gw+16){set(gb,{left:bR+12,top:L.by})}
+  else if(below>=bh+10){set(gb,{left:Math.max(8,bL),top:bB+Math.min(10,(below-bh)/2)})}
+  else if(above>=bh+10&&W>=nw+gw+40){set(nb,{left:Math.max(8,bL),top:bT-bh-Math.min(14,(above-bh)/2)});set(gb,{right:Math.max(8,W-bR),top:bT-bh-Math.min(14,(above-bh)/2)})}
+  else set(gb,{right:W-L.bx-COLS*L.T+L.T*.1,top:L.by+L.T*.1});
+  UI.gbBelow=side<gw+16&&below>=bh+10}
+
 function resize(){const W=window.innerWidth,H=window.innerHeight,dpr=Math.min(2,window.devicePixelRatio||1);
   cv.width=Math.round(W*dpr);cv.height=Math.round(H*dpr);L.W=W;L.H=H;L.dpr=dpr;
   const u=clamp(Math.min(W/440,H/700),.72,1.45);document.documentElement.style.fontSize=(16*u)+'px';
-  const top=UI.state==='run'?($('top').getBoundingClientRect().height+12):12,bot=UI.state==='run'?($('bot').getBoundingClientRect().height+10):12;
-  const aw=W-16,ah=H-top-bot;const T=Math.floor(Math.min(aw/(COLS+.6),ah/(ROWS+.6)));L.T=Math.max(16,T);
+  let top=UI.state==='run'?($('top').getBoundingClientRect().height+12):12;const bot=UI.state==='run'?($('bot').getBoundingClientRect().height+10):12;
+  const top0=top,aw=W-16;let ah=H-top-bot;let T=Math.floor(Math.min(aw/(COLS+.6),ah/(ROWS+.6)));
+  // keep a strip free for the floating buttons when there is no room beside or around the garden
+  if(UI.state==='run'){const rem=16*u,need=2.9*rem+10,side=(W-COLS*T)/2-T*.32,free=ah-ROWS*T-T*.64;if(side<12.5*rem+16&&free<2*need){const res=Math.min(need,Math.max(0,2*need-free));top+=res;ah-=res;T=Math.floor(Math.min(aw/(COLS+.6),ah/(ROWS+.6)))}}
+  L.T=Math.max(16,T);
   document.documentElement.style.setProperty('--topH',top+'px');document.documentElement.style.setProperty('--botH',bot+'px');
   L.bx=Math.round((W-COLS*L.T)/2);L.by=Math.round(top+(ah-ROWS*L.T)/2);bg=null;
-  const nb=$('bNext');nb.style.top=Math.max(top-6,L.by-L.T*.3)+'px';
-  const gb=$('bGold'),endTR=R&&R.P&&R.P.end[0]>=COLS-3&&R.P.end[1]<=1;gb.style.right=(W-L.bx-COLS*L.T+L.T*.1)+'px';
-  if(endTR){gb.style.top=(L.by+ROWS*L.T-L.T*.75)+'px';gb.style.right=(W-L.bx-COLS*L.T+L.T*1.1)+'px'}else gb.style.top=(L.by+L.T*.1)+'px';
-  const zb=$('zoomBox');if(zb){const narrow=W-(L.bx+COLS*L.T)<70;zb.classList.toggle('row',narrow);zb.style.top=(narrow?L.by+ROWS*L.T+L.T*.35+28:L.by+ROWS*L.T*.5)+'px'}viewClamp()}
+  placeFloat(W,H,top0,bot);
+  const zb=$('zoomBox');if(zb){const narrow=W-(L.bx+COLS*L.T)<70;zb.classList.toggle('row',narrow);zb.style.top=(narrow?L.by+ROWS*L.T+L.T*.32+(parseFloat(document.documentElement.style.fontSize)||16)*1.45+4:L.by+ROWS*L.T*.5)+'px'}viewClamp()}
 function cellAt(px,py){const x=Math.floor((px-L.bx)/L.T),y=Math.floor((py-L.by)/L.T);if(x<0||y<0||x>=COLS||y>=ROWS)return -1;return y*COLS+x}
 
 /* ---------- screens ---------- */
