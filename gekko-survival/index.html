@@ -70,7 +70,8 @@ button:focus-visible{outline:3px solid var(--leaf);outline-offset:2px}
 #alert.hidden-status{background:rgba(20,60,30,.82);border-color:rgba(185,228,79,.45);animation:none}
 @keyframes shake{from{transform:translateX(-50%) scale(1)}to{transform:translateX(-50%) scale(1.05)}}
 #waterArrow{position:absolute;left:50%;bottom:calc(24% + 52px + env(safe-area-inset-bottom,0px));width:44px;height:44px;transform:translateX(-50%);filter:drop-shadow(0 2px 4px rgba(0,0,0,.5));pointer-events:none}
-#waterArrow svg{width:100%;height:100%;animation:bob .7s ease-in-out infinite alternate}
+#goalArrow{position:absolute;left:50%;bottom:calc(24% + 52px + env(safe-area-inset-bottom,0px));width:56px;height:56px;transform:translateX(-50%);filter:drop-shadow(0 2px 4px rgba(0,0,0,.5));pointer-events:none}
+#goalArrow svg,#waterArrow svg{width:100%;height:100%;animation:bob .7s ease-in-out infinite alternate}
 @keyframes bob{to{transform:translateY(-6px)}}
 #prompt{position:absolute;left:50%;bottom:calc(24% + env(safe-area-inset-bottom,0px));transform:translateX(-50%);padding:9px 16px;border-radius:12px;background:var(--glass-strong);border:1px solid var(--line);font-weight:800;font-size:15px;white-space:nowrap}
 #prompt kbd,.tip kbd,.keys kbd{font-family:var(--body);font-weight:900;font-size:12px;padding:2px 7px;border-radius:6px;background:var(--leaf);color:#14260d}
@@ -121,7 +122,7 @@ button:focus-visible{outline:3px solid var(--leaf);outline-offset:2px}
 .ghost.gfx{padding:8px 12px;font-size:13px;border-radius:12px}
 .revive{flex:0 0 auto;display:flex;align-items:center;justify-content:center;gap:8px;width:100%;margin:0 0 10px;background:var(--coin);color:#2a1d00}
 .revive[hidden]{display:none}
-.adRow{display:flex;gap:10px;flex-wrap:wrap;margin:0 0 10px}.adRow[hidden]{display:none}.adRow .revive{flex:1 1 170px;width:auto;margin:0;font-size:20px;padding:12px 14px;gap:6px;flex-wrap:wrap}.adRow .revive span{white-space:nowrap}.adRow .revive small{font-size:13px;white-space:nowrap}.revive svg{flex:0 0 auto}
+.adRow{display:flex;gap:10px;flex-wrap:wrap;margin:0 0 10px}.adRow[hidden]{display:none}.adRow .revive{flex:1 1 100%;width:auto;margin:0;font-size:24px;padding:13px 14px;gap:8px;flex-wrap:wrap}.adRow #doubleBtn{font-size:16px;padding:7px 12px;background:transparent;color:var(--coin);border:2px solid var(--coin);box-shadow:none}.adRow .revive span{white-space:nowrap}.adRow .revive small{font-size:13px;white-space:nowrap}.revive svg{flex:0 0 auto}
 .adCoins{margin-left:auto;color:var(--coin);padding:8px 12px}.adCoins[hidden]{display:none}.adCoins svg{width:20px;height:20px}.adCoins:disabled{opacity:.5}.revive svg{width:22px;height:22px}.revive small{font-weight:700;opacity:.75}
 .ver{margin-left:auto;font-size:11px;opacity:.6}
 select.lang{appearance:none;-webkit-appearance:none;padding-right:12px;cursor:pointer}select.lang option{background:#0c1d14;color:var(--ink)}
@@ -251,6 +252,7 @@ select.lang{appearance:none;-webkit-appearance:none;padding-right:12px;cursor:po
     <div id="banner" hidden><b id="bannerTitle"></b><span id="bannerText"></span></div>
     <div id="alert" hidden></div>
     <div id="prompt" hidden></div>
+    <div id="goalArrow" hidden><svg viewBox="0 0 48 48"><path d="M24 4 40 30H30v14H18V30H8z" fill="var(--leaf)" stroke="#14260d" stroke-width="2.5" stroke-linejoin="round"/></svg></div>
     <div id="waterArrow" hidden><svg viewBox="0 0 48 48"><path d="M24 4 40 30H30v14H18V30H8z" fill="var(--water)" stroke="#06202c" stroke-width="2.5" stroke-linejoin="round"/></svg></div>
     <div class="tip" id="tip" style="opacity:0"></div>
     <div id="targetRing" hidden></div>
@@ -278,7 +280,7 @@ select.lang{appearance:none;-webkit-appearance:none;padding-right:12px;cursor:po
         <button class="play" id="playBtn" data-i18n="play">Spelen</button>
         <button class="ghost" id="shopBtn"><svg viewBox="0 0 24 24"><path d="M4 15c3-1 4-5 8-5 3 0 4 2 7 1M7 15l-1 3M10 13.5l1 4M15 11l1 4M18 11.5l2 2" stroke="#b9e44f" stroke-width="2" fill="none" stroke-linecap="round"/><circle cx="6" cy="14" r="1" fill="#b9e44f"/></svg><span data-i18n="geckos">Gekko's</span></button>
       </div>
-      <div class="menuFoot"><span class="coinsBig"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="#ffc93c"/><circle cx="12" cy="12" r="7" fill="none" stroke="#c98a12" stroke-width="1.6"/></svg><span id="menuCoins">0</span></span><span id="menuBest"></span><button class="ghost gfx" id="gfxBtn">Graphics</button><select class="ghost gfx lang" id="langSel" data-i18n-aria="language" aria-label="Taal"></select><span class="ver">v1.13</span></div>
+      <div class="menuFoot"><span class="coinsBig"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="#ffc93c"/><circle cx="12" cy="12" r="7" fill="none" stroke="#c98a12" stroke-width="1.6"/></svg><span id="menuCoins">0</span></span><span id="menuBest"></span><button class="ghost gfx" id="gfxBtn">Graphics</button><select class="ghost gfx lang" id="langSel" data-i18n-aria="language" aria-label="Taal"></select><span class="ver">v1.14</span></div>
       <div class="keys" data-i18n-html="keys"><span><kbd>WASD</kbd> lopen</span><span><kbd>Muis</kbd> kijken</span><span><kbd>Shift</kbd> sprinten</span><span><kbd>Spatie</kbd> springen</span><span><kbd>Klik</kbd>/<kbd>E</kbd> tong</span><span><kbd>F</kbd> drinken</span></div>
     </div>
   </div>
@@ -943,7 +945,6 @@ const inTempleXZ=(x,z)=>!!TI&&Math.abs(x-TI.x)<TI.i&&Math.abs(z-TI.z)<TI.i;
 const inTemple=()=>inTempleXZ(PL.pos.x,PL.pos.z)&&PL.pos.y<TI.W;
 const templeGold=new THREE.MeshPhysicalMaterial({color:'#f0c040',metalness:1,roughness:.28,clearcoat:.5});
 const flameMat=new THREE.MeshStandardMaterial({color:'#ffb040',emissive:'#ff8a20',emissiveIntensity:3,roughness:1});
-const templeLight=new THREE.PointLight('#ffb060',0,14,1.6);
 /* Temple (v1.11): a hall you can walk into through a doorway, with pillars, torches, an altar with a golden cricket and lots of
    golden insects hiding inside. Two roof tiers and a shrine on top keep the "climb to the top" quest. The door faces the spawn. */
 function buildTemple(A){const cx=TEMPLE.x,cz=TEMPLE.z;templeTorches.length=0;
@@ -982,7 +983,7 @@ function buildTemple(A){const cx=TEMPLE.x,cz=TEMPLE.z;templeTorches.length=0;
   for(const [sx,sz] of [[-1,-1],[1,-1],[-1,1],[1,1]]){const x=cx+sx*11.5,z=cz+sz*11.5;const b=addBox(x,z,.5,.5,terrainH(x,z)-.3,terrainH(x,z)+R(2.6,3.8));boxGeo(b,s2);}
   TI={x:cx,z:cz,F:F+.03,W,i,o,k,rot};
   TI.decor=false;TI.wpos=wpos;
-  templeLight.position.copy(wpos(0,F+2.6,-1));templeLight.intensity=6;if(!templeLight.parent)scene.add(templeLight);}
+  }
 // Built on the first frame after the area, because insects and the glow texture are defined after the first buildWorld.
 function templeDecor(){TI.decor=true;const i=TI.i,o=TI.o,rot=TI.rot;
   // golden cricket statue and coins on the altar
@@ -999,7 +1000,7 @@ function templeDecor(){TI.decor=true;const i=TI.i,o=TI.o,rot=TI.rot;
     world.add(g);templeTorches.push({fl,gl,t:R(0,9)});}
 }
 function updateTemple(dt){if(TI&&!TI.decor)templeDecor();for(const q of templeTorches){q.t+=dt;const f=1+Math.sin(q.t*13)*.08+Math.sin(q.t*7.3)*.06;q.fl.scale.set(1,f*1.1,1);q.gl.scale.setScalar(.9*f);}
-  if(TI)templeLight.intensity=6*(1+Math.sin(time*9)*.05);}
+}
 const rockGeos=[],mossGeos=[],plantRockGeos=[];
 /* Walkable lumps (boulders, stones, moss cushions, barrel cacti). The collider uses the same noise that shaped the mesh,
    so feet rest exactly on the visible surface. A grid keeps groundAt cheap with hundreds of them. */
@@ -1110,7 +1111,8 @@ function tileInstanced(im,far=0,tile=TILE){const geo=im.geometry,n=im.count,buck
     t.castShadow=im.castShadow;t.receiveShadow=im.receiveShadow;t.layers.mask=im.layers.mask;t.userData={...im.userData};t.computeBoundingSphere();world.add(t);if(far)farTiles.push({m:t,far});}
   im.dispose();}
 const _col=new THREE.Color();
-function cullFarTiles(){const cp=camera.position;for(const f of farTiles){const b=f.m.boundingSphere;f.m.visible=Math.hypot(b.center.x-cp.x,b.center.z-cp.z)-b.radius<f.far;}}
+const FAR_K=[.7,.9,1];// Laag/Hoog/Ultra: small plants and decoration fade out sooner on lower settings
+function cullFarTiles(){const cp=camera.position;for(const f of farTiles){const b=f.m.boundingSphere;f.m.visible=Math.hypot(b.center.x-cp.x,b.center.z-cp.z)-b.radius<f.far*(LOW?1:FAR_K[QUALITY]);}}
 const windUniforms={uTime:{value:0},uPlayer:{value:new V3()}};
 // push: instanced plants lean away from the gecko when it walks through them
 function addWind(mat,amp,instanced,push=false){mat.onBeforeCompile=sh=>{sh.uniforms.uTime=windUniforms.uTime;sh.uniforms.uPlayer=windUniforms.uPlayer;
@@ -1956,7 +1958,7 @@ function setScreen(s){state=s;show('menu',s==='menu');show('shop',s==='shop');sh
 function placeGeckoAtSpawn(){PL.pos.set(SPAWN.x,terrainH(SPAWN.x,SPAWN.z),SPAWN.z);PL.yaw=SPAWN.face;PL.vel.set(0,0,0);PL.climb=null;PL.perch=null;PL.up.set(0,1,0);
   gecko.root.position.copy(PL.pos);gecko.root.quaternion.setFromAxisAngle(Y,PL.yaw);}
 
-async function startGame(){
+async function startGame(){goalEnd=0;
   if(areaIdx!==0){if(traveling)return;traveling=true;setScreen('travel');$('travelTitle').textContent=t('travelTo',{area:areaName(0)});travelBar(0);await buildWorld(0,p=>travelBar(p*.95));warmUp();traveling=false;}
   perfSkip=3;hideBanner();
   AU.init();CFG=MODES[mode];save.mode=mode;persist();const pk=perks();
@@ -1980,7 +1982,7 @@ function setHudArea(){$('hudMode').textContent=CFG.name+' \u00b7 '+areaName(area
 function showBanner(title,text,sec=6){$('bannerTitle').textContent=title;$('bannerText').textContent=text;const b=$('banner');b.hidden=false;b.style.animation='none';void b.offsetWidth;b.style.animation='';bannerT=sec;}
 function hideBanner(){$('banner').hidden=true;bannerT=0;}
 function updateBanner(dt){if(bannerT>0){bannerT-=dt;if(bannerT<=0)hideBanner();}}
-function announceGate(){const g=gates.find(q=>q.fwd);if(!g)return;AU.sfx.quest();showBanner(t('adultTitle'),t('gateOpen',{area:areaName(g.to)}),8);measureOnce('gate',AREAS[g.to].id,'opened');}
+function announceGate(){const g=gates.find(q=>q.fwd);if(!g)return;goalEnd=PL.time+75;AU.sfx.quest();showBanner(t('adultTitle'),t('gateOpen',{area:areaName(g.to)}),8);measureOnce('gate',AREAS[g.to].id,'opened');}
 function refreshGateLabels(){for(const g of gates){world.remove(g.label);g.label.material.map.dispose();g.label.material.dispose();
   g.label=gateLabel((g.fwd?'':'\u2190 ')+areaName(g.to)+(g.fwd?' \u2192':''));g.label.position.set(g.x,g.base+6.1,g.z);world.add(g.label);}}
 function checkGates(dt){gateCool-=dt;lockMsgT-=dt;if(gateCool>0||PL.climb||traveling||PL.dead)return;
@@ -2401,6 +2403,11 @@ let promptKey='';
 const WATER_WARN=40;
 function nearestWater(out){let best=1e9;for(const L of LAKES){const dx=L.x-PL.pos.x,dz=L.z-PL.pos.z,d=Math.hypot(dx,dz)-L.r*.85;if(d<best){best=d;const k=Math.max(0,d)/(d+L.r*.85||1);out.set(PL.pos.x+dx*k,0,PL.pos.z+dz*k);}}return best<1e9?best:-1;}
 const _wt=new V3();
+let goalEnd=0;
+/* After growing up: a green arrow points to the gate to the next area for a while (hidden while the water arrow shows). */
+function updateGoalArrow(){const el=$('goalArrow');const g=PL.time<goalEnd&&gates.find(q=>q.fwd&&gateOpen(q));
+  const on=!!g&&state==='play'&&$('waterArrow').hidden&&Math.hypot(g.x-PL.pos.x,g.z-PL.pos.z)>8;el.hidden=!on;if(!on)return;
+  const a=Math.atan2(g.x-PL.pos.x,g.z-PL.pos.z)-(camYaw+Math.PI);el.style.transform=`translateX(-50%) rotate(${-a}rad)`;}
 function updateWaterArrow(){const el=$('waterArrow');const on=state==='play'&&PL.thirst<WATER_WARN&&!PL.canDrink&&!PL.drinking&&nearestWater(_wt)>2;el.hidden=!on;if(!on)return;
   const a=Math.atan2(_wt.x-PL.pos.x,_wt.z-PL.pos.z)-(camYaw+Math.PI);el.style.transform=`translateX(-50%) rotate(${-a}rad)`;
   $('sThirst').classList.add('low');}
@@ -2418,7 +2425,7 @@ function updateHUD(dt){hudT-=dt;if(hudT>0)return;hudT=.1;
   else if(ringT&&PL.crickets<3)pr=t(isTouch?'prEatTouch':'prEatKb');
   else if(PL.thirst<WATER_WARN&&!PL.canDrink)pr=t('prWater');
   if(pr!==promptKey){promptKey=pr;$('prompt').hidden=!pr;$('prompt').innerHTML=pr;}
-  updateWaterArrow();$('thirstFx').style.opacity=PL.thirst<20||PL.hunger<20?.9:0;
+  updateWaterArrow();updateGoalArrow();$('thirstFx').style.opacity=PL.thirst<20||PL.hunger<20?.9:0;
   drawMinimap();}
 function updateTips(dt){if(tipIdx>=5){$('tip').style.opacity=0;return;}tipT-=dt;if(tipT<=0){const T=isTouch?L().tipsTouch:L().tipsKb;$('tip').innerHTML=T[tipIdx];$('tip').style.opacity=1;tipIdx++;tipT=7;
   if(tipIdx>=5){setTimeout(()=>$('tip').style.opacity=0,7000);save.tutorial=true;persist();}}}
