@@ -343,7 +343,7 @@ const COL = {
 
 // ---------- game data
 const CROPS = {
-  carrot: { need: 3, grow: 2.5, coins: 5 }, // v0.11: faster first crops (Poki data: 36% left in minute 1)
+  carrot: { need: 2, grow: 2.5, coins: 5 }, // v0.12: need 2, so the first two clouds (one merge) already grow the first crop // v0.11: faster first crops (Poki data: 36% left in minute 1)
   sunflower: { need: 6, grow: 3.5, coins: 12 },
   strawberry: { need: 10, grow: 4, coins: 28 },
   pumpkin: { need: 16, grow: 5.5, coins: 50 },
@@ -406,7 +406,7 @@ const PADS = [
   { id: 'spd1', z: 0, x: -230, y: 40, cost: 45, type: 'speed', req: ['f2', 'cap1'] },
   { id: 'f3', z: 0, x: -190, y: 170, cost: 55, type: 'field', crop: 'carrot', req: ['f2'] },
   { id: 'sp1', z: 0, x: 330, y: 210, cost: 70, type: 'spring', req: ['f3'] },
-  { id: 'bee1', z: 0, x: 110, y: 180, cost: 90, type: 'bee', req: ['sp1'] },
+  { id: 'bee1', z: 0, x: 110, y: 180, cost: 90, type: 'bee', req: ['f3'] }, // v0.12: helper bee earlier (was after sp1)
   { id: 'f4', z: 0, x: -50, y: 170, cost: 100, type: 'field', crop: 'sunflower', req: ['f3', 'sp1'] },
   { id: 'br1', z: 0, x: 440, y: 40, cost: 100, type: 'bridge', to: 1, req: ['f3'] },
 
@@ -540,7 +540,7 @@ const FIELD_W = 124, FIELD_H = 86;
 const BASE_SPEED = 250;
 const SPRING_EVERY = 2.0, SPRING_MAX = 5, PUFF_MAX = 42;
 const SKEY = 'drizzlings_save_v1'; // old key kept on purpose so existing progress survives the rename
-const VERSION = '0.11';
+const VERSION = '0.12';
 
 const fullW = t => Math.pow(2, t - 1);
 const cloudR = w => 18 + 7 * (Math.log2(Math.max(w, 0.2)) + 1);
@@ -951,7 +951,10 @@ cv.addEventListener('pointermove', e => {
 });
 const endJoy = e => { if (e.pointerId === joy.id) { joy.active = false; joy.vx = joy.vy = 0; } pressedBtn = null; };
 cv.addEventListener('pointerup', endJoy); cv.addEventListener('pointercancel', endJoy);
-document.addEventListener('visibilitychange', () => { AU.apply(); if (document.hidden && started) ev('leave', islandKey(S.zone), minKey(EV.sessT)); if (document.hidden && started && !modal && !SDK.ad) { ev('pause', 'tab', 'hidden'); openModal('pause'); } });
+document.addEventListener('visibilitychange', () => { AU.apply(); if (document.hidden && started) ev('leave', islandKey(S.zone), minKey(EV.sessT)); if (document.hidden && started && !modal && !SDK.ad) { ev('pause', 'tab', 'hidden'); openModal('pause', { auto: true }); }
+  // v0.12: back on the tab after an automatic pause: play on straight away, without an ad in between
+  if (!document.hidden && modal && modal.type === 'pause' && modal.auto) { ev('pause', 'tab', 'resumed'); closeModal(); SDK.start(); }
+});
 
 function readInput() {
   let x = 0, y = 0;
@@ -1591,8 +1594,8 @@ function updateGolden(dt) {
 // ---------- power-ups (v0.9): an orb drops onto the island every ~45 s (a shooting star in space, a seed pod in the jungle)
 // or pops out of a jungle bush. Catch it for 20 s of power.
 const POWERS = {
-  magnet: { w: 1, col: '#ff5d6c' }, rocket: { w: 1, col: '#ff8a3d' }, comet: { w: 1, col: '#4cc3ff' },
-  grow: { w: 2, col: '#7ee26b' }, frenzy: { w: 2, col: '#ffd23f' }, giant: { w: 2, col: '#b58cff' }
+  magnet: { w: 0, col: '#ff5d6c' }, rocket: { w: 1, col: '#ff8a3d' }, comet: { w: 1, col: '#4cc3ff' },
+  grow: { w: 0, col: '#7ee26b' }, frenzy: { w: 2, col: '#ffd23f' }, giant: { w: 2, col: '#b58cff' }
 };
 const PW_TIME = 20, MAGNET_R = 480;
 const giantK = () => S.pw.giant > 0 ? 2.2 : 1;
@@ -1607,8 +1610,10 @@ function spawnOrb(x, y, id, pop) {
   toast(T('power'), T('pw_' + id), POWERS[id].col); ev('power', id, 'visible'); AU.whoosh();
 }
 function updateOrbs(dt) {
-  if (S.w >= 1 && started && S.time > S.orbT && !orbs.length) {
-    S.orbT = S.time + rand(38, 52);
+  // v0.12: power-ups also drop in the sky world from island 2 on (magnet, fast growth): something new in minutes 3–10,
+  // where the Poki data showed most players stopping
+  if ((S.w >= 1 || S.zone >= 1) && started && S.time > S.orbT && !orbs.length) {
+    S.orbT = S.time + (S.w ? rand(38, 52) : rand(45, 60));
     for (let i = 0; i < 40; i++) {
       const z = ZONES[pick(zonesOpen())], a = rand(0, TAU), rr = Math.sqrt(Math.random()) * 0.7;
       const x = z.cx + Math.cos(a) * z.rx * rr, y = z.cy + Math.sin(a) * z.ry * rr, dd = d2(x, y, P.x, P.y);
