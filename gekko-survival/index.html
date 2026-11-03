@@ -2404,6 +2404,9 @@ const WATER_WARN=40;
 function nearestWater(out){let best=1e9;for(const L of LAKES){const dx=L.x-PL.pos.x,dz=L.z-PL.pos.z,d=Math.hypot(dx,dz)-L.r*.85;if(d<best){best=d;const k=Math.max(0,d)/(d+L.r*.85||1);out.set(PL.pos.x+dx*k,0,PL.pos.z+dz*k);}}return best<1e9?best:-1;}
 const _wt=new V3();
 let goalEnd=0;
+/* Climb tip (v1.14): first-climb fell from 82% (v1.10) to 72% (v1.13) of new players. Shown near a trunk, or while chased, until the first climb. */
+let climbedOnce=false;
+function nearTrunk(){for(const t of trees){if(t.kind==='cactus')continue;const dx=PL.pos.x-t.x,dz=PL.pos.z-t.z;if(Math.abs(dx)>4||Math.abs(dz)>4)continue;if(Math.hypot(dx,dz)-t.rB<1.6&&PL.pos.y-t.base<1)return true;}return false;}
 /* After growing up: a green arrow points to the gate to the next area for a while (hidden while the water arrow shows). */
 function updateGoalArrow(){const el=$('goalArrow');const g=PL.time<goalEnd&&gates.find(q=>q.fwd&&gateOpen(q));
   const on=!!g&&state==='play'&&$('waterArrow').hidden&&Math.hypot(g.x-PL.pos.x,g.z-PL.pos.z)>8;el.hidden=!on;if(!on)return;
@@ -2423,6 +2426,7 @@ function updateHUD(dt){hudT-=dt;if(hudT>0)return;hudT=.1;
   let pr='';if(gnaw)pr=gnaw.locked?t('prLocked',{n:gnaw.locked}):t('prGnaw',{p:Math.min(100,Math.round(gnaw.p*100))});else if(PL.canDrink&&PL.thirst<97&&!PL.drinking)pr=t(isTouch?'prDrinkTouch':'prDrinkKb');
   else if(PL.drinking)pr=t('prDrinking');else if(!PL.camo&&canCamo())pr=t(isTouch?'prCamoTouch':'prCamoKb');else if(PL.climb&&PL.climb.type==='tree'&&PL.climb.h>=PL.climb.t.climbMax-.05)pr=t(isTouch?'prSafeTouch':'prSafeKb');
   else if(ringT&&PL.crickets<3)pr=t(isTouch?'prEatTouch':'prEatKb');
+  else if(!climbedOnce&&!PL.climb&&!PL.swim&&(nearTrunk()||poachers.some(q=>q.state==='chase')))pr=t('prClimb');
   else if(PL.thirst<WATER_WARN&&!PL.canDrink)pr=t('prWater');
   if(pr!==promptKey){promptKey=pr;$('prompt').hidden=!pr;$('prompt').innerHTML=pr;}
   updateWaterArrow();updateGoalArrow();$('thirstFx').style.opacity=PL.thirst<20||PL.hunger<20?.9:0;
@@ -2438,7 +2442,7 @@ function updateTargetRing(){const ring=$('targetRing');ringT=null;if(state!=='pl
    ===================================================================== */
 function updateGame(dt){
   PL.time+=dt;
-  if(PL.speed>.5)onboarding('move');if(PL.drinking)onboarding('first-drink');if(PL.climb)onboarding('first-climb');
+  if(PL.speed>.5)onboarding('move');if(PL.drinking)onboarding('first-drink');if(PL.climb){onboarding('first-climb');climbedOnce=true;}
   {const m=SURVIVE_MARKS[EV.si];if(m!==undefined&&PL.time>=m*60){EV.si++;measure('survive',mode,'m'+m);}}PL.inv-=dt;const pk=perks();
   updatePlayer(dt);updateTongue(dt);jumpQ=false;
   PL.hunger=Math.max(0,PL.hunger-dt*100/CFG.hungerT*pk.hunger*AREA.needs.hunger*(PL.speed>5?1.3:1));
