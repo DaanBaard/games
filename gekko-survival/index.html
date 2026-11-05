@@ -70,7 +70,8 @@ button:focus-visible{outline:3px solid var(--leaf);outline-offset:2px}
 #alert.hidden-status{background:rgba(20,60,30,.82);border-color:rgba(185,228,79,.45);animation:none}
 @keyframes shake{from{transform:translateX(-50%) scale(1)}to{transform:translateX(-50%) scale(1.05)}}
 #waterArrow{position:absolute;left:50%;bottom:calc(24% + 52px + env(safe-area-inset-bottom,0px));width:44px;height:44px;transform:translateX(-50%);filter:drop-shadow(0 2px 4px rgba(0,0,0,.5));pointer-events:none}
-#waterArrow svg{width:100%;height:100%;animation:bob .7s ease-in-out infinite alternate}
+#goalArrow{position:absolute;left:50%;bottom:calc(24% + 52px + env(safe-area-inset-bottom,0px));width:56px;height:56px;transform:translateX(-50%);filter:drop-shadow(0 2px 4px rgba(0,0,0,.5));pointer-events:none}
+#goalArrow svg,#waterArrow svg{width:100%;height:100%;animation:bob .7s ease-in-out infinite alternate}
 @keyframes bob{to{transform:translateY(-6px)}}
 #prompt{position:absolute;left:50%;bottom:calc(24% + env(safe-area-inset-bottom,0px));transform:translateX(-50%);padding:9px 16px;border-radius:12px;background:var(--glass-strong);border:1px solid var(--line);font-weight:800;font-size:15px;white-space:nowrap}
 #prompt kbd,.tip kbd,.keys kbd{font-family:var(--body);font-weight:900;font-size:12px;padding:2px 7px;border-radius:6px;background:var(--leaf);color:#14260d}
@@ -120,7 +121,9 @@ button:focus-visible{outline:3px solid var(--leaf);outline-offset:2px}
 .coinsBig svg{width:22px;height:22px}
 .ghost.gfx{padding:8px 12px;font-size:13px;border-radius:12px}
 .revive{flex:0 0 auto;display:flex;align-items:center;justify-content:center;gap:8px;width:100%;margin:0 0 10px;background:var(--coin);color:#2a1d00}
-.revive[hidden]{display:none}.revive svg{width:22px;height:22px}.revive small{font-weight:700;opacity:.75}
+.revive[hidden]{display:none}
+.adRow{display:flex;gap:10px;flex-wrap:wrap;margin:0 0 10px}.adRow[hidden]{display:none}.adRow .revive{flex:1 1 100%;width:auto;margin:0;font-size:24px;padding:13px 14px;gap:8px;flex-wrap:wrap}.adRow #doubleBtn{font-size:16px;padding:7px 12px;background:transparent;color:var(--coin);border:2px solid var(--coin);box-shadow:none}.adRow .revive span{white-space:nowrap}.adRow .revive small{font-size:13px;white-space:nowrap}.revive svg{flex:0 0 auto}
+.adCoins{margin-left:auto;color:var(--coin);padding:8px 12px}.adCoins[hidden]{display:none}.adCoins svg{width:20px;height:20px}.adCoins:disabled{opacity:.5}.revive svg{width:22px;height:22px}.revive small{font-weight:700;opacity:.75}
 .ver{margin-left:auto;font-size:11px;opacity:.6}
 select.lang{appearance:none;-webkit-appearance:none;padding-right:12px;cursor:pointer}select.lang option{background:#0c1d14;color:var(--ink)}
 
@@ -249,6 +252,7 @@ select.lang{appearance:none;-webkit-appearance:none;padding-right:12px;cursor:po
     <div id="banner" hidden><b id="bannerTitle"></b><span id="bannerText"></span></div>
     <div id="alert" hidden></div>
     <div id="prompt" hidden></div>
+    <div id="goalArrow" hidden><svg viewBox="0 0 48 48"><path d="M24 4 40 30H30v14H18V30H8z" fill="var(--leaf)" stroke="#14260d" stroke-width="2.5" stroke-linejoin="round"/></svg></div>
     <div id="waterArrow" hidden><svg viewBox="0 0 48 48"><path d="M24 4 40 30H30v14H18V30H8z" fill="var(--water)" stroke="#06202c" stroke-width="2.5" stroke-linejoin="round"/></svg></div>
     <div class="tip" id="tip" style="opacity:0"></div>
     <div id="targetRing" hidden></div>
@@ -276,14 +280,14 @@ select.lang{appearance:none;-webkit-appearance:none;padding-right:12px;cursor:po
         <button class="play" id="playBtn" data-i18n="play">Spelen</button>
         <button class="ghost" id="shopBtn"><svg viewBox="0 0 24 24"><path d="M4 15c3-1 4-5 8-5 3 0 4 2 7 1M7 15l-1 3M10 13.5l1 4M15 11l1 4M18 11.5l2 2" stroke="#b9e44f" stroke-width="2" fill="none" stroke-linecap="round"/><circle cx="6" cy="14" r="1" fill="#b9e44f"/></svg><span data-i18n="geckos">Gekko's</span></button>
       </div>
-      <div class="menuFoot"><span class="coinsBig"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="#ffc93c"/><circle cx="12" cy="12" r="7" fill="none" stroke="#c98a12" stroke-width="1.6"/></svg><span id="menuCoins">0</span></span><span id="menuBest"></span><button class="ghost gfx" id="gfxBtn">Graphics</button><select class="ghost gfx lang" id="langSel" data-i18n-aria="language" aria-label="Taal"></select><span class="ver">v1.12</span></div>
+      <div class="menuFoot"><span class="coinsBig"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="#ffc93c"/><circle cx="12" cy="12" r="7" fill="none" stroke="#c98a12" stroke-width="1.6"/></svg><span id="menuCoins">0</span></span><span id="menuBest"></span><button class="ghost gfx" id="gfxBtn">Graphics</button><select class="ghost gfx lang" id="langSel" data-i18n-aria="language" aria-label="Taal"></select><span class="ver">v1.16</span></div>
       <div class="keys" data-i18n-html="keys"><span><kbd>WASD</kbd> lopen</span><span><kbd>Muis</kbd> kijken</span><span><kbd>Shift</kbd> sprinten</span><span><kbd>Spatie</kbd> springen</span><span><kbd>Klik</kbd>/<kbd>E</kbd> tong</span><span><kbd>F</kbd> drinken</span></div>
     </div>
   </div>
 
   <div id="shop" class="screen" hidden>
     <div class="shopCol">
-      <div class="shopHead"><h2 data-i18n="geckos">Gekko's</h2><span class="coinsBig"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="#ffc93c"/><circle cx="12" cy="12" r="7" fill="none" stroke="#c98a12" stroke-width="1.6"/></svg><span id="shopCoins">0</span></span></div>
+      <div class="shopHead"><h2 data-i18n="geckos">Gekko's</h2><button class="ghost adCoins" id="adCoinsBtn" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="5" width="20" height="14" rx="3" fill="none" stroke="currentColor" stroke-width="2"/><path d="M10 9l5 3-5 3z" fill="currentColor"/></svg><span id="adCoinsTxt"></span></button><span class="coinsBig"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="#ffc93c"/><circle cx="12" cy="12" r="7" fill="none" stroke="#c98a12" stroke-width="1.6"/></svg><span id="shopCoins">0</span></span></div>
       <div class="tabs" id="shopTabs"><button data-tab="skins" data-i18n="geckos">Gekko's</button><button data-tab="skills" data-i18n="skillsTab">Vaardigheden</button><button data-tab="book" data-i18n="bookTab">Insectenboek</button></div>
       <div class="skins" id="skins"></div>
       <div class="shopMsg" id="shopMsg"></div>
@@ -311,7 +315,10 @@ select.lang{appearance:none;-webkit-appearance:none;padding-right:12px;cursor:po
       </div>
       <div class="newbest" id="rBest"></div>
       <p class="nextStage" id="rNext"></p>
-      <button class="play revive" id="reviveBtn" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="5" width="20" height="14" rx="3" fill="none" stroke="currentColor" stroke-width="2"/><path d="M10 9l5 3-5 3z" fill="currentColor"/></svg><span data-i18n="revive">Nog een kans</span> <small data-i18n="ad">(reclame)</small></button>
+      <div class="adRow" id="adRow" hidden>
+        <button class="play revive" id="reviveBtn" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="5" width="20" height="14" rx="3" fill="none" stroke="currentColor" stroke-width="2"/><path d="M10 9l5 3-5 3z" fill="currentColor"/></svg><span data-i18n="revive">Nog een kans</span> <small data-i18n="ad">(reclame)</small></button>
+        <button class="play revive" id="doubleBtn" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="5" width="20" height="14" rx="3" fill="none" stroke="currentColor" stroke-width="2"/><path d="M10 9l5 3-5 3z" fill="currentColor"/></svg><span data-i18n="doubleCoins">Munten x2</span> <small id="doubleAmt"></small></button>
+      </div>
       <div class="row"><button class="play" id="againBtn" data-i18n="again">Opnieuw</button><button class="ghost" id="overShop"><span data-i18n="geckos">Gekko's</span></button><button class="ghost" id="menuBtn" data-i18n="menu">Menu</button></div>
     </div>
   </div>
@@ -938,7 +945,6 @@ const inTempleXZ=(x,z)=>!!TI&&Math.abs(x-TI.x)<TI.i&&Math.abs(z-TI.z)<TI.i;
 const inTemple=()=>inTempleXZ(PL.pos.x,PL.pos.z)&&PL.pos.y<TI.W;
 const templeGold=new THREE.MeshPhysicalMaterial({color:'#f0c040',metalness:1,roughness:.28,clearcoat:.5});
 const flameMat=new THREE.MeshStandardMaterial({color:'#ffb040',emissive:'#ff8a20',emissiveIntensity:3,roughness:1});
-const templeLight=new THREE.PointLight('#ffb060',0,14,1.6);
 /* Temple (v1.11): a hall you can walk into through a doorway, with pillars, torches, an altar with a golden cricket and lots of
    golden insects hiding inside. Two roof tiers and a shrine on top keep the "climb to the top" quest. The door faces the spawn. */
 function buildTemple(A){const cx=TEMPLE.x,cz=TEMPLE.z;templeTorches.length=0;
@@ -977,7 +983,7 @@ function buildTemple(A){const cx=TEMPLE.x,cz=TEMPLE.z;templeTorches.length=0;
   for(const [sx,sz] of [[-1,-1],[1,-1],[-1,1],[1,1]]){const x=cx+sx*11.5,z=cz+sz*11.5;const b=addBox(x,z,.5,.5,terrainH(x,z)-.3,terrainH(x,z)+R(2.6,3.8));boxGeo(b,s2);}
   TI={x:cx,z:cz,F:F+.03,W,i,o,k,rot};
   TI.decor=false;TI.wpos=wpos;
-  templeLight.position.copy(wpos(0,F+2.6,-1));templeLight.intensity=6;if(!templeLight.parent)scene.add(templeLight);}
+  }
 // Built on the first frame after the area, because insects and the glow texture are defined after the first buildWorld.
 function templeDecor(){TI.decor=true;const i=TI.i,o=TI.o,rot=TI.rot;
   // golden cricket statue and coins on the altar
@@ -994,7 +1000,7 @@ function templeDecor(){TI.decor=true;const i=TI.i,o=TI.o,rot=TI.rot;
     world.add(g);templeTorches.push({fl,gl,t:R(0,9)});}
 }
 function updateTemple(dt){if(TI&&!TI.decor)templeDecor();for(const q of templeTorches){q.t+=dt;const f=1+Math.sin(q.t*13)*.08+Math.sin(q.t*7.3)*.06;q.fl.scale.set(1,f*1.1,1);q.gl.scale.setScalar(.9*f);}
-  if(TI)templeLight.intensity=6*(1+Math.sin(time*9)*.05);}
+}
 const rockGeos=[],mossGeos=[],plantRockGeos=[];
 /* Walkable lumps (boulders, stones, moss cushions, barrel cacti). The collider uses the same noise that shaped the mesh,
    so feet rest exactly on the visible surface. A grid keeps groundAt cheap with hundreds of them. */
@@ -1105,7 +1111,8 @@ function tileInstanced(im,far=0,tile=TILE){const geo=im.geometry,n=im.count,buck
     t.castShadow=im.castShadow;t.receiveShadow=im.receiveShadow;t.layers.mask=im.layers.mask;t.userData={...im.userData};t.computeBoundingSphere();world.add(t);if(far)farTiles.push({m:t,far});}
   im.dispose();}
 const _col=new THREE.Color();
-function cullFarTiles(){const cp=camera.position;for(const f of farTiles){const b=f.m.boundingSphere;f.m.visible=Math.hypot(b.center.x-cp.x,b.center.z-cp.z)-b.radius<f.far;}}
+const FAR_K=[.7,.9,1];// Laag/Hoog/Ultra: small plants and decoration fade out sooner on lower settings
+function cullFarTiles(){const cp=camera.position;for(const f of farTiles){const b=f.m.boundingSphere;f.m.visible=Math.hypot(b.center.x-cp.x,b.center.z-cp.z)-b.radius<f.far*(LOW?1:FAR_K[QUALITY]);}}
 const windUniforms={uTime:{value:0},uPlayer:{value:new V3()}};
 // push: instanced plants lean away from the gecko when it walks through them
 function addWind(mat,amp,instanced,push=false){mat.onBeforeCompile=sh=>{sh.uniforms.uTime=windUniforms.uTime;sh.uniforms.uPlayer=windUniforms.uPlayer;
@@ -1357,7 +1364,7 @@ function decorate(A){const D=A.deco;if(!D)return;const bins=new Map();
       if(rnd()<.7){const f=B.flower;put(f,x,z,R(.8,1.1),0);const b=bins.get(f);b[b.length-1].elements[13]+=s*R(1,1.35)*.82;}i++;}}
   for(const [spec,list] of bins){if(!list.length)continue;if(!spec.geo)spec.geo=plantGeo(spec);const mat=spec.k==='shroom'?(spec.glow?glowShroomMat:shroomMat):plantMat;
     const im=new THREE.InstancedMesh(spec.geo,mat,list.length);list.forEach((m,i)=>{im.setMatrixAt(i,m);im.setColorAt(i,_col.setScalar(R(.82,1.12)));});
-    im.castShadow=!LOW&&spec.shadow===2;im.receiveShadow=true;NOREFL(im);tileInstanced(im,LOW?45:(spec.far||70),150);}}
+    im.castShadow=!LOW&&spec.shadow===2;im.receiveShadow=true;NOREFL(im);tileInstanced(im,LOW?30:45,50);}}// v1.15: 50 m tiles so far decoration is really culled (v1.12 deco added ~90 draw calls at spawn)
 const _e2q=new THREE.Quaternion();
 async function buildWorld(idx,prog=()=>{}){
   const A=AREAS[idx];areaTex(A);prog(.05);await frameYield();
@@ -1951,7 +1958,7 @@ function setScreen(s){state=s;show('menu',s==='menu');show('shop',s==='shop');sh
 function placeGeckoAtSpawn(){PL.pos.set(SPAWN.x,terrainH(SPAWN.x,SPAWN.z),SPAWN.z);PL.yaw=SPAWN.face;PL.vel.set(0,0,0);PL.climb=null;PL.perch=null;PL.up.set(0,1,0);
   gecko.root.position.copy(PL.pos);gecko.root.quaternion.setFromAxisAngle(Y,PL.yaw);}
 
-async function startGame(){
+async function startGame(){goalEnd=0;
   if(areaIdx!==0){if(traveling)return;traveling=true;setScreen('travel');$('travelTitle').textContent=t('travelTo',{area:areaName(0)});travelBar(0);await buildWorld(0,p=>travelBar(p*.95));warmUp();traveling=false;}
   perfSkip=3;hideBanner();
   AU.init();CFG=MODES[mode];save.mode=mode;persist();const pk=perks();
@@ -1964,7 +1971,7 @@ async function startGame(){
   setupCrickets(CFG.crickets,mode==='master'?.06:.09);
   goldEaten=0;escapes=0;questIdx=0;newQuest();tipIdx=save.tutorial?99:0;tipT=1;lostTimer=0;wasChased=false;maxChase=0;
   setHudArea();$('floaters').innerHTML='';
-  PL.revived=false;EV.runSec=0;EV.si=0;EV.runs++;EV.flags={};
+  PL.revived=false;PL.doubled=false;EV.runSec=0;EV.si=0;EV.runs++;EV.flags={};
   measure('run',EV.runs<=10?'run'+EV.runs:'run11+','start');measure('mode',mode,'start');measure('skin',save.skin,'play');onboarding('start');
   setScreen('play');Poki.start();
 }
@@ -1975,7 +1982,7 @@ function setHudArea(){$('hudMode').textContent=CFG.name+' \u00b7 '+areaName(area
 function showBanner(title,text,sec=6){$('bannerTitle').textContent=title;$('bannerText').textContent=text;const b=$('banner');b.hidden=false;b.style.animation='none';void b.offsetWidth;b.style.animation='';bannerT=sec;}
 function hideBanner(){$('banner').hidden=true;bannerT=0;}
 function updateBanner(dt){if(bannerT>0){bannerT-=dt;if(bannerT<=0)hideBanner();}}
-function announceGate(){const g=gates.find(q=>q.fwd);if(!g)return;AU.sfx.quest();showBanner(t('adultTitle'),t('gateOpen',{area:areaName(g.to)}),8);measureOnce('gate',AREAS[g.to].id,'opened');}
+function announceGate(){const g=gates.find(q=>q.fwd);if(!g)return;goalEnd=PL.time+75;AU.sfx.quest();showBanner(t('adultTitle'),t('gateOpen',{area:areaName(g.to)}),8);measureOnce('gate',AREAS[g.to].id,'opened');}
 function refreshGateLabels(){for(const g of gates){world.remove(g.label);g.label.material.map.dispose();g.label.material.dispose();
   g.label=gateLabel((g.fwd?'':'\u2190 ')+areaName(g.to)+(g.fwd?' \u2192':''));g.label.position.set(g.x,g.base+6.1,g.z);world.add(g.label);}}
 function checkGates(dt){gateCool-=dt;lockMsgT-=dt;if(gateCool>0||PL.climb||traveling||PL.dead)return;
@@ -1994,7 +2001,7 @@ async function travel(to){if(traveling)return;traveling=true;const from=areaIdx;
   lastPL.copy(PL.pos);visOff.set(0,0,0);
   for(let i=0;i<CFG.start+Math.floor(areaIdx/2);i++)spawnPoacher();spawnGuard();nextSpawn=CFG.every;
   setupCrickets(CFG.crickets,mode==='master'?.06:.09);
-  warmUp();travelBar(1);
+  warmUp();updateCamera(1);travelBar(.97);await waitFrames(2);travelBar(.99);await settleFrames();travelBar(1);
   measure('area',AREAS[to].id,to>from?'enter':'return');
   gateCool=2.5;PL.inv=Math.max(PL.inv,2);traveling=false;setHudArea();setScreen('play');Poki.start();perfSkip=3;
   const hint=L().areaHints?.[AREAS[to].id]||'';const fg=gates.find(q=>q.fwd);
@@ -2065,8 +2072,14 @@ function gameOver(reason){if(PL.dead)return;PL.dead=true;Poki.stop();
     $('rBest').textContent=nb?t('newRecord',{mode:CFG.name}):t('recordMode',{mode:CFG.name,t:fmtTime(prev)});
     const si=stageIdx();$('rNext').textContent=si<2?t('nextStage',{n:Math.ceil((STAGE_AT[si+1]-PL.growth)/(GROW_CRICKET*perks().grow)-1e-6),stage:L().stages[si+1]}):t('wasAdult');updateShopBadge();
     const canRevive=!PL.revived&&Poki.hasRewarded();$('reviveBtn').hidden=!canRevive;if(canRevive)measure('button','revive','visible');
+    const canDouble=!PL.doubled&&PL.coins>=5&&Poki.hasRewarded();$('doubleBtn').hidden=!canDouble;$('doubleAmt').textContent='(+'+PL.coins+')';if(canDouble)measure('button','double-coins','visible');
+    $('adRow').hidden=!canRevive&&!canDouble;
     setScreen('over');measure('screen','gameover','visible');},reason==='caught'?1300:600);
 }
+/* Rewarded: double the coins earned this run (once per run). Coins are only added when the ad was watched to the end. */
+async function doubleCoins(){if(adBusy||state!=='over'||PL.doubled)return;measure('button','double-coins','interact');const ok=await Poki.reward();measure('ad','double-coins',ok?'success':'fail');
+  if(!ok||state!=='over'||PL.doubled)return;PL.doubled=true;const n=PL.coins;save.coins+=n;PL.coins+=n;persist();AU.sfx.gold();
+  $('rCoins').textContent='+'+PL.coins;$('doubleBtn').hidden=true;$('adRow').hidden=$('reviveBtn').hidden;updateShopBadge();}
 async function revive(){if(adBusy||state!=='over')return;measure('button','revive','interact');const ok=await Poki.reward();measure('ad','revive',ok?'success':'fail');
   if(!ok||state!=='over')return;
   PL.revived=true;PL.dead=false;PL.health=Math.max(PL.health,PL.maxHealth*.6);PL.hunger=100;PL.thirst=100;PL.inv=3;PL.vel.set(0,0,0);
@@ -2390,6 +2403,14 @@ let promptKey='';
 const WATER_WARN=40;
 function nearestWater(out){let best=1e9;for(const L of LAKES){const dx=L.x-PL.pos.x,dz=L.z-PL.pos.z,d=Math.hypot(dx,dz)-L.r*.85;if(d<best){best=d;const k=Math.max(0,d)/(d+L.r*.85||1);out.set(PL.pos.x+dx*k,0,PL.pos.z+dz*k);}}return best<1e9?best:-1;}
 const _wt=new V3();
+let goalEnd=0;
+/* Climb tip (v1.14): first-climb fell from 82% (v1.10) to 72% (v1.13) of new players. Shown near a trunk, or while chased, until the first climb. */
+let climbedOnce=false;
+function nearTrunk(){for(const t of trees){if(t.kind==='cactus')continue;const dx=PL.pos.x-t.x,dz=PL.pos.z-t.z;if(Math.abs(dx)>4||Math.abs(dz)>4)continue;if(Math.hypot(dx,dz)-t.rB<1.6&&PL.pos.y-t.base<1)return true;}return false;}
+/* After growing up: a green arrow points to the gate to the next area for a while (hidden while the water arrow shows). */
+function updateGoalArrow(){const el=$('goalArrow');const g=PL.time<goalEnd&&gates.find(q=>q.fwd&&gateOpen(q));
+  const on=!!g&&state==='play'&&$('waterArrow').hidden&&Math.hypot(g.x-PL.pos.x,g.z-PL.pos.z)>8;el.hidden=!on;if(!on)return;
+  const a=Math.atan2(g.x-PL.pos.x,g.z-PL.pos.z)-(camYaw+Math.PI);el.style.transform=`translateX(-50%) rotate(${-a}rad)`;}
 function updateWaterArrow(){const el=$('waterArrow');const on=state==='play'&&PL.thirst<WATER_WARN&&!PL.canDrink&&!PL.drinking&&nearestWater(_wt)>2;el.hidden=!on;if(!on)return;
   const a=Math.atan2(_wt.x-PL.pos.x,_wt.z-PL.pos.z)-(camYaw+Math.PI);el.style.transform=`translateX(-50%) rotate(${-a}rad)`;
   $('sThirst').classList.add('low');}
@@ -2405,9 +2426,10 @@ function updateHUD(dt){hudT-=dt;if(hudT>0)return;hudT=.1;
   let pr='';if(gnaw)pr=gnaw.locked?t('prLocked',{n:gnaw.locked}):t('prGnaw',{p:Math.min(100,Math.round(gnaw.p*100))});else if(PL.canDrink&&PL.thirst<97&&!PL.drinking)pr=t(isTouch?'prDrinkTouch':'prDrinkKb');
   else if(PL.drinking)pr=t('prDrinking');else if(!PL.camo&&canCamo())pr=t(isTouch?'prCamoTouch':'prCamoKb');else if(PL.climb&&PL.climb.type==='tree'&&PL.climb.h>=PL.climb.t.climbMax-.05)pr=t(isTouch?'prSafeTouch':'prSafeKb');
   else if(ringT&&PL.crickets<3)pr=t(isTouch?'prEatTouch':'prEatKb');
+  else if(!climbedOnce&&!PL.climb&&!PL.swim&&(nearTrunk()||poachers.some(q=>q.state==='chase')))pr=t('prClimb');
   else if(PL.thirst<WATER_WARN&&!PL.canDrink)pr=t('prWater');
   if(pr!==promptKey){promptKey=pr;$('prompt').hidden=!pr;$('prompt').innerHTML=pr;}
-  updateWaterArrow();$('thirstFx').style.opacity=PL.thirst<20||PL.hunger<20?.9:0;
+  updateWaterArrow();updateGoalArrow();$('thirstFx').style.opacity=PL.thirst<20||PL.hunger<20?.9:0;
   drawMinimap();}
 function updateTips(dt){if(tipIdx>=5){$('tip').style.opacity=0;return;}tipT-=dt;if(tipT<=0){const T=isTouch?L().tipsTouch:L().tipsKb;$('tip').innerHTML=T[tipIdx];$('tip').style.opacity=1;tipIdx++;tipT=7;
   if(tipIdx>=5){setTimeout(()=>$('tip').style.opacity=0,7000);save.tutorial=true;persist();}}}
@@ -2420,7 +2442,7 @@ function updateTargetRing(){const ring=$('targetRing');ringT=null;if(state!=='pl
    ===================================================================== */
 function updateGame(dt){
   PL.time+=dt;
-  if(PL.speed>.5)onboarding('move');if(PL.drinking)onboarding('first-drink');if(PL.climb)onboarding('first-climb');
+  if(PL.speed>.5)onboarding('move');if(PL.drinking)onboarding('first-drink');if(PL.climb){onboarding('first-climb');climbedOnce=true;}
   {const m=SURVIVE_MARKS[EV.si];if(m!==undefined&&PL.time>=m*60){EV.si++;measure('survive',mode,'m'+m);}}PL.inv-=dt;const pk=perks();
   updatePlayer(dt);updateTongue(dt);jumpQ=false;
   PL.hunger=Math.max(0,PL.hunger-dt*100/CFG.hungerT*pk.hunger*AREA.needs.hunger*(PL.speed>5?1.3:1));
@@ -2494,7 +2516,11 @@ function adaptQuality(dt){if(perfSkip>0){perfSkip-=dt;return;}perfAcc+=dt;perfN+
   else if(avg<1/57&&resScale<1){if(++perfGood>=4){perfGood=0;resScale=Math.min(1,resScale+.15);setRes();perfSkip=1.5;}}else perfGood=0;}
 const _sunScr=new V3(),_camDir=new V3();
 let lastTs=0,dtS=1/60;
-function frame(ts){requestAnimationFrame(frame);
+let frameN=0;
+const waitFrames=n=>new Promise(r=>{const s=frameN;const chk=()=>frameN>=s+n?r():requestAnimationFrame(chk);requestAnimationFrame(chk);});
+// resolves once two frames in a row took under 80 ms (or after 1.2 s), so a loading screen only leaves when the game runs smoothly
+const settleFrames=()=>new Promise(r=>{const t0=performance.now();let last=t0,ok=0;const chk=t=>{ok=t-last<80?ok+1:0;last=t;if(ok>=2||t-t0>1200)r();else requestAnimationFrame(chk);};requestAnimationFrame(chk);});
+function frame(ts){requestAnimationFrame(frame);frameN++;
   {const w=gameEl.clientWidth,h=gameEl.clientHeight;if(w>0&&h>0&&(w!==vw||h!==vh))onResize();}// a missed resize event never leaves the picture stretched
   const raw=lastTs?Math.min((ts-lastTs)/1000,.1):1/60;lastTs=ts;
   dtS+=(raw-dtS)*(Math.abs(raw-dtS)>.03?1:.25);const dt=Math.min(dtS,.05);time+=dt;
@@ -2540,7 +2566,15 @@ function applyLang(l){lang=TR[l]?l:'en';document.documentElement.lang=lang;const
   sel.onchange=()=>{save.lang=sel.value;persist();applyLang(sel.value);measure('lang',sel.value,'selected');};}
 let shopTab='skins',skillSel='tong';
 for(const b of $('shopTabs').children)b.onclick=()=>{shopTab=b.dataset.tab;AU.sfx.click();measure('screen','shop-'+shopTab,'visible');renderShop();};
-function renderShop(){const el=$('skins');el.innerHTML='';$('shopCoins').textContent=save.coins;
+/* Rewarded in the shop: free coins, with a short cooldown so it stays a bonus and not a coin tap. */
+const AD_COINS=75,AD_COINS_CD=120;let adCoinsAt=-1e9;
+function adCoinsLeft(){return Math.max(0,Math.ceil(AD_COINS_CD-(performance.now()-adCoinsAt)/1000));}
+function renderAdCoins(){const b=$('adCoinsBtn');const on=Poki.hasRewarded()&&shopTab!=='book';const was=b.hidden;b.hidden=!on;if(!on)return;const left=adCoinsLeft();
+  b.disabled=left>0||adBusy;$('adCoinsTxt').textContent=left>0?fmtTime(left):t('freeCoins',{n:AD_COINS});if(was&&left===0)measure('button','free-coins','visible');}
+setInterval(()=>{if(state==='shop'&&!$('adCoinsBtn').hidden)renderAdCoins();},1000);
+$('adCoinsBtn').onclick=async()=>{if(adBusy||adCoinsLeft()>0)return;measure('button','free-coins','interact');const ok=await Poki.reward();measure('ad','free-coins',ok?'success':'fail');
+  if(ok){adCoinsAt=performance.now();save.coins+=AD_COINS;persist();AU.sfx.gold();}if(state==='shop')renderShop();};
+function renderShop(){const el=$('skins');el.innerHTML='';$('shopCoins').textContent=save.coins;renderAdCoins();
   for(const b of $('shopTabs').children)b.setAttribute('aria-pressed',b.dataset.tab===shopTab);
   $('shopAct').hidden=shopTab==='book';
   if(shopTab==='skills')return renderSkills(el);if(shopTab==='book')return renderBook(el);
@@ -2583,6 +2617,7 @@ $('pauseBtn').onclick=()=>setPause(true);
 $('muteBtn').onclick=()=>{AU.init();AU.setMuted(!save.muted);};
 $('againBtn').onclick=async()=>{if(adBusy)return;measure('button','restart','interact');await Poki.brk();startGame();};
 $('reviveBtn').onclick=()=>revive();
+$('doubleBtn').onclick=()=>doubleCoins();
 $('overShop').onclick=()=>{measure('button','shop-over','interact');toMenu();$('shopBtn').onclick();};
 $('menuBtn').onclick=()=>{measure('button','menu','interact');toMenu();};
 function toMenu(){Poki.stop();setCamo(false);for(const p of poachers)p.dispose();poachers.length=0;if(netDome){scene.remove(netDome);netDome=null;}PL.dead=false;PL.drinking=false;PL.speed=0;PL.growth=0;
@@ -2604,13 +2639,17 @@ bootProg(.9);await bootYield();
 // while the page keeps painting; the bar creeps on meanwhile. A timeout keeps a stuck driver from blocking the game.
 {const wp=new Poacher(SPAWN.x+2,SPAWN.z+2);const ws=waterSimple&&waterSimple.visible,wm=waterMirror&&waterMirror.visible;if(waterSimple)waterSimple.visible=true;if(waterMirror)waterMirror.visible=true;
  for(const f of farTiles)f.m.visible=true;
- let k=.9;const creep=setInterval(()=>bootProg(k=Math.min(.99,k+.01)),120);
+ let k=.9;const creep=setInterval(()=>bootProg(k+=(.95-k)*.06),120);// eases towards 95%, never sits still at 99%
  try{await Promise.race([renderer.compileAsync(scene,camera),new Promise(r=>setTimeout(r,6000))]);}catch(e){renderer.compile(scene,camera);}
  clearInterval(creep);renderer.shadowMap.needsUpdate=true;
  if(waterSimple)waterSimple.visible=ws;if(waterMirror)waterMirror.visible=wm;wp.dispose();}
-bootProg(1);
+// v1.16: the first frames upload every texture and buffer and build the shadow map and post-processing shaders, which froze the
+// screen on 99-100%. Render them behind the loading screen and only fade it out once frames come quickly.
+bootProg(.96);await bootYield();
 setScreen('menu');requestAnimationFrame(frame);document.fonts?.ready.then(fitScreens);
-setTimeout(()=>{$('loading').style.opacity=0;setTimeout(()=>$('loading').remove(),650);},250);
+{await waitFrames(1);bootProg(.98);await waitFrames(1);bootProg(.99);await settleFrames();}
+bootProg(1);
+setTimeout(()=>{$('loading').style.opacity=0;setTimeout(()=>$('loading').remove(),650);},200);
 pokiInit.then(()=>{if(!save.lang&&detectLang()!==lang)applyLang(detectLang());measure('lang',lang,'start');Poki.loaded();measure('screen','menu','visible');onboarding('loaded');});
 window.__gekko={get TI(){return TI;},step:(dt,n)=>{for(let i=0;i<n;i++){updateGame(dt);updateCamp(dt);updateCrickets(dt);}},get gnaw(){return gnaw;},get camoQ(){return camoQ;},set camoQ(v){camoQ=v;},updateCamera,smoothVisual,setCamo,mmIcon,drawMinimap,get NESTp(){return NEST;},setupCrickets,normalFromCanvas,cages,get CAMP(){return CAMP;},get NEST(){return NEST;},save,finale,renderShop,setShopTab:v=>{shopTab=v;},travel,buildWorld,gates,AREAS,get areaIdx(){return areaIdx;},get SPAWN(){return SPAWN;},stageIdx,PL,renderer,scene,updatePlayer,treeRadius,trunkR,rockTop,footSurf,climbSurf,updateClimb,get rockGrid(){return rockGrid;},ripples,get LAKES(){return LAKES;},groundAt,poachers,crickets,trees,boxes,rocks,startGame,setMode:m=>{mode=m;},get state(){return state;},camera,gecko,keys,get camYaw(){return camYaw;},set camYaw(v){camYaw=v;},set camPitch(v){camPitch=v;},set camDist(v){camDist=v;}};
 </script>
