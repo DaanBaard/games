@@ -280,7 +280,7 @@ select.lang{appearance:none;-webkit-appearance:none;padding-right:12px;cursor:po
         <button class="play" id="playBtn" data-i18n="play">Spelen</button>
         <button class="ghost" id="shopBtn"><svg viewBox="0 0 24 24"><path d="M4 15c3-1 4-5 8-5 3 0 4 2 7 1M7 15l-1 3M10 13.5l1 4M15 11l1 4M18 11.5l2 2" stroke="#b9e44f" stroke-width="2" fill="none" stroke-linecap="round"/><circle cx="6" cy="14" r="1" fill="#b9e44f"/></svg><span data-i18n="geckos">Gekko's</span></button>
       </div>
-      <div class="menuFoot"><span class="coinsBig"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="#ffc93c"/><circle cx="12" cy="12" r="7" fill="none" stroke="#c98a12" stroke-width="1.6"/></svg><span id="menuCoins">0</span></span><span id="menuBest"></span><button class="ghost gfx" id="gfxBtn">Graphics</button><select class="ghost gfx lang" id="langSel" data-i18n-aria="language" aria-label="Taal"></select><span class="ver">v1.15</span></div>
+      <div class="menuFoot"><span class="coinsBig"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="#ffc93c"/><circle cx="12" cy="12" r="7" fill="none" stroke="#c98a12" stroke-width="1.6"/></svg><span id="menuCoins">0</span></span><span id="menuBest"></span><button class="ghost gfx" id="gfxBtn">Graphics</button><select class="ghost gfx lang" id="langSel" data-i18n-aria="language" aria-label="Taal"></select><span class="ver">v1.16</span></div>
       <div class="keys" data-i18n-html="keys"><span><kbd>WASD</kbd> lopen</span><span><kbd>Muis</kbd> kijken</span><span><kbd>Shift</kbd> sprinten</span><span><kbd>Spatie</kbd> springen</span><span><kbd>Klik</kbd>/<kbd>E</kbd> tong</span><span><kbd>F</kbd> drinken</span></div>
     </div>
   </div>
@@ -2001,7 +2001,7 @@ async function travel(to){if(traveling)return;traveling=true;const from=areaIdx;
   lastPL.copy(PL.pos);visOff.set(0,0,0);
   for(let i=0;i<CFG.start+Math.floor(areaIdx/2);i++)spawnPoacher();spawnGuard();nextSpawn=CFG.every;
   setupCrickets(CFG.crickets,mode==='master'?.06:.09);
-  warmUp();travelBar(1);
+  warmUp();updateCamera(1);travelBar(.97);await waitFrames(2);travelBar(.99);await settleFrames();travelBar(1);
   measure('area',AREAS[to].id,to>from?'enter':'return');
   gateCool=2.5;PL.inv=Math.max(PL.inv,2);traveling=false;setHudArea();setScreen('play');Poki.start();perfSkip=3;
   const hint=L().areaHints?.[AREAS[to].id]||'';const fg=gates.find(q=>q.fwd);
@@ -2516,7 +2516,11 @@ function adaptQuality(dt){if(perfSkip>0){perfSkip-=dt;return;}perfAcc+=dt;perfN+
   else if(avg<1/57&&resScale<1){if(++perfGood>=4){perfGood=0;resScale=Math.min(1,resScale+.15);setRes();perfSkip=1.5;}}else perfGood=0;}
 const _sunScr=new V3(),_camDir=new V3();
 let lastTs=0,dtS=1/60;
-function frame(ts){requestAnimationFrame(frame);
+let frameN=0;
+const waitFrames=n=>new Promise(r=>{const s=frameN;const chk=()=>frameN>=s+n?r():requestAnimationFrame(chk);requestAnimationFrame(chk);});
+// resolves once two frames in a row took under 80 ms (or after 1.2 s), so a loading screen only leaves when the game runs smoothly
+const settleFrames=()=>new Promise(r=>{const t0=performance.now();let last=t0,ok=0;const chk=t=>{ok=t-last<80?ok+1:0;last=t;if(ok>=2||t-t0>1200)r();else requestAnimationFrame(chk);};requestAnimationFrame(chk);});
+function frame(ts){requestAnimationFrame(frame);frameN++;
   {const w=gameEl.clientWidth,h=gameEl.clientHeight;if(w>0&&h>0&&(w!==vw||h!==vh))onResize();}// a missed resize event never leaves the picture stretched
   const raw=lastTs?Math.min((ts-lastTs)/1000,.1):1/60;lastTs=ts;
   dtS+=(raw-dtS)*(Math.abs(raw-dtS)>.03?1:.25);const dt=Math.min(dtS,.05);time+=dt;
@@ -2635,13 +2639,17 @@ bootProg(.9);await bootYield();
 // while the page keeps painting; the bar creeps on meanwhile. A timeout keeps a stuck driver from blocking the game.
 {const wp=new Poacher(SPAWN.x+2,SPAWN.z+2);const ws=waterSimple&&waterSimple.visible,wm=waterMirror&&waterMirror.visible;if(waterSimple)waterSimple.visible=true;if(waterMirror)waterMirror.visible=true;
  for(const f of farTiles)f.m.visible=true;
- let k=.9;const creep=setInterval(()=>bootProg(k=Math.min(.99,k+.01)),120);
+ let k=.9;const creep=setInterval(()=>bootProg(k+=(.95-k)*.06),120);// eases towards 95%, never sits still at 99%
  try{await Promise.race([renderer.compileAsync(scene,camera),new Promise(r=>setTimeout(r,6000))]);}catch(e){renderer.compile(scene,camera);}
  clearInterval(creep);renderer.shadowMap.needsUpdate=true;
  if(waterSimple)waterSimple.visible=ws;if(waterMirror)waterMirror.visible=wm;wp.dispose();}
-bootProg(1);
+// v1.16: the first frames upload every texture and buffer and build the shadow map and post-processing shaders, which froze the
+// screen on 99-100%. Render them behind the loading screen and only fade it out once frames come quickly.
+bootProg(.96);await bootYield();
 setScreen('menu');requestAnimationFrame(frame);document.fonts?.ready.then(fitScreens);
-setTimeout(()=>{$('loading').style.opacity=0;setTimeout(()=>$('loading').remove(),650);},250);
+{await waitFrames(1);bootProg(.98);await waitFrames(1);bootProg(.99);await settleFrames();}
+bootProg(1);
+setTimeout(()=>{$('loading').style.opacity=0;setTimeout(()=>$('loading').remove(),650);},200);
 pokiInit.then(()=>{if(!save.lang&&detectLang()!==lang)applyLang(detectLang());measure('lang',lang,'start');Poki.loaded();measure('screen','menu','visible');onboarding('loaded');});
 window.__gekko={get TI(){return TI;},step:(dt,n)=>{for(let i=0;i<n;i++){updateGame(dt);updateCamp(dt);updateCrickets(dt);}},get gnaw(){return gnaw;},get camoQ(){return camoQ;},set camoQ(v){camoQ=v;},updateCamera,smoothVisual,setCamo,mmIcon,drawMinimap,get NESTp(){return NEST;},setupCrickets,normalFromCanvas,cages,get CAMP(){return CAMP;},get NEST(){return NEST;},save,finale,renderShop,setShopTab:v=>{shopTab=v;},travel,buildWorld,gates,AREAS,get areaIdx(){return areaIdx;},get SPAWN(){return SPAWN;},stageIdx,PL,renderer,scene,updatePlayer,treeRadius,trunkR,rockTop,footSurf,climbSurf,updateClimb,get rockGrid(){return rockGrid;},ripples,get LAKES(){return LAKES;},groundAt,poachers,crickets,trees,boxes,rocks,startGame,setMode:m=>{mode=m;},get state(){return state;},camera,gecko,keys,get camYaw(){return camYaw;},set camYaw(v){camYaw=v;},set camPitch(v){camPitch=v;},set camDist(v){camDist=v;}};
 </script>
