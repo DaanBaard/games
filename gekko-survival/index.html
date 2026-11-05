@@ -280,7 +280,7 @@ select.lang{appearance:none;-webkit-appearance:none;padding-right:12px;cursor:po
         <button class="play" id="playBtn" data-i18n="play">Spelen</button>
         <button class="ghost" id="shopBtn"><svg viewBox="0 0 24 24"><path d="M4 15c3-1 4-5 8-5 3 0 4 2 7 1M7 15l-1 3M10 13.5l1 4M15 11l1 4M18 11.5l2 2" stroke="#b9e44f" stroke-width="2" fill="none" stroke-linecap="round"/><circle cx="6" cy="14" r="1" fill="#b9e44f"/></svg><span data-i18n="geckos">Gekko's</span></button>
       </div>
-      <div class="menuFoot"><span class="coinsBig"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="#ffc93c"/><circle cx="12" cy="12" r="7" fill="none" stroke="#c98a12" stroke-width="1.6"/></svg><span id="menuCoins">0</span></span><span id="menuBest"></span><button class="ghost gfx" id="gfxBtn">Graphics</button><select class="ghost gfx lang" id="langSel" data-i18n-aria="language" aria-label="Taal"></select><span class="ver">v1.14</span></div>
+      <div class="menuFoot"><span class="coinsBig"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="#ffc93c"/><circle cx="12" cy="12" r="7" fill="none" stroke="#c98a12" stroke-width="1.6"/></svg><span id="menuCoins">0</span></span><span id="menuBest"></span><button class="ghost gfx" id="gfxBtn">Graphics</button><select class="ghost gfx lang" id="langSel" data-i18n-aria="language" aria-label="Taal"></select><span class="ver">v1.15</span></div>
       <div class="keys" data-i18n-html="keys"><span><kbd>WASD</kbd> lopen</span><span><kbd>Muis</kbd> kijken</span><span><kbd>Shift</kbd> sprinten</span><span><kbd>Spatie</kbd> springen</span><span><kbd>Klik</kbd>/<kbd>E</kbd> tong</span><span><kbd>F</kbd> drinken</span></div>
     </div>
   </div>
@@ -1364,7 +1364,7 @@ function decorate(A){const D=A.deco;if(!D)return;const bins=new Map();
       if(rnd()<.7){const f=B.flower;put(f,x,z,R(.8,1.1),0);const b=bins.get(f);b[b.length-1].elements[13]+=s*R(1,1.35)*.82;}i++;}}
   for(const [spec,list] of bins){if(!list.length)continue;if(!spec.geo)spec.geo=plantGeo(spec);const mat=spec.k==='shroom'?(spec.glow?glowShroomMat:shroomMat):plantMat;
     const im=new THREE.InstancedMesh(spec.geo,mat,list.length);list.forEach((m,i)=>{im.setMatrixAt(i,m);im.setColorAt(i,_col.setScalar(R(.82,1.12)));});
-    im.castShadow=!LOW&&spec.shadow===2;im.receiveShadow=true;NOREFL(im);tileInstanced(im,LOW?45:(spec.far||70),150);}}
+    im.castShadow=!LOW&&spec.shadow===2;im.receiveShadow=true;NOREFL(im);tileInstanced(im,LOW?30:45,50);}}// v1.15: 50 m tiles so far decoration is really culled (v1.12 deco added ~90 draw calls at spawn)
 const _e2q=new THREE.Quaternion();
 async function buildWorld(idx,prog=()=>{}){
   const A=AREAS[idx];areaTex(A);prog(.05);await frameYield();
