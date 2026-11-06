@@ -1,5 +1,5 @@
 <!doctype html>
-<!-- Veggie Siege v0.7.1 -->
+<!-- Veggie Siege v0.8 -->
 <html lang="en">
 <head>
 <meta charset="utf-8">
@@ -58,6 +58,7 @@ button{font:inherit;color:inherit;border:none;background:none;cursor:pointer}
 .trow{display:flex;flex-wrap:wrap;justify-content:center;gap:.2rem}.trow .tv{width:2.6rem;height:2.6rem;animation:bob 1.2s infinite}.trow .tv:nth-child(2n){animation-delay:.3s}
 .fcard .bi,.fb .bi{width:1.4rem;height:1.4rem;vertical-align:middle;margin-right:.2rem}.fcard .go{background:#7ee26b}.fcard.nextw{min-height:auto;width:100%;margin:.2rem 0 .6rem}
 .srow.dim{opacity:.6}
+.shedgo{margin-top:.5rem;background:var(--yellow);color:var(--ink);text-shadow:none;animation:wig 2.4s infinite}.travelc .perks{margin-top:.2rem}.travelc .fcard.nextw{margin:.2rem 0 .3rem}
 #botRow{display:flex;gap:.45rem;align-items:center;justify-content:center}
 .abtn{position:relative;width:3.4rem;height:3.4rem;border-radius:50%;background:#fff;border:3px solid var(--ink);box-shadow:0 .25rem 0 var(--ink);display:flex;align-items:center;justify-content:center;overflow:hidden;font-size:1.2rem}
 .abtn .ic{width:2.2rem;height:2.2rem;position:relative;z-index:1}
@@ -208,7 +209,7 @@ button{font:inherit;color:inherit;border:none;background:none;cursor:pointer}
 <div id="load"><b>Veggie Siege</b><i></i><small id="ver0" style="color:#fff"></small></div>
 <script>
 'use strict';
-const VERSION='0.7.1';
+const VERSION='0.8';
 const $=id=>document.getElementById(id);
 const cv=$('c'),ctx=cv.getContext('2d');
 const TAU=Math.PI*2;
@@ -1320,7 +1321,7 @@ ar:["الشاطئ المشمس","الغابة البرية","الصحراء ال
  "جذور تضرب من الأسفل: تصيب الحفّارين وتتجاهل الدروع","رائحته كريهة جدًا فتتراجع الآفات","يسرّع جيرانه","طلقات ثلج قد تجمّد الآفات","برق يقفز إلى آفات أخرى",
  "العالم {0}","العوالم","اهزم زعيم العالم لتنتقل مع كل خضارك. العوالم التي وصلتها نقاط حفظ.","البداية","ابدأ هنا","صِل إلى العالم {0} في المغامرة","الموسوعة","الآفات","{0} موجات ثم زعيم. اهزمه لتكمل الرحلة!","{0} من الخضار يسافر معك","أنهيت العالم!","العالم التالي","سافِر","أهلًا بك في العالم {0}!","لا مكان لكل الخضار: +{0} سماد","الجولة 2! الآفات أصبحت أقوى.","العوالم المنجزة: {0}","تابع من العالم {0}","اضغط على خضار بالأسفل لتختار ما تزرعه!",
  "أنهِ {0} عوالم","صِل إلى الموجة {0}","أنهِ عالمًا دون خسارة خس","الموجة {0}","صِل إلى الموجة {0} في المغامرة","اهزم زعيم هذا العالم","أنهِ عالمًا مع خسّة واحدة فقط"]};
-const PI={"en": "It lasts for the rest of your adventure.", "nl": "Hij blijft de rest van je avontuur.", "de": "Er gilt für den Rest deines Abenteuers.", "fr": "Il dure jusqu'à la fin de ton aventure.", "es": "Dura el resto de tu aventura.", "it": "Dura per il resto dell'avventura.", "pt": "Dura o resto da sua aventura.", "ru": "Действует до конца приключения.", "tr": "Maceranın sonuna kadar sürer.", "pl": "Działa do końca przygody.", "ja": "冒険のあいだずっと続くよ。", "ko": "모험이 끝날 때까지 유지돼요.", "zh": "在整个冒险中一直有效。", "hi": "यह पूरे रोमांच तक चलता है।", "bn": "এটি পুরো অভিযান জুড়ে থাকে।", "id": "Berlaku sampai akhir petualanganmu.", "vi": "Có hiệu lực đến hết chuyến phiêu lưu.", "th": "อยู่ไปจนจบการผจญภัย", "ar": "يستمر حتى نهاية مغامرتك."};for(const l in PI)if(TR[l])TR[l].perkInfo=PI[l];
+const PI={"en": "It lasts for the rest of your adventure.", "nl": "Hij blijft de rest van je avontuur.", "de": "Er gilt für den Rest deines Abenteuers.", "fr": "Il dure jusqu'à la fin de ton aventure.", "es": "Dura el resto de tu aventura.", "it": "Dura per il resto dell'avventura.", "pt": "Dura o resto da sua aventura.", "ru": "Действует до конца приключения.", "tr": "Maceranın sonuna kadar sürer.", "pl": "Działa do końca przygody.", "ja": "冒険のあいだずっと続くよ。", "ko": "모험이 끝날 때까지 유지돼요.", "zh": "在整个冒险中一直有效。", "hi": "यह पूरे रोमांच तक चलता है।", "bn": "এটি পুরো অভিযান জুড়ে থাকে।", "id": "Berlaku sampai akhir petualanganmu.", "vi": "Có hiệu lực đến hết chuyến phiêu lưu.", "th": "อยู่ไปจนจบการผจญภัย", "ar": "يستمر حتى نهاية مغامرتك."};for(const l in PI)if(TR[l])TR[l].perkInfo=PI[l];const SG={"en": "Upgrade your veggies", "nl": "Upgrade je groenten", "de": "Gemüse verbessern", "fr": "Améliore tes légumes", "es": "Mejora tus verduras", "it": "Potenzia le verdure", "pt": "Melhore seus vegetais", "ru": "Улучшить овощи", "tr": "Sebzelerini geliştir", "pl": "Ulepsz warzywa", "ja": "野菜を強化しよう", "ko": "채소 강화하기", "zh": "升级你的蔬菜", "hi": "सब्ज़ियाँ अपग्रेड करो", "bn": "সবজি আপগ্রেড করো", "id": "Tingkatkan sayuranmu", "vi": "Nâng cấp rau của bạn", "th": "อัปเกรดผักของคุณ", "ar": "طوّر خضارك"};for(const l in SG)if(TR[l])TR[l].shedGo=SG[l];
 for(const l in D){if(!TR[l])continue;const o={};K.forEach((k,i)=>{if(D[l][i]!=null)o[k]=D[l][i]});Object.assign(TR[l],o)}})();
 
 /* ================= DATA ================= */
@@ -1457,14 +1458,14 @@ function loadCheckpoint(c){R.comp=c.comp+40;R.lives=Math.max(5,c.lives);R.lives0
   for(const id of c.perks){R.perks.push(id);R.mods[id]=1;if(id==='shield')R.shield+=3}R.lastPerk=-1;R.comp+=placeVeggies(c.veg.slice())}
 function localWave(){return R.wave-Math.floor((R.wave-1)/WPW)*WPW}
 // travel to the next world after a boss wave is cleared
-function travel(){const old=R.F.id;const lost=R.livesAtWorld-R.lives;const st=lost<=0?3:lost<=3?2:1;
+function travel(pk){const old=R.F.id;const lost=R.livesAtWorld-R.lives;const st=lost<=0?3:lost<=3?2:1;
   if(R.mode==='field'){if(st>(S.stars[old]||0)){R.newStars+=st-(S.stars[old]||0);S.stars[old]=st}if(!S.won[old])S.st.wins++;S.won[old]=1}
   const list=R.veg.filter(Boolean);const nfi=(R.fi+1)%FIELDS.length;if(nfi===0)R.loop++;
   R.fi=nfi;R.F=FIELDS[nfi];R.P=parseField(R.F);R.veg=new Array(COLS*ROWS).fill(null);R.pests=[];R.shots=[];
-  const extra=placeVeggies(list);R.comp+=extra;R.livesAtWorld=R.lives;R.worlds++;R.travel=null;R.nextT=5;
+  const extra=placeVeggies(list);R.comp+=extra;R.livesAtWorld=R.lives;R.worlds++;R.travel=null;R.nextT=4;
   if(R.mode==='field'&&R.loop===0){S.reach=Math.max(S.reach||0,nfi);if(!S.ckpt)S.ckpt={};S.ckpt[nfi]=snapshot()}
   emit('travel',{fi:nfi,stars:st,extra,from:old});
-  if(R.wave<R.maxWave)offerPerks();return st}
+  if(pk)takePerk(pk);else if(pk===undefined&&R.wave<R.maxWave)offerPerks();return st}
 function seedCost(t){t=t||R.sel||'carrot';let c=8+(SEEDC[t]||0)+3*R.buys;if(R.mods.cheap)c*=.8;if(R.mod==='cheap5')c*=.6;return Math.floor(c)}
 function lvlCap(){return R.mod==='cheap5'?5:MAXL}
 function buySeed(force,bed){const fb=freeBeds();const tp=force||R.bag[Math.floor(rng()*R.bag.length)];const c=seedCost(tp);if(!fb.length||R.comp<c)return null;
@@ -1595,8 +1596,9 @@ function update(dt){if(!R||R.over||R.perkPending)return;
       if(R.lives<=0){R.lives=0;R.over='lose';emit('lose');return}}}
   if(R.wave>=R.maxWave&&!R.spawnQ.length&&!R.pests.length&&R.nextT===null&&!R.waveOn){R.over='win';emit('win')}
 }
-function offerPerks(){const have=new Set(R.perks);const ok=PERKS.filter(p=>!have.has(p.id)&&(!p.need||R.bag.includes(p.need)));
-  const o=[];while(o.length<3&&ok.length){const j=Math.floor(rng()*ok.length);o.push(ok.splice(j,1)[0].id)}if(!o.length)return;R.perkPending=o;emit('perkOffer',o)}
+function perkChoices(){const have=new Set(R.perks);const ok=PERKS.filter(p=>!have.has(p.id)&&(!p.need||R.bag.includes(p.need)));
+  const o=[];while(o.length<3&&ok.length){const j=Math.floor(rng()*ok.length);o.push(ok.splice(j,1)[0].id)}return o}
+function offerPerks(){const o=perkChoices();if(!o.length)return;R.perkPending=o;emit('perkOffer',o)}
 function takePerk(id){R.perks.push(id);R.mods[id]=1;if(id==='lettuce'){R.lives+=3;R.lives0+=3}if(id==='shield')R.shield+=3;if(id==='cool'){R.cdW*=.7;R.cdS*=.7}
   R.perkPending=null;emit('perk',id)}
 function useWater(){if(R.cdW>0||R.mod==='nowater')return false;R.waterT=6;R.cdW=45*(R.mods.cool?.7:1);R.usedWater++;S.st.water++;emit('water');return true}
@@ -2458,7 +2460,7 @@ function guideBuy(){// returns true when the click was handled by the guide
   return false}
 function guideEvent(ev,a){if(!R||!R.guide)return;
   if(ev==='plant'){R.lastPlantT=R.time;if(R.g==='plant1')gStep('plant2');else if(R.g==='plant2')gStep('merge');
-    else if(R.g==='plant3'){if(R.plants-R.g3>=2||R.comp<seedCost(R.sel)||!freeBeds().length)gStep('go');else{const b=bestBed();if(b>=0)CO.hand={k:'tapCell',i:b}}}coachOff('plant')}
+    else if(R.g==='plant3'){if(R.plants-R.g3>=1||R.comp<seedCost(R.sel)||!freeBeds().length)gStep('go');else{const b=bestBed();if(b>=0)CO.hand={k:'tapCell',i:b}}}coachOff('plant')}
   else if(ev==='merge'){R.lastMergeT=R.time;if(R.g==='merge'){gMeasure('merge','complete');R.g='merged';coach({txt:t('tut_merged'),spot:{cells:[a],pad:12}});
       setTimeout(()=>{if(R&&R.g==='merged'){R.g=null;gStep('pest')}},1900)}else coachOff('merge')}
   else if((ev==='kill'||ev==='eat')&&R.g==='pest')setTimeout(()=>{if(R&&R.g==='pest')gStep('comp')},350);
@@ -2716,17 +2718,21 @@ listeners.push((ev,a,b)=>{if(!R)return;const T=L.T;
 
 function waveKey(a){return R.mode==='daily'?'daily-'+String(a).padStart(2,'0'):'adv-'+String(a).padStart(2,'0')}
 /* ---------- travel between worlds ---------- */
+function perkBtn(id){const pk=PERKS.find(p=>p.id===id);const icon=pk.need?img(vegIcon(pk.need,3)):ic({soil:'mest',cheap:'comp',compost:'comp',lettuce:'lettuce',quick:'ff',cool:'water',shield:'lettuce',sharp:'star'}[id]||'star');
+  return '<button class="perk" data-k="'+id+'">'+icon+'<b>'+t('p_'+id)+'</b><span>'+t('pd_'+id)+'</span></button>'}
+// one screen between worlds: stars, the next world and the travel bonus — a single tap picks the bonus and travels on
 function showTravel(){if(!R||!R.travel||R.over)return;gpStop();const lost=R.livesAtWorld-R.lives,st=lost<=0?3:lost<=3?2:1;const nfi=(R.fi+1)%FIELDS.length,nf=FIELDS[nfi];const nv=R.veg.filter(Boolean).length;
-  const strip=R.veg.filter(Boolean).sort((a,b)=>b.l-a.l).slice(0,8).map(v=>img(vegIcon(v.t,v.l,56),'tv')).join('');
+  const strip=R.veg.filter(Boolean).sort((a,b)=>b.l-a.l).slice(0,6).map(v=>img(vegIcon(v.t,v.l,56),'tv')).join('');const o=perkChoices();
   show('<h2>'+t('worldClear')+'</h2><div class="stars big">'+[1,2,3].map(k=>'<span style="animation-delay:'+(k*.25)+'s" class="'+(k<=st?'pop':'')+'">'+ic(k<=st?'star':'star0')+'</span>').join('')+'</div>'+
-    '<div class="trow">'+strip+'</div><p class="hint">'+t('vegCarried',nv)+'</p><div class="sub">'+t('nextW')+'</div><div class="fcard nextw" style="--fc:'+PAL[nfi].g1+';--fo:'+PAL[nfi].out+'"><div class="fn">'+(nfi+1)+'. '+t('f_'+nf.id)+'</div><div class="fb">'+img(pestIcon(nf.boss,48),'bi')+t('b_'+nf.boss)+'</div></div>'+
-    '<button class="btn big green" id="trv">'+t('travel')+' ✈</button>','travelc');measure('world','travel','visible');
-  onClick('#trv',()=>{hide();commercial().then(()=>{if(!R||!R.travel)return;travel();FX.length=0;DECAL.length=0;bg=null;viewReset();resize();gpStart();measure('world','travel','go')})})}
+    '<div class="trow">'+strip+'</div><div class="fcard nextw" style="--fc:'+PAL[nfi].g1+';--fo:'+PAL[nfi].out+'"><div class="fn">✈ '+(nfi+1)+'. '+t('f_'+nf.id)+'</div><div class="fb">'+t('vegCarried',nv)+'</div><div class="fb">'+img(pestIcon(nf.boss,48),'bi')+t('b_'+nf.boss)+'</div></div>'+
+    (o.length?'<div class="sub">'+t('perkTitle')+'</div><div class="perks">'+o.map(perkBtn).join('')+'</div>':'<button class="btn big green" id="trv">'+t('travel')+' ✈ <span id="trvT">5</span></button>'),'travelc');measure('world','travel','visible');
+  let gone=false;const go=id=>{if(gone)return;gone=true;hide();const first=R.worlds===0;const doT=()=>{if(!R||!R.travel)return;travel(id||null);FX.length=0;DECAL.length=0;bg=null;viewReset();resize();gpStart();measure('world','travel','go')};
+    if(first)doT();else commercial().then(doT)};
+  onClick('[data-k]',e=>{sfx('perk');go(e.dataset.k)});
+  if(!o.length){onClick('#trv',()=>go(null));let n=5;const tick=()=>{if(gone)return;n--;const el=$('trvT');if(el)el.textContent=n;if(n<=0)go(null);else setTimeout(tick,1000)};setTimeout(tick,1000)}}
 /* ---------- perks ---------- */
 function showPerks(o){gpStop();measure('perk','offer','visible');
-  show('<h2>'+t('perkTitle')+'</h2><p class="hint">'+t('perkInfo')+'</p><div class="perks">'+o.map(id=>{const pk=PERKS.find(p=>p.id===id);
-    const icon=pk.need?img(vegIcon(pk.need,3)):ic({soil:'mest',cheap:'comp',compost:'comp',lettuce:'lettuce',quick:'ff',cool:'water',shield:'lettuce',sharp:'star'}[id]||'star');
-    return '<button class="perk" data-k="'+id+'">'+icon+'<b>'+t('p_'+id)+'</b><span>'+t('pd_'+id)+'</span></button>'}).join('')+'</div>','perkc');
+  show('<h2>'+t('perkTitle')+'</h2><p class="hint">'+t('perkInfo')+'</p><div class="perks">'+o.map(perkBtn).join('')+'</div>','perkc');
   onClick('[data-k]',e=>{takePerk(e.dataset.k);gpStart()})}
 
 /* ---------- pause ---------- */
@@ -2768,10 +2774,10 @@ function showResult(){gpStop();UI.state='over';coachOff();if(R.guide){S.fg=1;mea
     '<div class="score">'+fmtN(res.score)+(newBest?'<em>'+t('newBest')+'</em>':'')+'</div>'+info+riv+
     '<div class="loot"><div class="pill">'+ic('coin')+'<b>+'+fmtN(res.coins)+'</b></div><button class="chest t'+tier+'" id="chest">'+ic('chest')+'<span>'+t('chest'+tier)+' +'+chestBonus+'</span></button></div>'+
     '<button class="btn green ad" id="dbl">'+ic('ad')+t('double',fmtN(total))+'</button>'+
-    '<div class="row">'+(adv?'<button class="btn big green" id="again">'+(ck>0?t('fromCk',ck+1):t('again'))+'</button>':'<button class="btn big" id="again">'+t('again')+'</button>')+'<button class="btn gray" id="home">'+t('home')+'</button></div>','result');
+    '<div class="row">'+(adv?'<button class="btn big green" id="again">'+(ck>0?t('fromCk',ck+1):t('again'))+'</button>':'<button class="btn big" id="again">'+t('again')+'</button>')+'<button class="btn gray" id="home">'+t('home')+'</button></div>'+(canAffordSomething()?'<button class="btn shedgo" id="shed">'+ic('shed')+'<span>'+t('shedGo')+'</span></button>':''),'result');
   measure('rewarded','double-coins','visible');
   onClick('#dbl',e=>rewarded('double-coins').then(ok=>{if(ok){S.coins+=total;save();e.disabled=true;e.innerHTML=ic('coin')+'+'+fmtN(total)+' ✓';sfx('coin')}else toast(t('adFail'))}));
-  onClick('#again',()=>{const m=R.mode,bag=R.bag;const fi=m==='field'?(S.ckpt&&S.ckpt[R.fi]&&R.loop===0?R.fi:Math.min(S.reach||0,R.fi)):R.fi;startRun(fi,m,{bag,ckpt:1})});onClick('#home',goHome);
+  onClick('#again',()=>{const m=R.mode,bag=R.bag;const fi=m==='field'?(S.ckpt&&S.ckpt[R.fi]&&R.loop===0?R.fi:Math.min(S.reach||0,R.fi)):R.fi;startRun(fi,m,{bag,ckpt:1})});onClick('#home',goHome);onClick('#shed',()=>{measure('result','shed','click');showShop()});
   onClick('#chest',e=>{e.classList.add('open');sfx('gold')})}
 
 /* ---------- rivals ---------- */
@@ -2863,7 +2869,8 @@ function showIntro(done){const c=document.createElement('canvas');c.width=640;c.
 function ptr(e){const b=toBase(e.clientX,e.clientY);return{x:b[0],y:b[1],cx:e.clientX,cy:e.clientY}}
 function overEl(el,p){if(!el||el.classList.contains('hide'))return false;const r=el.getBoundingClientRect();const X=p.cx!=null?p.cx:p.x,Y=p.cy!=null?p.cy:p.y;return X>=r.left-6&&X<=r.right+6&&Y>=r.top-6&&Y<=r.bottom+6}
 const PTRS=new Map();
-cv.addEventListener('pointerdown',e=>{Snd.resume();if(UI.state!=='run'||!R||UI.paused||R.over)return;PTRS.set(e.pointerId,{x:e.clientX,y:e.clientY});try{cv.setPointerCapture(e.pointerId)}catch(_){}
+cv.addEventListener('pointerdown',e=>{Snd.resume();if(UI.state!=='run'||!R||UI.paused||R.over)return;
+  if(R.g==='plant1'||R.g==='plant2'){const bp=toBase(e.clientX,e.clientY),ci0=cellAt(bp[0],bp[1]);if(!(ci0>=0&&R.veg[ci0])){plantAt(R.g==='plant1'?BED_A:BED_B,ci0===(R.g==='plant1'?BED_A:BED_B)?'tap':'anywhere');return}}PTRS.set(e.pointerId,{x:e.clientX,y:e.clientY});try{cv.setPointerCapture(e.pointerId)}catch(_){}
   if(PTRS.size===2&&!R.g){const [a,b]=[...PTRS.values()];UI.drag=null;UI.tapBed=null;UI.pan=null;const mx=(a.x+b.x)/2,my=(a.y+b.y)/2;UI.pinch={d0:Math.hypot(a.x-b.x,a.y-b.y)||1,z0:VIEW.z,b:toBase(mx,my)};VIEW.tz=null;$('bSell').classList.remove('hot');return}
   if(PTRS.size>2)return;const p=ptr(e);const ci=cellAt(p.x,p.y);
   if(VIEW.z>1.01&&!(ci>=0&&R.veg[ci]))UI.pan={sx:e.clientX,sy:e.clientY,ox:VIEW.ox,oy:VIEW.oy,moved:false};
@@ -2948,7 +2955,7 @@ function frame(ts){const dt=Math.min(.05,Math.max(0,(ts-lastT)/1000));lastT=ts;g
 /* ---------- boot ---------- */
 load();lang=S.lang&&TR[S.lang]?S.lang:detectLang();applyI18n();
 if(S.opener==='c')S.opener=null;if(!S.reach){let r=0;for(let i=0;i<FIELDS.length-1;i++)if(S.won[FIELDS[i].id])r=i+1;else break;S.reach=r;if(!S.bestScore)S.bestScore=Math.max(0,...Object.values(S.best||{}))}if(!S.fg&&S.st.runs>0)S.fg=1;
-if(!S.opener){S.opener=['a','b'][Math.floor(Math.random()*2)];save();measure('opener',S.opener,'assigned')}
+if(!S.opener||(S.opener==='b'&&!S.fg)){S.opener='a';save();measure('opener','a2','assigned')}
 console.log('Veggie Siege v'+VERSION);
 try{if(!new URLSearchParams(location.search).get('nogl'))glInit()}catch(e){}$('ver0').textContent='v'+VERSION;
 resize();
