@@ -285,7 +285,7 @@ select.lang{appearance:none;-webkit-appearance:none;padding-right:12px;cursor:po
         <button class="play" id="playBtn" data-i18n="play">Spelen</button>
         <button class="ghost" id="shopBtn"><svg viewBox="0 0 24 24"><path d="M4 15c3-1 4-5 8-5 3 0 4 2 7 1M7 15l-1 3M10 13.5l1 4M15 11l1 4M18 11.5l2 2" stroke="#b9e44f" stroke-width="2" fill="none" stroke-linecap="round"/><circle cx="6" cy="14" r="1" fill="#b9e44f"/></svg><span data-i18n="geckos">Gekko's</span></button>
       </div>
-      <div class="menuFoot"><span class="coinsBig"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="#ffc93c"/><circle cx="12" cy="12" r="7" fill="none" stroke="#c98a12" stroke-width="1.6"/></svg><span id="menuCoins">0</span></span><span id="menuBest"></span><button class="ghost gfx" id="gfxBtn">Graphics</button><select class="ghost gfx lang" id="langSel" data-i18n-aria="language" aria-label="Taal"></select><span class="ver">v1.18</span></div>
+      <div class="menuFoot"><span class="coinsBig"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="#ffc93c"/><circle cx="12" cy="12" r="7" fill="none" stroke="#c98a12" stroke-width="1.6"/></svg><span id="menuCoins">0</span></span><span id="menuBest"></span><button class="ghost gfx" id="gfxBtn">Graphics</button><select class="ghost gfx lang" id="langSel" data-i18n-aria="language" aria-label="Taal"></select><span class="ver">v1.20</span></div>
       <div class="keys" data-i18n-html="keys"><span><kbd>WASD</kbd> lopen</span><span><kbd>Muis</kbd> kijken</span><span><kbd>Shift</kbd> sprinten</span><span><kbd>Spatie</kbd> springen</span><span><kbd>Klik</kbd>/<kbd>E</kbd> tong</span><span><kbd>F</kbd> drinken</span></div>
     </div>
   </div>
@@ -908,8 +908,17 @@ function frondGeo(len,width,droop,lift,tex=1){
     p.setXYZ(i,u*wd,t*len*lift-t*t*len*droop-Math.abs(u)*wd*.35,t*len);}
   g.computeVertexNormals();return g;}
 
+/* v1.20 tree tops: a thin leader shoot runs from the trunk top up through the leaves to just above the crown, so the gecko can
+   climb all the way up and sit on the very tip (t.tip = height of that seat above t.base). crownTop finds the highest leaf of the tree. */
+function crownTop(x,z,l0,y0){let top=y0;for(let i=l0;i<leafM.length;i++){const e=leafM[i].elements,sc=Math.hypot(e[0],e[1],e[2]),ext=.8*sc;
+  const r=Math.hypot(e[12]-x,e[14]-z);top=Math.max(top,e[13]+ext*(r<ext+.5?.95:.5));}return top;}
+function addLeader(t,l0){const x=t.x,z=t.z,y0=t.base+t.top,tipY=Math.min(crownTop(x,z,l0,y0+.6)+.15,y0+7);
+  const r0=Math.max(t.rT*.55,.06),r1=.035;trunkGeos.push(branchGeo(new V3(x,y0-.7,z),new V3(x,tipY,z),r0,r1));
+  // a little knot on the tip to sit on
+  {const g=new THREE.SphereGeometry(.055,7,5);g.scale(1,.6,1);g.translate(x,tipY,z);trunkGeos.push(prep(colorize(g,new THREE.Color(.85,.92,.8)),['position','normal','uv','color']));}
+  t.lead={r0,r1,y0:y0-.7-t.base,y1:tipY-t.base};t.tip=tipY-t.base+.03;t.climbMax=t.tip-.25;}
 function placeTree(x,z,kind){
-  const base=terrainH(x,z);
+  const base=terrainH(x,z),l0=leafM.length;
   if(kind==='big'){
     const B=AREA.big,H=R(B.H[0],B.H[1]),rB=R(.7,1.1)*(H/18.5)**.5,rT=rB*.45,seed=R(0,99);
     trunkGeos.push(trunkGeo(rB,rT,H,x,base-.3,z,seed));
@@ -920,12 +929,12 @@ function placeTree(x,z,kind){
       const cc=[to.x,to.y+.5,to.z];for(let k=0;k<26;k++){const a2=R(0,6.28),r2=R(.3,1)*2.9;addLeaf(to.x+Math.cos(a2)*r2,to.y+R(-.5,1.9)*(1.1-r2/3.2),to.z+Math.sin(a2)*r2,R(1.5,2.5),0,cc);}
       if(rnd()<B.lianas)lianaGeos.push(lianaGeo(to,new V3(to.x+R(-1.5,1.5),0,to.z+R(-1.5,1.5))));}
     {const cc=[x,top.y+1.2,z];for(let k=0;k<22;k++)addLeaf(x+R(-3.2,3.2),top.y+R(.3,2.6),z+R(-3.2,3.2),R(1.8,2.6),0,cc);}
-    trees.push({x,z,base,rB,rT,H,top:H-.3,climbMax:H-.45,canopy:H*.7,kind,yOff:-.3,flare:true,fins,branches,seed:_ts});
+    trees.push({x,z,base,rB,rT,H,top:H-.3,climbMax:H-.45,canopy:H*.7,kind,yOff:-.3,flare:true,fins,branches,seed:_ts});addLeader(trees[trees.length-1],l0);
   }else if(kind==='small'){
     const H=R(4,7),rB=R(.16,.26),rT=rB*.5;
     trunkGeos.push(trunkGeo(rB,rT,H,x,base-.2,z,R(0,99)));
     const n=RI(18,28),cc=[x,base+H*.8,z];for(let k=0;k<n;k++){const t=R(.55,1.05);addLeaf(x+R(-1.6,1.6)*t,base+H*t,z+R(-1.6,1.6)*t,R(1,1.7),0,cc);}
-    trees.push({x,z,base,rB,rT,H,top:H-.2,climbMax:H-.35,canopy:H*.6,kind,yOff:-.2,flare:true,fins:null,branches:null,seed:_ts});
+    trees.push({x,z,base,rB,rT,H,top:H-.2,climbMax:H-.35,canopy:H*.6,kind,yOff:-.2,flare:true,fins:null,branches:null,seed:_ts});addLeader(trees[trees.length-1],l0);
   }else if(kind==='bare'){
     const H=R(8,12),rB=R(.35,.5),rT=rB*.42,seed=R(0,99);
     trunkGeos.push(trunkGeo(rB,rT,H,x,base-.3,z,seed));const nb=RI(4,6),branches=[];
@@ -951,7 +960,7 @@ function placeTree(x,z,kind){
     for(let i=0;i<nb;i++){const a=i/nb*6.28+R(-.4,.4),L=R(2.2,3.8);const from=new V3(x,base+H*R(.55,.8),z);const to=new V3(x+Math.cos(a)*L,from.y+R(1.1,2),z+Math.sin(a)*L);
       trunkGeos.push(branchGeo(from,to,rT*.85,rT*.35));branches.push(branchInfo(from,to,rT*.85,rT*.35,a));
       const cc=[to.x,to.y-.6,to.z];for(let k=0;k<16;k++){const a2=R(0,6.28),r2=Math.sqrt(rnd())*2.6;addLeaf(to.x+Math.cos(a2)*r2,to.y+R(.1,.6),to.z+Math.sin(a2)*r2,R(1.2,1.8),0,cc);}}
-    trees.push({x,z,base,rB,rT,H,top:H-.2,climbMax:H-.35,canopy:H*.85,kind,yOff:-.2,flare:true,fins:null,branches,seed:_ts});
+    trees.push({x,z,base,rB,rT,H,top:H-.2,climbMax:H-.35,canopy:H*.85,kind,yOff:-.2,flare:true,fins:null,branches,seed:_ts});addLeader(trees[trees.length-1],l0);
   }else{
     const H=R(7,11),rB=.24,rT=.16,lean=R(-.12,.12);
     const g=new THREE.CylinderGeometry(rT,rB,H,10,6,true);g.translate(0,H/2,0);const uv=g.attributes.uv;for(let i=0;i<uv.count;i++)uv.setY(i,uv.getY(i)*H/1.2);
@@ -959,6 +968,7 @@ function placeTree(x,z,kind){
     const nf=RI(9,13);for(let i=0;i<nf;i++){const f=frondGeo(R(3,4.2),R(1,1.3),R(.35,.55),R(.25,.5));f.rotateY(i/nf*6.28+R(-.2,.2));f.translate(x,base+H-.25,z);frondGeos.push(prep(f));}
     trees.push({x,z,base,rB,rT,H,top:H-.2,climbMax:H-.35,canopy:H-1.2,kind,yOff:-.2,flare:false,fins:null,branches:null});
   }
+  {const t=trees[trees.length-1];if(t.tip===undefined)t.tip=t.top;}
 }
 function lianaGeo(a,b){const mid=new V3().lerpVectors(a,b,.5);const pts=[a.clone(),new V3(lerp(a.x,mid.x,.5),lerp(a.y,mid.y,.5)-1,lerp(a.z,mid.z,.5)),
   new V3(mid.x,Math.max(terrainH(mid.x,mid.z)+.6,mid.y*.35),mid.z),new V3(b.x,terrainH(b.x,b.z)+.05,b.z)];
@@ -1595,7 +1605,7 @@ class Gecko{
     this.crest=new THREE.Group();this.head.add(this.crest);
     if(!lite)for(const sd of [-1,1])for(let k=0;k<6;k++){const c=new THREE.Mesh(new THREE.ConeGeometry(.0035,.009,5),mat);c.position.set(sd*(.018-k*.001),.019,.02-k*.009);c.rotation.z=-sd*.6;this.crest.add(c);}
     this.legs=[];for(const [sd,front] of [[1,true],[-1,true],[1,false],[-1,false]])this.legs.push(this.makeLeg(sd,front));
-    this.phase=0;this.t=R(0,9);this.walk=0;this.swimK=0;this.look=0;this.drink=0;this.climbing=0;this.open=0;
+    this.phase=0;this.t=R(0,9);this.walk=0;this.swimK=0;this.look=0;this.drink=0;this.climbing=0;this.open=0;this.sitK=0;
     this.setMaterial(mat,eyeColor,false);this.update(0,0);
   }
   makeLeg(side,front){const mat=this.mat;const hip=new THREE.Group();const up=new THREE.Group();hip.add(up);
@@ -1615,7 +1625,7 @@ class Gecko{
     this.t+=dt;this.walk=damp(this.walk,clamp(speed/2.6,0,1.25),9,dt);const w=Math.min(this.walk,1);
     this.swimK=damp(this.swimK,o.swim?1:0,6,dt);const sk=this.swimK;
     this.phase+=dt*(speed*8.5*(1-sk*.45)+(o.climbing&&speed>.1?4:0)+sk*2.6);
-    this.drink=damp(this.drink,o.drinking?1:0,8,dt);this.look=damp(this.look,o.look||0,4,dt);
+    this.drink=damp(this.drink,o.drinking?1:0,8,dt);this.sitK=damp(this.sitK,o.sit?1:0,6,dt);const st=this.sitK;this.look=damp(this.look,o.look||0,4,dt);
     const breathe=Math.sin(this.t*3)*.0015;
     // Lizard gait: a standing wave bends the trunk between the shoulders and hips in step with the diagonal leg pairs
     // (front-left reaches forward while the trunk bows to the left), the head counter-swings to stay on target and the tail trails the wave.
@@ -1626,11 +1636,13 @@ class Gecko{
       const curl=o.idleCurl?Math.sin(s*4)*.0:0;
       const x=und+idle+curl+(s<.22?this.look*(.22-s)*.6:0);
       let y=.056-.004*w+(s<.2?(.2-s)*.07:0)-(s>.5?(s-.5)*.06:0)+(s<.26?-this.drink*(.26-s)*.32:0)+(s>.2&&s<.5?breathe:0);
-      let xx=x;
+      let xx=x,zz=.22-s*.55;
+      // Sitting on a treetop: chest and head up, the tail hangs down along the shoot
+      if(st>.001){const up=s<.4?(.4-s)**1.5*.55:0,hang=s>.5?(s-.5)**1.3*1.1:0;y+=st*(up-hang);zz+=st*(s>.5?(s-.5)**1.6*.9:0);}
       // Swimming: legs fold back and a travelling wave runs from the neck to the tail tip, growing toward the tail; the head stays up.
       if(sk>.001){const As=.012+.016*w,xs=As*Math.sin(this.phase*.9-s*7.5)*(.15+s*1.7)+(s<.22?this.look*(.22-s)*.6:0);
         const ys=.05+(s<.2?(.2-s)*.11:0)-(s>.6?(s-.6)*.03:0)+Math.sin(this.t*2.3)*.0025+(s<.26?-this.drink*(.26-s)*.32:0);xx=lerp(x,xs,sk);y=lerp(y,ys,sk);}
-      this.P[i].set(xx,y,.22-s*.55);}
+      this.P[i].set(xx,y,zz);}
     const pos=this.pos,nor=this.nor;let k=0;
     for(let i=0;i<NS;i++){const s=i/(NS-1);const T=this.T[i].subVectors(this.P[Math.max(i-1,0)],this.P[Math.min(i+1,NS-1)]).normalize();
       const S=this.S[i].crossVectors(Y,T).normalize(),U=this.U[i].crossVectors(T,S);
@@ -1946,13 +1958,14 @@ function branchTop(br,x,z){const px=x-br.ax,pz=z-br.az,s=(px*br.dx+pz*br.dz)/br.
 // Ease the gecko toward the middle of the branch it walks on.
 function branchPull(br,p,k){const px=p.x-br.ax,pz=p.z-br.az,off=(px*br.dz-pz*br.dx)/br.L2;p.x-=br.dz*off*k;p.z+=br.dx*off*k;}
 // Collider radius that follows the visible trunk, including the root flare and bark bulges (see trunkGeo).
-function treeRadius(t,hy,a){if(a!==undefined)return trunkR(t,hy,a);const ly=hy-t.yOff;const r0=lerp(t.rB,t.rT,clamp(ly/t.H,0,1));
+const leadR=(t,hy)=>{const L=t.lead;return lerp(L.r0,L.r1,clamp((hy-L.y0)/(L.y1-L.y0),0,1))+.012;};
+function treeRadius(t,hy,a){if(a!==undefined)return trunkR(t,hy,a);if(t.lead&&hy>t.top)return leadR(t,hy);const ly=hy-t.yOff;const r0=lerp(t.rB,t.rT,clamp(ly/t.H,0,1));
   const flare=t.flare&&ly<2?Math.max(0,2-ly)**2*.18/Math.max(t.rB,.2):0;return r0*(1.13+flare)+.01;}
 // Radius of the visible trunk mesh at height hy above t.base, at angle a = atan2(dz,dx): the bark noise and root flare of trunkGeo,
 // interpolated between its vertices the way the triangles are. Feet and body then rest on the bark instead of in it or above it.
 function trunkVR(t,i,j,dy,da){const y=i*dy,ang=j*da,r0=lerp(t.rB,t.rT,y/t.H);
   const n=fbm(Math.cos(ang)*1.6+t.seed,Math.sin(ang)*1.6+y*.25,3),fl=y<2?(2-y)**2*.18:0;return r0*(1+(n-.5)*.35+fl/Math.max(t.rB,.2));}
-function trunkR(t,hy,a){const ly=hy-t.yOff;
+function trunkR(t,hy,a){if(t.lead&&hy>t.top)return leadR(t,hy);const ly=hy-t.yOff;
   if(t.kind==='palm')return lerp(t.rB,t.rT,clamp(ly/t.H,0,1))*.97+.012;
   const S=t.kind==='cactus'?24:16,da=6.2832/S;let fa=a/da;fa-=Math.floor(fa/S)*S;const j=Math.floor(fa),u=fa-j;
   if(t.kind==='cactus')return t.rB*(1+.08*lerp(j%2?-1:1,j%2?1:-1,u))+.012;
@@ -2266,18 +2279,29 @@ function updateCamo(dt){camoCool-=dt;const can=canCamo();
   if(PL.camo&&(!can||PL.speed>.3||PL.drinking))setCamo(false);
   if(isTouch){const b=$('tCamo');b.classList.toggle('on',!!PL.camo);b.classList.toggle('off',!can&&!PL.camo);}}
 function stepOff(x,y,z,yaw){PL.climb=null;PL.regrab=.4;PL.pos.set(x,y,z);PL.yaw=yaw;PL.onGround=true;PL.vel.set(0,0,0);groundAt(x,z,y+.05);PL.perch=perch;gecko.root.position.copy(PL.pos);}
+/* v1.20: at the very top the gecko sits on the tip of the tree. Left/right turns it to look around, down climbs back down, jump lets go. */
+let topSeen=false;
+function sitOnTip(c,yaw){c.sit=true;c.sitT=0;PL.yaw=yaw;PL.vel.set(0,0,0);
+  if(!topSeen&&state==='play'){topSeen=true;floater(PL.pos.clone().add(_v.set(0,.35,0)),t('topFloat'),'green');AU.tone(660,.18,{vol:.06,to:990,type:'triangle'});measureOnce('treetop',AREAS[areaIdx].id,'first');}}
+function updateSit(dt,ix,iy){const c=PL.climb,t=c.t;c.sitT+=dt;
+  PL.yaw-=ix*2.2*dt;const f=_p.set(Math.sin(PL.yaw),0,Math.cos(PL.yaw));
+  if(iy<-.3&&c.sitT>.25){c.sit=false;c.a=Math.atan2(-f.z,-f.x);c.h=t.tip-.17*geckoScale()-.06;return false;}
+  PL.pos.set(t.x,t.base+t.tip,t.z);
+  if(jumpQ){PL.climb=null;PL.regrab=.45;PL.vel.copy(f).multiplyScalar(4).addScaledVector(Y,3.2);PL.onGround=false;AU.sfx.jump();}
+  PL.speed=0;PL.up.copy(Y);gecko.root.position.copy(PL.pos);if(dt>0)orient(Y,f,dt,10);return true;}
 function updateClimb(dt,ix,iy,moving,sprint){
   const c=PL.climb;const sp=(sprint?3.8:2.4)*perks().climb;let n=_n,fwd=_p;
+  if(c.sit&&updateSit(dt,ix,iy))return;
   if(c.type==='tree'){const t=c.t;n.set(Math.cos(c.a),0,Math.sin(c.a));const tan=_w.set(-Math.sin(c.a),0,Math.cos(c.a));
     const lat=ix*Math.sign(camR.dot(tan)||1);c.h+=iy*sp*dt;
     const rr=treeRadius(t,c.h);c.a+=lat*sp*dt/(rr+.05);
     const gsc=geckoScale();let br=0;for(const k of [-.34,-.22,-.08,.06,.18])br=Math.max(br,trunkR(t,c.h+k*gsc,c.a));
-    if(c.h>t.climbMax)c.h=t.climbMax;
+    const cap=t.tip-.17*gsc;if(c.h>cap)c.h=cap;
     if(iy>.3){const y=t.base+c.h;
       if(t.branches)for(const br of t.branches){let da=c.a-br.ang;da=Math.atan2(Math.sin(da),Math.cos(da));if(Math.abs(da)*rr>br.r0+.12)continue;
         const hx=t.x+n.x*(rr+.15),hz=t.z+n.z*(rr+.15),by=branchTop(br,hx,hz);
         if(y>=by-.3&&y<=by+.35){stepOff(hx,by,hz,Math.atan2(n.x,n.z));return;}}
-      if(c.h>=t.climbMax){stepOff(t.x+n.x*.04,t.base+t.top,t.z+n.z*.04,Math.atan2(-n.x,-n.z));return;}}
+      if(c.h>=cap-.01){sitOnTip(c,Math.atan2(-n.x,-n.z));return;}}
     const gy=terrainH(t.x+n.x*(rr+.1),t.z+n.z*(rr+.1));
     if(c.h+t.base<=gy+.02&&iy<0){PL.climb=null;PL.regrab=.5;PL.pos.set(t.x+n.x*(rr+.18),gy,t.z+n.z*(rr+.18));PL.yaw=Math.atan2(n.x,n.z);return;}
     {const px=t.x+n.x*(br+.012*gsc),pz=t.z+n.z*(br+.012*gsc),gy=terrainH(px,pz)+.05*gsc;if(t.base+c.h<gy)c.h=gy-t.base;// never under the slope on the uphill side
@@ -2430,8 +2454,8 @@ function smoothVisual(dt){_jv.subVectors(PL.pos,lastPL);const L=_jv.length();las
 function updateCamera(dt){
   const sc=geckoScale();camTarget.copy(PL.pos).add(visOff).addScaledVector(PL.up,.18*sc);if(PL.climb)camTarget.addScaledVector(PL.up,.25);
   if(isTouch&&state==='play'&&touch.camId===null&&(Math.abs(touch.x)+Math.abs(touch.y))>.2&&!PL.climb){let d=(PL.yaw+Math.PI)-camYaw;d=Math.atan2(Math.sin(d),Math.cos(d));camYaw+=d*dt*1.2;}
-  const dist=camDist*(.75+sc*.3);
-  desired.set(Math.sin(camYaw)*Math.cos(camPitch),Math.sin(camPitch),Math.cos(camYaw)*Math.cos(camPitch)).multiplyScalar(dist).add(camTarget);
+  const sit=PL.climb&&PL.climb.sit,dist=camDist*(.75+sc*.3)*(sit?1.7:1),cp=sit?Math.max(camPitch,.42):camPitch;
+  desired.set(Math.sin(camYaw)*Math.cos(cp),Math.sin(cp),Math.cos(camYaw)*Math.cos(cp)).multiplyScalar(dist).add(camTarget);
   const inT=state==='play'&&inTemple();if(inT){desired.x=clamp(desired.x,TI.x-TI.i+.2,TI.x+TI.i-.2);desired.z=clamp(desired.z,TI.z-TI.i+.2,TI.z+TI.i-.2);desired.y=Math.min(desired.y,TI.W-.2);}
   const floor=Math.max(groundAt(desired.x,desired.z,desired.y+.3),WATER_Y)+.14;if(desired.y<floor)desired.y=floor;
   const b=inT?null:insideBox(desired.x,desired.z,.15);if(b&&desired.y<b.top+.25&&desired.y>b.bottom-1)desired.y=b.top+.25;
@@ -2528,7 +2552,7 @@ function updateHUD(dt){hudT-=dt;if(hudT>0)return;hudT=.1;
   else if(PL.sus){al.hidden=false;al.className='';al.textContent=t('alertSus');}else al.hidden=true;
   $('hudFam').textContent=Math.min(FAMILY,save.rescued.length)+'/'+FAMILY;
   let pr='';if(gnaw)pr=gnaw.locked?t('prLocked',{n:gnaw.locked}):t('prGnaw',{p:Math.min(100,Math.round(gnaw.p*100))});else if(PL.canDrink&&PL.thirst<97&&!PL.drinking)pr=t(isTouch?'prDrinkTouch':'prDrinkKb');
-  else if(PL.drinking)pr=t('prDrinking');else if(!PL.camo&&canCamo())pr=t(isTouch?'prCamoTouch':'prCamoKb');else if(PL.climb&&PL.climb.type==='tree'&&PL.climb.h>=PL.climb.t.climbMax-.05)pr=t(isTouch?'prSafeTouch':'prSafeKb');
+  else if(PL.drinking)pr=t('prDrinking');else if(!PL.camo&&canCamo())pr=t(isTouch?'prCamoTouch':'prCamoKb');else if(PL.climb&&PL.climb.sit)pr=t(isTouch?'prTopTouch':'prTopKb');else if(PL.climb&&PL.climb.type==='tree'&&PL.climb.h>=PL.climb.t.climbMax-.05)pr=t(isTouch?'prSafeTouch':'prSafeKb');
   else if(ringT&&PL.crickets<3)pr=t(isTouch?'prEatTouch':'prEatKb');
   else if(!climbedOnce&&!PL.climb&&!PL.swim&&(nearTrunk()||poachers.some(q=>q.state==='chase')))pr=t('prClimb');
   else if(PL.thirst<WATER_WARN&&!PL.canDrink)pr=t('prWater');
@@ -2633,7 +2657,7 @@ function frame(ts){requestAnimationFrame(frame);frameN++;
   if(state==='play'&&!PL.dead)updateGame(dt);
   else if(state==='play'&&PL.dead){updatePoachers(dt);}
   if(state==='menu'||state==='shop'){gecko.root.position.copy(PL.pos);menuCamera(dt);gecko.update(dt,0,{look:Math.sin(time*.7)*.6,ground:footGround});}
-  else{if(state==='play')smoothVisual(dt);gecko.update(dt,PL.speed,{drinking:PL.drinking,climbing:!!PL.climb,swim:PL.swim&&!PL.climb,surf:PL.climb?climbSurf:footSurf});if(state==='play'||state==='over')updateCamera(dt);}
+  else{if(state==='play')smoothVisual(dt);gecko.update(dt,PL.speed,{drinking:PL.drinking,climbing:!!PL.climb&&!PL.climb.sit,sit:!!(PL.climb&&PL.climb.sit),swim:PL.swim&&!PL.climb,surf:PL.climb?climbSurf:footSurf});if(state==='play'||state==='over')updateCamera(dt);}
   gecko.root.scale.setScalar(geckoScale());gecko.root.visible=!(PL.dead&&state==='over');
   if(PL.inv>0&&state==='play'&&!PL.dead)gecko.root.visible=Math.floor(time*14)%2===0;
   if(state!=='pause'){updateCamp(state==='win'?0:dt);updateTemple(dt);updateCrickets(dt);updateRipples(dt);updateButterflies(dt);updateDust(dt);AU.update(dt);}
