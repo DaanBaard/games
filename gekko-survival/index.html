@@ -181,6 +181,7 @@ select.lang{appearance:none;-webkit-appearance:none;padding-right:12px;cursor:po
 .ldTrack{position:relative;width:min(260px,70vw);padding-top:26px}
 .ldTrack .bar{width:100%;height:8px;border-radius:5px;background:rgba(255,255,255,.1);overflow:hidden}
 .ldTrack .bar i{display:block;height:100%;width:0;background:var(--leaf);transition:width .25s ease-out}
+.ldA,.ldB{width:100%;height:100%;will-change:transform}.ldA{transform:translateX(-100%)}.ldB i{width:100%!important;transition:none!important}.ldRun{position:absolute;left:0;right:0;top:0;height:26px;will-change:transform;pointer-events:none}.ldPct[hidden]{display:none}
 .ldGecko{position:absolute;top:0;left:0;width:44px;transform:translateX(-50%);transition:left .25s ease-out}
 .ldGecko svg{display:block;width:44px;height:22px;fill:var(--leaf);stroke:var(--leaf);stroke-width:3;stroke-linecap:round;animation:ldBob .3s ease-in-out infinite alternate}
 .ldGecko .tl{fill:none;stroke-width:3.4;animation:ldTail .6s ease-in-out infinite alternate;transform-origin:18px 16px}
@@ -284,7 +285,7 @@ select.lang{appearance:none;-webkit-appearance:none;padding-right:12px;cursor:po
         <button class="play" id="playBtn" data-i18n="play">Spelen</button>
         <button class="ghost" id="shopBtn"><svg viewBox="0 0 24 24"><path d="M4 15c3-1 4-5 8-5 3 0 4 2 7 1M7 15l-1 3M10 13.5l1 4M15 11l1 4M18 11.5l2 2" stroke="#b9e44f" stroke-width="2" fill="none" stroke-linecap="round"/><circle cx="6" cy="14" r="1" fill="#b9e44f"/></svg><span data-i18n="geckos">Gekko's</span></button>
       </div>
-      <div class="menuFoot"><span class="coinsBig"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="#ffc93c"/><circle cx="12" cy="12" r="7" fill="none" stroke="#c98a12" stroke-width="1.6"/></svg><span id="menuCoins">0</span></span><span id="menuBest"></span><button class="ghost gfx" id="gfxBtn">Graphics</button><select class="ghost gfx lang" id="langSel" data-i18n-aria="language" aria-label="Taal"></select><span class="ver">v1.17</span></div>
+      <div class="menuFoot"><span class="coinsBig"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="#ffc93c"/><circle cx="12" cy="12" r="7" fill="none" stroke="#c98a12" stroke-width="1.6"/></svg><span id="menuCoins">0</span></span><span id="menuBest"></span><button class="ghost gfx" id="gfxBtn">Graphics</button><select class="ghost gfx lang" id="langSel" data-i18n-aria="language" aria-label="Taal"></select><span class="ver">v1.18</span></div>
       <div class="keys" data-i18n-html="keys"><span><kbd>WASD</kbd> lopen</span><span><kbd>Muis</kbd> kijken</span><span><kbd>Shift</kbd> sprinten</span><span><kbd>Spatie</kbd> springen</span><span><kbd>Klik</kbd>/<kbd>E</kbd> tong</span><span><kbd>F</kbd> drinken</span></div>
     </div>
   </div>
@@ -352,7 +353,36 @@ select.lang{appearance:none;-webkit-appearance:none;padding-right:12px;cursor:po
     <div class="card"><h2 id="travelTitle"></h2><div class="ldTrack"><div class="ldGecko" id="travelGecko"><svg viewBox="0 0 64 32" aria-hidden="true"><g class="lgA"><path d="M24 12 18 4M40 20 46 28"/></g><g class="lgB"><path d="M40 12 46 4M24 20 18 28"/></g><path class="tl" d="M18 16C12 16 8 20 2 19"/><ellipse cx="31" cy="16" rx="14" ry="5.2"/><ellipse cx="49" cy="16" rx="6.5" ry="5"/><circle cx="51" cy="12.6" r="1.6" class="ey"/><circle cx="51" cy="19.4" r="1.6" class="ey"/></svg></div><div class="bar"><i id="travelBar"></i></div></div><span class="ldPct" id="travelPct">0%</span></div>
   </div>
 
-  <div id="loading"><div class="ld">Gekko Survival<div class="ldTrack"><div class="ldGecko" id="ldGecko"><svg viewBox="0 0 64 32" aria-hidden="true"><g class="lgA"><path d="M24 12 18 4M40 20 46 28"/></g><g class="lgB"><path d="M40 12 46 4M24 20 18 28"/></g><path class="tl" d="M18 16C12 16 8 20 2 19"/><ellipse cx="31" cy="16" rx="14" ry="5.2"/><ellipse cx="49" cy="16" rx="6.5" ry="5"/><circle cx="51" cy="12.6" r="1.6" class="ey"/><circle cx="51" cy="19.4" r="1.6" class="ey"/></svg></div><div class="bar"><i id="ldBar"></i></div></div><span class="ldPct" id="ldPct">0%</span></div></div>
+  <div id="loading"><div class="ld">Gekko Survival<div class="ldTrack"><div class="ldRun" id="ldRun"><div class="ldRun" id="ldRun2"><div class="ldRun" id="ldRun3"><div class="ldGecko" id="ldGecko"><svg viewBox="0 0 64 32" aria-hidden="true"><g class="lgA"><path d="M24 12 18 4M40 20 46 28"/></g><g class="lgB"><path d="M40 12 46 4M24 20 18 28"/></g><path class="tl" d="M18 16C12 16 8 20 2 19"/><ellipse cx="31" cy="16" rx="14" ry="5.2"/><ellipse cx="49" cy="16" rx="6.5" ry="5"/><circle cx="51" cy="12.6" r="1.6" class="ey"/><circle cx="51" cy="19.4" r="1.6" class="ey"/></svg></div></div></div></div><div class="bar"><div class="ldA" id="ldBar"><div class="ldB" id="ldBar2"><div class="ldB" id="ldBar3"><i></i></div></div></div></div></div><span class="ldPct" id="ldPct" hidden>0%</span></div></div>
+  <script>
+  /* v1.18 loading meter: the bar and the gecko move as transform animations, which the browser keeps running on its compositor
+     thread while the game script is busy building the world. Each real milestone re-estimates the finish time and the animation
+     is re-aimed from where it visibly is, so it never jumps back and never stands still. The duration of the last load is remembered. */
+  (function(){var bar=document.getElementById('ldBar'),run=document.getElementById('ldRun');if(!bar||!bar.animate){if(bar)bar.style.transform='none';window.__ld={mark:function(){}};return;}
+    var t0=performance.now(),total=7000;try{total=+localStorage.getItem('gekko_load_ms')||total;}catch(e){}total=Math.max(2500,Math.min(total,30000));
+    // Two animations that are never restarted and whose movements add up (nested elements):
+    //  A: 0-90% in 9 s at speed 1; its speed is re-aimed at every real milestone, which the browser applies without a jump.
+    //  B: a tail, +8% in 10 s at a fixed speed, timed to begin when A arrives; it keeps the meter moving if loading takes longer
+    //     than estimated. B's last 2% is kept for the finish.
+    var T1=9000,TB=10000,done=false,pend=null,bar2=document.getElementById('ldBar2'),run2=document.getElementById('ldRun2');
+    var oA={duration:T1,fill:'both',easing:'linear'},oB={duration:TB+1000,fill:'both',easing:'linear'},kB=TB/(TB+1000);
+    var A=[bar.animate([{transform:'translateX(-100%)'},{transform:'translateX(-10%)'}],oA),run.animate([{transform:'translateX(0%)'},{transform:'translateX(90%)'}],oA)];
+    var B=[bar2.animate([{transform:'translateX(0%)'},{transform:'translateX(8%)',offset:kB},{transform:'translateX(10%)'}],oB),run2.animate([{transform:'translateX(0%)'},{transform:'translateX(8%)',offset:kB},{transform:'translateX(10%)'}],oB)];
+    function rate(L,r){for(var i=0;i<L.length;i++){try{L[i].updatePlaybackRate(r);}catch(e){L[i].playbackRate=r;}}}
+    function aim(r){var tau=+A[0].currentTime||0;rate(A,r);var tb=+B[0].currentTime||0;if(tb<=0){var d=-(T1-tau)/r;for(var i=0;i<B.length;i++)B[i].currentTime=d;}}
+    var known=false;try{known=!!localStorage.getItem('gekko_load_ms');}catch(e){}
+    aim(T1/total);
+    // The finish never touches A or B (changing a running animation after the script was busy can make it jump back): a third
+    // layer C adds the remaining distance in 0.2 s. Any overshoot is clipped by the bar.
+    function apply(){var m=pend;pend=null;if(!m||done)return;var now=performance.now()-t0,tau=+A[0].currentTime||0,tb=+B[0].currentTime||0;
+      if(m.f>=1){done=true;var pos=90*Math.min(1,tau/T1)+(tb<=0?0:tb<TB?8*tb/TB:8+2*Math.min(1,(tb-TB)/1000)),x=Math.max(0,100-pos),oc={duration:200,fill:'both',easing:'ease-out'};
+        document.getElementById('ldBar3').animate([{transform:'translateX(0%)'},{transform:'translateX('+x+'%)'}],oc);document.getElementById('ldRun3').animate([{transform:'translateX(0%)'},{transform:'translateX('+x+'%)'}],oc);
+        try{localStorage.setItem('gekko_load_ms',Math.round(m.el));}catch(e){}return;}
+      if(known||m.f>.5||tau>=T1)return;// re-aim only during the build steps, where the script pauses are short
+      total=Math.max(now+350,.5*total+.5*m.el/Math.max(m.f,.02));aim(Math.max(.25,Math.min(3,(T1-tau)/(total-now))));}
+    window.__ld={mark:function(f){if(done)return;var had=pend;pend={f:f,el:performance.now()-t0};if(!had)requestAnimationFrame(apply);}};
+  })();
+  </script>
 </div>
 
 <script type="module">
@@ -367,7 +397,9 @@ const V3 = THREE.Vector3;
 /* Loading bar in whole percents, with the little gecko walking at its front edge (boot and travel screens) */
 function setBar(id,p){const v=Math.round(Math.max(0,Math.min(1,p))*100),b=document.getElementById(id+'Bar');if(!b)return;
   if(+b.dataset.v>v)return;b.dataset.v=v;b.style.width=v+'%';document.getElementById(id+'Gecko').style.left=v+'%';document.getElementById(id+'Pct').textContent=v+'%';}
-const bootProg=p=>setBar('ld',p);
+// boot: milestone p (0..1 of the steps) -> share of the expected loading time, for the smooth meter in the loading screen
+const LD_F=[[0,0],[.05,.03],[.2,.09],[.3,.14],[.8,.44],[.85,.47],[.9,.5],[.96,.7],[.98,.85],[.99,.95],[1,1]];
+const bootProg=p=>{let f=1;for(let i=1;i<LD_F.length;i++)if(p<=LD_F[i][0]){const a=LD_F[i-1],b=LD_F[i];f=a[1]+(b[1]-a[1])*(p-a[0])/(b[0]-a[0]);break;}window.__ld?.mark(f);};
 const bootYield=()=>new Promise(r=>requestAnimationFrame(()=>setTimeout(r,0)));
 bootProg(.05);
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
@@ -2708,23 +2740,24 @@ document.addEventListener('fullscreenchange',queueResize);
    Boot
    ===================================================================== */
 applyLang(save.lang||detectLang());applyQuality(QUALITY);placeGeckoAtSpawn();camPos.copy(PL.pos).add(_v.set(2,1,2));setupCrickets(14);renderModes();
-bootProg(.9);await bootYield();
+bootProg(.9);await bootYield();const LT={js:performance.now()};
 // Compile every shader before the menu shows. compileAsync lets the GPU driver compile in parallel (KHR_parallel_shader_compile)
 // while the page keeps painting; the bar creeps on meanwhile. A timeout keeps a stuck driver from blocking the game.
 {const wp=new Poacher(SPAWN.x+2,SPAWN.z+2);const ws=waterSimple&&waterSimple.visible,wm=waterMirror&&waterMirror.visible;if(waterSimple)waterSimple.visible=true;if(waterMirror)waterMirror.visible=true;
  for(const f of farTiles)f.m.visible=true;
- let k=.9;const creep=setInterval(()=>bootProg(k+=(.95-k)*.06),120);// eases towards 95%, never sits still at 99%
  try{await Promise.race([renderer.compileAsync(scene,camera),new Promise(r=>setTimeout(r,6000))]);}catch(e){renderer.compile(scene,camera);}
- clearInterval(creep);renderer.shadowMap.needsUpdate=true;
+ renderer.shadowMap.needsUpdate=true;
  if(waterSimple)waterSimple.visible=ws;if(waterMirror)waterMirror.visible=wm;wp.dispose();}
 // v1.16: the first frames upload every texture and buffer and build the shadow map and post-processing shaders, which froze the
 // screen on 99-100%. Render them behind the loading screen and only fade it out once frames come quickly.
-bootProg(.96);await bootYield();
+LT.compile=performance.now();bootProg(.96);await bootYield();
 setScreen('menu');requestAnimationFrame(frame);document.fonts?.ready.then(fitScreens);
 {await waitFrames(1);bootProg(.98);await waitFrames(1);bootProg(.99);await settleFrames();}
 bootProg(1);
-setTimeout(()=>{$('loading').style.opacity=0;setTimeout(()=>$('loading').remove(),400);},60);
-pokiInit.then(()=>{if(!save.lang&&detectLang()!==lang)applyLang(detectLang());measure('lang',lang,'start');measure('gfx','tier',TIER);Poki.loaded();measure('screen','menu','visible');onboarding('loaded');});
+setTimeout(()=>{$('loading').style.opacity=0;setTimeout(()=>$('loading').remove(),400);},320);
+pokiInit.then(()=>{if(!save.lang&&detectLang()!==lang)applyLang(detectLang());measure('lang',lang,'start');measure('gfx','tier',TIER);Poki.loaded();
+  {const b=ms=>{const s=ms/1000;return s<2?'s0-2':s<4?'s2-4':s<6?'s4-6':s<9?'s6-9':s<13?'s9-13':s<20?'s13-20':'s20+';};const end=performance.now();
+   measure('loadtime','total',b(end));measure('loadtime','build',b(LT.js));measure('loadtime','compile',b(LT.compile-LT.js));measure('loadtime','frames',b(end-LT.compile));}measure('screen','menu','visible');onboarding('loaded');});
 window.__gekko={eatCricket,newQuest,get quest(){return quest;},get questIdx(){return questIdx;},set questIdx(v){questIdx=v;},startEvent,endEvent,get EVT(){return EVT;},set evLast(v){evLast=v;},gameOver,TIER,get TI(){return TI;},step:(dt,n)=>{for(let i=0;i<n;i++){updateGame(dt);updateCamp(dt);updateCrickets(dt);}},get gnaw(){return gnaw;},get camoQ(){return camoQ;},set camoQ(v){camoQ=v;},updateCamera,smoothVisual,setCamo,mmIcon,drawMinimap,get NESTp(){return NEST;},setupCrickets,normalFromCanvas,cages,get CAMP(){return CAMP;},get NEST(){return NEST;},save,finale,renderShop,setShopTab:v=>{shopTab=v;},travel,buildWorld,gates,AREAS,get areaIdx(){return areaIdx;},get SPAWN(){return SPAWN;},stageIdx,PL,renderer,scene,updatePlayer,treeRadius,trunkR,rockTop,footSurf,climbSurf,updateClimb,get rockGrid(){return rockGrid;},ripples,get LAKES(){return LAKES;},groundAt,poachers,crickets,trees,boxes,rocks,startGame,setMode:m=>{mode=m;},get state(){return state;},camera,gecko,keys,get camYaw(){return camYaw;},set camYaw(v){camYaw=v;},set camPitch(v){camPitch=v;},set camDist(v){camDist=v;}};
 </script>
 </body>
