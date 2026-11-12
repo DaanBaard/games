@@ -285,7 +285,7 @@ select.lang{appearance:none;-webkit-appearance:none;padding-right:12px;cursor:po
         <button class="play" id="playBtn" data-i18n="play">Spelen</button>
         <button class="ghost" id="shopBtn"><svg viewBox="0 0 24 24"><path d="M4 15c3-1 4-5 8-5 3 0 4 2 7 1M7 15l-1 3M10 13.5l1 4M15 11l1 4M18 11.5l2 2" stroke="#b9e44f" stroke-width="2" fill="none" stroke-linecap="round"/><circle cx="6" cy="14" r="1" fill="#b9e44f"/></svg><span data-i18n="geckos">Gekko's</span></button>
       </div>
-      <div class="menuFoot"><span class="coinsBig"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="#ffc93c"/><circle cx="12" cy="12" r="7" fill="none" stroke="#c98a12" stroke-width="1.6"/></svg><span id="menuCoins">0</span></span><span id="menuBest"></span><button class="ghost gfx" id="gfxBtn">Graphics</button><select class="ghost gfx lang" id="langSel" data-i18n-aria="language" aria-label="Taal"></select><span class="ver">v1.18</span></div>
+      <div class="menuFoot"><span class="coinsBig"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="#ffc93c"/><circle cx="12" cy="12" r="7" fill="none" stroke="#c98a12" stroke-width="1.6"/></svg><span id="menuCoins">0</span></span><span id="menuBest"></span><button class="ghost gfx" id="gfxBtn">Graphics</button><select class="ghost gfx lang" id="langSel" data-i18n-aria="language" aria-label="Taal"></select><span class="ver">v1.19</span></div>
       <div class="keys" data-i18n-html="keys"><span><kbd>WASD</kbd> lopen</span><span><kbd>Muis</kbd> kijken</span><span><kbd>Shift</kbd> sprinten</span><span><kbd>Spatie</kbd> springen</span><span><kbd>Klik</kbd>/<kbd>E</kbd> tong</span><span><kbd>F</kbd> drinken</span></div>
     </div>
   </div>
@@ -594,9 +594,11 @@ function tiled(w,h,x,y,r,fn){for(const dx of [-w,0,w])for(const dy of [-h,0,h]){
 const barkTex=canvasTex(512,1024,(g,w,h)=>{
   g.fillStyle='#5d4c3b';g.fillRect(0,0,w,h);
   for(let i=0;i<300;i++){const x=R(0,w),wd=R(3,16);const v=R(-30,30);g.strokeStyle=`rgba(${85+v},${70+v},${55+v},.7)`;g.lineWidth=wd;g.beginPath();
-    let px=x;g.moveTo(px,0);for(let y=0;y<=h;y+=16){px+=R(-3,3);g.lineTo(px,y);}g.stroke();
-    if(px<wd*2){g.save();g.translate(w,0);g.stroke();g.restore();}}
-  for(let i=0;i<220;i++){const x=R(0,w),y=R(0,h);g.strokeStyle='rgba(30,22,15,.75)';g.lineWidth=R(2,5);g.beginPath();g.moveTo(x,y);g.lineTo(x+R(-6,6),y+R(30,140));g.stroke();}
+    // ridges wander with whole sine periods over the height, so the texture tiles up the trunk without a horizontal seam
+    const a1=R(4,12),a2=R(1,4),k1=RI(1,3),k2=RI(3,7),f1=R(0,6.28),f2=R(0,6.28);
+    for(const o of [0,-w,w]){g.beginPath();for(let y=0;y<=h;y+=16){const px=o+x+a1*Math.sin(y/h*6.2832*k1+f1)+a2*Math.sin(y/h*6.2832*k2+f2);if(y)g.lineTo(px,y);else g.moveTo(px,y);}g.stroke();}}
+  for(let i=0;i<220;i++){const x=R(0,w),y=R(0,h),dx=R(-6,6),len=R(30,140);g.strokeStyle='rgba(30,22,15,.75)';g.lineWidth=R(2,5);
+    for(const o of [0,-h])for(const p of [0,-w,w]){g.beginPath();g.moveTo(x+p,y+o);g.lineTo(x+p+dx,y+o+len);g.stroke();}}
   for(let i=0;i<30;i++){const x=R(0,w),y=R(0,h),r=R(3,10);g.fillStyle=pick(['rgba(140,160,110,.28)','rgba(100,130,60,.3)','rgba(180,185,160,.2)']);
     tiled(w,h,x,y,r,(X,Y)=>{g.beginPath();g.ellipse(X,Y,r,r*R(.5,1),0,0,6.28);g.fill();});}
 });
@@ -1560,6 +1562,8 @@ function skinMaterial(sk){if(skinMats[sk.id])return skinMats[sk.id];
 const NS=64,NR=22;
 const PROF=[[0,.003,.002],[.015,.013,.009],[.04,.023,.015],[.08,.032,.019],[.12,.034,.021],[.165,.025,.019],[.2,.029,.023],[.3,.044,.03],[.4,.043,.03],[.46,.034,.026],[.5,.029,.023],[.6,.023,.018],[.75,.014,.011],[.9,.0065,.0055],[1,.001,.001]];
 function profile(s){for(let i=1;i<PROF.length;i++)if(s<=PROF[i][0]){const a=PROF[i-1],b=PROF[i];let t=(s-a[0])/(b[0]-a[0]);t=t*t*(3-2*t);return[lerp(a[1],b[1],t),lerp(a[2],b[2],t)];}return[.001,.001];}
+// CLIMB_OFF: height of the gecko's origin above the bark or wall while climbing; the belly then hugs the surface (~6 mm gap)
+const CLIMB_OFF=-.018,SOLE_A=.0034,SOLE_T=.0023,FOOT_REACH=1,CLIMB_REACH=1.45;// paw depth below the ankle / toe-pad centre, max downward reach of a leg (rad)
 const UPPER_GEO=new THREE.CapsuleGeometry(.0085,.034,3,8),LOWER_GEO=new THREE.CapsuleGeometry(.0075,.04,3,8),TOE_GEO=new THREE.CapsuleGeometry(.0028,.016,2,5),PAD_GEO=new THREE.SphereGeometry(.0052,8,6);
 const EYE_GEO=new THREE.SphereGeometry(.0105,20,14),IRIS_GEO=new THREE.CircleGeometry(.0088,28),CORNEA_GEO=new THREE.SphereGeometry(.0109,20,14,0,Math.PI*2,0,Math.PI*.42),LID_GEO=new THREE.TorusGeometry(.0106,.0021,8,24);
 const irisTex=canvasTex(256,256,(g)=>{const gr=g.createRadialGradient(128,128,10,128,128,128);gr.addColorStop(0,'#fff6d8');gr.addColorStop(.55,'#e6d6a8');gr.addColorStop(.9,'#9a8452');gr.addColorStop(1,'#2a2010');g.fillStyle=gr;g.fillRect(0,0,256,256);
@@ -1649,14 +1653,24 @@ class Gecko{
       let ry=-L.side*(swing+base),rz=L.side*(.12*w-.1*(1-w)+lift*.6),kz=-L.side*(.12*w-.12*(1-w)+lift*.4),fy=L.side*(swing+base)*.6;
       if(sk>.001){const pad=L.front?0:Math.sin(c)*.35*(.3+.7*w);// hind feet give a lazy paddle, front legs lie against the chest
         ry=lerp(ry,-L.side*((L.front?-1.05:-1.2)+pad),sk);rz=lerp(rz,L.side*.32,sk);kz=lerp(kz,-L.side*.9,sk);fy=lerp(fy,0,sk);}
-      L.up.rotation.set(0,ry,rz);L.knee.rotation.z=kz;
+      L.lift=lift*(1-sk);L.up.rotation.set(0,ry,rz);L.knee.rotation.z=kz;
       L.foot.rotation.set(0,fy,-L.up.rotation.z-L.knee.rotation.z);}
-    // Feet follow the surface (ground, rock, bark or wall): a foot or its middle toe that would end up inside lifts its leg until it rests on top.
-    // o.surf(p) gives how deep a world point lies inside the surface (negative = outside).
+    // Feet follow the surface (ground, rock, bark or wall) both ways: a paw that would end up inside lifts its leg until it rests on top,
+    // and a planted paw that hangs above the surface (slopes, rock edges, branches, bark bulges) reaches down until it touches.
+    // Reaching down lowers the upper leg while the knee opens by the same angle, so the lower leg keeps its direction and the paw
+    // moves steadily down and in under the hip (up to the length of the upper leg), wrapping round branches and trunks.
+    // o.surf(p) gives how deep a world point lies inside the surface (negative = outside). The paw's lowest point is the end of the
+    // lower-leg capsule just below the ankle (SOLE_A) or the middle toe pad (SOLE_T); both should just touch.
     const surf=o.surf||(o.ground?(p=>o.ground(p.x,p.z,p.y)-p.y):null);
-    if(surf&&this.swimK<.5){this.root.updateMatrixWorld(true);const sc=this.root.scale.x,mg=.007*sc;
-      for(const L of this.legs)for(let it=0;it<6;it++){L.foot.getWorldPosition(_fp);let d=surf(_fp)+mg;if(L.toe){L.toe.getWorldPosition(_fq);d=Math.max(d,surf(_fq)+mg*.5);}if(d<=.0005)break;
-        L.up.rotation.z+=L.side*Math.min(.8,d/(.048*sc));L.foot.rotation.z=-L.up.rotation.z-L.knee.rotation.z;L.hip.updateMatrixWorld(true);}}
+    if(surf&&this.swimK<.5){this.root.updateMatrixWorld(true);const sc=this.root.scale.x,ra=SOLE_A*sc,rt=SOLE_T*sc,reach=.042*sc,maxR=o.climbing||o.grip?CLIMB_REACH:FOOT_REACH;
+      const depth=L=>{L.foot.getWorldPosition(_fp);let d=surf(_fp)+ra;if(L.toe){L.toe.getWorldPosition(_fq);d=Math.max(d,surf(_fq)+rt);}return d;};
+      for(const L of this.legs){L.ikLim=0;const z0=L.up.rotation.z,want=-(L.lift||0)*.02*sc;// a swinging paw keeps its lift above the surface
+        for(let it=0;it<8;it++){const d=depth(L);
+          if(d>.0004*sc)L.up.rotation.z+=L.side*Math.min(.8,d/(.048*sc));// inside: lift
+          else if(d<want-.0012*sc){let a=Math.min(.35,(want-d)/reach);const low=-(L.up.rotation.z-z0)*L.side;// hanging: reach down
+            if(low+a>maxR){a=maxR-low;L.ikLim=1;}if(a<=.002)break;L.up.rotation.z-=L.side*a;L.knee.rotation.z+=L.side*a;}
+          else break;
+          L.foot.rotation.z=-L.up.rotation.z-L.knee.rotation.z;L.hip.updateMatrixWorld(true);}}}
   }
   mouthWorld(out){return this.root.localToWorld(out.copy(this.P[0]).add(_p.set(0,-.004,.004)));}
 }
@@ -1725,7 +1739,7 @@ function makeInsect(sp){if(sp.strider)return makeStrider(sp);const g=new THREE.G
 const glowTex=canvasTex(64,64,(g)=>{const gr=g.createRadialGradient(32,32,0,32,32,32);gr.addColorStop(0,'rgba(255,255,255,1)');gr.addColorStop(.3,'rgba(255,240,180,.5)');gr.addColorStop(1,'rgba(255,240,180,0)');g.fillStyle=gr;g.fillRect(0,0,64,64);},{repeat:false});
 function insideBox(x,z,pad=0){for(const b of boxes)if(x>b.minX-pad&&x<b.maxX+pad&&z>b.minZ-pad&&z<b.maxZ+pad)return b;return null;}
 function landSpot(cx,cz,rMin,rMax){for(let t=0;t<40;t++){const a=R(0,6.28),d=R(rMin,rMax);const x=clamp(cx+Math.cos(a)*d,-HALF+18,HALF-18),z=clamp(cz+Math.sin(a)*d,-HALF+18,HALF-18);
-  const h=terrainH(x,z);if(h>.15&&h<9&&!insideBox(x,z,.5))return new V3(x,h,z);}return null;}
+  const h=terrainH(x,z);if(h>.15&&h<9&&!insideBox(x,z,.5))return new V3(x,rockGround(x,z),z);}return null;}
 function templeFree(x,z){if(!TI||!inTempleXZ(x,z)||Math.abs(x-TI.x)>TI.i-.35||Math.abs(z-TI.z)>TI.i-.35)return false;for(const b of boxes)if(b.top>TI.F+.2&&b.bottom<TI.F+.5&&x>b.minX-.15&&x<b.maxX+.15&&z>b.minZ-.15&&z<b.maxZ+.15)return false;return true;}
 function spawnTempleCricket(c){for(let t=0;t<30;t++){const x=TI.x+R(-5.5,5.5),z=TI.z+R(-5.5,5.5);if(!templeFree(x,z))continue;c.pos.set(x,TI.F,z);break;}c.vel.set(0,0,0);c.yaw=R(0,6.28);c.alive=true;c.g.visible=true;c.hopT=R(1,4);c.g.position.copy(c.pos);}
 function spawnCricket(c,near){const p=landSpot(near.x,near.z,4,28);if(!p)return;c.pos.copy(p);c.vel.set(0,0,0);c.yaw=R(0,6.28);c.alive=true;c.g.visible=true;c.hopT=R(1,4);}
@@ -1930,10 +1944,13 @@ tb('tDrink',()=>touch.drink=true,()=>touch.drink=false);tb('tCamo',()=>camoQ=tru
 /* =====================================================================
    Ground, climbing, collision
    ===================================================================== */
-function groundAt(x,z,y){let h=terrainH(x,z);
-  {const l=rockGrid.get(Math.floor(x/RGC)+','+Math.floor(z/RGC));if(l)for(const r of l){const ry=rockTop(r,x,z);if(ry>h)h=ry;}}
+// Terrain, rocks and box tops (no trees): the solid ground under (x,z) for a point at height y.
+// Terrain plus the tops of rocks, stones and moss cushions.
+function rockGround(x,z){let h=terrainH(x,z);const l=rockGrid.get(Math.floor(x/RGC)+','+Math.floor(z/RGC));if(l)for(const r of l){const ry=rockTop(r,x,z);if(ry>h)h=ry;}return h;}
+function groundBase(x,z,y){let h=rockGround(x,z);
   for(const b of boxes)if(x>b.minX&&x<b.maxX&&z>b.minZ&&z<b.maxZ&&b.top<=y+.4&&b.top>h)h=b.top;
-  if(h<WATER_Y-.07)h=WATER_Y-.07;
+  if(h<WATER_Y-.07)h=WATER_Y-.07;return h;}
+function groundAt(x,z,y){let h=groundBase(x,z,y);
   perch=null;perchBr=null;
   for(const t of trees){const dx=x-t.x,dz=z-t.z;if(Math.abs(dx)>7||Math.abs(dz)>7||y+.4<t.base+t.H*.6)continue;
     const ty=t.base+t.top;if(ty<=y+.4&&ty>h&&dx*dx+dz*dz<(Math.max(t.rT*1.13,.18)+.04)**2){h=ty;perch=t;perchBr=null;}
@@ -1943,6 +1960,9 @@ function groundAt(x,z,y){let h=terrainH(x,z);
 function branchTop(br,x,z){const px=x-br.ax,pz=z-br.az,s=(px*br.dx+pz*br.dz)/br.L2;if(s<0||s>1)return -Infinity;
   const perp=Math.abs(px*br.dz-pz*br.dx)/br.hl,r=lerp(br.r0,br.r1,s);if(perp>r+.14)return -Infinity;
   return br.ay+s*br.dy+r*br.sec*Math.sqrt(Math.max(.16,1-(perp/r)**2));}
+// How deep a world point lies inside the bark of a branch (negative = outside). The mesh is a 7-sided tube, so use its inner radius.
+function branchDepth(br,p){const px=p.x-br.ax,py=p.y-br.ay,pz=p.z-br.az,s=clamp((px*br.dx+py*br.dy+pz*br.dz)/(br.L2+br.dy*br.dy),0,1);
+  return lerp(br.r0,br.r1,s)*.93-Math.hypot(px-br.dx*s,py-br.dy*s,pz-br.dz*s);}
 // Ease the gecko toward the middle of the branch it walks on.
 function branchPull(br,p,k){const px=p.x-br.ax,pz=p.z-br.az,off=(px*br.dz-pz*br.dx)/br.L2;p.x-=br.dz*off*k;p.z+=br.dx*off*k;}
 // Collider radius that follows the visible trunk, including the root flare and bark bulges (see trunkGeo).
@@ -2069,6 +2089,7 @@ let gnaw=null;// {p} while gnawing a rope, {locked:n} next to a main-camp cage t
 const rescuedOutside=()=>save.rescued.filter(id=>!id.startsWith('rainforest')).length;
 const cageLocked=c=>c.area===3&&rescuedOutside()<FAMILY-3;
 const closedCages=()=>cages.filter(c=>!c.open).length;
+const npcSurf=p=>terrainH(p.x,p.z)-p.y;// family geckos stand on the bare terrain
 function npcGecko(i,scale){const sk=SKINS[i%SKINS.length];const g=new Gecko(skinMaterial(sk),sk.eye,true);g.setMaterial(skinMaterial(sk),sk.eye,false);g.root.scale.setScalar(scale);g.t=R(0,9);world.add(g.root);return g;}
 function updateCamp(dt){gnaw=null;const play=state==='play'&&!PL.dead;
   for(const c of cages){
@@ -2076,9 +2097,9 @@ function updateCamp(dt){gnaw=null;const play=state==='play'&&!PL.dead;
     if(c.open&&c.doorT<1){c.doorT=Math.min(1,c.doorT+dt*2.5);c.door.rotation.y=-1.9*smoothstep(0,1,c.doorT);}
     if(c.g){const d=Math.hypot(c.x-camera.position.x,c.z-camera.position.z);c.g.root.visible=d<70;
       if(c.run>0){c.run-=dt;const a=c.grp.rotation.y;const v=c.run>1.2?1.2:3.4;c.g.root.rotation.y=a;c.g.root.position.x+=Math.sin(a)*v*dt;c.g.root.position.z+=Math.cos(a)*v*dt;
-        c.g.root.position.y=terrainH(c.g.root.position.x,c.g.root.position.z)+.02;c.g.update(dt,v);
+        c.g.root.position.y=terrainH(c.g.root.position.x,c.g.root.position.z);c.g.update(dt,v,{surf:npcSurf});
         if(c.run<=0){world.remove(c.g.root);c.g=null;}}
-      else if(d<28)c.g.update(dt,0,{look:Math.sin(c.g.t*.8+c.k)*.7});}
+      else if(d<28)c.g.update(dt,0,{look:Math.sin(c.g.t*.8+c.k)*.7,surf:p=>c.base+.06-p.y});}
     if(!play||c.open)continue;
     const d=Math.hypot(PL.pos.x-c.x,PL.pos.z-c.z);
     if(d<1.65&&!PL.climb&&PL.pos.y-c.base<1.3&&PL.pos.y-c.base>-.8){
@@ -2087,9 +2108,9 @@ function updateCamp(dt){gnaw=null;const play=state==='play'&&!PL.dead;
     else c.prog=Math.max(0,c.prog-dt*.2);}
   if(NEST){const n=Math.min(FAMILY,save.rescued.length);
     if(NEST.geckos.length<n){const i=NEST.geckos.length,a=i/FAMILY*6.283+.3,r=1.55+(i%2)*.5,x=NEST.x+Math.cos(a)*r,z=NEST.z+Math.sin(a)*r;
-      const g=npcGecko(i+1,.8+(i%3)*.08);g.root.position.set(x,terrainH(x,z)+.02,z);g.root.rotation.y=Math.atan2(NEST.x-x,NEST.z-z)+R(-.6,.6);NEST.geckos.push(g);}
+      const g=npcGecko(i+1,.8+(i%3)*.08);g.root.position.set(x,terrainH(x,z),z);g.root.rotation.y=Math.atan2(NEST.x-x,NEST.z-z)+R(-.6,.6);NEST.geckos.push(g);}
     const d=Math.hypot(NEST.x-camera.position.x,NEST.z-camera.position.z);
-    for(const g of NEST.geckos){g.root.visible=d<70;if(d<30)g.update(dt,0,{look:Math.sin(g.t*.6)*.8});}}}
+    for(const g of NEST.geckos){g.root.visible=d<70;if(d<30)g.update(dt,0,{look:Math.sin(g.t*.6)*.8,surf:npcSurf});}}}
 function rescue(c){c.open=true;c.run=1.8;c.knot.visible=false;if(!save.rescued.includes(c.id))save.rescued.push(c.id);
   const n=save.rescued.length;const v=addCoins(50);persist();AU.sfx.quest();
   floater(PL.pos.clone().add(_v.set(0,.5,0)),t('rescuedFloat',{v}),'green');
@@ -2250,7 +2271,10 @@ function updatePlayer(dt){
   PL.pos.copy(np);PL.speed=Math.hypot(PL.vel.x,PL.vel.z);
   gecko.root.position.copy(PL.pos);
   const tn=terrainNormal(PL.pos.x,PL.pos.z,_n);tn.lerp(Y,.2).normalize();
-  orient(PL.onGround&&!PL.perch&&!PL.swim?tn:Y,_p.set(Math.sin(PL.yaw),0,Math.cos(PL.yaw)),dt);
+  // on a sloping branch the body tilts with the bark, so the hind paws do not hang in the air above it
+  const pb=PL.perch&&perchBr&&PL.perch.branches?.includes(perchBr)?perchBr:null;
+  if(pb){const k=pb.dy/pb.L2;tn.set(-pb.dx*k,1,-pb.dz*k).normalize();}
+  orient(PL.onGround&&(!PL.perch||pb)&&!PL.swim?tn:Y,_p.set(Math.sin(PL.yaw),0,Math.cos(PL.yaw)),dt);
   PL.up.copy(Y);
 }
 /* Camouflage (leaf-tailed gecko only): on a trunk or a branch, press C / Camo to turn into bark. Poachers then only notice you
@@ -2280,13 +2304,13 @@ function updateClimb(dt,ix,iy,moving,sprint){
       if(c.h>=t.climbMax){stepOff(t.x+n.x*.04,t.base+t.top,t.z+n.z*.04,Math.atan2(-n.x,-n.z));return;}}
     const gy=terrainH(t.x+n.x*(rr+.1),t.z+n.z*(rr+.1));
     if(c.h+t.base<=gy+.02&&iy<0){PL.climb=null;PL.regrab=.5;PL.pos.set(t.x+n.x*(rr+.18),gy,t.z+n.z*(rr+.18));PL.yaw=Math.atan2(n.x,n.z);return;}
-    {const px=t.x+n.x*(br+.012*gsc),pz=t.z+n.z*(br+.012*gsc),gy=terrainH(px,pz)+.05*gsc;if(t.base+c.h<gy)c.h=gy-t.base;// never under the slope on the uphill side
+    {const px=t.x+n.x*(br+CLIMB_OFF*gsc),pz=t.z+n.z*(br+CLIMB_OFF*gsc),gy=terrainH(px,pz)+.05*gsc;if(t.base+c.h<gy)c.h=gy-t.base;// never under the slope on the uphill side
      PL.pos.set(px,t.base+c.h,pz);c.r=br;}
     fwd.copy(Y).addScaledVector(tan,lat*.9).addScaledVector(Y,iy<0?-.2:0);
   }else{const b=c.b;n.set(c.nx,0,c.nz);const tan=_w.set(-c.nz,0,c.nx);
     const lat=ix*Math.sign(camR.dot(tan)||1);c.y+=iy*sp*dt;c.lat+=lat*sp*dt*(c.nx?tan.z:tan.x);
     if(c.nx)c.lat=clamp(c.lat,b.minZ+.05,b.maxZ-.05);else c.lat=clamp(c.lat,b.minX+.05,b.maxX-.05);
-    const px=c.nx?c.fx+c.nx*.025:c.lat,pz=c.nx?c.lat:c.fz+c.nz*.025;
+    const wo=CLIMB_OFF*geckoScale(),px=c.nx?c.fx+c.nx*wo:c.lat,pz=c.nx?c.lat:c.fz+c.nz*wo;
     if(c.y>=b.top-.02){PL.climb=null;PL.regrab=.3;PL.pos.set(px-c.nx*.3,b.top,pz-c.nz*.3);PL.yaw=Math.atan2(-c.nx,-c.nz);PL.onGround=true;PL.vel.set(0,0,0);gecko.root.position.copy(PL.pos);return;}
     const gy=groundAt(px+c.nx*.15,pz+c.nz*.15,c.y);
     if(c.y<=gy+.02&&iy<0){PL.climb=null;PL.regrab=.5;PL.pos.set(px+c.nx*.2,gy,pz+c.nz*.2);PL.yaw=Math.atan2(c.nx,c.nz);return;}
@@ -2339,7 +2363,7 @@ function updateWaterBug(c,d,nearL,dt){
 function updateCrickets(dt){const nearL=lakeNear(PL.pos);for(const c of crickets){if(!c.alive||(tongue.target===c&&tongue.t/tongue.dur>=.5))continue;
   const d=c.pos.distanceTo(PL.pos);if(c.water){updateWaterBug(c,d,nearL,dt);continue;}
   if(d>48&&state==='play'&&!c.temple&&!c.ev){spawnCricket(c,PL.pos);continue;}
-  c.hopT-=dt;const gH=(x,z)=>c.temple?TI.F:terrainH(x,z);const g=gH(c.pos.x,c.pos.z);
+  c.hopT-=dt;const gH=(x,z)=>c.temple?TI.F:rockGround(x,z);/* insects hop onto stones instead of into them */const g=gH(c.pos.x,c.pos.z);
   if(c.pos.y<=g+.001&&c.hopT<=0){const flee=d<(PL.speed>5?3.2:1.6)&&state==='play'&&mode!=='easy';let a=flee?Math.atan2(c.pos.x-PL.pos.x,c.pos.z-PL.pos.z)+R(-.6,.6):R(0,6.28);
     const s=flee?R(1.6,2.6):R(.6,1.4);c.vel.set(Math.sin(a)*s,c.temple?R(1.4,2):R(2,3.2),Math.cos(a)*s);c.yaw=a;c.hopT=flee?R(.4,.9):R(2,6);}
   if(c.pos.y>g||c.vel.y>0){c.vel.y-=14*dt;c.pos.addScaledVector(c.vel,dt);const ng=gH(c.pos.x,c.pos.z);
@@ -2395,7 +2419,7 @@ function updatePoachers(dt){
       const moved=Math.hypot(p.pos.x-p.lastPos.x,p.pos.z-p.lastPos.z);p.speed=moved/Math.max(dt,1e-4);
       if(spd>.5&&moved<spd*dt*.3){p.stuck+=dt;if(p.stuck>.4){p.avoid=1.1;p.avoidDir=rnd()<.5?-1:1;p.stuck=0;}}else p.stuck=0;
       p.lastPos.copy(p.pos);}else p.speed=0;
-    p.pos.y=Math.max(terrainH(p.pos.x,p.pos.z),WATER_Y-.4);for(const b of boxes)if(b.step&&p.pos.x>b.minX&&p.pos.x<b.maxX&&p.pos.z>b.minZ&&p.pos.z<b.maxZ&&b.top>p.pos.y)p.pos.y=b.top;
+    p.pos.y=Math.max(rockGround(p.pos.x,p.pos.z),WATER_Y-.4);for(const b of boxes)if(b.step&&p.pos.x>b.minX&&p.pos.x<b.maxX&&p.pos.z>b.minZ&&p.pos.z<b.maxZ&&b.top>p.pos.y)p.pos.y=b.top;
     animatePoacher(p,dt,sees);
   }
   if(wasChased&&!anyChase)lostTimer=0;wasChased=anyChase;
@@ -2426,7 +2450,8 @@ const visOff=new V3(),lastPL=new V3(),_jv=new V3();
 function smoothVisual(dt){_jv.subVectors(PL.pos,lastPL);const L=_jv.length();lastPL.copy(PL.pos);
   const allowed=(PL.vel.length()+PL.speed+.3)*dt*1.3;
   if(L>1.5)visOff.set(0,0,0);else if(L>allowed)visOff.addScaledVector(_jv,-(1-allowed/L));
-  visOff.multiplyScalar(Math.exp(-15*dt));if(visOff.length()>.6)visOff.setLength(.6);gecko.root.position.copy(PL.pos).add(visOff);}
+  visOff.multiplyScalar(Math.exp(-15*dt));if(PL.onGround&&!PL.climb)visOff.y*=Math.exp(-30*dt);// on the ground a height step settles fast, so the paws do not hover above a lower step
+  if(visOff.length()>.6)visOff.setLength(.6);gecko.root.position.copy(PL.pos).add(visOff);}
 function updateCamera(dt){
   const sc=geckoScale();camTarget.copy(PL.pos).add(visOff).addScaledVector(PL.up,.18*sc);if(PL.climb)camTarget.addScaledVector(PL.up,.25);
   if(isTouch&&state==='play'&&touch.camId===null&&(Math.abs(touch.x)+Math.abs(touch.y))>.2&&!PL.climb){let d=(PL.yaw+Math.PI)-camYaw;d=Math.atan2(Math.sin(d),Math.cos(d));camYaw+=d*dt*1.2;}
@@ -2563,8 +2588,13 @@ function updateGame(dt){
   if(quest&&quest.done(quest.data)){measure(questIdx<TUT?'quest':'goal',quest.kind,'complete');if(questIdx===0)onboarding('first-quest');const v=addCoins(quest.coins);AU.sfx.quest();floater(PL.pos.clone().add(_v.set(0,.45,0)),t('questDone',{v}),'green');questIdx++;newQuest();}
   updateTips(dt);updateHUD(dt);
 }
-const footGround=(x,z,y)=>groundAt(x,z,y+.12);
-const footSurf=p=>groundAt(p.x,p.z,p.y+.12)-p.y;
+// Feet on the ground: how deep a point lies inside the ground. On a branch the paws grip the round bark itself instead of the
+// widened walking surface of branchTop. Leaves the walking state (perch, perchBr) untouched.
+const footSurf=p=>{const pp=perch,pb=perchBr,t=PL.perch;let d;
+  if(t&&pb&&t.branches?.includes(pb)){d=groundBase(p.x,p.z,p.y+.12)-p.y;for(const br of t.branches)d=Math.max(d,branchDepth(br,p));
+    const dx=p.x-t.x,dz=p.z-t.z;if(p.y<t.base+t.top&&Math.abs(dx)<2&&Math.abs(dz)<2)d=Math.max(d,trunkR(t,p.y-t.base,Math.atan2(dz,dx))-Math.hypot(dx,dz));}
+  else d=groundAt(p.x,p.z,p.y+.12)-p.y;
+  perch=pp;perchBr=pb;return d;};
 // While climbing: how deep a point lies inside the trunk or wall being climbed (or the ground under it)
 const climbSurf=p=>{const c=PL.climb;let d=terrainH(p.x,p.z)-p.y;if(!c)return d;
   if(c.type==='tree'){const t=c.t,dx=p.x-t.x,dz=p.z-t.z;return Math.max(d,trunkR(t,p.y-t.base,Math.atan2(dz,dx))-Math.hypot(dx,dz));}
@@ -2632,8 +2662,8 @@ function frame(ts){requestAnimationFrame(frame);frameN++;
   dtS+=(raw-dtS)*(Math.abs(raw-dtS)>.03?1:.25);const dt=Math.min(dtS,.05);time+=dt;
   if(state==='play'&&!PL.dead)updateGame(dt);
   else if(state==='play'&&PL.dead){updatePoachers(dt);}
-  if(state==='menu'||state==='shop'){gecko.root.position.copy(PL.pos);menuCamera(dt);gecko.update(dt,0,{look:Math.sin(time*.7)*.6,ground:footGround});}
-  else{if(state==='play')smoothVisual(dt);gecko.update(dt,PL.speed,{drinking:PL.drinking,climbing:!!PL.climb,swim:PL.swim&&!PL.climb,surf:PL.climb?climbSurf:footSurf});if(state==='play'||state==='over')updateCamera(dt);}
+  if(state==='menu'||state==='shop'){gecko.root.position.copy(PL.pos);menuCamera(dt);gecko.update(dt,0,{look:Math.sin(time*.7)*.6,surf:footSurf});}
+  else{if(state==='play')smoothVisual(dt);gecko.update(dt,PL.speed,{drinking:PL.drinking,climbing:!!PL.climb,swim:PL.swim&&!PL.climb,surf:PL.climb?climbSurf:footSurf,grip:!!(PL.perch&&perchBr)});if(state==='play'||state==='over')updateCamera(dt);}
   gecko.root.scale.setScalar(geckoScale());gecko.root.visible=!(PL.dead&&state==='over');
   if(PL.inv>0&&state==='play'&&!PL.dead)gecko.root.visible=Math.floor(time*14)%2===0;
   if(state!=='pause'){updateCamp(state==='win'?0:dt);updateTemple(dt);updateCrickets(dt);updateRipples(dt);updateButterflies(dt);updateDust(dt);AU.update(dt);}
