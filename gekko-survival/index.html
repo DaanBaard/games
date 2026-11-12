@@ -57,6 +57,9 @@ button:focus-visible{outline:3px solid var(--leaf);outline-offset:2px}
 .growth b{color:var(--leaf);font-family:var(--display);font-weight:400;letter-spacing:.02em;font-size:14px;text-transform:none}
 .growth .track{flex:1;height:6px}
 .quest{margin-top:2px;padding-top:7px;border-top:1px solid var(--line);font-size:12.5px;font-weight:700;line-height:1.3}
+.evBox[hidden]{display:none}.evBox small{color:var(--coin)!important}.card[hidden]{display:none}
+.askBar{height:8px;border-radius:5px;background:rgba(255,255,255,.12);overflow:hidden}.askBar i{display:block;height:100%;width:100%;background:var(--coin)}
+#askCard .revive{font-size:26px;padding:16px 14px;margin:0}#askCard .ghost{justify-content:center}
 .quest small{display:block;font-size:10.5px;font-weight:800;color:var(--leaf);letter-spacing:.08em;text-transform:uppercase}
 .topright{position:absolute;right:calc(14px + env(safe-area-inset-right,0px));top:calc(12px + env(safe-area-inset-top,0px));display:flex;flex-direction:column;align-items:flex-end;gap:8px}
 .pill{display:flex;align-items:center;gap:7px;padding:6px 12px;border-radius:999px;background:var(--glass);border:1px solid var(--line);font-family:var(--display);font-size:20px;font-variant-numeric:tabular-nums;letter-spacing:.02em}
@@ -70,7 +73,7 @@ button:focus-visible{outline:3px solid var(--leaf);outline-offset:2px}
 #alert.hidden-status{background:rgba(20,60,30,.82);border-color:rgba(185,228,79,.45);animation:none}
 @keyframes shake{from{transform:translateX(-50%) scale(1)}to{transform:translateX(-50%) scale(1.05)}}
 #waterArrow{position:absolute;left:50%;bottom:calc(24% + 52px + env(safe-area-inset-bottom,0px));width:44px;height:44px;transform:translateX(-50%);filter:drop-shadow(0 2px 4px rgba(0,0,0,.5));pointer-events:none}
-#goalArrow{position:absolute;left:50%;bottom:calc(24% + 52px + env(safe-area-inset-bottom,0px));width:56px;height:56px;transform:translateX(-50%);filter:drop-shadow(0 2px 4px rgba(0,0,0,.5));pointer-events:none}
+#goalArrow{position:absolute;left:50%;bottom:27%;width:44px;height:44px;opacity:.92;transform:translateX(-50%);filter:drop-shadow(0 2px 4px rgba(0,0,0,.5));pointer-events:none}
 #goalArrow svg,#waterArrow svg{width:100%;height:100%;animation:bob .7s ease-in-out infinite alternate}
 @keyframes bob{to{transform:translateY(-6px)}}
 #prompt{position:absolute;left:50%;bottom:calc(24% + env(safe-area-inset-bottom,0px));transform:translateX(-50%);padding:9px 16px;border-radius:12px;background:var(--glass-strong);border:1px solid var(--line);font-weight:800;font-size:15px;white-space:nowrap}
@@ -172,7 +175,7 @@ select.lang{appearance:none;-webkit-appearance:none;padding-right:12px;cursor:po
 #banner{position:absolute;left:50%;top:24%;transform:translateX(-50%);max-width:min(520px,calc(100vw - 32px));padding:12px 18px;border-radius:16px;background:var(--glass-strong);border:1px solid var(--line);display:grid;gap:4px;text-align:center;animation:bannerIn .4s ease-out}
 #banner b{font-family:var(--display);font-weight:400;font-size:22px;color:var(--leaf)}#banner span{font-weight:700;font-size:14px;line-height:1.35}
 @keyframes bannerIn{from{opacity:0;transform:translate(-50%,-12px)}}
-#loading{position:absolute;inset:0;display:grid;place-items:center;background:var(--canopy);z-index:9;transition:opacity .6s}
+#loading{position:absolute;inset:0;display:grid;place-items:center;background:var(--canopy);z-index:9;transition:opacity .35s}
 #loading .ld{display:grid;gap:10px;justify-items:center;font-family:var(--display);font-size:30px}
 /* loading bar with a little gecko walking along its front edge */
 .ldTrack{position:relative;width:min(260px,70vw);padding-top:26px}
@@ -237,6 +240,7 @@ select.lang{appearance:none;-webkit-appearance:none;padding-right:12px;cursor:po
       <div class="stat" id="sStamina"><svg viewBox="0 0 24 24"><path fill="var(--stamina)" d="M13.5 2 4 13.5h6.5L9.5 22 20 9.8h-6.6z"/></svg><div class="track"><div class="fill" style="background:var(--stamina)"></div></div></div>
       <div class="growth"><span id="growthLabel"><b>Baby</b></span><div class="track"><div class="fill" id="growthFill" style="background:var(--leaf)"></div></div></div>
       <div class="quest" id="quest"><small data-i18n="quest">Opdracht</small><span id="questText">-</span></div>
+      <div class="quest evBox" id="evBox" hidden><small id="evName"></small><span id="evTime"></span></div>
     </div>
     <div class="topright">
       <div class="iconbtns">
@@ -280,7 +284,7 @@ select.lang{appearance:none;-webkit-appearance:none;padding-right:12px;cursor:po
         <button class="play" id="playBtn" data-i18n="play">Spelen</button>
         <button class="ghost" id="shopBtn"><svg viewBox="0 0 24 24"><path d="M4 15c3-1 4-5 8-5 3 0 4 2 7 1M7 15l-1 3M10 13.5l1 4M15 11l1 4M18 11.5l2 2" stroke="#b9e44f" stroke-width="2" fill="none" stroke-linecap="round"/><circle cx="6" cy="14" r="1" fill="#b9e44f"/></svg><span data-i18n="geckos">Gekko's</span></button>
       </div>
-      <div class="menuFoot"><span class="coinsBig"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="#ffc93c"/><circle cx="12" cy="12" r="7" fill="none" stroke="#c98a12" stroke-width="1.6"/></svg><span id="menuCoins">0</span></span><span id="menuBest"></span><button class="ghost gfx" id="gfxBtn">Graphics</button><select class="ghost gfx lang" id="langSel" data-i18n-aria="language" aria-label="Taal"></select><span class="ver">v1.16</span></div>
+      <div class="menuFoot"><span class="coinsBig"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="#ffc93c"/><circle cx="12" cy="12" r="7" fill="none" stroke="#c98a12" stroke-width="1.6"/></svg><span id="menuCoins">0</span></span><span id="menuBest"></span><button class="ghost gfx" id="gfxBtn">Graphics</button><select class="ghost gfx lang" id="langSel" data-i18n-aria="language" aria-label="Taal"></select><span class="ver">v1.17</span></div>
       <div class="keys" data-i18n-html="keys"><span><kbd>WASD</kbd> lopen</span><span><kbd>Muis</kbd> kijken</span><span><kbd>Shift</kbd> sprinten</span><span><kbd>Spatie</kbd> springen</span><span><kbd>Klik</kbd>/<kbd>E</kbd> tong</span><span><kbd>F</kbd> drinken</span></div>
     </div>
   </div>
@@ -305,7 +309,7 @@ select.lang{appearance:none;-webkit-appearance:none;padding-right:12px;cursor:po
   </div>
 
   <div id="over" class="screen center" hidden>
-    <div class="card">
+    <div class="card" id="overCard">
       <h2 class="bad" id="overTitle">Gevangen!</h2>
       <p id="overText"></p>
       <div class="results">
@@ -320,6 +324,12 @@ select.lang{appearance:none;-webkit-appearance:none;padding-right:12px;cursor:po
         <button class="play revive" id="doubleBtn" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="5" width="20" height="14" rx="3" fill="none" stroke="currentColor" stroke-width="2"/><path d="M10 9l5 3-5 3z" fill="currentColor"/></svg><span data-i18n="doubleCoins">Munten x2</span> <small id="doubleAmt"></small></button>
       </div>
       <div class="row"><button class="play" id="againBtn" data-i18n="again">Opnieuw</button><button class="ghost" id="overShop"><span data-i18n="geckos">Gekko's</span></button><button class="ghost" id="menuBtn" data-i18n="menu">Menu</button></div>
+    </div>
+    <div class="card" id="askCard" hidden>
+      <h2 class="bad" id="askTitle"></h2>
+      <button class="play revive" id="askRevive"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="5" width="20" height="14" rx="3" fill="none" stroke="currentColor" stroke-width="2"/><path d="M10 9l5 3-5 3z" fill="currentColor"/></svg><span data-i18n="revive">Nog een kans</span> <small data-i18n="ad">(reclame)</small></button>
+      <div class="askBar"><i id="askFill"></i></div>
+      <button class="ghost" id="askSkip" data-i18n="noThanks">Nee, bedankt</button>
     </div>
   </div>
 
@@ -471,8 +481,22 @@ const FAMILY=12;
    Renderer, scene, sky
    ===================================================================== */
 const isTouch=matchMedia('(pointer: coarse)').matches||('ontouchstart' in window&&navigator.maxTouchPoints>0);
-const LOW=isTouch;
+/* v1.17: weak desktops (school laptops, integrated graphics) get the same light world as phones. On desktop "Laag" only switched
+   effects off; the world itself stayed at 2.6M triangles per frame. The light world is 0.6M and loads in about half the time.
+   ?tier=low / ?tier=full overrides the choice; a session that dropped itself to Laag starts light the next time. */
+const TIER=(()=>{try{const q=new URLSearchParams(location.search).get('tier');if(q==='low'||q==='full')return q==='low'?'weak':'full';}catch(e){}
+  if(isTouch)return 'touch';
+  try{if(localStorage.getItem('gekko_tier')==='low')return 'weak';}catch(e){}
+  try{const c=document.createElement('canvas'),gl=c.getContext('webgl2')||c.getContext('webgl');if(!gl)return 'weak';
+    const ex=gl.getExtension('WEBGL_debug_renderer_info'),r=ex?String(gl.getParameter(ex.UNMASKED_RENDERER_WEBGL)):'';gl.getExtension('WEBGL_lose_context')?.loseContext();
+    if(/swiftshader|llvmpipe|software|basic render/i.test(r))return 'weak';
+    if(/mali|adreno|powervr|videocore/i.test(r))return 'weak';
+    if(/intel/i.test(r)&&!/iris|arc\b|xe\b/i.test(r))return 'weak';
+    if((navigator.hardwareConcurrency||8)<=4&&(navigator.deviceMemory||8)<=4)return 'weak';}catch(e){}
+  return 'full';})();
+const LOW=TIER!=='full';
 const renderer=new THREE.WebGLRenderer({antialias:!LOW,powerPreference:'high-performance'});
+renderer.debug.checkShaderErrors=false;// skips the blocking info-log and link-status reads for each of the ~80 shader programs at boot
 renderer.setPixelRatio(Math.min(devicePixelRatio,LOW?1.25:1.75));
 /* Size of the game area. Read from the #game element, not window.innerWidth: inside the Poki iframe the window size can lag behind
    (or be 0 while the frame is still hidden) when the event fires. The canvas is stretched by CSS, so a late resize never leaves a gap. */
@@ -1111,7 +1135,7 @@ function tileInstanced(im,far=0,tile=TILE){const geo=im.geometry,n=im.count,buck
     t.castShadow=im.castShadow;t.receiveShadow=im.receiveShadow;t.layers.mask=im.layers.mask;t.userData={...im.userData};t.computeBoundingSphere();world.add(t);if(far)farTiles.push({m:t,far});}
   im.dispose();}
 const _col=new THREE.Color();
-const FAR_K=[.7,.9,1];// Laag/Hoog/Ultra: small plants and decoration fade out sooner on lower settings
+const FAR_K=[.5,.9,1];// Laag/Hoog/Ultra: small plants and decoration fade out sooner on lower settings
 function cullFarTiles(){const cp=camera.position;for(const f of farTiles){const b=f.m.boundingSphere;f.m.visible=Math.hypot(b.center.x-cp.x,b.center.z-cp.z)-b.radius<f.far*(LOW?1:FAR_K[QUALITY]);}}
 const windUniforms={uTime:{value:0},uPlayer:{value:new V3()}};
 // push: instanced plants lean away from the gecko when it walks through them
@@ -1937,10 +1961,10 @@ function tryClimbOrCollide(np,prev,move,moving){
 let state='loading',mode=save.mode in MODES?save.mode:'easy',CFG=MODES[mode];
 let nextSpawn=0,quest=null,questIdx=0,tipIdx=0,tipT=0,lostTimer=0,wasChased=false,alertCool=0,hudT=0,climbedHigh=0,maxChase=0;
 const QUESTS=[
-  {i:0,coins:15,init:()=>({n:PL.crickets}),done:q=>PL.crickets-q.n>=5},
-  {i:1,coins:10,done:()=>PL.thirst>=99&&PL.drinking},
-  {i:2,coins:15,done:()=>PL.climb&&PL.climb.type==='tree'&&PL.climb.h>=6},
-  {i:3,coins:20,init:()=>({g:goldEaten}),done:q=>goldEaten>q.g},
+  {i:0,coins:15,init:()=>({n:PL.crickets}),done:q=>PL.crickets-q.n>=5,target:()=>nearestInsect(landBug)},
+  {i:1,coins:10,done:()=>PL.thirst>=99&&PL.drinking,target:()=>nearestWater(_wt)>2?_wt:null},
+  {i:2,coins:15,done:()=>PL.climb&&PL.climb.type==='tree'&&PL.climb.h>=6,target:()=>{if(PL.climb)return null;let b=null,bd=1e9;for(const t of trees){if(!(t.climbMax>=6.5))continue;const d=Math.hypot(t.x-PL.pos.x,t.z-PL.pos.z);if(d<bd){bd=d;b=t;}}return b;}},
+  {i:3,coins:20,init:()=>({g:goldEaten}),done:q=>goldEaten>q.g,target:()=>nearestInsect(c=>c.gold&&!c.water&&(!c.temple||inTemple()))||TI},
   {i:4,coins:20,init:()=>({e:escapes}),done:q=>escapes>q.e},
   {i:5,coins:30,done:()=>PL.pos.y>templeTop-.1&&Math.hypot(PL.pos.x-TEMPLE.x,PL.pos.z-TEMPLE.z)<4},
   {i:6,coins:25,done:()=>PL.growth>=STAGE_AT[2]},
@@ -1958,14 +1982,14 @@ function setScreen(s){state=s;show('menu',s==='menu');show('shop',s==='shop');sh
 function placeGeckoAtSpawn(){PL.pos.set(SPAWN.x,terrainH(SPAWN.x,SPAWN.z),SPAWN.z);PL.yaw=SPAWN.face;PL.vel.set(0,0,0);PL.climb=null;PL.perch=null;PL.up.set(0,1,0);
   gecko.root.position.copy(PL.pos);gecko.root.quaternion.setFromAxisAngle(Y,PL.yaw);}
 
-async function startGame(){goalEnd=0;
-  if(areaIdx!==0){if(traveling)return;traveling=true;setScreen('travel');$('travelTitle').textContent=t('travelTo',{area:areaName(0)});travelBar(0);await buildWorld(0,p=>travelBar(p*.95));warmUp();traveling=false;}
+/* v1.17: a new run starts in the area you were in (no trip back to the jungle), and as Jong once you have ever been an adult. */
+async function startGame(){goalEnd=0;endEvent();evNext=150;evLast='';lastGoal='';
   perfSkip=3;hideBanner();
   AU.init();CFG=MODES[mode];save.mode=mode;persist();const pk=perks();
-  Object.assign(PL,{health:pk.health,maxHealth:pk.health,hunger:100,thirst:100,stamina:100,growth:0,inv:2,crickets:0,coins:0,time:0,dead:false,regrab:0,drinking:false,seen:false});
+  Object.assign(PL,{health:pk.health,maxHealth:pk.health,hunger:100,thirst:100,stamina:100,growth:save.adult?STAGE_AT[1]:0,inv:2,crickets:0,coins:0,time:0,dead:false,regrab:0,drinking:false,seen:false});
   placeGeckoAtSpawn();camYaw=PL.yaw+Math.PI;camPitch=.3;camDist=1.15;camPos.copy(PL.pos).add(_v.set(Math.sin(camYaw)*1.6,.6,Math.cos(camYaw)*1.6));
   for(const p of poachers)p.dispose();poachers.length=0;
-  for(let i=0;i<CFG.start;i++)spawnPoacher();spawnGuard();nextSpawn=CFG.every;
+  for(let i=0;i<CFG.start+Math.floor(areaIdx/2);i++)spawnPoacher();spawnGuard();nextSpawn=CFG.every;
   for(const c of cages)c.prog=0;
   setCamo(false);camoQ=false;templeSeen=false;$('tCamo').hidden=save.skin!=='blad';
   setupCrickets(CFG.crickets,mode==='master'?.06:.09);
@@ -1973,7 +1997,9 @@ async function startGame(){goalEnd=0;
   setHudArea();$('floaters').innerHTML='';
   PL.revived=false;PL.doubled=false;EV.runSec=0;EV.si=0;EV.runs++;EV.flags={};
   measure('run',EV.runs<=10?'run'+EV.runs:'run11+','start');measure('mode',mode,'start');measure('skin',save.skin,'play');onboarding('start');
+  measure('start',AREAS[areaIdx].id,save.adult?'jong':'baby');
   setScreen('play');Poki.start();
+  if(save.adult)showBanner(L().stages[1],t('headStart'),6);
 }
 /* ---- areas: gates, travel and the banner ---- */
 let traveling=false,bannerT=0;
@@ -1995,7 +2021,7 @@ async function travel(to){if(traveling)return;traveling=true;const from=areaIdx;
   setScreen('travel');$('travelTitle').textContent=t('travelTo',{area:areaName(to)});travelBar(0);
   await Poki.brk();
   for(const p of poachers)p.dispose();poachers.length=0;if(netDome){scene.remove(netDome);netDome=null;}
-  setCamo(false);templeSeen=false;
+  setCamo(false);templeSeen=false;endEvent();evNext=PL.time+R(60,90);
   await buildWorld(to,p=>travelBar(p*.95));
   const g=gates.find(q=>q.to===from)||gates[0];if(g)placeAtGate(g);else placeGeckoAtSpawn();
   lastPL.copy(PL.pos);visOff.set(0,0,0);
@@ -2057,7 +2083,27 @@ function tripNotice(){if(state!=='play'||!CAMP||!cages.some(c=>!c.open&&!cageLoc
   tripMsgT=45;showBanner(t('tripTitle'),t('tripText'),5);measureOnce('camp',AREAS[areaIdx].id,'trip-seen');}
 function spawnGuard(){if(!CAMP||!cages.some(c=>!c.open))return;const p=landSpot(CAMP.x,CAMP.z,3,7);if(!p)return;const g=new Poacher(p.x,p.z);g.home=CAMP;poachers.push(g);}
 function campHint(){const n=closedCages();if(!n)return '';return ' '+(areaIdx===3&&rescuedOutside()<FAMILY-3?t('campMain',{n:FAMILY-3-rescuedOutside()}):t('campLeft',{n}));}
-function newQuest(){const q=QUESTS[questIdx%QUESTS.length];quest={...q,data:q.init?q.init():{}};$('questText').textContent=L().quests[q.i]+` (+${q.coins})`;}
+/* v1.17 goals: after the four tutorial quests there is always a next goal that fits where the player is (grow, free the family,
+   travel on, fill the insect book, visit the temple), each with an arrow. A goal that takes too long makes way for the next one. */
+const TUT=4,GOAL_ORDER=['grow','rescue','travel','book','temple','eat'];let lastGoal='';
+const nearestInsect=f=>{let b=null,bd=1e9;for(const c of crickets){if(!c.alive||!f(c))continue;const d=c.pos.distanceTo(PL.pos);if(d<bd){bd=d;b=c;}}return b?b.pos:null;};
+const landBug=c=>!c.water&&(!c.temple||inTemple());
+function bookWant(){const S=SPECIES.filter(q=>q.area===areaIdx);for(const sp of S)if((save.book[sp.id]||0)<RARITY[sp.r].need&&crickets.some(c=>c.alive&&c.sp===sp&&!c.temple))return sp;return null;}
+const growNeed=()=>{const si=stageIdx();return Math.max(1,Math.ceil((STAGE_AT[si+1]-PL.growth)/(GROW_CRICKET*perks().grow)-1e-6));};
+const GOALS={
+  grow:{coins:20,ok:()=>stageIdx()<2,init:()=>({s:stageIdx(),n:growNeed()}),done:q=>stageIdx()>q.s,text:q=>t('goalGrow',{n:q.n,stage:L().stages[q.s+1]}),target:()=>nearestInsect(landBug)},
+  rescue:{coins:30,ok:()=>cages.some(c=>!c.open&&!cageLocked(c)),init:()=>({n:save.rescued.length}),done:q=>save.rescued.length>q.n,text:()=>t('goalRescue'),target:()=>CAMP},
+  travel:{coins:25,ok:()=>gates.some(g=>g.fwd&&gateOpen(g)),init:()=>({a:areaIdx,to:gates.find(g=>g.fwd).to}),done:q=>areaIdx!==q.a,text:q=>t('goalTravel',{area:areaName(q.to)}),target:()=>gates.find(g=>g.fwd)},
+  book:{coins:15,ok:()=>!!bookWant(),init:()=>{const sp=bookWant();return{sp,n:save.book[sp.id]||0};},done:q=>(save.book[q.sp.id]||0)>q.n,text:q=>t('goalBook',{n:insectName(q.sp)}),target:q=>nearestInsect(c=>c.sp===q.sp&&!c.temple)},
+  temple:{coins:20,ok:()=>!!TI&&!templeSeen,done:()=>templeSeen,text:()=>t('goalTemple'),target:()=>TI},
+  eat:{coins:15,ok:()=>true,init:()=>({n:PL.crickets}),done:q=>PL.crickets-q.n>=5,text:()=>L().quests[0],target:()=>nearestInsect(landBug)},
+};
+function newQuest(){
+  if(questIdx<TUT){const q=QUESTS[questIdx];quest={...q,kind:'q'+(questIdx+1),data:q.init?q.init():{},t0:PL.time};$('questText').textContent=L().quests[q.i]+` (+${q.coins})`;return;}
+  const i0=GOAL_ORDER.indexOf(lastGoal);let kind='eat';
+  for(let k=1;k<=GOAL_ORDER.length;k++){const c=GOAL_ORDER[(i0+k)%GOAL_ORDER.length];if(GOALS[c].ok()){kind=c;break;}}
+  lastGoal=kind;const G=GOALS[kind],data=G.init?G.init():{};quest={kind,coins:G.coins,data,done:G.done,target:G.target,t0:PL.time};
+  $('questText').textContent=G.text(data)+` (+${G.coins})`;}
 function spawnPoacher(){const p=landSpot(PL.pos.x,PL.pos.z,42,70)||landSpot(0,0,20,100);if(!p)return;poachers.push(new Poacher(p.x,p.z));}
 function setPause(on){if(on&&state==='play'){setScreen('pause');Poki.stop();if(!document.hidden)measure('button','pause','interact');}else if(!on&&state==='pause'){setScreen('play');Poki.start();}}
 function gameOver(reason){if(PL.dead)return;PL.dead=true;Poki.stop();
@@ -2071,17 +2117,25 @@ function gameOver(reason){if(PL.dead)return;PL.dead=true;Poki.stop();
   setTimeout(()=>{$('overTitle').textContent=T[0];$('overText').textContent=T[1]+unlockMsg;$('rTime').textContent=fmtTime(PL.time);$('rCrickets').textContent=PL.crickets;$('rCoins').textContent='+'+PL.coins;
     $('rBest').textContent=nb?t('newRecord',{mode:CFG.name}):t('recordMode',{mode:CFG.name,t:fmtTime(prev)});
     const si=stageIdx();$('rNext').textContent=si<2?t('nextStage',{n:Math.ceil((STAGE_AT[si+1]-PL.growth)/(GROW_CRICKET*perks().grow)-1e-6),stage:L().stages[si+1]}):t('wasAdult');updateShopBadge();
-    const canRevive=!PL.revived&&Poki.hasRewarded();$('reviveBtn').hidden=!canRevive;if(canRevive)measure('button','revive','visible');
+    const canRevive=!PL.revived&&Poki.hasRewarded();$('reviveBtn').hidden=true;if(canRevive)measure('button','revive','visible');
     const canDouble=!PL.doubled&&PL.coins>=5&&Poki.hasRewarded();$('doubleBtn').hidden=!canDouble;$('doubleAmt').textContent='(+'+PL.coins+')';if(canDouble)measure('button','double-coins','visible');
-    $('adRow').hidden=!canRevive&&!canDouble;
-    setScreen('over');measure('screen','gameover','visible');},reason==='caught'?1300:600);
+    $('adRow').hidden=!canDouble;$('askTitle').textContent=T[0];
+    $('askCard').hidden=!canRevive;$('overCard').hidden=canRevive;setScreen('over');
+    if(canRevive)askStart();else measure('screen','gameover','visible');},reason==='caught'?1300:600);
 }
 /* Rewarded: double the coins earned this run (once per run). Coins are only added when the ad was watched to the end. */
 async function doubleCoins(){if(adBusy||state!=='over'||PL.doubled)return;measure('button','double-coins','interact');const ok=await Poki.reward();measure('ad','double-coins',ok?'success':'fail');
   if(!ok||state!=='over'||PL.doubled)return;PL.doubled=true;const n=PL.coins;save.coins+=n;PL.coins+=n;persist();AU.sfx.gold();
   $('rCoins').textContent='+'+PL.coins;$('doubleBtn').hidden=true;$('adRow').hidden=$('reviveBtn').hidden;updateShopBadge();}
-async function revive(){if(adBusy||state!=='over')return;measure('button','revive','interact');const ok=await Poki.reward();measure('ad','revive',ok?'success':'fail');
-  if(!ok||state!=='over')return;
+/* v1.17: "Nog een kans?" is asked on its own, with a countdown, before the results. Declining or waiting it out shows the results. */
+let askT=0,askIv=0;const ASK_SEC=7;
+function askStart(){askT=ASK_SEC;$('askFill').style.width='100%';clearInterval(askIv);let last=performance.now();
+  askIv=setInterval(()=>{const now=performance.now(),d=(now-last)/1000;last=now;if(adBusy||document.hidden)return;askT-=d;$('askFill').style.width=Math.max(0,askT/ASK_SEC*100)+'%';if(askT<=0)askEnd('timeout');},100);}
+function askEnd(why){clearInterval(askIv);if($('askCard').hidden)return;$('askCard').hidden=true;$('overCard').hidden=false;if(why)measure('revive-ask',mode,why);if(why==='ad-fail'){$('reviveBtn').hidden=false;$('adRow').hidden=false;}
+  if(state==='over'){measure('screen','gameover','visible');fitScreens();}}
+async function revive(){if(adBusy||state!=='over')return;clearInterval(askIv);measure('button','revive','interact');const ok=await Poki.reward();measure('ad','revive',ok?'success':'fail');
+  if(!ok||state!=='over'){askEnd('ad-fail');return;}
+  $('askCard').hidden=true;$('overCard').hidden=false;
   PL.revived=true;PL.dead=false;PL.health=Math.max(PL.health,PL.maxHealth*.6);PL.hunger=100;PL.thirst=100;PL.inv=3;PL.vel.set(0,0,0);
   if(netDome){scene.remove(netDome);netDome=null;}
   for(const p of poachers)p.dispose();poachers.length=0;for(let i=0;i<CFG.start;i++)spawnPoacher();nextSpawn=CFG.every;
@@ -2230,10 +2284,11 @@ function updateTongue(dt){tongue.cool-=dt;
     if(k>=1){tongue.t=-1;tongue.mesh.visible=tongue.tip.visible=false;if(tongue.target&&tongue.target.alive)eatCricket(tongue.target);tongue.target=null;}}}
 function eatCricket(c){onboarding('first-cricket');if(c.gold)measure('cricket','gold','eaten');c.alive=false;c.g.visible=false;c.g.scale.setScalar(c.sp.strider?1.1:1.45);const pk=perks();const Rv=RARITY[c.sp.r];
   PL.hunger=Math.min(100,PL.hunger+Rv.hunger);PL.health=Math.min(PL.maxHealth,PL.health+4);PL.crickets++;
-  const before=stageName();PL.growth=Math.min(1,PL.growth+Rv.grow*pk.grow);
-  const v=addCoins(Rv.coins*CFG.coinMult*pk.coins);addToBook(c.sp);AU.sfx.eat();c.gold?AU.sfx.gold():AU.sfx.coin();if(c.gold)goldEaten++;
+  const feast=EVT&&EVT.kind==='feast'?2:1;const before=stageName();PL.growth=Math.min(1,PL.growth+Rv.grow*pk.grow*feast);
+  const v=addCoins(Rv.coins*CFG.coinMult*pk.coins*feast);addToBook(c.sp);AU.sfx.eat();c.gold?AU.sfx.gold():AU.sfx.coin();if(c.gold)goldEaten++;
   floater(PL.pos.clone().add(_v.set(0,.25,0)),'+'+v,'');
-  if(stageName()!==before){AU.sfx.grow();if(stageIdx()===2)announceGate();measure('growth',stageKey(),'reached');measure('growth-time',stageKey(),timeKey(PL.time));floater(PL.pos.clone().add(_v.set(0,.5,0)),stageName()+'!','green');}
+  if(stageName()!==before){AU.sfx.grow();if(stageIdx()===2){announceGate();if(!save.adult){save.adult=true;persist();}}measure('growth',stageKey(),'reached');measure('growth-time',stageKey(),timeKey(PL.time));floater(PL.pos.clone().add(_v.set(0,.5,0)),stageName()+'!','green');}
+  if(c.ev)return;
   if(c.temple){const area=areaIdx;setTimeout(()=>{if((state==='play'||state==='pause')&&areaIdx===area&&TI&&crickets.includes(c))spawnTempleCricket(c);},R(25000,40000));return;}
   setTimeout(()=>{if(state==='play'||state==='pause')c.water?spawnWaterBug(c,PL.pos):spawnCricket(c,PL.pos);},R(2500,6000));}
 function updateWaterBug(c,d,nearL,dt){
@@ -2251,7 +2306,7 @@ function updateWaterBug(c,d,nearL,dt){
   if(!c.sp.strider&&sp>.2&&d<25&&rnd()<dt*3)ripple(c.pos.x,c.pos.z,.07,.3);}
 function updateCrickets(dt){const nearL=lakeNear(PL.pos);for(const c of crickets){if(!c.alive||(tongue.target===c&&tongue.t/tongue.dur>=.5))continue;
   const d=c.pos.distanceTo(PL.pos);if(c.water){updateWaterBug(c,d,nearL,dt);continue;}
-  if(d>48&&state==='play'&&!c.temple){spawnCricket(c,PL.pos);continue;}
+  if(d>48&&state==='play'&&!c.temple&&!c.ev){spawnCricket(c,PL.pos);continue;}
   c.hopT-=dt;const gH=(x,z)=>c.temple?TI.F:terrainH(x,z);const g=gH(c.pos.x,c.pos.z);
   if(c.pos.y<=g+.001&&c.hopT<=0){const flee=d<(PL.speed>5?3.2:1.6)&&state==='play'&&mode!=='easy';let a=flee?Math.atan2(c.pos.x-PL.pos.x,c.pos.z-PL.pos.z)+R(-.6,.6):R(0,6.28);
     const s=flee?R(1.6,2.6):R(.6,1.4);c.vel.set(Math.sin(a)*s,c.temple?R(1.4,2):R(2,3.2),Math.cos(a)*s);c.yaw=a;c.hopT=flee?R(.4,.9):R(2,6);}
@@ -2404,13 +2459,30 @@ const WATER_WARN=40;
 function nearestWater(out){let best=1e9;for(const L of LAKES){const dx=L.x-PL.pos.x,dz=L.z-PL.pos.z,d=Math.hypot(dx,dz)-L.r*.85;if(d<best){best=d;const k=Math.max(0,d)/(d+L.r*.85||1);out.set(PL.pos.x+dx*k,0,PL.pos.z+dz*k);}}return best<1e9?best:-1;}
 const _wt=new V3();
 let goalEnd=0;
+/* v1.17 events: every few minutes something happens for a short while, so the middle of a run keeps changing.
+   swarm = a cluster of rare insects nearby (arrow), rain = thirst refills by itself, feast = insects count double. */
+let EVT=null,evNext=150,evLast='';const EV_KINDS=['swarm','rain','feast'],EV_SEC={swarm:55,rain:45,feast:40};
+function endEvent(){if(!EVT)return;if(EVT.bugs){for(const c of EVT.bugs){scene.remove(c.g);const i=crickets.indexOf(c);if(i>=0)crickets.splice(i,1);}}
+  if(EVT.kind==='rain')rain.m.visible=!!AREA.fx.rain;EVT=null;$('evBox').hidden=true;}
+function startEvent(){const pool=EV_KINDS.filter(k=>k!==evLast);const kind=pool[Math.floor(Math.random()*pool.length)];evLast=kind;const T=L().ev[kind];
+  EVT={kind,end:PL.time+EV_SEC[kind]};
+  if(kind==='swarm'){const S=SPECIES.filter(q=>q.area===areaIdx),sp0=landSpot(PL.pos.x,PL.pos.z,14,24);if(!sp0){EVT=null;return;}EVT.spot=sp0;EVT.bugs=[];
+    for(let i=0;i<7;i++){const sp=S[i<4?2:1],p=landSpot(sp0.x,sp0.z,.3,3.5)||sp0;const c={g:makeInsect(sp),sp,gold:sp.r===2,ev:true,pos:new V3().copy(p),vel:new V3(),yaw:R(0,6.28),alive:true,hopT:R(1,4),chirp:R(2,9)};
+      c.g.position.copy(c.pos);scene.add(c.g);crickets.push(c);EVT.bugs.push(c);}}
+  if(kind==='rain')rain.m.visible=true;
+  AU.sfx.quest();showBanner(T[0],T[1],6);$('evName').textContent=T[0];$('evBox').hidden=false;measure('event',kind,'start');}
+function updateEvents(){if(PL.dead)return;
+  if(EVT){const left=EVT.end-PL.time;if(left<=0||(EVT.bugs&&!EVT.bugs.some(c=>c.alive))){endEvent();evNext=PL.time+R(110,150);}else $('evTime').textContent=fmtTime(Math.ceil(left));}
+  else if(PL.time>=evNext&&!traveling)startEvent();}
 /* Climb tip (v1.14): first-climb fell from 82% (v1.10) to 72% (v1.13) of new players. Shown near a trunk, or while chased, until the first climb. */
 let climbedOnce=false;
 function nearTrunk(){for(const t of trees){if(t.kind==='cactus')continue;const dx=PL.pos.x-t.x,dz=PL.pos.z-t.z;if(Math.abs(dx)>4||Math.abs(dz)>4)continue;if(Math.hypot(dx,dz)-t.rB<1.6&&PL.pos.y-t.base<1)return true;}return false;}
 /* After growing up: a green arrow points to the gate to the next area for a while (hidden while the water arrow shows). */
-function updateGoalArrow(){const el=$('goalArrow');const g=PL.time<goalEnd&&gates.find(q=>q.fwd&&gateOpen(q));
-  const on=!!g&&state==='play'&&$('waterArrow').hidden&&Math.hypot(g.x-PL.pos.x,g.z-PL.pos.z)>8;el.hidden=!on;if(!on)return;
-  const a=Math.atan2(g.x-PL.pos.x,g.z-PL.pos.z)-(camYaw+Math.PI);el.style.transform=`translateX(-50%) rotate(${-a}rad)`;}
+function updateGoalArrow(){const el=$('goalArrow');let g=null;
+  if(state==='play'&&!PL.dead)g=(PL.time<goalEnd&&gates.find(q=>q.fwd&&gateOpen(q)))||(EVT&&EVT.spot)||(quest&&quest.target?quest.target(quest.data):null);
+  const on=!!g&&$('waterArrow').hidden&&Math.hypot(g.x-PL.pos.x,g.z-PL.pos.z)>5;el.hidden=!on;if(!on)return;
+  // the arrow circles the gecko instead of covering it
+  const a=-(Math.atan2(g.x-PL.pos.x,g.z-PL.pos.z)-(camYaw+Math.PI)),r=Math.min(vh*.19,110);el.style.transform=`translate(-50%,50%) translate(${(Math.sin(a)*r).toFixed(1)}px,${(-Math.cos(a)*r).toFixed(1)}px) rotate(${a.toFixed(3)}rad)`;}
 function updateWaterArrow(){const el=$('waterArrow');const on=state==='play'&&PL.thirst<WATER_WARN&&!PL.canDrink&&!PL.drinking&&nearestWater(_wt)>2;el.hidden=!on;if(!on)return;
   const a=Math.atan2(_wt.x-PL.pos.x,_wt.z-PL.pos.z)-(camYaw+Math.PI);el.style.transform=`translateX(-50%) rotate(${-a}rad)`;
   $('sThirst').classList.add('low');}
@@ -2429,7 +2501,7 @@ function updateHUD(dt){hudT-=dt;if(hudT>0)return;hudT=.1;
   else if(!climbedOnce&&!PL.climb&&!PL.swim&&(nearTrunk()||poachers.some(q=>q.state==='chase')))pr=t('prClimb');
   else if(PL.thirst<WATER_WARN&&!PL.canDrink)pr=t('prWater');
   if(pr!==promptKey){promptKey=pr;$('prompt').hidden=!pr;$('prompt').innerHTML=pr;}
-  updateWaterArrow();updateGoalArrow();$('thirstFx').style.opacity=PL.thirst<20||PL.hunger<20?.9:0;
+  updateEvents();updateWaterArrow();updateGoalArrow();$('thirstFx').style.opacity=PL.thirst<20||PL.hunger<20?.9:0;
   drawMinimap();}
 function updateTips(dt){if(tipIdx>=5){$('tip').style.opacity=0;return;}tipT-=dt;if(tipT<=0){const T=isTouch?L().tipsTouch:L().tipsKb;$('tip').innerHTML=T[tipIdx];$('tip').style.opacity=1;tipIdx++;tipT=7;
   if(tipIdx>=5){setTimeout(()=>$('tip').style.opacity=0,7000);save.tutorial=true;persist();}}}
@@ -2446,7 +2518,8 @@ function updateGame(dt){
   {const m=SURVIVE_MARKS[EV.si];if(m!==undefined&&PL.time>=m*60){EV.si++;measure('survive',mode,'m'+m);}}PL.inv-=dt;const pk=perks();
   updatePlayer(dt);updateTongue(dt);jumpQ=false;
   PL.hunger=Math.max(0,PL.hunger-dt*100/CFG.hungerT*pk.hunger*AREA.needs.hunger*(PL.speed>5?1.3:1));
-  PL.thirst=Math.max(0,PL.thirst-dt*100/CFG.thirstT*pk.thirst*AREA.needs.thirst*(PL.speed>5?1.3:1)*(PL.drinking?0:1));
+  if(EVT&&EVT.kind==='rain')PL.thirst=Math.min(100,PL.thirst+dt*1.5);
+  else PL.thirst=Math.max(0,PL.thirst-dt*100/CFG.thirstT*pk.thirst*AREA.needs.thirst*(PL.speed>5?1.3:1)*(PL.drinking?0:1));
   if(PL.hunger<=0||PL.thirst<=0){PL.health-=dt*(mode==='master'?6:4);if(PL.health<=0){PL.health=0;gameOver(PL.thirst<=0?'thirst':'hunger');}}
   else if(PL.hunger>55&&PL.thirst>55)PL.health=Math.min(PL.maxHealth,PL.health+dt*1.5);
   updatePoachers(dt);
@@ -2454,7 +2527,8 @@ function updateGame(dt){
   checkGates(dt);updateBanner(dt);tripMsgT-=dt;
   if(!templeSeen&&TI&&inTemple()){templeSeen=true;AU.sfx.quest();showBanner(t('templeTitle'),t('templeText'),5);measure('temple',AREAS[areaIdx].id,'enter');}updateCamo(dt);
   if(PL.time>9&&PL.time-dt<=9&&areaIdx===0&&closedCages()&&tipIdx>=5)showBanner(t('campTitle'),t('campLeft',{n:closedCages()}).trim(),6);
-  if(quest&&quest.done(quest.data)){measure('quest','q'+(questIdx%QUESTS.length+1),'complete');if(questIdx===0)onboarding('first-quest');const v=addCoins(quest.coins);AU.sfx.quest();floater(PL.pos.clone().add(_v.set(0,.45,0)),t('questDone',{v}),'green');questIdx++;newQuest();}
+  if(quest&&questIdx>0&&PL.time-quest.t0>(questIdx<TUT?150:210)){measure(questIdx<TUT?'quest':'goal',quest.kind,'skip');questIdx++;newQuest();}
+  if(quest&&quest.done(quest.data)){measure(questIdx<TUT?'quest':'goal',quest.kind,'complete');if(questIdx===0)onboarding('first-quest');const v=addCoins(quest.coins);AU.sfx.quest();floater(PL.pos.clone().add(_v.set(0,.45,0)),t('questDone',{v}),'green');questIdx++;newQuest();}
   updateTips(dt);updateHUD(dt);
 }
 const footGround=(x,z,y)=>groundAt(x,z,y+.12);
@@ -2505,21 +2579,21 @@ buildComposer();
 let perfT=0,perfN=0,perfAcc=0,resScale=1,perfSkip=3,perfGood=0;
 const GFX=['Laag','Hoog','Ultra']; // stable keys for measuring; labels come from the language table
 function applyQuality(q){QUALITY=clamp(q,0,2);if(gtao)gtao.enabled=QUALITY>=2;if(waterMirror){waterMirror.visible=QUALITY>=2;waterSimple.visible=QUALITY<2;}
-  bloom.enabled=QUALITY>=1;grade.uniforms.uShafts.value=QUALITY>=1?1:0;nearGrass.geo.instanceCount=Math.round(nearGrass.N*[.45,.75,1][QUALITY]);
+  bloom.enabled=QUALITY>=1;grade.uniforms.uShafts.value=QUALITY>=1?1:0;nearGrass.geo.instanceCount=Math.round(nearGrass.N*[LOW?.45:.3,.75,1][QUALITY]);
   const pr=Math.min(devicePixelRatio,[1,1.25,LOW?1.25:1.75][QUALITY])*resScale;renderer.setPixelRatio(pr);composer.setPixelRatio(pr);
   const sm=[1024,2048,LOW?2048:4096][QUALITY];if(sun.shadow.mapSize.x!==sm){sun.shadow.mapSize.set(sm,sm);if(sun.shadow.map){sun.shadow.map.dispose();sun.shadow.map=null;}}
   onResize();for(const id of ['gfxBtn','gfxBtn2'])$(id).textContent=t('gfx')+': '+L().gfxQ[QUALITY];}
-for(const id of ['gfxBtn','gfxBtn2'])$(id).onclick=()=>{AU.init();AU.sfx.click();const q=(QUALITY+1)%3;save.gfx=q;measure('gfx','select',GFX[q].toLowerCase());persist();resScale=1;applyQuality(q);perfT=perfAcc=perfN=0;perfSkip=3;};
+for(const id of ['gfxBtn','gfxBtn2'])$(id).onclick=()=>{AU.init();AU.sfx.click();const q=(QUALITY+1)%3;save.gfx=q;if(q>0){try{localStorage.removeItem('gekko_tier');}catch(e){}}measure('gfx','select',GFX[q].toLowerCase());persist();resScale=1;applyQuality(q);perfT=perfAcc=perfN=0;perfSkip=3;};
 function setRes(){const pr=Math.min(devicePixelRatio,[1,1.25,LOW?1.25:1.75][QUALITY])*resScale;renderer.setPixelRatio(pr);composer.setPixelRatio(pr);onResize();}
 function adaptQuality(dt){if(perfSkip>0){perfSkip-=dt;return;}perfAcc+=dt;perfN++;perfT+=dt;if(perfT<2.5)return;const avg=perfAcc/perfN;perfT=perfAcc=perfN=0;
-  if(avg>1/48){perfGood=0;if(resScale>.7){resScale=Math.max(.7,resScale-.15);setRes();}else if(QUALITY>0){resScale=.85;applyQuality(QUALITY-1);measure('gfx','auto-drop',GFX[QUALITY].toLowerCase());}perfSkip=1.5;}
+  if(avg>1/48){perfGood=0;if(resScale>.7){resScale=Math.max(.7,resScale-.15);setRes();}else if(QUALITY>0){resScale=.85;applyQuality(QUALITY-1);measure('gfx','auto-drop',GFX[QUALITY].toLowerCase());if(QUALITY===0&&!LOW){try{localStorage.setItem('gekko_tier','low');}catch(e){}}}perfSkip=1.5;}
   else if(avg<1/57&&resScale<1){if(++perfGood>=4){perfGood=0;resScale=Math.min(1,resScale+.15);setRes();perfSkip=1.5;}}else perfGood=0;}
 const _sunScr=new V3(),_camDir=new V3();
 let lastTs=0,dtS=1/60;
 let frameN=0;
 const waitFrames=n=>new Promise(r=>{const s=frameN;const chk=()=>frameN>=s+n?r():requestAnimationFrame(chk);requestAnimationFrame(chk);});
-// resolves once two frames in a row took under 80 ms (or after 1.2 s), so a loading screen only leaves when the game runs smoothly
-const settleFrames=()=>new Promise(r=>{const t0=performance.now();let last=t0,ok=0;const chk=t=>{ok=t-last<80?ok+1:0;last=t;if(ok>=2||t-t0>1200)r();else requestAnimationFrame(chk);};requestAnimationFrame(chk);});
+// resolves once two frames in a row took under 80 ms (or after 0.8 s), so a loading screen only leaves when the game runs smoothly
+const settleFrames=()=>new Promise(r=>{const t0=performance.now();let last=t0,ok=0;const chk=t=>{ok=t-last<80?ok+1:0;last=t;if(ok>=2||t-t0>800)r();else requestAnimationFrame(chk);};requestAnimationFrame(chk);});
 function frame(ts){requestAnimationFrame(frame);frameN++;
   {const w=gameEl.clientWidth,h=gameEl.clientHeight;if(w>0&&h>0&&(w!==vw||h!==vh))onResize();}// a missed resize event never leaves the picture stretched
   const raw=lastTs?Math.min((ts-lastTs)/1000,.1):1/60;lastTs=ts;
@@ -2616,11 +2690,11 @@ $('quitBtn').onclick=()=>{measure('button','quit','interact');measure('quit',mod
 $('pauseBtn').onclick=()=>setPause(true);
 $('muteBtn').onclick=()=>{AU.init();AU.setMuted(!save.muted);};
 $('againBtn').onclick=async()=>{if(adBusy)return;measure('button','restart','interact');await Poki.brk();startGame();};
-$('reviveBtn').onclick=()=>revive();
+$('reviveBtn').onclick=()=>revive();$('askRevive').onclick=()=>revive();$('askSkip').onclick=()=>askEnd('skip');
 $('doubleBtn').onclick=()=>doubleCoins();
 $('overShop').onclick=()=>{measure('button','shop-over','interact');toMenu();$('shopBtn').onclick();};
 $('menuBtn').onclick=()=>{measure('button','menu','interact');toMenu();};
-function toMenu(){Poki.stop();setCamo(false);for(const p of poachers)p.dispose();poachers.length=0;if(netDome){scene.remove(netDome);netDome=null;}PL.dead=false;PL.drinking=false;PL.speed=0;PL.growth=0;
+function toMenu(){clearInterval(askIv);endEvent();Poki.stop();setCamo(false);for(const p of poachers)p.dispose();poachers.length=0;if(netDome){scene.remove(netDome);netDome=null;}PL.dead=false;PL.drinking=false;PL.speed=0;PL.growth=0;
   curSkin=skinById(save.skin);previewSkin(curSkin);placeGeckoAtSpawn();renderModes();setupCrickets(14);setScreen('menu');}
 function onResize(){viewSize();fitScreens();camera.aspect=vw/vh;camera.updateProjectionMatrix();renderer.setSize(vw,vh,false);composer.setSize(vw,vh);if(waterMirror)waterMirror.getRenderTarget().setSize(Math.round(vw*.5),Math.round(vh*.5));}
 // Poki resizes the iframe (window resize, fullscreen, rotating a phone); listen to all of it and resize once per frame at most.
@@ -2649,9 +2723,9 @@ bootProg(.96);await bootYield();
 setScreen('menu');requestAnimationFrame(frame);document.fonts?.ready.then(fitScreens);
 {await waitFrames(1);bootProg(.98);await waitFrames(1);bootProg(.99);await settleFrames();}
 bootProg(1);
-setTimeout(()=>{$('loading').style.opacity=0;setTimeout(()=>$('loading').remove(),650);},200);
-pokiInit.then(()=>{if(!save.lang&&detectLang()!==lang)applyLang(detectLang());measure('lang',lang,'start');Poki.loaded();measure('screen','menu','visible');onboarding('loaded');});
-window.__gekko={get TI(){return TI;},step:(dt,n)=>{for(let i=0;i<n;i++){updateGame(dt);updateCamp(dt);updateCrickets(dt);}},get gnaw(){return gnaw;},get camoQ(){return camoQ;},set camoQ(v){camoQ=v;},updateCamera,smoothVisual,setCamo,mmIcon,drawMinimap,get NESTp(){return NEST;},setupCrickets,normalFromCanvas,cages,get CAMP(){return CAMP;},get NEST(){return NEST;},save,finale,renderShop,setShopTab:v=>{shopTab=v;},travel,buildWorld,gates,AREAS,get areaIdx(){return areaIdx;},get SPAWN(){return SPAWN;},stageIdx,PL,renderer,scene,updatePlayer,treeRadius,trunkR,rockTop,footSurf,climbSurf,updateClimb,get rockGrid(){return rockGrid;},ripples,get LAKES(){return LAKES;},groundAt,poachers,crickets,trees,boxes,rocks,startGame,setMode:m=>{mode=m;},get state(){return state;},camera,gecko,keys,get camYaw(){return camYaw;},set camYaw(v){camYaw=v;},set camPitch(v){camPitch=v;},set camDist(v){camDist=v;}};
+setTimeout(()=>{$('loading').style.opacity=0;setTimeout(()=>$('loading').remove(),400);},60);
+pokiInit.then(()=>{if(!save.lang&&detectLang()!==lang)applyLang(detectLang());measure('lang',lang,'start');measure('gfx','tier',TIER);Poki.loaded();measure('screen','menu','visible');onboarding('loaded');});
+window.__gekko={eatCricket,newQuest,get quest(){return quest;},get questIdx(){return questIdx;},set questIdx(v){questIdx=v;},startEvent,endEvent,get EVT(){return EVT;},set evLast(v){evLast=v;},gameOver,TIER,get TI(){return TI;},step:(dt,n)=>{for(let i=0;i<n;i++){updateGame(dt);updateCamp(dt);updateCrickets(dt);}},get gnaw(){return gnaw;},get camoQ(){return camoQ;},set camoQ(v){camoQ=v;},updateCamera,smoothVisual,setCamo,mmIcon,drawMinimap,get NESTp(){return NEST;},setupCrickets,normalFromCanvas,cages,get CAMP(){return CAMP;},get NEST(){return NEST;},save,finale,renderShop,setShopTab:v=>{shopTab=v;},travel,buildWorld,gates,AREAS,get areaIdx(){return areaIdx;},get SPAWN(){return SPAWN;},stageIdx,PL,renderer,scene,updatePlayer,treeRadius,trunkR,rockTop,footSurf,climbSurf,updateClimb,get rockGrid(){return rockGrid;},ripples,get LAKES(){return LAKES;},groundAt,poachers,crickets,trees,boxes,rocks,startGame,setMode:m=>{mode=m;},get state(){return state;},camera,gecko,keys,get camYaw(){return camYaw;},set camYaw(v){camYaw=v;},set camPitch(v){camPitch=v;},set camDist(v){camDist=v;}};
 </script>
 </body>
 </html>
