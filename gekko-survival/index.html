@@ -99,6 +99,10 @@ button:focus-visible{outline:3px solid var(--leaf);outline-offset:2px}
 #knotZone{position:absolute;top:0;bottom:0;background:linear-gradient(90deg,rgba(185,228,79,.55),rgba(185,228,79,.9),rgba(185,228,79,.55))}
 #knotMark{position:absolute;top:-2px;bottom:-2px;width:5px;margin-left:-2.5px;border-radius:3px;background:#fff;box-shadow:0 0 8px #fff}
 #knot.bad .kbar{border-color:#ff6a5a}#knotDots{display:flex;gap:6px}#knotDots span{width:12px;height:12px;border-radius:50%;background:rgba(0,0,0,.45);border:2px solid var(--line)}#knotDots span.on{background:var(--leaf)}
+#prompt{white-space:normal;max-width:calc(100vw - 32px);width:max-content;text-align:center}
+/* narrow (portrait) screens: the long alerts sat on top of the stats panel; they now stack above the prompt, under the gecko's line of sight */
+@media (max-width:560px){#knot{bottom:calc(24% + 72px + env(safe-area-inset-bottom,0px))}#alert{top:auto;bottom:calc(24% + 128px + env(safe-area-inset-bottom,0px));white-space:normal;max-width:calc(100vw - 32px);width:max-content;text-align:center;font-size:14px}
+  #combo{top:auto;bottom:calc(24% + 184px + env(safe-area-inset-bottom,0px))}}
 #alert.hawk{background:rgba(110,60,10,.88);border-color:rgba(255,190,90,.6)}#alert.hawk.safe{background:rgba(20,60,30,.82);border-color:rgba(185,228,79,.45);animation:none}
 @keyframes floatup{from{transform:translate(-50%,0) scale(.7);opacity:0}15%{transform:translate(-50%,-10px) scale(1.15);opacity:1}to{transform:translate(-50%,-70px) scale(1);opacity:0}}
 #targetRing{position:absolute;width:34px;height:34px;margin:-17px;border-radius:50%;border:3px solid var(--leaf);box-shadow:0 0 12px rgba(185,228,79,.7);pointer-events:none;animation:spin 1.2s linear infinite}
@@ -2135,7 +2139,7 @@ const startStage=()=>clamp(Math.max(save.adult?2:0,save.top||0)-1,0,2);// one st
 async function startGame(){goalEnd=0;endEvent();evNext=85;evLast='';lastGoal='';
   perfSkip=3;hideBanner();
   AU.init();CFG=MODES[mode];save.mode=mode;persist();const pk=perks();
-  endHawk();hawkNext=0;combo=0;comboT=-99;tbSeen={};
+  endHawk();hawkNext=0;combo=0;comboT=-99;tbSeen={};chainRest=false;
   Object.assign(PL,{tb:100,tbSrc:'',health:pk.health,maxHealth:pk.health,hunger:100,thirst:100,stamina:100,growth:STAGE_AT[startStage()],inv:2,tailT:0,autoD:false,crickets:0,coins:0,time:0,dead:false,regrab:0,drinking:false,seen:false});
   placeGeckoAtSpawn();camYaw=PL.yaw+Math.PI;camPitch=.3;camDist=touchUI?.95:1.15;camArm=1;camPos.copy(PL.pos).add(_v.set(Math.sin(camYaw)*1.6,.6,Math.cos(camYaw)*1.6));
   for(const p of poachers)p.dispose();poachers.length=0;
@@ -2265,7 +2269,7 @@ const GOALS={
 };
 function newQuest(){
   if(questIdx<TUT){const q=QUESTS[questIdx];quest={...q,kind:'q'+(questIdx+1),data:q.init?q.init():{},t0:PL.time};$('questText').textContent=L().quests[q.i]+` (+${q.coins})`;questLabel();return;}
-  if(chainQuest())return;
+  if(!chainRest&&chainQuest())return;chainRest=false;
   const i0=GOAL_ORDER.indexOf(lastGoal);let kind='eat';
   for(let k=1;k<=GOAL_ORDER.length;k++){const c=GOAL_ORDER[(i0+k)%GOAL_ORDER.length];if(GOALS[c].ok()){kind=c;break;}}
   lastGoal=kind;const G=GOALS[kind],data=G.init?G.init():{};quest={kind,coins:G.coins,data,done:G.done,target:G.target,t0:PL.time};
@@ -2474,9 +2478,10 @@ function updateTongue(dt){tongue.cool-=dt;
   if(tongue.t>=0){tongue.t+=dt;const k=tongue.t/tongue.dur;gecko.mouthWorld(mouth);
     if(tongue.target&&tongue.target.alive&&k<.5)tongue.to.lerpVectors(tongue.aim,_tv.copy(tongue.target.pos).setY(tongue.target.pos.y+.03),catchCfg().home);
     const ext=k<.5?k*2:2-k*2;const tip=_p.lerpVectors(mouth,tongue.to,ext);
-    // at full length the tip either has the insect or it has missed
+    // at full length the tip either has the insect or it has missed. The check uses the full-length point (tongue.to): at 20-30 fps
+    // the first frame past half-time already shows the tip pulling back, which made aimed shots miss on slow phones
     if(tongue.target&&!tongue.chk&&k>=.5){tongue.chk=true;const c=tongue.target;
-      if(!c.alive||tip.distanceTo(_tv.copy(c.pos).setY(c.pos.y+.03))>catchCfg().r*Math.max(1,geckoScale()*.85)){tongueMiss(c);tongue.target=null;}}
+      if(!c.alive||tongue.to.distanceTo(_tv.copy(c.pos).setY(c.pos.y+.03))>catchCfg().r*Math.max(1,geckoScale()*.85)){tongueMiss(c);tongue.target=null;}}
     const d=_v.subVectors(tip,mouth);const L=d.length();tongue.mesh.visible=tongue.tip.visible=L>.01;tongue.mesh.position.copy(mouth);tongue.mesh.scale.set(1,L,1);
     tongue.mesh.quaternion.setFromUnitVectors(Y,d.normalize());tongue.tip.position.copy(tip);
     if(tongue.target&&tongue.target.alive&&k>=.5){const c=tongue.target;c.pos.copy(tip);c.g.position.copy(tip);c.g.scale.setScalar((c.sp.strider?1.1:1.45)*Math.max(.2,ext));}
@@ -2854,9 +2859,12 @@ function updateHawk(dt){
   if(H.ph==='circle'){H.c.lerp(P,1-Math.exp(-1.5*dt));H.a+=dt*.6;const k=Math.min(1,H.t/2.5),rr=lerp(30,7,k),hh=lerp(18,8,k);if(H.t%2.4<dt&&H.t>1)AU.tone(2400,.45,{vol:.04,to:1500,type:'sawtooth'});
     _v.set(H.c.x+Math.cos(H.a)*rr,H.c.y+hh,H.c.z+Math.sin(H.a)*rr);H.vel.subVectors(_v,H.pos).divideScalar(Math.max(dt,1e-3));H.pos.copy(_v);flap=Math.sin(H.t*2.2)>.6?1:0;
     if(H.t>=H.circle){H.ph='dive';H.t=0;H.from.copy(H.pos);H.aim.copy(P);AU.noise(1.2,700,.12,'bandpass');AU.tone(2500,.35,{vol:.06,to:1400,type:'sawtooth'});}}
-  else if(H.ph==='dive'){const u=Math.min(1,H.t/H.dur);if(u<.62)H.aim.lerp(P,1-Math.exp(-10*dt));// it tracks the gecko until the last half second
-    const e=u*u;_v.lerpVectors(H.from,H.aim,e);_v.y=lerp(H.from.y,H.aim.y+.15,e);H.vel.subVectors(_v,H.pos).divideScalar(Math.max(dt,1e-3));H.pos.copy(_v);
-    if(u>=1){const ok=hawkCover()||Math.hypot(P.x-H.aim.x,P.z-H.aim.z)>1.1*geckoScale()||PL.inv>0||PL.dead;H.ph='leave';H.t=0;
+  else if(H.ph==='dive'){const u=Math.min(1,H.t/H.dur);
+    // it tracks the gecko, aiming where it will be (so running straight on does not escape), and commits for the last half second.
+    // A gecko in cover at that moment is safe: the hawk pulls up over the plants or the crown instead of diving into them.
+    if(u<.62)H.aim.lerp(_w.copy(P).addScaledVector(PL.vel,H.dur*(1-u)*.8).setY(P.y),1-Math.exp(-10*dt));else if(H.safe===undefined)H.safe=hawkCover();
+    const e=u*u;_v.lerpVectors(H.from,H.aim,e);_v.y=lerp(H.from.y,H.aim.y+(H.safe?2.6:.45),e);H.vel.subVectors(_v,H.pos).divideScalar(Math.max(dt,1e-3));H.pos.copy(_v);
+    if(u>=1){const ok=H.safe||hawkCover()||Math.hypot(P.x-H.aim.x,P.z-H.aim.z)>1.1*geckoScale()||PL.inv>0||PL.dead;H.ph='leave';H.t=0;
       H.vel.set(H.vel.x,0,H.vel.z).setLength(9);H.vel.y=5;
       if(ok){const v=addCoins(10);floater(P.clone().add(_v.set(0,.45,0)),t('hawkMiss',{v}),'green');AU.sfx.quest();chainEv('hawk');measure('hawk',AREAS[areaIdx].id,'escape');}
       else{PL.health-=HAWK_DMG[mode]||35;PL.inv=1.5;AU.sfx.hit();$('hurt').style.opacity=1;setTimeout(()=>$('hurt').style.opacity=0,250);floater(P.clone().add(_v.set(0,.4,0)),t('hawkHit'),'');
@@ -2907,7 +2915,7 @@ function chainTarget(s){const k=s[0];
   if(k==='shade'){if(PL.tbSrc==='shade')return null;let b=null,bd=1e9;for(const t of trees){if(!SHADE_R[t.kind])continue;const d=Math.hypot(t.x-PL.pos.x,t.z-PL.pos.z);if(d<bd){bd=d;b=t;}}return b;}
   if(k==='treetop'){if(PL.climb)return null;let b=null,bd=1e9;for(const t of trees){if(!t.lead&&t.kind!=='palm'&&t.kind!=='cactus')continue;const d=Math.hypot(t.x-PL.pos.x,t.z-PL.pos.z);if(d<bd){bd=d;b=t;}}return b;}
   return null;}
-let chainIntroArea=-1;
+let chainIntroArea=-1,chainRest=false;// chainRest: the current chain step took long, one regular goal (travel, grow...) comes in between
 function chainQuest(){const s=chainStep();if(!s)return false;const C=CHAINS[AREAS[areaIdx].id],st=chainState();
   quest={kind:'chain',coins:STEP_COINS,data:{s},t0:PL.time,done:()=>chainCount(s,st)>=s[1],target:()=>chainTarget(s)};
   if(st.s===0&&st.n===0&&chainIntroArea!==areaIdx){chainIntroArea=areaIdx;setTimeout(()=>{if(state==='play'&&quest&&quest.kind==='chain')showBanner(t('chainTitle',{area:areaName(areaIdx)}),t('chainIntro',{n:C.length}),7);},2500);}
@@ -2936,7 +2944,7 @@ function updateGame(dt){
   checkGates(dt);updateBanner(dt);tripMsgT-=dt;
   if(!templeSeen&&TI&&inTemple()){templeSeen=true;AU.sfx.quest();showBanner(t('templeTitle'),t('templeText'),5);measure('temple',AREAS[areaIdx].id,'enter');}updateCamo(dt);
   if(PL.time>9&&PL.time-dt<=9&&areaIdx===0&&closedCages()&&tipIdx>=5)showBanner(t('campTitle'),t('campLeft',{n:closedCages()}).trim(),6);
-  if(quest&&questIdx>0&&quest.kind!=='chain'&&PL.time-quest.t0>(questIdx<TUT?100:210)){measure(questIdx<TUT?'quest':'goal',quest.kind,'skip');questIdx++;newQuest();}
+  if(quest&&questIdx>0&&PL.time-quest.t0>(questIdx<TUT?100:quest.kind==='chain'?240:210)){if(quest.kind==='chain')chainRest=true;measure(questIdx<TUT?'quest':'goal',quest.kind,'skip');questIdx++;newQuest();}
   if(quest&&quest.done(quest.data)){measure(questIdx<TUT?'quest':'goal',quest.kind,'complete');if(questIdx===0)onboarding('first-quest');if(quest.kind==='chain')chainAdvance();const v=addCoins(quest.coins);AU.sfx.quest();floater(PL.pos.clone().add(_v.set(0,.45,0)),t('questDone',{v}),'green');questIdx++;newQuest();}
   updateTips(dt);updateHUD(dt);updateCombo();
 }
