@@ -87,6 +87,19 @@ button:focus-visible{outline:3px solid var(--leaf);outline-offset:2px}
 .floater{position:absolute;font-family:var(--display);font-size:22px;color:var(--coin);text-shadow:0 2px 0 rgba(0,0,0,.45);pointer-events:none;animation:floatup 1.1s ease-out forwards;white-space:nowrap}
 .floater.green{color:var(--leaf)}
 .floater.blue{color:var(--water)}
+.floater.grey{color:#d8ddd2;font-size:18px}
+/* v1.23: thermometer, combo counter, cage knot meter, bird-of-prey alert */
+.stat[hidden]{display:none}#sTemp .fill{background:#7cc8ff}#sTemp.hot .fill{background:#ff8a3a}
+#targetRing.moving{border-color:#ffb43c;box-shadow:0 0 12px rgba(255,180,60,.75)}
+#combo{position:absolute;left:50%;top:calc(64px + env(safe-area-inset-top,0px));transform:translateX(-50%);display:grid;justify-items:center;gap:3px;pointer-events:none}
+#combo[hidden]{display:none}#combo b{font-family:var(--display);font-size:26px;color:var(--coin);text-shadow:0 2px 0 rgba(0,0,0,.45)}
+#combo i{display:block;width:70px;height:5px;border-radius:3px;background:rgba(0,0,0,.4);overflow:hidden}#combo s{display:block;height:100%;background:var(--coin);text-decoration:none}
+#knot{position:absolute;left:50%;bottom:calc(24% + 52px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);display:grid;justify-items:center;gap:6px;pointer-events:none}
+#knot[hidden]{display:none}#knot .kbar{position:relative;width:min(300px,70vw);height:18px;border-radius:9px;background:rgba(7,18,11,.85);border:2px solid var(--line);overflow:hidden}
+#knotZone{position:absolute;top:0;bottom:0;background:linear-gradient(90deg,rgba(185,228,79,.55),rgba(185,228,79,.9),rgba(185,228,79,.55))}
+#knotMark{position:absolute;top:-2px;bottom:-2px;width:5px;margin-left:-2.5px;border-radius:3px;background:#fff;box-shadow:0 0 8px #fff}
+#knot.bad .kbar{border-color:#ff6a5a}#knotDots{display:flex;gap:6px}#knotDots span{width:12px;height:12px;border-radius:50%;background:rgba(0,0,0,.45);border:2px solid var(--line)}#knotDots span.on{background:var(--leaf)}
+#alert.hawk{background:rgba(110,60,10,.88);border-color:rgba(255,190,90,.6)}#alert.hawk.safe{background:rgba(20,60,30,.82);border-color:rgba(185,228,79,.45);animation:none}
 @keyframes floatup{from{transform:translate(-50%,0) scale(.7);opacity:0}15%{transform:translate(-50%,-10px) scale(1.15);opacity:1}to{transform:translate(-50%,-70px) scale(1);opacity:0}}
 #targetRing{position:absolute;width:34px;height:34px;margin:-17px;border-radius:50%;border:3px solid var(--leaf);box-shadow:0 0 12px rgba(185,228,79,.7);pointer-events:none;animation:spin 1.2s linear infinite}
 @keyframes spin{from{transform:rotate(0) scale(1)}50%{transform:rotate(180deg) scale(.85)}to{transform:rotate(360deg) scale(1)}}
@@ -244,6 +257,7 @@ select.lang{appearance:none;-webkit-appearance:none;padding-right:12px;cursor:po
       <div class="stat" id="sHunger"><svg viewBox="0 0 24 24"><ellipse cx="13" cy="13" rx="7" ry="4" fill="#d79a4a" transform="rotate(-25 13 13)"/><circle cx="6.5" cy="16.5" r="2.6" fill="#b57a35"/><path d="M15 9 21 3M8 14 2 10M16 15l4 5M12 16l1 5" stroke="#d79a4a" stroke-width="1.6" stroke-linecap="round" fill="none"/></svg><div class="track"><div class="fill" style="background:#e6a24f"></div></div></div>
       <div class="stat" id="sThirst"><svg viewBox="0 0 24 24"><path fill="var(--water)" d="M12 2.5S5 10.3 5 14.8A7 7 0 0 0 19 14.8C19 10.3 12 2.5 12 2.5z"/></svg><div class="track"><div class="fill" style="background:var(--water)"></div></div></div>
       <div class="stat" id="sStamina"><svg viewBox="0 0 24 24"><path fill="var(--stamina)" d="M13.5 2 4 13.5h6.5L9.5 22 20 9.8h-6.6z"/></svg><div class="track"><div class="fill" style="background:var(--stamina)"></div></div></div>
+      <div class="stat" id="sTemp" hidden><svg viewBox="0 0 24 24"><path d="M10 4a2 2 0 0 1 4 0v9.3a4.5 4.5 0 1 1-4 0z" fill="none" stroke="#e8f0ff" stroke-width="1.8"/><circle cx="12" cy="17.3" r="2.6" fill="#ff8a3a"/><path d="M12 8v9" stroke="#ff8a3a" stroke-width="2.2" stroke-linecap="round"/></svg><div class="track"><div class="fill"></div></div></div>
       <div class="growth"><span id="growthLabel"><b>Baby</b></span><div class="track"><div class="fill" id="growthFill" style="background:var(--leaf)"></div></div></div>
       <div class="quest" id="quest"><small data-i18n="quest">Opdracht</small><span id="questText">-</span></div>
       <div class="quest evBox" id="evBox" hidden><small id="evName"></small><span id="evTime"></span></div>
@@ -262,6 +276,8 @@ select.lang{appearance:none;-webkit-appearance:none;padding-right:12px;cursor:po
     <div id="banner" hidden><b id="bannerTitle"></b><span id="bannerText"></span></div>
     <div id="alert" hidden></div>
     <div id="prompt" hidden></div>
+    <div id="combo" hidden><b id="comboN"></b><i><s id="comboBar"></s></i></div>
+    <div id="knot" hidden><div class="kbar"><div id="knotZone"></div><div id="knotMark"></div></div><div id="knotDots"><span></span><span></span><span></span></div></div>
     <div id="goalArrow" hidden><svg viewBox="0 0 48 48"><path d="M24 4 40 30H30v14H18V30H8z" fill="var(--leaf)" stroke="#14260d" stroke-width="2.5" stroke-linejoin="round"/></svg></div>
     <div id="waterArrow" hidden><svg viewBox="0 0 48 48"><path d="M24 4 40 30H30v14H18V30H8z" fill="var(--water)" stroke="#06202c" stroke-width="2.5" stroke-linejoin="round"/></svg></div>
     <button id="upBtn" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 21 13h-5.5v8h-7v-8H3z" fill="currentColor"/></svg><span id="upName"></span><b id="upCost"></b><kbd id="upKey">U</kbd></button>
@@ -291,7 +307,7 @@ select.lang{appearance:none;-webkit-appearance:none;padding-right:12px;cursor:po
         <button class="play" id="playBtn" data-i18n="play">Spelen</button>
         <button class="ghost" id="shopBtn"><svg viewBox="0 0 24 24"><path d="M4 15c3-1 4-5 8-5 3 0 4 2 7 1M7 15l-1 3M10 13.5l1 4M15 11l1 4M18 11.5l2 2" stroke="#b9e44f" stroke-width="2" fill="none" stroke-linecap="round"/><circle cx="6" cy="14" r="1" fill="#b9e44f"/></svg><span data-i18n="geckos">Gekko's</span></button>
       </div>
-      <div class="menuFoot"><span class="coinsBig"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="#ffc93c"/><circle cx="12" cy="12" r="7" fill="none" stroke="#c98a12" stroke-width="1.6"/></svg><span id="menuCoins">0</span></span><span id="menuBest"></span><button class="ghost gfx" id="gfxBtn">Graphics</button><select class="ghost gfx lang" id="langSel" data-i18n-aria="language" aria-label="Taal"></select><span class="ver">v1.22</span></div>
+      <div class="menuFoot"><span class="coinsBig"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="#ffc93c"/><circle cx="12" cy="12" r="7" fill="none" stroke="#c98a12" stroke-width="1.6"/></svg><span id="menuCoins">0</span></span><span id="menuBest"></span><button class="ghost gfx" id="gfxBtn">Graphics</button><select class="ghost gfx lang" id="langSel" data-i18n-aria="language" aria-label="Taal"></select><span class="ver">v1.23</span></div>
       <div class="keys" data-i18n-html="keys"><span><kbd>WASD</kbd> lopen</span><span><kbd>Muis</kbd> kijken</span><span><kbd>Shift</kbd> sprinten</span><span><kbd>Spatie</kbd> springen</span><span><kbd>Klik</kbd>/<kbd>E</kbd> tong</span><span><kbd>F</kbd> drinken</span></div>
     </div>
   </div>
@@ -432,7 +448,7 @@ const $=id=>document.getElementById(id);
    Save data (per browser)
    ===================================================================== */
 const SAVE_KEY='gekko-survival-v1';
-let save={coins:0,owned:['dag'],skin:'dag',best:{},mode:'easy',tutorial:false,muted:false,book:{},pages:{},skills:{},rescued:[],won:{}};
+let save={coins:0,owned:['dag'],skin:'dag',best:{},mode:'easy',tutorial:false,muted:false,book:{},pages:{},skills:{},rescued:[],won:{},chains:{}};
 try{const s=JSON.parse(localStorage.getItem(SAVE_KEY));if(s&&typeof s==='object')save={...save,...s};}catch(e){}
 function persist(){try{localStorage.setItem(SAVE_KEY,JSON.stringify(save));}catch(e){}}
 
@@ -1622,7 +1638,7 @@ const liteEyeMat=new THREE.MeshPhysicalMaterial({color:'#b88a2a',roughness:.15,c
 // soft contact shadow under the player's gecko: on phones the shadow map is too coarse to ground a 20 cm animal
 const blobMat=new THREE.MeshBasicMaterial({map:canvasTex(64,64,g=>{const gr=g.createRadialGradient(32,32,2,32,32,31);gr.addColorStop(0,'rgba(0,0,0,.6)');gr.addColorStop(.55,'rgba(0,0,0,.28)');gr.addColorStop(1,'rgba(0,0,0,0)');g.clearRect(0,0,64,64);g.fillStyle=gr;g.fillRect(0,0,64,64);},{repeat:false}),transparent:true,depthWrite:false,opacity:LOW?.8:.5,polygonOffset:true,polygonOffsetFactor:-2,polygonOffsetUnits:-2,fog:false});
 const BLOB_GEO=new THREE.PlaneGeometry(.26,.42);
-const Y=new V3(0,1,0),_fp=new V3(),_fq=new V3();
+const Y=new V3(0,1,0),_fp=new V3(),_fq=new V3(),_v3=new V3();
 class Gecko{
   // lite: a cheaper gecko for the caged and rescued family members (no toes, simple eyes)
   constructor(mat,eyeColor='#c9a028',lite=false){
@@ -1667,18 +1683,25 @@ class Gecko{
   update(dt,speed,o={}){
     this.t+=dt;this.walk=damp(this.walk,clamp(speed/2.6,0,1.25),9,dt);const w=Math.min(this.walk,1);
     this.swimK=damp(this.swimK,o.swim?1:0,6,dt);const sk=this.swimK;
-    this.phase+=dt*(speed*8.5*(1-sk*.45)+(o.climbing&&speed>.1?4:0)+sk*2.6);
+    /* v1.23 sprint gait. Players called the shift-run "goofy": the legs kept the walking stride and only spun faster (11 steps a
+       second), so they flickered under a stiff, high body. A running gecko takes longer strides instead: the cadence rises only a
+       little, the body drops to the ground, the trunk swings a much deeper S between the shoulders and the hips (that bend is what
+       carries the diagonal leg pair forward), the legs sprawl wider and reach further, and the tail is lifted just off the
+       ground and trails the wave. rn blends from walk (0) to full sprint (1). */
+    this.run=damp(this.run||0,o.climbing||o.swim?0:smoothstep(3.8,7,speed),5,dt);const rn=this.run*(1-sk);
+    this.phase+=dt*(speed*8.5*(1-sk*.45)/(1+.95*rn)+(o.climbing&&speed>.1?4:0)+sk*2.6);
     this.drink=damp(this.drink,o.drinking?1:0,8,dt);this.sitK=damp(this.sitK,o.sit?1:0,6,dt);const st=this.sitK;this.look=damp(this.look,o.look||0,4,dt);
     const breathe=Math.sin(this.t*3)*.0015;
     // Lizard gait: a standing wave bends the trunk between the shoulders and hips in step with the diagonal leg pairs
     // (front-left reaches forward while the trunk bows to the left), the head counter-swings to stay on target and the tail trails the wave.
-    const sw=Math.sin(this.phase),A=.016*w;
+    const sw=Math.sin(this.phase),A=.016*w+.017*rn,tg=3.2-2*rn;
     for(let i=0;i<NS;i++){const s=i/(NS-1);
-      const und=s<.1?A*sw*(-1+(.1-s)*5):s<.56?A*sw*Math.cos(Math.PI*(s-.33)/.23):-A*Math.sin(this.phase-(s-.56)*5.5)*(1+(s-.56)*3.2);
+      // the head counter-swings harder at a sprint, so the snout stays on the line of travel while the trunk swings under it
+      const und=s<.1?A*sw*(-1+(.1-s)*(5+3*rn)):s<.56?A*sw*Math.cos(Math.PI*(s-.33)/.23):-A*Math.sin(this.phase-(s-.56)*(5.5+1.5*rn))*(1+(s-.56)*tg);
       const idle=Math.sin(this.t*1.1-s*3.4)*.03*smoothstep(.45,1,s)*(1-w);
       const curl=o.idleCurl?Math.sin(s*4)*.0:0;
       const x=und+idle+curl+(s<.22?this.look*(.22-s)*.6:0);
-      let y=.056-.004*w+(s<.2?(.2-s)*.07:0)-(s>.5?(s-.5)*.06:0)+(s<.26?-this.drink*(.26-s)*.32:0)+(s>.2&&s<.5?breathe:0);
+      let y=.056-.004*w-.011*rn+(s<.2?(.2-s)*(.07+.03*rn):0)-(s>.5?(s-.5)*(.06-.035*rn):0)+(s<.5?.0018*rn*Math.cos(2*this.phase):0)+(s<.26?-this.drink*(.26-s)*.32:0)+(s>.2&&s<.5?breathe:0);
       let xx=x,zz=.22-s*.55;
       // Sitting on a treetop: chest and head up, the tail hangs down along the shoot
       if(st>.001){const up=s<.4?(.4-s)**1.5*.55:0,hang=s>.5?(s-.5)**1.3*1.1:0;y+=st*(up-hang);zz+=st*(s>.5?(s-.5)**1.6*.9:0);}
@@ -1704,11 +1727,18 @@ class Gecko{
       for(const no of this.nost){no.position.copy(P).addScaledVector(S,no.userData.sd*.42*nrx*.96).addScaledVector(U,.9*nry*.96);no.quaternion.setFromRotationMatrix(_m);}}
     for(const L of this.legs){const s=L.front?.215:.445,i=Math.round(s*(NS-1));const [rx]=profile(s);
       L.hip.position.copy(this.P[i]).addScaledVector(this.S[i],L.side*rx*.7).addScaledVector(this.U[i],-.006);
-      _m.makeBasis(this.S[i],this.U[i],this.T[i]);L.hip.quaternion.setFromRotationMatrix(_m);
+      // the shoulders and hips turn with the trunk's bend, but only about half as far as the spine's own tangent (at a sprint
+      // the full tangent turned them ~40 degrees and swung the paws on the bulging side in under the body)
+      _fp.copy(this.T[i]).lerp(_fq.set(0,0,1),.5).normalize();_fq.crossVectors(Y,_fp).normalize();_v3.crossVectors(_fp,_fq);
+      _m.makeBasis(_fq,_v3,_fp);L.hip.quaternion.setFromRotationMatrix(_m);
       const off=(L.front===(L.side>0))?0:Math.PI;const c=this.phase+off;
       // sprawled limbs: the elbow/knee rides above the body line and lifts high in the swing, the lower leg plants almost straight down
-      const swing=Math.sin(c)*.85*w,lift=Math.max(0,Math.cos(c))*w;const base=L.front?.55:-.5;
-      let ry=-L.side*(swing+base),rz=L.side*(.12*w-.1*(1-w)+lift*.6),kz=-L.side*(.12*w-.12*(1-w)+lift*.4),fy=L.side*(swing+base)*.6;
+      // The upper leg swings round a sideways mean (front legs a little forward, hind legs a little back). A wider swing laid the
+      // leg flat along the flank where the body hid it, so a sprinting gecko seemed to lose two legs at a time; the stride now comes
+      // from the trunk's S-bend turning the shoulders and hips. At a sprint the elbows ride higher (rz) and the paw is pulled up quickly
+      // in the swing phase: the lift is a sharp pulse instead of a slow half-wave, so the stance is long and the swing snappy
+      const cl=Math.max(0,Math.cos(c)),swing=Math.sin(c)*(.72-.12*rn)*w,lift=(rn>0?lerp(cl,Math.pow(cl,.6)*Math.min(1,cl*1.6),rn):cl)*w;const base=(L.front?.42:-.4)+(L.front?-.12:.12)*rn;
+      let ry=-L.side*(swing+base),rz=L.side*(.12*w-.1*(1-w)+lift*(.6+.25*rn)+.26*rn),kz=-L.side*(.12*w-.12*(1-w)+lift*(.4+.3*rn)-.14*rn),fy=L.side*(swing+base)*.6;
       if(sk>.001){const pad=L.front?0:Math.sin(c)*.35*(.3+.7*w);// hind feet give a lazy paddle, front legs lie against the chest
         ry=lerp(ry,-L.side*((L.front?-1.05:-1.2)+pad),sk);rz=lerp(rz,L.side*.32,sk);kz=lerp(kz,-L.side*.9,sk);fy=lerp(fy,0,sk);}
       L.lift=lift*(1-sk);L.up.rotation.set(0,ry,rz);L.knee.rotation.z=kz;
@@ -1744,7 +1774,7 @@ const PL={pos:new V3(),vel:new V3(),yaw:0,onGround:true,climb:null,regrab:0,heal
 const tongue={t:-1,dur:.32,target:null,from:new V3(),to:new V3(),cool:0,
   mesh:new THREE.Mesh(new THREE.CylinderGeometry(.0045,.006,1,8,1,true).translate(0,.5,0),new THREE.MeshPhysicalMaterial({color:'#ff6f8e',roughness:.25,clearcoat:.8})),
   tip:new THREE.Mesh(new THREE.SphereGeometry(.011,12,10),new THREE.MeshPhysicalMaterial({color:'#ff5c80',roughness:.2,clearcoat:1}))};
-tongue.mesh.visible=tongue.tip.visible=false;scene.add(tongue.mesh,tongue.tip);
+tongue.mesh.visible=tongue.tip.visible=false;scene.add(tongue.mesh,tongue.tip);tongue.aim=new V3();const _tv=new V3();
 function geckoScale(){const g=PL.growth;return .92+Math.min(g,1)*.45+.07*clamp((g-1)/(GROW_MAX-1),0,1);}
 const STAGE_KEYS=['baby','jong','volwassen','alfa','legende'];
 /* v1.22: growing does not stop at Volwassen. After 16 more insects the gecko becomes an Alfa and after 24 more a Legende: a little
@@ -2105,11 +2135,12 @@ const startStage=()=>clamp(Math.max(save.adult?2:0,save.top||0)-1,0,2);// one st
 async function startGame(){goalEnd=0;endEvent();evNext=85;evLast='';lastGoal='';
   perfSkip=3;hideBanner();
   AU.init();CFG=MODES[mode];save.mode=mode;persist();const pk=perks();
-  Object.assign(PL,{health:pk.health,maxHealth:pk.health,hunger:100,thirst:100,stamina:100,growth:STAGE_AT[startStage()],inv:2,tailT:0,autoD:false,crickets:0,coins:0,time:0,dead:false,regrab:0,drinking:false,seen:false});
+  endHawk();hawkNext=0;combo=0;comboT=-99;tbSeen={};
+  Object.assign(PL,{tb:100,tbSrc:'',health:pk.health,maxHealth:pk.health,hunger:100,thirst:100,stamina:100,growth:STAGE_AT[startStage()],inv:2,tailT:0,autoD:false,crickets:0,coins:0,time:0,dead:false,regrab:0,drinking:false,seen:false});
   placeGeckoAtSpawn();camYaw=PL.yaw+Math.PI;camPitch=.3;camDist=touchUI?.95:1.15;camArm=1;camPos.copy(PL.pos).add(_v.set(Math.sin(camYaw)*1.6,.6,Math.cos(camYaw)*1.6));
   for(const p of poachers)p.dispose();poachers.length=0;
   for(let i=0;i<CFG.start+Math.floor(areaIdx/2);i++)spawnPoacher();spawnGuard();nextSpawn=CFG.every;
-  for(const c of cages)c.prog=0;
+  for(const c of cages){c.prog=0;c.kn=null;}
   setCamo(false);camoQ=false;templeSeen=false;$('tCamo').hidden=save.skin!=='blad';
   setupCrickets(CFG.crickets,mode==='master'?.06:.09);
   goldEaten=0;escapes=0;questIdx=0;newQuest();upOffer=null;upT=0;$('upBtn').hidden=true;tipIdx=save.tutorial?99:0;tipT=1;lostTimer=0;wasChased=false;maxChase=0;
@@ -2155,15 +2186,15 @@ async function travel(to){if(traveling)return;traveling=true;const from=areaIdx;
   travelReset();setScreen('travel');$('travelTitle').textContent=t('travelTo',{area:areaName(to)});
   await Poki.brk();travelStart();await bootYield();
   for(const p of poachers)p.dispose();poachers.length=0;if(netDome){scene.remove(netDome);netDome=null;}
-  setCamo(false);templeSeen=false;endEvent();evNext=PL.time+R(60,90);
-  await buildWorld(to,()=>{});
+  setCamo(false);templeSeen=false;endEvent();evNext=PL.time+R(60,90);endHawk();hawkNext=0;PL.tb=100;
+  await buildWorld(to,()=>{});buildWarmSpots();
   const g=gates.find(q=>q.to===from)||gates[0];if(g)placeAtGate(g);else placeGeckoAtSpawn();
   lastPL.copy(PL.pos);visOff.set(0,0,0);
   for(let i=0;i<CFG.start+Math.floor(areaIdx/2);i++)spawnPoacher();spawnGuard();nextSpawn=CFG.every;
   setupCrickets(CFG.crickets,mode==='master'?.06:.09);
   warmUp();updateCamera(1);await waitFrames(2);await settleFrames();travelEnd();await new Promise(r=>setTimeout(r,200));
   measure('area',AREAS[to].id,to>from?'enter':'return');
-  gateCool=2.5;PL.inv=Math.max(PL.inv,2);traveling=false;setHudArea();setScreen('play');Poki.start();perfSkip=3;
+  gateCool=2.5;PL.inv=Math.max(PL.inv,2);traveling=false;setHudArea();if(questIdx>=TUT)newQuest();setScreen('play');Poki.start();perfSkip=3;
   const hint=L().areaHints?.[AREAS[to].id]||'';const fg=gates.find(q=>q.fwd);
   showBanner(areaName(to),hint+(fg&&gateOpen(fg)?(hint?' ':'')+t('gateFind',{area:areaName(fg.to)}):'')+campHint(),8);}
 /* ---- rescue: cages, the nest and the finale ---- */
@@ -2186,15 +2217,14 @@ function updateCamp(dt){gnaw=null;const play=state==='play'&&!PL.dead;
     const d=Math.hypot(PL.pos.x-c.x,PL.pos.z-c.z);
     if(d<1.65&&!PL.climb&&PL.pos.y-c.base<1.3&&PL.pos.y-c.base>-.8){
       if(cageLocked(c)){gnaw={locked:FAMILY-3-rescuedOutside()};if(lockMsgT<=0){lockMsgT=4;showBanner(t('mainCamp'),t('cageLocked',{n:FAMILY-3-rescuedOutside()}),5);measureOnce('rescue','rainforest','locked');}}
-      else{c.prog+=dt/1.4;c.knot.rotation.z+=dt*9;gnaw={p:c.prog};if(c.prog>=1)rescue(c);}}
-    else c.prog=Math.max(0,c.prog-dt*.2);}
+      else{if(!c.kn)c.kn={n:0,miss:0,zc:R(.25,.75)};c.prog=c.kn.n/KNOTS;gnaw={c,p:c.prog};}}}
   if(NEST){const n=Math.min(FAMILY,save.rescued.length);
     if(NEST.geckos.length<n){const i=NEST.geckos.length,a=i/FAMILY*6.283+.3,r=1.55+(i%2)*.5,x=NEST.x+Math.cos(a)*r,z=NEST.z+Math.sin(a)*r;
       const g=npcGecko(i+1,.8+(i%3)*.08);g.root.position.set(x,terrainH(x,z),z);g.root.rotation.y=Math.atan2(NEST.x-x,NEST.z-z)+R(-.6,.6);NEST.geckos.push(g);}
     const d=Math.hypot(NEST.x-camera.position.x,NEST.z-camera.position.z);
     for(const g of NEST.geckos){g.root.visible=d<70;if(d<30)g.update(dt,0,{look:Math.sin(g.t*.6)*.8,surf:npcSurf});}}}
 function rescue(c){c.open=true;c.run=1.8;c.knot.visible=false;if(!save.rescued.includes(c.id))save.rescued.push(c.id);
-  const n=save.rescued.length;const v=addCoins(50);persist();AU.sfx.quest();
+  const n=save.rescued.length;const perfect=c.kn&&!c.kn.miss;const v=addCoins(perfect?65:50);if(perfect)setTimeout(()=>floater(PL.pos.clone().add(_v.set(0,.7,0)),t('knotPerfect'),'green'),500);persist();AU.sfx.quest();
   floater(PL.pos.clone().add(_v.set(0,.5,0)),t('rescuedFloat',{v}),'green');
   showBanner(t('rescuedTitle',{n,m:FAMILY}),n>=FAMILY?t('finNear'):c.area===0?t('rescuedNest'):t('rescuedText'),6);
   measure('rescue',AREAS[c.area].id,'cage'+(c.k+1));measure('family','n'+n,'rescued');
@@ -2234,11 +2264,12 @@ const GOALS={
   eat:{coins:15,ok:()=>true,init:()=>({n:PL.crickets}),done:q=>PL.crickets-q.n>=5,text:()=>L().quests[0],target:()=>nearestInsect(landBug)},
 };
 function newQuest(){
-  if(questIdx<TUT){const q=QUESTS[questIdx];quest={...q,kind:'q'+(questIdx+1),data:q.init?q.init():{},t0:PL.time};$('questText').textContent=L().quests[q.i]+` (+${q.coins})`;return;}
+  if(questIdx<TUT){const q=QUESTS[questIdx];quest={...q,kind:'q'+(questIdx+1),data:q.init?q.init():{},t0:PL.time};$('questText').textContent=L().quests[q.i]+` (+${q.coins})`;questLabel();return;}
+  if(chainQuest())return;
   const i0=GOAL_ORDER.indexOf(lastGoal);let kind='eat';
   for(let k=1;k<=GOAL_ORDER.length;k++){const c=GOAL_ORDER[(i0+k)%GOAL_ORDER.length];if(GOALS[c].ok()){kind=c;break;}}
   lastGoal=kind;const G=GOALS[kind],data=G.init?G.init():{};quest={kind,coins:G.coins,data,done:G.done,target:G.target,t0:PL.time};
-  $('questText').textContent=G.text(data)+` (+${G.coins})`;}
+  $('questText').textContent=G.text(data)+` (+${G.coins})`;questLabel();}
 function spawnPoacher(){const p=landSpot(PL.pos.x,PL.pos.z,42,70)||landSpot(0,0,20,100);if(!p)return;poachers.push(new Poacher(p.x,p.z));}
 function setPause(on){if(on&&state==='play'){setScreen('pause');Poki.stop();if(!document.hidden)measure('button','pause','interact');}else if(!on&&state==='pause'){setScreen('play');Poki.start();}}
 function gameOver(reason){if(PL.dead)return;PL.dead=true;Poki.stop();
@@ -2272,7 +2303,7 @@ async function revive(){if(adBusy||state!=='over')return;clearInterval(askIv);me
   if(!ok||state!=='over'){askEnd('ad-fail');return;}
   $('askCard').hidden=true;$('overCard').hidden=false;
   PL.revived=true;PL.dead=false;PL.health=Math.max(PL.health,PL.maxHealth*.6);PL.hunger=100;PL.thirst=100;PL.inv=3;PL.vel.set(0,0,0);
-  if(netDome){scene.remove(netDome);netDome=null;}
+  if(netDome){scene.remove(netDome);netDome=null;}endHawk();hawkNext=PL.time+R(30,50);PL.tb=Math.max(PL.tb,70);
   for(const p of poachers)p.dispose();poachers.length=0;for(let i=0;i<CFG.start;i++)spawnPoacher();nextSpawn=CFG.every;
   measure('revive',mode,'used');setScreen('play');Poki.start();}
 /* v1.22 upgrades while playing: only 8% of the players ever opened the shop, so coins meant nothing to most. As soon as the coins
@@ -2341,7 +2372,7 @@ function updatePlayer(dt){
   else if(PL.inWater&&PL.thirst<100)PL.thirst=Math.min(100,PL.thirst+9*dt);// wading or swimming through a lake quenches thirst too, a little slower
 
   if(PL.climb){updateClimb(dt,ix,iy,moving,sprint);return;}
-  const speed=(sprint?7.2:3.5)*pk.speed*(PL.swim?.62:PL.inWater?.55:1)*(.85+sc*.2)*(mode==='easy'?1.05:1);
+  const speed=(sprint?7.2:3.5)*pk.speed*coldSlow()*(PL.swim?.62:PL.inWater?.55:1)*(.85+sc*.2)*(mode==='easy'?1.05:1);
   const acc=PL.onGround?16:4;
   PL.vel.x=damp(PL.vel.x,move.x*speed,acc,dt);PL.vel.z=damp(PL.vel.z,move.z*speed,acc,dt);
   if(moving){const ty=Math.atan2(move.x,move.z);let d=ty-PL.yaw;d=Math.atan2(Math.sin(d),Math.cos(d));PL.yaw+=d*(1-Math.exp(-14*dt));}
@@ -2388,7 +2419,7 @@ function updateCamo(dt){camoCool-=dt;const can=canCamo();
 function stepOff(x,y,z,yaw){PL.climb=null;PL.regrab=.4;PL.pos.set(x,y,z);PL.yaw=yaw;PL.onGround=true;PL.vel.set(0,0,0);groundAt(x,z,y+.05);PL.perch=perch;gecko.root.position.copy(PL.pos);}
 /* v1.20: at the very top the gecko sits on the tip of the tree. Left/right turns it to look around, down climbs back down, jump lets go. */
 let topSeen=false;
-function sitOnTip(c,yaw){c.sit=true;c.sitT=0;PL.yaw=yaw;PL.vel.set(0,0,0);
+function sitOnTip(c,yaw){c.sit=true;c.sitT=0;PL.yaw=yaw;PL.vel.set(0,0,0);chainEv('treetop');
   if(!topSeen&&state==='play'){topSeen=true;floater(PL.pos.clone().add(_v.set(0,.35,0)),t('topFloat'),'green');AU.tone(660,.18,{vol:.06,to:990,type:'triangle'});measureOnce('treetop',AREAS[areaIdx].id,'first');}}
 function updateSit(dt,ix,iy){const c=PL.climb,t=c.t;c.sitT+=dt;
   PL.yaw-=ix*2.2*dt;const f=_p.set(Math.sin(PL.yaw),0,Math.cos(PL.yaw));
@@ -2434,13 +2465,18 @@ function findTarget(){let best=null,bs=1e9;const reach=perks().reach;gecko.mouth
   for(const c of crickets){if(!c.alive)continue;const d=c.pos.distanceTo(mouth);if(d>reach)continue;const dir=_w.subVectors(c.pos,mouth).normalize();const fa=dir.dot(f);
     const ca=dir.dot(_n.subVectors(PL.pos,camera.position).normalize());if(fa<.15&&ca<.5)continue;const s=d-fa*1.2-ca*.6;if(s<bs){bs=s;best=c;}}return best;}
 function updateTongue(dt){tongue.cool-=dt;
-  if(tongueQ&&tongue.t<0&&tongue.cool<=0&&!PL.drinking){tongue.t=0;tongue.cool=.42;tongue.target=findTarget();AU.sfx.tongue();
-    if(tongue.target){tongue.to.copy(tongue.target.pos);tongue.to.y+=.03;const l=tongue.target.pos.clone().sub(PL.pos);if(!PL.climb)PL.yaw=Math.atan2(l.x,l.z);}
+  if(tongueQ&&knotActive()){tongueQ=false;knotPress();}// next to a cage the tongue button bites the knot
+  if(tongueQ&&tongue.t<0&&tongue.cool<=0&&!PL.drinking){tongue.t=0;tongue.cool=.42;tongue.chk=false;tongue.target=findTarget();AU.sfx.tongue();
+    // v1.23: the tongue flies to where the insect is, or where it is going (the lead and the homing shrink on harder modes)
+    if(tongue.target){const c=tongue.target;tongue.aim.copy(c.pos).addScaledVector(c.vel,tongue.dur*.5*catchCfg().lead);tongue.aim.y+=.03;tongue.to.copy(tongue.aim);const l=c.pos.clone().sub(PL.pos);if(!PL.climb)PL.yaw=Math.atan2(l.x,l.z);}
     else{gecko.mouthWorld(mouth);tongue.to.copy(mouth).add(_v.set(0,0,1).applyQuaternion(gecko.root.quaternion).multiplyScalar(1.4));}}
   tongueQ=false;
   if(tongue.t>=0){tongue.t+=dt;const k=tongue.t/tongue.dur;gecko.mouthWorld(mouth);
-    if(tongue.target&&tongue.target.alive&&k<.5)tongue.to.copy(tongue.target.pos).add(_v.set(0,.03,0));
+    if(tongue.target&&tongue.target.alive&&k<.5)tongue.to.lerpVectors(tongue.aim,_tv.copy(tongue.target.pos).setY(tongue.target.pos.y+.03),catchCfg().home);
     const ext=k<.5?k*2:2-k*2;const tip=_p.lerpVectors(mouth,tongue.to,ext);
+    // at full length the tip either has the insect or it has missed
+    if(tongue.target&&!tongue.chk&&k>=.5){tongue.chk=true;const c=tongue.target;
+      if(!c.alive||tip.distanceTo(_tv.copy(c.pos).setY(c.pos.y+.03))>catchCfg().r*Math.max(1,geckoScale()*.85)){tongueMiss(c);tongue.target=null;}}
     const d=_v.subVectors(tip,mouth);const L=d.length();tongue.mesh.visible=tongue.tip.visible=L>.01;tongue.mesh.position.copy(mouth);tongue.mesh.scale.set(1,L,1);
     tongue.mesh.quaternion.setFromUnitVectors(Y,d.normalize());tongue.tip.position.copy(tip);
     if(tongue.target&&tongue.target.alive&&k>=.5){const c=tongue.target;c.pos.copy(tip);c.g.position.copy(tip);c.g.scale.setScalar((c.sp.strider?1.1:1.45)*Math.max(.2,ext));}
@@ -2448,8 +2484,8 @@ function updateTongue(dt){tongue.cool-=dt;
 function eatCricket(c){onboarding('first-cricket');if(c.gold)measure('cricket','gold','eaten');c.alive=false;c.g.visible=false;c.g.scale.setScalar(c.sp.strider?1.1:1.45);const pk=perks();const Rv=RARITY[c.sp.r];
   PL.hunger=Math.min(100,PL.hunger+Rv.hunger);PL.health=Math.min(PL.maxHealth,PL.health+4);PL.crickets++;
   const feast=EVT&&EVT.kind==='feast'?2:1;const before=stageName();PL.growth=Math.min(GROW_MAX,PL.growth+Rv.grow*pk.grow*feast);
-  const v=addCoins(Rv.coins*CFG.coinMult*pk.coins*feast);addToBook(c.sp);AU.sfx.eat();c.gold?AU.sfx.gold():AU.sfx.coin();if(c.gold)goldEaten++;
-  floater(PL.pos.clone().add(_v.set(0,.25,0)),'+'+v,'');
+  const cm=comboCatch();const v=addCoins(Rv.coins*CFG.coinMult*pk.coins*feast*cm);addToBook(c.sp);chainEv('catch',c.sp);chainEv('gold',c.sp);AU.sfx.eat();c.gold?AU.sfx.gold():AU.sfx.coin();if(c.gold)goldEaten++;
+  floater(PL.pos.clone().add(_v.set(0,.25,0)),'+'+v+(combo>=2?'  x'+combo:''),'');
   if(stageName()!==before){AU.sfx.grow();const si=stageIdx();if(si>(save.top||0)){save.top=si;persist();}if(si===2){announceGate();if(!save.adult){save.adult=true;persist();}}else showBanner(stageName()+'!',t('growText'),5);
     if(si>2){PL.maxHealth=perks().health;PL.health=Math.min(PL.maxHealth,PL.health+15);}measure('growth',stageKey(),'reached');measure('growth-time',stageKey(),timeKey(PL.time));floater(PL.pos.clone().add(_v.set(0,.5,0)),stageName()+'!','green');}
   if(c.ev)return;
@@ -2457,7 +2493,7 @@ function eatCricket(c){onboarding('first-cricket');if(c.gold)measure('cricket','
   setTimeout(()=>{if(state==='play'||state==='pause')c.water?spawnWaterBug(c,PL.pos):spawnCricket(c,PL.pos);},R(2500,6000));}
 function updateWaterBug(c,d,nearL,dt){
   if(d>50&&nearL&&nearL!==c.lake&&state==='play'){spawnWaterBug(c,PL.pos);return;}c.g.visible=d<45;if(d>70)return;
-  c.hopT-=dt;const flee=d<(PL.swim?1.3:1.6)&&state==='play'&&mode!=='easy';
+  c.hopT-=dt;const flee=state==='play'&&(c.scare||d<(PL.swim?1.3:1.6)&&mode!=='easy');if(flee)c.scare=0;
   if(c.hopT<=0||flee&&c.hopT>.25){let a=flee?Math.atan2(c.pos.x-PL.pos.x,c.pos.z-PL.pos.z)+R(-.7,.7):R(0,6.28);const sp=c.sp.strider?(flee?R(1.8,2.6):R(.7,1.6)):(flee?R(1,1.5):R(.3,.7));
     c.vel.set(Math.sin(a)*sp,0,Math.cos(a)*sp);c.hopT=flee?R(.5,.9):c.sp.strider?R(.6,2.2):R(.3,1);if(!c.sp.strider)c.spin=R(-4,4);if(d<30)ripple(c.pos.x,c.pos.z,.09,.35);}
   const k=Math.exp(-(c.sp.strider?2.2:1.2)*dt);c.vel.x*=k;c.vel.z*=k;
@@ -2472,7 +2508,7 @@ function updateCrickets(dt){const nearL=lakeNear(PL.pos);for(const c of crickets
   const d=c.pos.distanceTo(PL.pos);if(c.water){updateWaterBug(c,d,nearL,dt);continue;}
   if(d>48&&state==='play'&&!c.temple&&!c.ev){spawnCricket(c,PL.pos);continue;}
   c.hopT-=dt;const gH=(x,z)=>c.temple?TI.F:rockGround(x,z);/* insects hop onto stones instead of into them */const g=gH(c.pos.x,c.pos.z);
-  if(c.pos.y<=g+.001&&c.hopT<=0){const flee=d<(PL.speed>5?3.2:1.6)&&state==='play'&&mode!=='easy';let a=flee?Math.atan2(c.pos.x-PL.pos.x,c.pos.z-PL.pos.z)+R(-.6,.6):R(0,6.28);
+  if(c.pos.y<=g+.001&&c.hopT<=0){const fr=(PL.speed>5?3.2:1.6)*(c.sp.r===2?1.35:1);const flee=state==='play'&&(c.scare||d<fr&&(mode!=='easy'||c.sp.r===2&&PL.speed>5));c.scare=0;let a=flee?Math.atan2(c.pos.x-PL.pos.x,c.pos.z-PL.pos.z)+R(-.6,.6):R(0,6.28);
     const s=flee?R(1.6,2.6):R(.6,1.4);c.vel.set(Math.sin(a)*s,c.temple?R(1.4,2):R(2,3.2),Math.cos(a)*s);c.yaw=a;c.hopT=flee?R(.4,.9):R(2,6);}
   if(c.pos.y>g||c.vel.y>0){c.vel.y-=14*dt;c.pos.addScaledVector(c.vel,dt);const ng=gH(c.pos.x,c.pos.z);
     if(c.temple?!templeFree(c.pos.x,c.pos.z):ng<WATER_Y+.05||insideBox(c.pos.x,c.pos.z,.1)){c.pos.x-=c.vel.x*dt*2;c.pos.z-=c.vel.z*dt*2;c.vel.x*=-.5;c.vel.z*=-.5;}
@@ -2635,11 +2671,12 @@ function drawMinimap(){const W=mm.width,S=W/76;mg.save();mg.clearRect(0,0,W,W);m
     mg.save();mg.translate(W/2+vx*(W/2-11),W/2+vy*(W/2-11));mg.rotate(Math.atan2(vy,vx));mg.fillStyle=col;mg.strokeStyle='#14260d';mg.lineWidth=1.5;mg.beginPath();mg.moveTo(8,0);mg.lineTo(-5,-6);mg.lineTo(-5,6);mg.closePath();mg.fill();mg.stroke();mg.restore();};
   {const g=gates.find(q=>q.fwd&&gateOpen(q));if(g)rim(g.x,g.z,'#b9e44f');}
   if(TI)mmIcon('temple',TI.x,TI.z,false);
+  if(warmSpots.length){const nw=PL.tb<55?nearestWarm():null;for(const w of warmSpots)mmIcon('sun',w.x,w.z,w===nw);}
   if(NEST)mmIcon('nest',NEST.x,NEST.z,true);
   if(CAMP)mmIcon(closedCages()?'camp':'campDone',CAMP.x,CAMP.z,!!closedCages());
   mg.save();mg.translate(W/2,W/2);mg.rotate(camYaw-PL.yaw+Math.PI);mg.fillStyle='#b9e44f';mg.strokeStyle='#14260d';mg.lineWidth=1.5;mg.beginPath();mg.moveTo(0,-8);mg.lineTo(6,6);mg.lineTo(0,3);mg.lineTo(-6,6);mg.closePath();mg.fill();mg.stroke();mg.restore();}
 // Icons are drawn upright in screen space. Off the map they sit on the rim with an arrow and the distance in metres.
-const MM_ICON={camp:'#ff7a1e',campDone:'#7d8a70',nest:'#e2b04a',temple:'#cdb26a'};
+const MM_ICON={camp:'#ff7a1e',campDone:'#7d8a70',nest:'#e2b04a',temple:'#cdb26a',sun:'#f2a23a'};
 function mmIcon(kind,x,z,rimOn){const W=mm.width,S=W/76,dx=x-PL.pos.x,dz=z-PL.pos.z,d=Math.hypot(dx,dz),c=Math.cos(camYaw),sn=Math.sin(camYaw);
   let sx=(dx*c-dz*sn)*S,sy=(dx*sn+dz*c)*S;const lim=W/2-15;const out=Math.hypot(sx,sy)>lim;
   if(out&&!rimOn)return;
@@ -2651,11 +2688,12 @@ function mmIcon(kind,x,z,rimOn){const W=mm.width,S=W/76,dx=x-PL.pos.x,dz=z-PL.po
   mg.fillStyle='#fff';mg.strokeStyle='#fff';mg.translate(cx,cy);const q=r/9.5;mg.scale(q,q);
   if(kind==='camp'||kind==='campDone'){mg.beginPath();mg.moveTo(0,-5.5);mg.lineTo(6,4.5);mg.lineTo(-6,4.5);mg.closePath();mg.fill();mg.fillStyle=MM_ICON[kind];mg.beginPath();mg.moveTo(0,-.5);mg.lineTo(2.2,4.5);mg.lineTo(-2.2,4.5);mg.closePath();mg.fill();}
   else if(kind==='nest'){mg.beginPath();mg.ellipse(-2.3,-.6,2.1,2.8,0,0,6.28);mg.ellipse(2.3,-.6,2.1,2.8,0,0,6.28);mg.fill();mg.lineWidth=2;mg.strokeStyle='#6a4a20';mg.beginPath();mg.moveTo(-6,2);mg.quadraticCurveTo(0,7.5,6,2);mg.stroke();}
+  else if(kind==='sun'){mg.beginPath();mg.arc(0,0,3.2,0,6.28);mg.fill();mg.lineWidth=1.6;mg.beginPath();for(let k=0;k<8;k++){const a=k*.785;mg.moveTo(Math.cos(a)*4.6,Math.sin(a)*4.6);mg.lineTo(Math.cos(a)*6.6,Math.sin(a)*6.6);}mg.stroke();}
   else{for(let k=0;k<3;k++)mg.fillRect(-6+k*2,2-k*3,12-k*4,2.6);mg.fillStyle='#ffd23a';mg.fillRect(-1,-6.5,2,2.2);}
   mg.restore();
   if(out){mg.save();mg.font='900 11px Nunito, sans-serif';mg.textAlign='center';mg.textBaseline='middle';const tx=W/2+sx*(lim-r-9)/lim,ty=W/2+sy*(lim-r-9)/lim;
     mg.lineWidth=3;mg.strokeStyle='rgba(8,20,12,.85)';mg.strokeText(Math.round(d)+'m',tx,ty);mg.fillStyle='#fff';mg.fillText(Math.round(d)+'m',tx,ty);mg.restore();}}
-const statEls={health:$('sHealth'),hunger:$('sHunger'),thirst:$('sThirst'),stamina:$('sStamina')};
+const statEls={health:$('sHealth'),hunger:$('sHunger'),thirst:$('sThirst'),stamina:$('sStamina'),temp:$('sTemp')};
 function setStat(k,v,max=100){const el=statEls[k];el.querySelector('.fill').style.width=(clamp(v/max,0,1)*100)+'%';el.classList.toggle('low',v/max<.25&&k!=='stamina');}
 let promptKey='';
 // Below this thirst an arrow points to the nearest lake shore (thirst was 42% of game overs on easy).
@@ -2691,15 +2729,17 @@ function updateWaterArrow(){const el=$('waterArrow');const on=state==='play'&&PL
   const a=Math.atan2(_wt.x-PL.pos.x,_wt.z-PL.pos.z)-(camYaw+Math.PI);el.style.transform=`translateX(-50%) rotate(${-a}rad)`;
   $('sThirst').classList.add('low');}
 function updateHUD(dt){hudT-=dt;if(hudT>0)return;hudT=.1;
-  setStat('health',PL.health,PL.maxHealth);setStat('hunger',PL.hunger);setStat('thirst',PL.thirst);setStat('stamina',PL.stamina);
+  setStat('health',PL.health,PL.maxHealth);setStat('hunger',PL.hunger);setStat('thirst',PL.thirst);setStat('stamina',PL.stamina);if(climate())setStat('temp',PL.tb);
   {const si=stageIdx();$('growthFill').style.width=(si>=LAST_STAGE?100:clamp((PL.growth-STAGE_AT[si])/(STAGE_AT[si+1]-STAGE_AT[si]),0,1)*100)+'%';}$('growthLabel').innerHTML='<b>'+stageName()+'</b>';
   $('hudCoins').textContent=save.coins;$('hudTime').textContent=fmtTime(PL.time);
-  const al=$('alert');if(PL.camo){al.hidden=false;al.className='hidden-status';al.textContent=t('alertCamo');}
+  const al=$('alert');if(HAWK&&HAWK.ph!=='leave'&&!PL.dead){const sf=hawkCover();al.hidden=false;al.className='hawk'+(sf?' safe':'');al.textContent=t(sf?'alertHawkSafe':'alertHawk')+(HAWK.ph==='circle'?' \u00b7 '+Math.max(1,Math.ceil(HAWK.circle-HAWK.t)):'');}
+  else if(PL.camo){al.hidden=false;al.className='hidden-status';al.textContent=t('alertCamo');}
   else if(PL.chased){al.hidden=false;al.className='';al.textContent=t('alertChased');}
   else if(PL.hidden&&PL.sus){al.hidden=false;al.className='hidden-status';al.textContent=t('alertHidden');}
-  else if(PL.sus){al.hidden=false;al.className='';al.textContent=t('alertSus');}else al.hidden=true;
+  else if(PL.sus){al.hidden=false;al.className='';al.textContent=t('alertSus');}
+  else if(climate()&&PL.tb<30){al.hidden=false;al.className='';al.textContent=t(climate()==='cold'?'alertCold':'alertHot');}else al.hidden=true;
   $('hudFam').textContent=Math.min(FAMILY,save.rescued.length)+'/'+FAMILY;
-  let pr='';if(gnaw)pr=gnaw.locked?t('prLocked',{n:gnaw.locked}):t('prGnaw',{p:Math.min(100,Math.round(gnaw.p*100))});else if(PL.canDrink&&PL.thirst<97&&!PL.drinking)pr=t('prDrinkAuto');
+  let pr='';if(gnaw)pr=gnaw.locked?t('prLocked',{n:gnaw.locked}):t(touchUI?'prKnotTouch':'prKnotKb');else if(PL.canDrink&&PL.thirst<97&&!PL.drinking)pr=t('prDrinkAuto');
   else if(PL.drinking)pr=t('prDrinking');else if(!PL.camo&&canCamo())pr=t(touchUI?'prCamoTouch':'prCamoKb');else if(PL.climb&&PL.climb.sit)pr=t(touchUI?'prTopTouch':'prTopKb');else if(PL.climb&&PL.climb.type==='tree'&&PL.climb.h>=PL.climb.t.climbMax-.05)pr=t(touchUI?'prSafeTouch':'prSafeKb');
   else if(ringT&&PL.crickets<3)pr=t(touchUI?'prEatTouch':'prEatKb');
   else if(!climbedOnce&&!PL.climb&&!PL.swim&&(nearTrunk()||poachers.some(q=>q.state==='chase')))pr=t('prClimb');
@@ -2711,8 +2751,173 @@ function updateTips(dt){if(tipIdx>=5){$('tip').style.opacity=0;return;}tipT-=dt;
   if(tipIdx>=5){setTimeout(()=>$('tip').style.opacity=0,7000);save.tutorial=true;persist();}}}
 let ringT=null;
 function updateTargetRing(){const ring=$('targetRing');ringT=null;if(state!=='play'||tongue.t>=0){ring.hidden=true;return;}const t=findTarget();ringT=t;if(!t){ring.hidden=true;return;}
-  const v=t.pos.clone().add(_v.set(0,.03,0)).project(camera);if(v.z>1){ring.hidden=true;return;}ring.hidden=false;ring.style.left=((v.x*.5+.5)*vw)+'px';ring.style.top=((-v.y*.5+.5)*vh)+'px';}
+  const v=t.pos.clone().add(_v.set(0,.03,0)).project(camera);if(v.z>1){ring.hidden=true;return;}ring.hidden=false;ring.classList.toggle('moving',!bugCalm(t));ring.style.left=((v.x*.5+.5)*vw)+'px';ring.style.top=((-v.y*.5+.5)*vh)+'px';}
 
+/* =====================================================================
+   v1.23 gameplay. Player feedback: "click to auto-catch insects, ~5 repetitive missions, stand near a cage for a few seconds".
+   - Catching takes aim and timing: the tongue flies to where the insect is (or is going); an insect that hops away is missed,
+     and a miss startles the insects around it. Catches in a row build a combo that multiplies the coins.
+   - Every area has its own threat: cold in the snow (warm up on sun stones or at the poachers' fire), heat in the desert
+     (cool off in the shade or the water) and a bird of prey over the jungle and the rainforest (hide under a tree or in the plants).
+   - A cage opens by biting through three knots with good timing; a bad bite snaps loudly and the poachers come to look.
+   - Every area has a chain of five goals that use all of the above, saved between runs, with a reward at the end.
+   ===================================================================== */
+// ---- catching: aim, timing and combos ----
+const CATCH={easy:{r:.17,home:.7,lead:1},medium:{r:.12,home:.3,lead:.6},hard:{r:.095,home:.12,lead:.3},master:{r:.08,home:0,lead:0}};
+const catchCfg=()=>CATCH[mode]||CATCH.medium;
+const COMBO_SEC=6;let combo=0,comboT=-99;
+const bugCalm=c=>c.water?Math.hypot(c.vel.x,c.vel.z)<.25:c.vel.lengthSq()<1e-4;
+function scareBugs(p,r){for(const c of crickets)if(c.alive&&!c.water&&!c.temple&&c.pos.distanceTo(p)<r){c.scare=1;c.hopT=Math.min(c.hopT,R(0,.2));}}
+function comboReset(){combo=0;if(chainWants('combo')){const st=chainState();if(st.n){st.n=0;questLabel();}}}
+function tongueMiss(c){comboReset();if(c&&c.alive){c.scare=1;c.hopT=0;scareBugs(c.pos,1.8);}
+  floater(PL.pos.clone().add(_v.set(0,.3,0)),t('missFloat'),'grey');AU.tone(320,.12,{vol:.05,to:170,type:'triangle'});measureOnce('catch','miss','first');}
+// returns the coin multiplier of this catch: x1, x1.25, x1.5 ... up to x3
+function comboCatch(){combo=PL.time-comboT<=COMBO_SEC?combo+1:1;comboT=PL.time;if(combo>=2)measureOnce('combo','x'+Math.min(combo,5),'reached');chainEv('combo',combo);return 1+.25*Math.min(combo-1,8);}
+function updateCombo(){const el=$('combo'),left=COMBO_SEC-(PL.time-comboT),on=state==='play'&&combo>=2&&left>0;if(!on&&combo&&left<=0)comboReset();el.hidden=!on;if(!on)return;
+  $('comboN').textContent='Combo x'+combo;$('comboBar').style.width=(left/COMBO_SEC*100).toFixed(1)+'%';}
+
+// ---- area climate: cold snow, hot desert ----
+const CLIMATE={snow:'cold',desert:'hot'};
+const climate=()=>CLIMATE[AREAS[areaIdx].id]||null;
+const TB_SEC={easy:190,medium:150,hard:120,master:100};
+const SHADE_R={big:3.2,acacia:3.4,small:2.2,pine:2.3,palm:2.1};
+function shadeTree(x,z,y){for(const t of trees){const r=SHADE_R[t.kind];if(!r)continue;const dx=x-t.x,dz=z-t.z;if(dx>r||dx<-r||dz>r||dz<-r)continue;if(dx*dx+dz*dz<r*r&&y<t.base+t.canopy+.6)return t;}return null;}
+let warmSpots=[],tbT=0,tbSeen={};
+const warmTex=canvasTex(128,128,g=>{g.clearRect(0,0,128,128);const gr=g.createRadialGradient(64,64,4,64,64,63);gr.addColorStop(0,'rgba(255,214,120,.95)');gr.addColorStop(.55,'rgba(255,170,70,.55)');gr.addColorStop(1,'rgba(255,150,60,0)');g.fillStyle=gr;g.fillRect(0,0,128,128);},{repeat:false});
+const sunBeamTex=canvasTex(8,128,g=>{const gr=g.createLinearGradient(0,0,0,128);gr.addColorStop(0,'rgba(255,230,170,0)');gr.addColorStop(.7,'rgba(255,220,150,.22)');gr.addColorStop(1,'rgba(255,210,140,.4)');g.clearRect(0,0,8,128);g.fillStyle=gr;g.fillRect(0,0,8,128);},{repeat:false});
+const warmMat=new THREE.MeshBasicMaterial({map:warmTex,transparent:true,depthWrite:false,polygonOffset:true,polygonOffsetFactor:-3,polygonOffsetUnits:-3});
+const sunBeamMat=new THREE.MeshBasicMaterial({map:sunBeamTex,transparent:true,depthWrite:false,blending:THREE.AdditiveBlending,side:THREE.DoubleSide,fog:false});
+// Sun stones: sunny patches with a warm glow and a light beam, spread over the snow area (rebuilt after each world build)
+function buildWarmSpots(){for(const w of warmSpots)world.remove(w.g);warmSpots=[];if(climate()!=='cold')return;
+  for(let k=0;k<7;k++){const s=landSpot(SPAWN.x,SPAWN.z,10+k*11,22+k*13);if(!s||warmSpots.some(w=>Math.hypot(w.x-s.x,w.z-s.z)<14))continue;
+    const r=1.25,g=new THREE.Group(),y0=s.y;g.position.set(s.x,y0,s.z);
+    const pg=new THREE.PlaneGeometry(r*2,r*2,8,8).rotateX(-Math.PI/2),pa=pg.attributes.position;
+    for(let i=0;i<pa.count;i++)pa.setY(i,rockGround(s.x+pa.getX(i),s.z+pa.getZ(i))-y0+.025);
+    const decal=NOREFL(new THREE.Mesh(pg,warmMat));decal.renderOrder=2;decal.userData.noAO=true;g.add(decal);
+    const beam=NOREFL(new THREE.Mesh(new THREE.CylinderGeometry(r*.55,r*.95,8,14,1,true),sunBeamMat));beam.position.y=4;beam.userData.noAO=true;g.add(beam);
+    world.add(g);warmSpots.push({x:s.x,z:s.z,y:y0,r,g,beam});}}
+function nearestWarm(){let b=null,bd=1e9;for(const w of warmSpots){const d=Math.hypot(w.x-PL.pos.x,w.z-PL.pos.z);if(d<bd){bd=d;b=w;}}return b;}
+function climateSource(cl){if(TI&&inTemple())return 'temple';
+  if(cl==='cold'){for(const w of warmSpots)if(Math.hypot(PL.pos.x-w.x,PL.pos.z-w.z)<w.r&&PL.pos.y-w.y<.7)return 'stone';
+    if(CAMP&&Math.hypot(PL.pos.x-CAMP.x,PL.pos.z-CAMP.z)<3.4)return 'fire';return '';}
+  if(PL.swim||PL.inWater)return 'water';if(shadeTree(PL.pos.x,PL.pos.z,PL.pos.y)||PL.climb&&SHADE_R[PL.climb.t?.kind])return 'shade';return '';}
+const coldSlow=()=>climate()==='cold'&&PL.tb<30?.7+PL.tb*.01:1;
+const heatThirst=()=>climate()==='hot'&&PL.tb<30?1.8:1;
+function updateClimate(dt){const cl=climate(),el=statEls.temp;if(el.hidden===!!cl)el.hidden=!cl;
+  for(const w of warmSpots)w.g.visible=Math.hypot(w.x-camera.position.x,w.z-camera.position.z)<70;sunBeamMat.opacity=.8+Math.sin(time*1.7)*.2;
+  if(!cl){PL.tb=100;return;}el.classList.toggle('hot',cl==='hot');
+  tbT-=dt;if(tbT<=0){tbT=.15;PL.tbSrc=climateSource(cl);}const src=PL.tbSrc,loss=100/(TB_SEC[mode]||150);let d;
+  if(cl==='cold')d=src==='stone'?20:src==='fire'?12:src==='temple'?6:-loss*(PL.swim||PL.inWater?3:1)*(PL.climb?1.2:1);
+  else{d=src==='water'?25:src==='shade'||src==='temple'?11:-loss*(PL.speed>5?1.25:1);if(PL.drinking)d=Math.max(d,8);if(EVT&&EVT.kind==='rain')d=Math.max(d,4);}
+  PL.tb=clamp(PL.tb+d*dt,0,100);
+  if(src&&PL.tb>=99.5)chainEv(cl==='cold'?'bask':'shade');
+  if(!tbSeen[cl]&&PL.tb<75&&state==='play'){tbSeen[cl]=1;showBanner(t(cl==='cold'?'coldTitle':'heatTitle'),t(cl==='cold'?'coldText':'heatText'),8);measureOnce('climate',cl,'seen');}
+  if(PL.tb<=0&&!PL.dead){PL.health-=dt*(mode==='easy'?1.5:mode==='master'?4:2.5);if(PL.health<=0){PL.health=0;gameOver(cl==='cold'?'cold':'heat');}}}
+
+// ---- bird of prey (jungle and rainforest) ----
+let HAWK=null,hawkNext=0,hawkSeen=false;
+const hawkArea=()=>areaIdx===0||areaIdx===3;
+const HAWK_CIRCLE={easy:9,medium:7.5,hard:6.5,master:6},HAWK_DMG={easy:25,medium:35,hard:45,master:55};
+let hawkMesh=null;
+function makeHawk(){const g=new THREE.Group(),brown=new THREE.MeshStandardMaterial({color:'#6b4a2e',roughness:.85}),light=new THREE.MeshStandardMaterial({color:'#d9c39a',roughness:.85}),
+    dark=new THREE.MeshStandardMaterial({color:'#3a2a1c',roughness:.85,side:THREE.DoubleSide}),beakM=new THREE.MeshStandardMaterial({color:'#e2b234',roughness:.5});
+  const body=new THREE.Mesh(new THREE.SphereGeometry(1,14,10),brown);body.scale.set(.2,.18,.58);g.add(body);
+  const belly=new THREE.Mesh(new THREE.SphereGeometry(1,12,8,0,Math.PI*2,Math.PI*.55,Math.PI*.45),light);belly.scale.set(.19,.17,.52);g.add(belly);
+  const head=new THREE.Mesh(new THREE.SphereGeometry(.14,12,10),brown);head.position.set(0,.07,.58);g.add(head);
+  const face=new THREE.Mesh(new THREE.SphereGeometry(.12,10,8),light);face.position.set(0,.02,.64);g.add(face);
+  const beak=new THREE.Mesh(new THREE.ConeGeometry(.045,.14,7).rotateX(Math.PI/2),beakM);beak.position.set(0,.03,.76);beak.rotation.x=.35;g.add(beak);
+  for(const sd of [-1,1]){const e=new THREE.Mesh(new THREE.SphereGeometry(.026,8,6),pupilMat);e.position.set(sd*.085,.1,.66);g.add(e);}
+  const ts=new THREE.Shape();ts.moveTo(-.08,0);ts.lineTo(-.24,-.55);ts.lineTo(-.08,-.6);ts.lineTo(0,-.52);ts.lineTo(.08,-.6);ts.lineTo(.24,-.55);ts.lineTo(.08,0);
+  const tail=new THREE.Mesh(new THREE.ShapeGeometry(ts).rotateX(Math.PI/2),dark);tail.position.set(0,.02,-.4);g.add(tail);
+  const ws=new THREE.Shape();ws.moveTo(0,.26);ws.lineTo(.5,.3);ws.lineTo(.95,.2);ws.lineTo(1.25,.06);ws.lineTo(1.3,-.04);ws.lineTo(1.18,-.1);ws.lineTo(1.2,-.16);ws.lineTo(1.06,-.18);ws.lineTo(1.05,-.24);ws.lineTo(.9,-.22);ws.lineTo(.6,-.28);ws.lineTo(0,-.3);
+  const wg=new THREE.ShapeGeometry(ws).rotateX(Math.PI/2);const wings=[];
+  for(const sd of [-1,1]){const piv=new THREE.Group();piv.position.set(sd*.14,.06,.08);const w=new THREE.Mesh(wg,dark);w.scale.x=sd;piv.add(w);g.add(piv);wings.push(piv);}
+  g.traverse(o=>{if(o.isMesh){o.castShadow=false;o.userData.noAO=true;}});
+  const sh=new THREE.Mesh(new THREE.PlaneGeometry(2.6,1.5).rotateX(-Math.PI/2),new THREE.MeshBasicMaterial({map:blobMat.map,transparent:true,depthWrite:false,opacity:.5,polygonOffset:true,polygonOffsetFactor:-2,polygonOffsetUnits:-2}));
+  sh.renderOrder=2;sh.userData.noAO=true;NOREFL(sh);
+  return{g,wings,tail,sh};}
+function startHawk(){if(!hawkMesh)hawkMesh=makeHawk();const M=hawkMesh;scene.add(M.g,M.sh);M.g.visible=M.sh.visible=true;
+  const a=R(0,6.28);HAWK={ph:'circle',t:0,a,c:PL.pos.clone(),pos:new V3(),aim:new V3(),from:new V3(),vel:new V3(),dur:1.5,circle:HAWK_CIRCLE[mode]||7.5};
+  HAWK.pos.set(PL.pos.x+Math.cos(a)*30,PL.pos.y+18,PL.pos.z+Math.sin(a)*30);
+  AU.tone(2300,.55,{vol:.05,to:1500,type:'sawtooth'});AU.tone(2600,.4,{vol:.03,to:1700,type:'sawtooth',delay:.5});
+  if(!hawkSeen){hawkSeen=true;showBanner(t('hawkTitle'),t('hawkText'),7);}measure('hawk',AREAS[areaIdx].id,'start');}
+function endHawk(){if(hawkMesh){scene.remove(hawkMesh.g,hawkMesh.sh);}HAWK=null;}
+function hawkCover(){if(TI&&inTemple())return true;if(inCover())return true;
+  if(PL.climb)return PL.climb.type==='tree'&&!!SHADE_R[PL.climb.t.kind]&&!PL.climb.sit&&PL.climb.h<PL.climb.t.canopy+.6;
+  if(PL.perch)return !!SHADE_R[PL.perch.kind];return !PL.swim&&!!shadeTree(PL.pos.x,PL.pos.z,PL.pos.y);}
+function updateHawk(dt){
+  if(!HAWK){if(PL.dead||!hawkArea()||traveling)return;const want=chainWants('hawk');
+    const ready=areaIdx===3?PL.time>40:(questIdx>=TUT&&PL.time>75);if(!ready)return;
+    if(!hawkNext||want&&hawkNext-PL.time>14)hawkNext=PL.time+(want?R(6,12):R(45,80));
+    if(PL.time>=hawkNext&&!(TI&&inTemple()))startHawk();return;}
+  const H=HAWK,M=hawkMesh;H.t+=dt;const P=PL.pos;let flap=0;
+  if(H.ph==='circle'){H.c.lerp(P,1-Math.exp(-1.5*dt));H.a+=dt*.6;const k=Math.min(1,H.t/2.5),rr=lerp(30,7,k),hh=lerp(18,8,k);if(H.t%2.4<dt&&H.t>1)AU.tone(2400,.45,{vol:.04,to:1500,type:'sawtooth'});
+    _v.set(H.c.x+Math.cos(H.a)*rr,H.c.y+hh,H.c.z+Math.sin(H.a)*rr);H.vel.subVectors(_v,H.pos).divideScalar(Math.max(dt,1e-3));H.pos.copy(_v);flap=Math.sin(H.t*2.2)>.6?1:0;
+    if(H.t>=H.circle){H.ph='dive';H.t=0;H.from.copy(H.pos);H.aim.copy(P);AU.noise(1.2,700,.12,'bandpass');AU.tone(2500,.35,{vol:.06,to:1400,type:'sawtooth'});}}
+  else if(H.ph==='dive'){const u=Math.min(1,H.t/H.dur);if(u<.62)H.aim.lerp(P,1-Math.exp(-10*dt));// it tracks the gecko until the last half second
+    const e=u*u;_v.lerpVectors(H.from,H.aim,e);_v.y=lerp(H.from.y,H.aim.y+.15,e);H.vel.subVectors(_v,H.pos).divideScalar(Math.max(dt,1e-3));H.pos.copy(_v);
+    if(u>=1){const ok=hawkCover()||Math.hypot(P.x-H.aim.x,P.z-H.aim.z)>1.1*geckoScale()||PL.inv>0||PL.dead;H.ph='leave';H.t=0;
+      H.vel.set(H.vel.x,0,H.vel.z).setLength(9);H.vel.y=5;
+      if(ok){const v=addCoins(10);floater(P.clone().add(_v.set(0,.45,0)),t('hawkMiss',{v}),'green');AU.sfx.quest();chainEv('hawk');measure('hawk',AREAS[areaIdx].id,'escape');}
+      else{PL.health-=HAWK_DMG[mode]||35;PL.inv=1.5;AU.sfx.hit();$('hurt').style.opacity=1;setTimeout(()=>$('hurt').style.opacity=0,250);floater(P.clone().add(_v.set(0,.4,0)),t('hawkHit'),'');
+        measure('hawk',AREAS[areaIdx].id,'hit');if(PL.health<=0){PL.health=0;gameOver('hawk');}}}}
+  else{H.vel.y+=dt*4;H.pos.addScaledVector(H.vel,dt);flap=1;if(H.t>3.5){endHawk();hawkNext=PL.time+R(70,120);return;}}
+  M.g.position.copy(H.pos);if(H.vel.lengthSq()>.01){_w.copy(H.pos).add(H.vel);M.g.lookAt(_w);}
+  if(H.ph==='circle')M.g.rotateZ(-.45);// banks into the turn
+  const fold=H.ph==='dive'?smoothstep(.1,.5,H.t/H.dur):0,fa=flap?Math.sin(H.t*12)*.55:.06*Math.sin(H.t*3);
+  M.wings[0].rotation.set(0,-fold*.9,-fa+fold*.5);M.wings[1].rotation.set(0,fold*.9,fa-fold*.5);
+  const gy=rockGround(H.pos.x,H.pos.z),hgt=Math.max(0,H.pos.y-gy);M.sh.position.set(H.pos.x,Math.max(gy,WATER_Y)+.04,H.pos.z);M.sh.rotation.y=Math.atan2(H.vel.x,H.vel.z);
+  M.sh.scale.setScalar(1+hgt*.05);M.sh.material.opacity=clamp(.75-hgt*.03,.2,.65);}
+
+// ---- cage knots ----
+const KNOTS=3,KN_W={easy:.32,medium:.24,hard:.18,master:.14},KN_SPD={easy:2.1,medium:2.7,hard:3.3,master:3.8};let knotPh=0,knotCool=0;
+const knotActive=()=>!!(gnaw&&gnaw.c)&&state==='play'&&!PL.dead;
+const knotMark=()=>.5+.5*Math.sin(knotPh);
+function knotPress(){const c=gnaw.c,k=c.kn;if(knotCool>0)return;const zw=KN_W[mode]||.24;
+  if(Math.abs(knotMark()-k.zc)<=zw/2+.015){k.n++;c.knot.rotation.z+=1.3;AU.sfx.eat();AU.noise(.08,3200,.12,'highpass');
+    if(k.n>=KNOTS)rescue(c);else{k.zc=R(.2,.8);knotPh+=R(1,2.5);floater(PL.pos.clone().add(_v.set(0,.35,0)),k.n+'/'+KNOTS,'green');}}
+  else{k.miss++;knotCool=.7;AU.noise(.18,1400,.4,'bandpass');AU.tone(180,.2,{vol:.12,to:90,type:'square'});floater(PL.pos.clone().add(_v.set(0,.4,0)),t('knotMiss'),'');
+    $('knot').classList.add('bad');setTimeout(()=>$('knot').classList.remove('bad'),400);
+    for(const p of poachers){const d=Math.hypot(p.pos.x-PL.pos.x,p.pos.z-PL.pos.z);if(d<24){p.alert=Math.max(p.alert,d<10?.95:.7);p.last.copy(PL.pos);}}measure('knot',AREAS[areaIdx].id,'miss');}}
+function updateKnot(dt){const on=knotActive();const el=$('knot');if(el.hidden===on)el.hidden=!on;knotCool-=dt;if(!on)return;
+  const k=gnaw.c.kn,zw=KN_W[mode]||.24;knotPh+=dt*(KN_SPD[mode]||2.7)*(1+.22*k.n);
+  $('knotZone').style.left=((k.zc-zw/2)*100).toFixed(1)+'%';$('knotZone').style.width=(zw*100).toFixed(1)+'%';$('knotMark').style.left=(knotMark()*100).toFixed(1)+'%';
+  const ds=$('knotDots').children;for(let i=0;i<ds.length;i++)ds[i].classList.toggle('on',i<k.n);}
+
+// ---- goal chains per area ----
+const CHAINS={jungle:[['combo',3],['treetop',1],['hawk',1],['rescue',3],['gold',1]],
+  snow:[['bask',1],['catch',2,'sneeuwkever'],['combo',4],['rescue',3],['gold',1]],
+  desert:[['shade',1],['catch',2,'mestkever'],['drink',1],['rescue',3],['gold',1]],
+  rainforest:[['catch',3,'vuurvliegje'],['hawk',2],['treetop',1],['combo',4],['gold',1]]};
+const CHAIN_REWARD=[150,200,250,300],STEP_COINS=20;
+function chainState(id=AREAS[areaIdx].id){if(!save.chains||typeof save.chains!=='object')save.chains={};return save.chains[id]||(save.chains[id]={s:0,n:0});}
+function chainStep(){const C=CHAINS[AREAS[areaIdx].id],st=chainState();return C&&st.s<C.length?C[st.s]:null;}
+const chainsDone=()=>AREAS.filter(A=>CHAINS[A.id]&&chainState(A.id).s>=CHAINS[A.id].length).length;
+const chainWants=k=>!!quest&&quest.kind==='chain'&&chainStep()?.[0]===k;
+const chainCount=(s,st)=>s[0]==='rescue'?cages.filter(c=>c.open).length:st.n;
+function chainEv(k,a){if(!chainWants(k))return;const s=chainStep(),st=chainState();
+  if(k==='catch'&&a?.id!==s[2])return;if(k==='gold'&&!(a&&a.r===2&&a.area===areaIdx))return;
+  if(k==='combo')st.n=a;else st.n++;persist();questLabel();}
+const areaRare=()=>SPECIES.find(q=>q.area===areaIdx&&q.r===2);
+function chainText(s){const k=s[0];return k==='combo'?t('chCombo',{n:s[1]}):k==='catch'?t('chCatch',{n:s[1],sp:insectName(speciesById(s[2]))}):k==='gold'?t('chGold',{n:insectName(areaRare())}):
+  t({treetop:'chTreetop',hawk:'chHawk',rescue:'chRescue',bask:'chBask',shade:'chShade',drink:'chDrink'}[k]);}
+function chainTarget(s){const k=s[0];
+  if(k==='combo')return nearestInsect(landBug);if(k==='catch')return nearestInsect(c=>c.sp.id===s[2]&&!c.temple);if(k==='gold')return nearestInsect(c=>c.sp.r===2&&c.sp.area===areaIdx&&!c.water&&(!c.temple||inTemple()))||TI;
+  if(k==='rescue')return closedCages()?CAMP:null;if(k==='bask')return nearestWarm();if(k==='drink')return nearestWater(_wt)>2?_wt:null;
+  if(k==='shade'){if(PL.tbSrc==='shade')return null;let b=null,bd=1e9;for(const t of trees){if(!SHADE_R[t.kind])continue;const d=Math.hypot(t.x-PL.pos.x,t.z-PL.pos.z);if(d<bd){bd=d;b=t;}}return b;}
+  if(k==='treetop'){if(PL.climb)return null;let b=null,bd=1e9;for(const t of trees){if(!t.lead&&t.kind!=='palm'&&t.kind!=='cactus')continue;const d=Math.hypot(t.x-PL.pos.x,t.z-PL.pos.z);if(d<bd){bd=d;b=t;}}return b;}
+  return null;}
+let chainIntroArea=-1;
+function chainQuest(){const s=chainStep();if(!s)return false;const C=CHAINS[AREAS[areaIdx].id],st=chainState();
+  quest={kind:'chain',coins:STEP_COINS,data:{s},t0:PL.time,done:()=>chainCount(s,st)>=s[1],target:()=>chainTarget(s)};
+  if(st.s===0&&st.n===0&&chainIntroArea!==areaIdx){chainIntroArea=areaIdx;setTimeout(()=>{if(state==='play'&&quest&&quest.kind==='chain')showBanner(t('chainTitle',{area:areaName(areaIdx)}),t('chainIntro',{n:C.length}),7);},2500);}
+  questLabel();return true;}
+function questLabel(){const sm=$('quest').querySelector('small');if(!quest||quest.kind!=='chain'){sm.textContent=t('quest');return;}
+  const s=quest.data.s,st=chainState(),C=CHAINS[AREAS[areaIdx].id];sm.textContent=areaName(areaIdx)+' '+Math.min(st.s+1,C.length)+'/'+C.length+' ★';
+  $('questText').textContent=chainText(s)+(s[1]>1?' ('+Math.min(chainCount(s,st),s[1])+'/'+s[1]+')':'')+` (+${STEP_COINS})`;}
+function chainAdvance(){const id=AREAS[areaIdx].id,C=CHAINS[id],st=chainState();measure('chain',id,'step'+(st.s+1));st.s++;st.n=0;
+  if(st.s>=C.length){const r=CHAIN_REWARD[areaIdx]||200;save.coins+=r;PL.coins+=r;AU.sfx.grow();showBanner(t('chainDone',{area:areaName(areaIdx)}),t('chainReward',{n:r}),7);measure('chain',id,'complete');}
+  persist();}
 /* =====================================================================
    Main update
    ===================================================================== */
@@ -2720,20 +2925,20 @@ function updateGame(dt){
   PL.time+=dt;
   if(PL.speed>.5)onboarding('move');if(PL.drinking)onboarding('first-drink');if(PL.climb){onboarding('first-climb');climbedOnce=true;}
   {const m=SURVIVE_MARKS[EV.si];if(m!==undefined&&PL.time>=m*60){EV.si++;measure('survive',mode,'m'+m);}}PL.inv-=dt;const pk=perks();
-  updatePlayer(dt);updateTongue(dt);jumpQ=false;
+  updatePlayer(dt);updateTongue(dt);jumpQ=false;updateClimate(dt);updateHawk(dt);if(PL.drinking&&PL.thirst>=99)chainEv('drink');
   PL.hunger=Math.max(0,PL.hunger-dt*100/CFG.hungerT*pk.hunger*AREA.needs.hunger*(PL.speed>5?1.3:1));
   if(EVT&&EVT.kind==='rain')PL.thirst=Math.min(100,PL.thirst+dt*1.5);
-  else PL.thirst=Math.max(0,PL.thirst-dt*100/CFG.thirstT*pk.thirst*AREA.needs.thirst*(PL.speed>5?1.3:1)*(PL.drinking||PL.inWater?0:1));
+  else PL.thirst=Math.max(0,PL.thirst-dt*100/CFG.thirstT*pk.thirst*AREA.needs.thirst*heatThirst()*(PL.speed>5?1.3:1)*(PL.drinking||PL.inWater?0:1));
   if(PL.hunger<=0||PL.thirst<=0){PL.health-=dt*(mode==='master'?6:mode==='easy'?2.5:4);if(PL.health<=0){PL.health=0;gameOver(PL.thirst<=0?'thirst':'hunger');}}
-  else if(PL.hunger>55&&PL.thirst>55)PL.health=Math.min(PL.maxHealth,PL.health+dt*1.5);
+  else if(PL.hunger>55&&PL.thirst>55&&PL.tb>30)PL.health=Math.min(PL.maxHealth,PL.health+dt*1.5);
   updatePoachers(dt);updateTail(dt);updateUpgrade();
   nextSpawn-=dt;if(nextSpawn<=0){nextSpawn=CFG.every*(1-areaIdx*.08);if(poachers.length<CFG.max+areaIdx){spawnPoacher();}}
   checkGates(dt);updateBanner(dt);tripMsgT-=dt;
   if(!templeSeen&&TI&&inTemple()){templeSeen=true;AU.sfx.quest();showBanner(t('templeTitle'),t('templeText'),5);measure('temple',AREAS[areaIdx].id,'enter');}updateCamo(dt);
   if(PL.time>9&&PL.time-dt<=9&&areaIdx===0&&closedCages()&&tipIdx>=5)showBanner(t('campTitle'),t('campLeft',{n:closedCages()}).trim(),6);
-  if(quest&&questIdx>0&&PL.time-quest.t0>(questIdx<TUT?100:210)){measure(questIdx<TUT?'quest':'goal',quest.kind,'skip');questIdx++;newQuest();}
-  if(quest&&quest.done(quest.data)){measure(questIdx<TUT?'quest':'goal',quest.kind,'complete');if(questIdx===0)onboarding('first-quest');const v=addCoins(quest.coins);AU.sfx.quest();floater(PL.pos.clone().add(_v.set(0,.45,0)),t('questDone',{v}),'green');questIdx++;newQuest();}
-  updateTips(dt);updateHUD(dt);
+  if(quest&&questIdx>0&&quest.kind!=='chain'&&PL.time-quest.t0>(questIdx<TUT?100:210)){measure(questIdx<TUT?'quest':'goal',quest.kind,'skip');questIdx++;newQuest();}
+  if(quest&&quest.done(quest.data)){measure(questIdx<TUT?'quest':'goal',quest.kind,'complete');if(questIdx===0)onboarding('first-quest');if(quest.kind==='chain')chainAdvance();const v=addCoins(quest.coins);AU.sfx.quest();floater(PL.pos.clone().add(_v.set(0,.45,0)),t('questDone',{v}),'green');questIdx++;newQuest();}
+  updateTips(dt);updateHUD(dt);updateCombo();
 }
 // Feet on the ground: how deep a point lies inside the ground. On a branch the paws grip the round bark itself instead of the
 // widened walking surface of branchTop. Leaves the walking state (perch, perchBr) untouched.
@@ -2829,7 +3034,7 @@ function frame(ts){requestAnimationFrame(frame);frameN++;
   gecko.root.scale.setScalar(geckoScale());gecko.root.visible=!(PL.dead&&state==='over');gecko.blob.visible=!PL.swim&&(PL.onGround||!!PL.climb)&&!(PL.climb&&PL.climb.sit);
   if(PL.inv>0&&state==='play'&&!PL.dead)gecko.root.visible=Math.floor(time*14)%2===0;
   if(state!=='pause'){updateCamp(state==='win'?0:dt);updateTemple(dt);updateCrickets(dt);updateRipples(dt);updateButterflies(dt);updateDust(dt);AU.update(dt);}
-  updateTargetRing();
+  updateTargetRing();updateKnot(dt);
   windUniforms.uTime.value=time;windUniforms.uPlayer.value.copy(PL.pos);shaftMat.uniforms.uCam.value.copy(camera.position);
   waterNormal.offset.set(time*.012,time*.008);waterU.uTime.value=time;if(waterMirror)waterMirror.material.uniforms.uTime.value=time;nearGrass.uCenter.value.set(PL.pos.x,PL.pos.z);clouds.offset.set(time*.002,time*.0007);
   updateFallers(dt);updatePrecip(dt);
@@ -2851,7 +3056,7 @@ const _sr=new V3(),_su=new V3();
 function renderModes(){const el=$('modes');el.innerHTML='';for(const [k,m] of Object.entries(MODES)){const b=document.createElement('button');b.className='modeBtn';b.dataset.mode=k;b.setAttribute('aria-pressed',k===mode);
   const best=save.best[k];b.innerHTML=`<b>${m.name}</b><span>${m.desc}</span><em>${best?t('record',{t:fmtTime(best)}):t('coinMult',{m:m.coinMult})}</em>`;
   b.onclick=()=>{mode=k;save.mode=k;persist();measure('mode',k,'selected');AU.init();AU.sfx.click();renderModes();};el.appendChild(b);}
-  $('menuCoins').textContent=save.coins;updateShopBadge();const best=save.best[mode];$('menuBest').textContent=(best?t('recordMode',{mode:MODES[mode].name,t:fmtTime(best)})+' · ':'')+t('family')+' '+Math.min(FAMILY,save.rescued.length)+'/'+FAMILY;}
+  $('menuCoins').textContent=save.coins;updateShopBadge();const best=save.best[mode];$('menuBest').textContent=(best?t('recordMode',{mode:MODES[mode].name,t:fmtTime(best)})+' · ':'')+t('family')+' '+Math.min(FAMILY,save.rescued.length)+'/'+FAMILY+' · \u2605 '+chainsDone()+'/'+AREAS.length;}
 let shopSel=save.skin;
 function applyLang(l){lang=TR[l]?l:'en';document.documentElement.lang=lang;const T=L();
   for(const k in MODES){MODES[k].name=T.modes[k][0];MODES[k].desc=T.modes[k][1];}
@@ -2919,7 +3124,7 @@ $('reviveBtn').onclick=()=>revive();$('askRevive').onclick=()=>revive();$('askSk
 $('doubleBtn').onclick=()=>doubleCoins();
 $('overShop').onclick=()=>{measure('button','shop-over','interact');toMenu();$('shopBtn').onclick();};
 $('menuBtn').onclick=()=>{measure('button','menu','interact');toMenu();};
-function toMenu(){clearInterval(askIv);endEvent();Poki.stop();setCamo(false);for(const p of poachers)p.dispose();poachers.length=0;if(netDome){scene.remove(netDome);netDome=null;}PL.dead=false;PL.drinking=false;PL.speed=0;PL.growth=0;PL.tailT=0;gecko.tail=1;clearTail();
+function toMenu(){clearInterval(askIv);endEvent();endHawk();Poki.stop();setCamo(false);for(const p of poachers)p.dispose();poachers.length=0;if(netDome){scene.remove(netDome);netDome=null;}PL.dead=false;PL.drinking=false;PL.speed=0;PL.growth=0;PL.tailT=0;gecko.tail=1;clearTail();
   curSkin=skinById(save.skin);previewSkin(curSkin);placeGeckoAtSpawn();renderModes();setupCrickets(14);setScreen('menu');}
 function onResize(){viewSize();fitScreens();camera.aspect=vw/vh;camera.updateProjectionMatrix();renderer.setSize(vw,vh,false);composer.setSize(vw,vh);if(waterMirror)waterMirror.getRenderTarget().setSize(Math.round(vw*.5),Math.round(vh*.5));}
 // Poki resizes the iframe (window resize, fullscreen, rotating a phone); listen to all of it and resize once per frame at most.
@@ -2955,7 +3160,7 @@ setTimeout(()=>{$('loading').style.opacity=0;setTimeout(()=>$('loading').remove(
 pokiInit.then(()=>{if(!save.lang&&detectLang()!==lang)applyLang(detectLang());measure('lang',lang,'start');measure('gfx','tier',TIER);Poki.loaded();
   {const b=ms=>{const s=ms/1000;return s<2?'s0-2':s<4?'s2-4':s<6?'s4-6':s<9?'s6-9':s<13?'s9-13':s<20?'s13-20':'s20+';};const end=LT.end;// the moment the loading screen left, not the moment the Poki SDK was ready
    measure('loadtime','total',b(end));measure('loadtime','build',b(LT.js));measure('loadtime','compile',b(LT.compile-LT.js));measure('loadtime','frames',b(end-LT.compile));}measure('screen','menu','visible');onboarding('loaded');});
-window.__gekko={LT,hitPlayer,buyUpgrade,get upOffer(){return upOffer;},rockGround,groundBase,get camPos(){return camPos;},get camLook(){return camLook;},eatCricket,newQuest,get quest(){return quest;},get questIdx(){return questIdx;},set questIdx(v){questIdx=v;},startEvent,endEvent,get EVT(){return EVT;},set evLast(v){evLast=v;},gameOver,TIER,get TI(){return TI;},step:(dt,n)=>{for(let i=0;i<n;i++){updateGame(dt);updateCamp(dt);updateCrickets(dt);}},get gnaw(){return gnaw;},get camoQ(){return camoQ;},set camoQ(v){camoQ=v;},updateCamera,smoothVisual,setCamo,mmIcon,drawMinimap,get NESTp(){return NEST;},setupCrickets,normalFromCanvas,cages,get CAMP(){return CAMP;},get NEST(){return NEST;},save,finale,renderShop,setShopTab:v=>{shopTab=v;},travel,buildWorld,gates,AREAS,get areaIdx(){return areaIdx;},get SPAWN(){return SPAWN;},stageIdx,PL,renderer,scene,updatePlayer,treeRadius,trunkR,rockTop,footSurf,climbSurf,updateClimb,get rockGrid(){return rockGrid;},ripples,get LAKES(){return LAKES;},groundAt,poachers,crickets,trees,boxes,rocks,startGame,setMode:m=>{mode=m;},get state(){return state;},camera,gecko,keys,get camYaw(){return camYaw;},set camYaw(v){camYaw=v;},set camPitch(v){camPitch=v;},set camDist(v){camDist=v;}};
+window.__gekko={get HAWK(){return HAWK;},startHawk,endHawk,hawkCover,chainState,chainStep,get warmSpots(){return warmSpots;},buildWarmSpots,climate,get combo(){return combo;},knotPress,get gnaw2(){return gnaw;},updateTongue,set tongueQ(v){tongueQ=v;},tongue,LT,hitPlayer,buyUpgrade,get upOffer(){return upOffer;},rockGround,groundBase,get camPos(){return camPos;},get camLook(){return camLook;},eatCricket,newQuest,get quest(){return quest;},get questIdx(){return questIdx;},set questIdx(v){questIdx=v;},startEvent,endEvent,get EVT(){return EVT;},set evLast(v){evLast=v;},gameOver,TIER,get TI(){return TI;},step:(dt,n)=>{for(let i=0;i<n;i++){updateGame(dt);updateCamp(dt);updateCrickets(dt);}},get gnaw(){return gnaw;},get camoQ(){return camoQ;},set camoQ(v){camoQ=v;},updateCamera,smoothVisual,setCamo,mmIcon,drawMinimap,get NESTp(){return NEST;},setupCrickets,normalFromCanvas,cages,get CAMP(){return CAMP;},get NEST(){return NEST;},save,finale,renderShop,setShopTab:v=>{shopTab=v;},travel,buildWorld,gates,AREAS,get areaIdx(){return areaIdx;},get SPAWN(){return SPAWN;},stageIdx,PL,renderer,scene,updatePlayer,treeRadius,trunkR,rockTop,footSurf,climbSurf,updateClimb,get rockGrid(){return rockGrid;},ripples,get LAKES(){return LAKES;},groundAt,poachers,crickets,trees,boxes,rocks,startGame,setMode:m=>{mode=m;},get state(){return state;},camera,gecko,keys,get camYaw(){return camYaw;},set camYaw(v){camYaw=v;},set camPitch(v){camPitch=v;},set camDist(v){camDist=v;}};
 </script>
 </body>
 </html>
