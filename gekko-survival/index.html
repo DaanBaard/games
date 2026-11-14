@@ -501,7 +501,7 @@ const MODES={
   master:{name:'Master',   desc:'Alleen voor echte gekko\'s',hungerT:120,thirstT:95,see:25,chase:5.2,dmg:50,start:5,max:10,every:32,crickets:21,coinMult:2,wait:18},
 };
 const SKINS=[
-  {id:'dag',name:'Groene Daggekko',price:0,perk:'Allrounder, geen zwakke punten',dorsal:'#7cbd38',flank:'#a0d354',belly:'#f3edb6',eye:'#ffc933',pat:'dag',round:1,ring:'#3db7a4'},
+  {id:'dag',name:'Groene Daggekko',price:0,perk:'Allrounder, geen zwakke punten',dorsal:'#86bc30',flank:'#a9d34c',belly:'#f5edb8',eye:'#ffc933',pat:'dag',round:1,ring:'#3db7a4'},
   {id:'luipaard',name:'Luipaardgekko',price:100,perk:'Honger daalt 20% trager',dorsal:'#e7bd45',flank:'#efcd73',belly:'#f6eed8',eye:'#3d3d3d',pat:'leopard'},
   {id:'tokeh',name:'Tokeh',price:250,perk:'+30 maximale gezondheid',dorsal:'#6b83a6',flank:'#7d93b2',belly:'#d7dee6',eye:'#d39a2b',pat:'tokay'},
   {id:'kuif',name:'Kuifgekko',price:400,perk:'Springt 35% hoger',dorsal:'#c4762e',flank:'#d18a44',belly:'#f0d6a4',eye:'#9a7a2e',pat:'crested',crest:true},
@@ -1620,8 +1620,11 @@ function paintSkin(sk){
      g.beginPath();g.moveTo(8,141);g.quadraticCurveTo(40,141,62,121);g.lineTo(76,140);g.lineTo(150,154);g.lineTo(150,230);g.lineTo(76,244);g.lineTo(62,263);g.quadraticCurveTo(40,243,8,243);for(const [x,y] of MOUTH_FRONT.slice().reverse())g.lineTo(x,y);g.closePath();g.fill();}
     // the tail is ringed by whorls of scales: fine dark/light bands across it
     for(let x=w*.5;x<w;x+=4.6){g.fillStyle='rgba(0,0,0,.13)';g.fillRect(x,0,1.3,h);g.fillStyle='rgba(255,255,255,.06)';g.fillRect(x+1.4,0,1,h);}
-    g.save();g.globalCompositeOperation='soft-light';g.globalAlpha=.75;g.drawImage(scaleTint,0,0,w,h);g.restore();
-    g.lineCap='round';g.lineJoin='round';for(const dy of [-h,0,h]){g.strokeStyle='rgba(74,22,18,.92)';g.lineWidth=3;
+    g.save();g.globalCompositeOperation='soft-light';g.globalAlpha=.8;g.drawImage(scaleTint,0,0,w,h);g.restore();
+    for(const dy of [-h,0,h])for(const [m,k] of [[1,0],[-1,384]]){const Y=y=>k+m*y+dy;// the open smile: a dark crescent with a pink lower edge (the tongue)
+      g.fillStyle='rgba(74,22,18,.95)';g.beginPath();g.moveTo(9,Y(141));g.quadraticCurveTo(40,Y(141),62,Y(121));g.quadraticCurveTo(42,Y(151),9,Y(141));g.fill();
+      g.fillStyle='rgba(236,120,142,.95)';g.beginPath();g.moveTo(16,Y(143.2));g.quadraticCurveTo(40,Y(147.5),54,Y(132));g.quadraticCurveTo(41,Y(150.5),16,Y(143.2));g.fill();}
+    g.lineCap='round';g.lineJoin='round';for(const dy of [-h,0,h]){g.strokeStyle='rgba(74,22,18,.92)';g.lineWidth=2;
       g.beginPath();g.moveTo(9,141+dy);g.quadraticCurveTo(40,141+dy,62,121+dy);g.stroke();g.beginPath();g.moveTo(9,243+dy);g.quadraticCurveTo(40,243+dy,62,263+dy);g.stroke();
       g.strokeStyle='rgba(255,255,255,.16)';g.lineWidth=1.4;// soft light edge on the upper lip
       g.beginPath();g.moveTo(10,138+dy);g.quadraticCurveTo(40,138+dy,60,119+dy);g.stroke();g.beginPath();g.moveTo(10,246+dy);g.quadraticCurveTo(40,246+dy,60,265+dy);g.stroke();}
@@ -1633,25 +1636,31 @@ function paintSkin(sk){
    along the back) drives both the normal map and a per-scale tint, so every scale catches the light and carries its own shade.
    The old map laid identical round bumps in straight rows, which read as knitting from close by. */
 const SCALE_PTS=(()=>{const r=mulberry32(77),pts=[];
-  for(let y=0,row=0;y<512;row++){const belly=y>300&&y<460,dy=belly?4.4:3.5,step=belly?6.2:4.3;
-    for(let x=(row%2)*step/2;x<1024;x+=step){const head=x<110;pts.push(x+(r()-.5)*1.5,y+(r()-.5)*1.1,(belly?2.9:2.25)*(.8+r()*.4)*(head?.72:1),r());}y+=dy;}
-  for(let i=0;i<420;i++){const x=r()*700,y=r()<.5?40+r()*80:r()*44+r()*30-30+512*(r()<.5?0:1);pts.push(x,(y+512)%512,3.6+r()*1.8,-1);}// tubercles (flag -1)
+  for(let y=0,row=0;y<512;row++){const belly=y>300&&y<460,dy=belly?7.4:6.2,step=belly?9.6:7.4;
+    for(let x=(row%2)*step/2;x<1024;x+=step){const head=x<110;pts.push(x+(r()-.5)*1.6,y+(r()-.5)*1.3,(belly?4.9:3.95)*(.9+r()*.2)*(head?1.06:1),belly?r()*.3:r());}y+=dy;}
+  for(let i=0;i<160;i++){const x=60+r()*640,y=r()<.5?40+r()*80:r()*44+r()*30-30+512*(r()<.5?0:1);pts.push(x,(y+512)%512,4.6+r()*1.4,-1);}// tubercles (flag -1)
   return pts;})();
 function scaleSprite(sz,c0,c1){const c=document.createElement('canvas');c.width=c.height=sz;const g=c.getContext('2d');const gr=g.createRadialGradient(sz*.4,sz*.38,0,sz/2,sz/2,sz/2);
   gr.addColorStop(0,c0);gr.addColorStop(.72,c1);gr.addColorStop(1,'rgba(128,128,128,0)');g.fillStyle=gr;g.fillRect(0,0,sz,sz);return c;}
 const skinScales=(()=>{const c=document.createElement('canvas');c.width=1024;c.height=512;const g=c.getContext('2d');g.fillStyle='#4a4a4a';g.fillRect(0,0,1024,512);
-  const bump=scaleSprite(32,'#f2f2f2','#8c8c8c'),P=SCALE_PTS;
-  for(let i=0;i<P.length;i+=4){const r=P[i+2]*(P[i+3]<0?1:1.08);g.globalAlpha=P[i+3]<0?.95:.75+P[i+3]*.25;g.drawImage(bump,P[i]-r,P[i+1]-r,r*2,r*2);}
-  return normalFromCanvas(c,6,{flip:false,flipY:false});})();
+  const bump=scaleSprite(32,'#d8d8d8','#a4a4a4'),P=SCALE_PTS;
+  for(let i=0;i<P.length;i+=4){const r=P[i+2]*(P[i+3]<0?1:1.08);g.globalAlpha=P[i+3]<0?.7:.6+P[i+3]*.4;g.drawImage(bump,P[i]-r,P[i+1]-r,r*2,r*2);}
+  // the snout tip is a pole of the mesh: the texture is squeezed there, so it stays smooth
+  g.globalAlpha=1;const tipG=g.createLinearGradient(12,0,34,0);tipG.addColorStop(0,'#8a8a8a');tipG.addColorStop(1,'rgba(138,138,138,0)');g.fillStyle=tipG;g.fillRect(0,0,34,512);
+  return normalFromCanvas(c,4.5,{flip:false,flipY:false});})();
 // per-scale light/dark speckle, laid over every painted skin with soft-light (one drawImage instead of thousands of dots per skin)
-const scaleTint=(()=>{const c=document.createElement('canvas');c.width=1024;c.height=512;const g=c.getContext('2d');g.fillStyle='#808080';g.fillRect(0,0,1024,512);
-  const r=mulberry32(91),P=SCALE_PTS;for(let i=0;i<P.length;i+=4){const v=P[i+3]<0?150+r()*40:Math.round(96+r()*70);g.fillStyle=`rgb(${v},${v},${v})`;
-    g.beginPath();g.ellipse(P[i],P[i+1],P[i+2]*.92,P[i+2]*.8,0,0,6.28);g.fill();}
+const scaleTint=(()=>{const c=document.createElement('canvas');c.width=1024;c.height=512;const g=c.getContext('2d');g.fillStyle='#5e5e5e';g.fillRect(0,0,1024,512);
+  // v1.24d: like on the logo every scale is an even, slightly lighter cell with a thin darker seam round it (it used to be random light and dark speckle)
+  const r=mulberry32(91),P=SCALE_PTS;for(let i=0;i<P.length;i+=4){const v=P[i+3]<0?150+r()*14:Math.round(133+r()*14);g.fillStyle=`rgb(${v},${v},${v})`;
+    g.beginPath();g.ellipse(P[i],P[i+1],P[i+2]*.9,P[i+2]*.78,0,0,6.28);g.fill();}
+  g.fillStyle='rgba(128,128,128,.55)';g.fillRect(0,300,1024,160);// the belly is smoother
+  const tipG=g.createLinearGradient(12,0,34,0);tipG.addColorStop(0,'#808080');tipG.addColorStop(1,'rgba(128,128,128,0)');g.fillStyle=tipG;g.fillRect(0,0,34,512);
   return c;})();
 const skinMats={},_pc0=new THREE.Color(),MOUTH_FRONT=[[8.5,141],[5.2,150],[3.9,160],[3.2,171],[2.8,192],[3.2,213],[3.9,224],[5.2,234],[8.5,243]];
 function skinMaterial(sk){if(skinMats[sk.id])return skinMats[sk.id];
   const tex=paintSkin(sk);tex.flipY=false;
-  const m=new THREE.MeshPhysicalMaterial({map:tex,normalMap:skinScales,normalScale:new THREE.Vector2(.34,.34),roughness:.5,metalness:sk.metal||0,envMapIntensity:.55,clearcoat:.2,clearcoatRoughness:.45,sheen:.12,sheenColor:new THREE.Color(sk.flank),sheenRoughness:.7});
+  const m=new THREE.MeshPhysicalMaterial({map:tex,normalMap:skinScales,normalScale:new THREE.Vector2(.3,.3),roughness:.52,metalness:sk.metal||0,envMapIntensity:.6,clearcoat:.18,clearcoatRoughness:.5,sheen:.45,sheenColor:new THREE.Color(sk.flank).lerp(new THREE.Color('#fff0b8'),.5),sheenRoughness:.5,
+    emissive:'#ffffff',emissiveMap:tex,emissiveIntensity:sk.metal?.06:.13});// a little self-light lifts the shadows; the warm sheen gives the soft rim of the key art
   m.userData.round=!!sk.round;m.userData.ring=sk.ring||null;
   if(sk.irid){m.iridescence=1;m.iridescenceIOR=1.6;m.iridescenceThicknessRange=[200,700];}
   return skinMats[sk.id]=m;}
@@ -1672,7 +1681,7 @@ for(let i=0;i<NS;i++){const s=i/(NS-1),G=(x,w)=>Math.exp(-x*x/w);for(let j=0;j<=
     +.07*G(s-.445,.0012)*G(Math.hypot(Math.abs(c)-.55,sn-.75),.06);// hip bones
   GUL[k]=G(s-.125,.0016)*Math.max(0,-sn);}}
 /* v1.24c head of the logo gecko: big and round with a short blunt snout, a domed crown, full cheeks and a thick neck */
-const PROF=[[0,.0006,.0005],[.0159,.024,.0175],[.035,.035,.0255],[.06,.041,.029],[.09,.0445,.032],[.12,.043,.031],[.15,.037,.0275],[.175,.033,.025],[.2,.031,.024],[.3,.044,.03],[.4,.043,.03],[.46,.034,.026],[.5,.031,.024],[.6,.025,.0195],[.75,.0155,.012],[.9,.0065,.0055],[1,.001,.001]];
+const PROF=[[0,.0006,.0005],[.0159,.024,.0175],[.035,.035,.0255],[.06,.041,.029],[.09,.0445,.032],[.12,.043,.031],[.15,.037,.0275],[.175,.033,.025],[.2,.031,.024],[.3,.0465,.0335],[.4,.0455,.0335],[.46,.034,.026],[.5,.031,.024],[.6,.025,.0195],[.75,.0155,.012],[.9,.0065,.0055],[1,.001,.001]];
 function profile(s){for(let i=1;i<PROF.length;i++)if(s<=PROF[i][0]){const a=PROF[i-1],b=PROF[i];let t=(s-a[0])/(b[0]-a[0]);t=t*t*(3-2*t);return[lerp(a[1],b[1],t),lerp(a[2],b[2],t)];}return[.001,.001];}
 // SLP: how fast the body widens along the spine per ring; it tilts the normals forward on the blunt snout and back on the tail, so
 // the round head is lit as a round head (the normals used to point straight out from the spine)
@@ -1803,7 +1812,7 @@ class Gecko{
       const idle=Math.sin(this.t*1.1-s*3.4)*.03*smoothstep(.45,1,s)*(1-w);
       const curl=o.idleCurl?Math.sin(s*4)*.0:0;
       const x=und+idle+curl+(s<.22?this.look*(.22-s)*.6:0);
-      let y=.056-.004*w-.011*rn+(s<.2?(.2-s)*(.07+.03*rn):0)-(s>.5?(s-.5)*(.06-.035*rn):0)+(s<.5?.0018*rn*Math.cos(2*this.phase):0)+(s<.26?-this.drink*(.26-s)*.32:0)+(s>.2&&s<.5?breathe:0)+(s<.2?(.2-s)*.05*(1-w)*(1-this.drink):0);
+      let y=.056-.004*w-.011*rn+(s<.2?(.2-s)*(.07+.03*rn):0)-(s>.5?(s-.5)*(.06-.035*rn):0)+(s<.5?.0018*rn*Math.cos(2*this.phase):0)+(s<.26?-this.drink*(.26-s)*.32:0)+(s>.2&&s<.5?breathe:0)+(s<.2?(.2-s)*.05*(1-w)*(1-this.drink):0)+(s<.36?.011*smoothstep(.36,.16,s)*(1-w)*(1-this.drink)*(1-st):0);// at rest the head and chest are held up, as on the logo
       let xx=x,zz=.22-s*.55;
       // Sitting on a treetop: chest and head up, the tail hangs down along the shoot
       if(st>.001){const up=s<.4?(.4-s)**1.5*.55:0,hang=s>.5?(s-.5)**1.3*1.1:0;y+=st*(up-hang);zz+=st*(s>.5?(s-.5)**1.6*.9:0);}
