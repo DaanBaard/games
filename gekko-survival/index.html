@@ -311,7 +311,7 @@ select.lang{appearance:none;-webkit-appearance:none;padding-right:12px;cursor:po
         <button class="play" id="playBtn" data-i18n="play">Spelen</button>
         <button class="ghost" id="shopBtn"><svg viewBox="0 0 24 24"><path d="M4 15c3-1 4-5 8-5 3 0 4 2 7 1M7 15l-1 3M10 13.5l1 4M15 11l1 4M18 11.5l2 2" stroke="#b9e44f" stroke-width="2" fill="none" stroke-linecap="round"/><circle cx="6" cy="14" r="1" fill="#b9e44f"/></svg><span data-i18n="geckos">Gekko's</span></button>
       </div>
-      <div class="menuFoot"><span class="coinsBig"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="#ffc93c"/><circle cx="12" cy="12" r="7" fill="none" stroke="#c98a12" stroke-width="1.6"/></svg><span id="menuCoins">0</span></span><span id="menuBest"></span><button class="ghost gfx" id="gfxBtn">Graphics</button><select class="ghost gfx lang" id="langSel" data-i18n-aria="language" aria-label="Taal"></select><span class="ver">v1.23</span></div>
+      <div class="menuFoot"><span class="coinsBig"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="#ffc93c"/><circle cx="12" cy="12" r="7" fill="none" stroke="#c98a12" stroke-width="1.6"/></svg><span id="menuCoins">0</span></span><span id="menuBest"></span><button class="ghost gfx" id="gfxBtn">Graphics</button><select class="ghost gfx lang" id="langSel" data-i18n-aria="language" aria-label="Taal"></select><span class="ver">v1.24</span></div>
       <div class="keys" data-i18n-html="keys"><span><kbd>WASD</kbd> lopen</span><span><kbd>Muis</kbd> kijken</span><span><kbd>Shift</kbd> sprinten</span><span><kbd>Spatie</kbd> springen</span><span><kbd>Klik</kbd>/<kbd>E</kbd> tong</span><span><kbd>F</kbd> drinken</span></div>
     </div>
   </div>
@@ -501,14 +501,14 @@ const MODES={
   master:{name:'Master',   desc:'Alleen voor echte gekko\'s',hungerT:120,thirstT:95,see:25,chase:5.2,dmg:50,start:5,max:10,every:32,crickets:21,coinMult:2,wait:18},
 };
 const SKINS=[
-  {id:'dag',name:'Groene Daggekko',price:0,perk:'Allrounder, geen zwakke punten',dorsal:'#3aa83a',flank:'#57c53a',belly:'#e3eeb0',eye:'#c9a028',pat:'dag'},
+  {id:'dag',name:'Groene Daggekko',price:0,perk:'Allrounder, geen zwakke punten',dorsal:'#86bc30',flank:'#a9d34c',belly:'#f5edb8',eye:'#ffc933',pat:'dag',round:1,ring:'#3db7a4'},
   {id:'luipaard',name:'Luipaardgekko',price:100,perk:'Honger daalt 20% trager',dorsal:'#e7bd45',flank:'#efcd73',belly:'#f6eed8',eye:'#3d3d3d',pat:'leopard'},
   {id:'tokeh',name:'Tokeh',price:250,perk:'+30 maximale gezondheid',dorsal:'#6b83a6',flank:'#7d93b2',belly:'#d7dee6',eye:'#d39a2b',pat:'tokay'},
   {id:'kuif',name:'Kuifgekko',price:400,perk:'Springt 35% hoger',dorsal:'#c4762e',flank:'#d18a44',belly:'#f0d6a4',eye:'#9a7a2e',pat:'crested',crest:true},
   {id:'blad',name:'Bladstaartgekko',price:650,perk:'Stropers zien je 30% minder ver',dorsal:'#6a5a40',flank:'#7c694b',belly:'#a6977a',eye:'#b88a3a',pat:'bark'},
   {id:'nacht',name:'Nachtgekko',price:900,perk:'Sprint 40% langer',dorsal:'#2a2e3a',flank:'#383f50',belly:'#878da0',eye:'#5fd0ff',pat:'night'},
-  {id:'goud',name:'Goudgekko',price:1500,perk:'+50% munten per krekel',dorsal:'#d6a11c',flank:'#f0c64a',belly:'#fff0c2',eye:'#7a3d10',pat:'gold',metal:.55},
-  {id:'koning',name:'Regenwoudkoning',price:-1,unlock:'Overleef 5:00 op Master',perk:'Alles 15% beter',dorsal:'#20b39a',flank:'#5fd06f',belly:'#f4f7c8',eye:'#ff5a3c',pat:'rainbow',irid:1},
+  {id:'goud',name:'Goudgekko',price:1500,perk:'+50% munten per krekel',dorsal:'#d6a11c',flank:'#f0c64a',belly:'#fff0c2',eye:'#7a3d10',pat:'gold',metal:.55,round:1},
+  {id:'koning',name:'Regenwoudkoning',price:-1,unlock:'Overleef 5:00 op Master',perk:'Alles 15% beter',dorsal:'#20b39a',flank:'#5fd06f',belly:'#f4f7c8',eye:'#ff5a3c',pat:'rainbow',irid:1,round:1},
 ];
 const skinById=id=>SKINS.find(s=>s.id===id)||SKINS[0];
 /* Insects: three species per area (common, uncommon, rare). Every catch goes into the insect book; a full page pays out once. */
@@ -1591,13 +1591,14 @@ await buildWorld(0,loadProg);
 function paintSkin(sk){
   const r=mulberry32(hashStr(sk.id));const RR=(a,b)=>a+(b-a)*r();
   return canvasTex(1024,512,(g)=>{g.scale(2,2);const w=512,h=256;
-    const gr=g.createLinearGradient(0,0,0,h);gr.addColorStop(0,sk.flank);gr.addColorStop(.25,sk.dorsal);gr.addColorStop(.5,sk.flank);gr.addColorStop(.63,sk.belly);gr.addColorStop(.87,sk.belly);gr.addColorStop(1,sk.flank);
+    const gr=g.createLinearGradient(0,0,0,h);gr.addColorStop(0,sk.flank);gr.addColorStop(.25,sk.dorsal);gr.addColorStop(.5,sk.flank);gr.addColorStop(.6,sk.belly);gr.addColorStop(.9,sk.belly);gr.addColorStop(1,sk.flank);
     g.fillStyle=gr;g.fillRect(0,0,w,h);
     const spot=(x,y,rx,ry,c,a=1)=>{g.globalAlpha=a;g.fillStyle=c;for(const dy of [-h,0,h]){g.beginPath();g.ellipse(x,y+dy,rx,ry,RR(0,3),0,6.28);g.fill();}g.globalAlpha=1;};
     const dorsalY=()=>RR(0,1)<.5?RR(8,120):RR(-10,0)+h;
-    if(sk.pat==='dag'){for(let i=0;i<70;i++)spot(RR(w*.12,w*.6),RR(30,100),RR(3,7),RR(3,6),'#d8342a',.9);
-      g.fillStyle='#d8342a';g.fillRect(0,40,w*.13,7);g.fillRect(0,85,w*.13,7);
-      for(let i=0;i<40;i++)spot(RR(w*.55,w),RR(20,110),RR(2,4),RR(2,3),'#56c8d8',.5);}
+    // v1.24: the day gecko now matches the gecko of the logo and key art: soft apple green with a cream throat and belly and only a
+    // sprinkle of small red flecks on the crown and along the back (the old one had big red blotches and red stripes on the snout)
+    if(sk.pat==='dag'){for(let i=0;i<9;i++)spot(RR(w*.04,w*.12),RR(54,74),RR(.9,1.6),RR(.8,1.4),'#e2452c',.85);
+      for(let i=0;i<18;i++)spot(RR(w*.15,w*.5),RR(42,88),RR(1.4,2.6),RR(1.2,2.2),'#d8442e',.65);}
     if(sk.pat==='leopard'){for(let i=0;i<220;i++){const x=RR(0,w*.55);spot(x,dorsalY(),RR(3,8),RR(3,7),'#2a2218',.92);}
       for(let b=0;b<6;b++){const x=w*.55+b*w*.075;g.fillStyle='rgba(235,232,245,.9)';g.fillRect(x,0,w*.035,h);for(let i=0;i<10;i++)spot(x+RR(0,20),RR(0,h),RR(2,5),RR(2,4),'#2a2218',.9);}}
     if(sk.pat==='tokay'){for(let i=0;i<160;i++)spot(RR(0,w),dorsalY(),RR(4,8),RR(4,7),'#ff8a3a',.95);for(let i=0;i<120;i++)spot(RR(0,w),dorsalY(),RR(2,3.5),RR(2,3),'#cfe6ff',.8);}
@@ -1608,37 +1609,145 @@ function paintSkin(sk){
     if(sk.pat==='gold'){for(let i=0;i<120;i++)spot(RR(0,w),dorsalY(),RR(3,7),RR(3,6),'#a0700c',.5);for(let i=0;i<120;i++)spot(RR(0,w),dorsalY(),RR(1,3),RR(1,3),'#fff7d0',.7);}
     if(sk.pat==='rainbow'){const rg=g.createLinearGradient(0,0,w,0);['#19b3a0','#47c95b','#d8d03a','#f07a2d','#d63a7a','#5a5ae0','#19b3a0'].forEach((c,i,a)=>rg.addColorStop(i/(a.length-1),c));
       g.globalAlpha=.75;g.fillStyle=rg;g.fillRect(0,0,w,h*.55);g.fillRect(0,h*.92,w,h*.08);g.globalAlpha=1;for(let i=0;i<120;i++)spot(RR(0,w),dorsalY(),RR(1.5,3.5),RR(1.5,3),'#ffffff',.6);}
-    for(let i=0;i<9000;i++){const v=r()<.5?0:255;g.fillStyle=`rgba(${v},${v},${v},${RR(.03,.1)})`;g.fillRect(RR(0,w),RR(0,h),RR(.8,2),RR(.8,2));}
-    const ey=g.createLinearGradient(0,0,0,h);ey.addColorStop(0,'rgba(0,0,0,0)');ey.addColorStop(.25,'rgba(0,0,0,.12)');ey.addColorStop(.45,'rgba(0,0,0,0)');g.fillStyle=ey;g.fillRect(0,0,w,h);
-    g.fillStyle='rgba(30,20,15,.7)';g.fillRect(0,247,w*.085,2.5);g.fillRect(0,134,w*.085,2.5);
+    // soft mottling, the darker spine line and a paler throat: the colours shift over the body like on a real animal
+    for(let i=0;i<60;i++)spot(RR(0,w),RR(0,h),RR(8,26),RR(5,16),r()<.5?'rgba(0,0,0,1)':'rgba(255,255,230,1)',RR(.03,.07));
+    const ey=g.createLinearGradient(0,0,0,h);ey.addColorStop(0,'rgba(0,0,0,0)');ey.addColorStop(.17,'rgba(0,0,0,.05)');ey.addColorStop(.25,'rgba(0,0,0,.11)');ey.addColorStop(.33,'rgba(0,0,0,.05)');ey.addColorStop(.48,'rgba(0,0,0,0)');g.fillStyle=ey;g.fillRect(0,0,w,h);
+    const thr=g.createLinearGradient(0,0,w*.2,0);thr.addColorStop(0,'rgba(255,250,235,.35)');thr.addColorStop(1,'rgba(255,250,235,0)');g.fillStyle=thr;g.fillRect(0,h*.62,w*.2,h*.26);
+    /* v1.24c face of the logo gecko: the whole lower jaw and throat are cream below a wide smiling mouth line that starts low at
+       the snout and curves up to a corner under the eye. In texture space the left side of the head is the row y=128 and the right
+       side y=256 (=0); the belly runs between them. */
+    {const jaw=g.createLinearGradient(70,0,150,0);jaw.addColorStop(0,sk.belly);jaw.addColorStop(1,_pc0.set(sk.belly).getStyle().replace('rgb','rgba').replace(')',',0)'));g.fillStyle=jaw;
+     g.beginPath();g.moveTo(8,141);g.quadraticCurveTo(40,141,62,121);g.lineTo(76,140);g.lineTo(150,154);g.lineTo(150,230);g.lineTo(76,244);g.lineTo(62,263);g.quadraticCurveTo(40,243,8,243);for(const [x,y] of MOUTH_FRONT.slice().reverse())g.lineTo(x,y);g.closePath();g.fill();}
+    // the tail is ringed by whorls of scales: fine dark/light bands across it
+    for(let x=w*.5;x<w;x+=4.6){g.fillStyle='rgba(0,0,0,.13)';g.fillRect(x,0,1.3,h);g.fillStyle='rgba(255,255,255,.06)';g.fillRect(x+1.4,0,1,h);}
+    g.save();g.globalCompositeOperation='soft-light';g.globalAlpha=.8;g.drawImage(scaleTint,0,0,w,h);g.restore();
+    for(const dy of [-h,0,h])for(const [m,k] of [[1,0],[-1,384]]){const Y=y=>k+m*y+dy;// the open smile: a dark crescent with a pink lower edge (the tongue)
+      g.fillStyle='rgba(74,22,18,.95)';g.beginPath();g.moveTo(9,Y(141));g.quadraticCurveTo(40,Y(141),62,Y(121));g.quadraticCurveTo(42,Y(151),9,Y(141));g.fill();
+      g.fillStyle='rgba(236,120,142,.95)';g.beginPath();g.moveTo(16,Y(143.2));g.quadraticCurveTo(40,Y(147.5),54,Y(132));g.quadraticCurveTo(41,Y(150.5),16,Y(143.2));g.fill();}
+    g.lineCap='round';g.lineJoin='round';for(const dy of [-h,0,h]){g.strokeStyle='rgba(74,22,18,.92)';g.lineWidth=2;
+      g.beginPath();g.moveTo(9,141+dy);g.quadraticCurveTo(40,141+dy,62,121+dy);g.stroke();g.beginPath();g.moveTo(9,243+dy);g.quadraticCurveTo(40,243+dy,62,263+dy);g.stroke();
+      g.strokeStyle='rgba(255,255,255,.16)';g.lineWidth=1.4;// soft light edge on the upper lip
+      g.beginPath();g.moveTo(10,138+dy);g.quadraticCurveTo(40,138+dy,60,119+dy);g.stroke();g.beginPath();g.moveTo(10,246+dy);g.quadraticCurveTo(40,246+dy,60,265+dy);g.stroke();}
+    // across the front of the snout the mouth runs level under the nose (in texture space that is a shallow arc close to the tip)
+    g.strokeStyle='rgba(74,22,18,.92)';g.lineWidth=1.1;g.beginPath();MOUTH_FRONT.forEach(([x,y],i)=>i?g.lineTo(x,y):g.moveTo(x,y));g.stroke();
   },{repeat:false});
 }
-const skinScales=(()=>{const c=document.createElement('canvas');c.width=1024;c.height=512;const g=c.getContext('2d');g.fillStyle='#5a5a5a';g.fillRect(0,0,1024,512);
-  for(let y=0;y<512;y+=4.2){const belly=y>300&&y<460;const r0=belly?2.6:3.3;const row=Math.round(y/4.2);for(let x=(row%2)*3.5;x<1024;x+=belly?6:7){
-    const r=r0*R(.75,1.25)*(x<90?.7:1);const big=!belly&&rnd()<.04;const rr=big?r*1.9:r;const gr=g.createRadialGradient(x-rr*.3,y-rr*.3,0,x,y,rr);gr.addColorStop(0,'#ececec');gr.addColorStop(.7,'#9a9a9a');gr.addColorStop(1,'rgba(90,90,90,0)');g.fillStyle=gr;g.fillRect(x-rr,y-rr,rr*2,rr*2);}}
-  return normalFromCanvas(c,7,{flip:false,flipY:false});})();
-const skinMats={};
+/* v1.24 skin: one irregular lattice of granular scales (small on the back, wider plates on the belly, a sprinkle of raised tubercles
+   along the back) drives both the normal map and a per-scale tint, so every scale catches the light and carries its own shade.
+   The old map laid identical round bumps in straight rows, which read as knitting from close by. */
+const SCALE_PTS=(()=>{const r=mulberry32(77),pts=[];
+  for(let y=0,row=0;y<512;row++){const belly=y>300&&y<460,dy=belly?7.4:6.2,step=belly?9.6:7.4;
+    for(let x=(row%2)*step/2;x<1024;x+=step){const head=x<110;pts.push(x+(r()-.5)*1.6,y+(r()-.5)*1.3,(belly?4.9:3.95)*(.9+r()*.2)*(head?1.06:1),belly?r()*.3:r());}y+=dy;}
+  for(let i=0;i<160;i++){const x=60+r()*640,y=r()<.5?40+r()*80:r()*44+r()*30-30+512*(r()<.5?0:1);pts.push(x,(y+512)%512,4.6+r()*1.4,-1);}// tubercles (flag -1)
+  return pts;})();
+function scaleSprite(sz,c0,c1){const c=document.createElement('canvas');c.width=c.height=sz;const g=c.getContext('2d');const gr=g.createRadialGradient(sz*.4,sz*.38,0,sz/2,sz/2,sz/2);
+  gr.addColorStop(0,c0);gr.addColorStop(.72,c1);gr.addColorStop(1,'rgba(128,128,128,0)');g.fillStyle=gr;g.fillRect(0,0,sz,sz);return c;}
+const skinScales=(()=>{const c=document.createElement('canvas');c.width=1024;c.height=512;const g=c.getContext('2d');g.fillStyle='#4a4a4a';g.fillRect(0,0,1024,512);
+  const bump=scaleSprite(32,'#d8d8d8','#a4a4a4'),P=SCALE_PTS;
+  for(let i=0;i<P.length;i+=4){const r=P[i+2]*(P[i+3]<0?1:1.08);g.globalAlpha=P[i+3]<0?.7:.6+P[i+3]*.4;g.drawImage(bump,P[i]-r,P[i+1]-r,r*2,r*2);}
+  // the snout tip is a pole of the mesh: the texture is squeezed there, so it stays smooth
+  g.globalAlpha=1;const tipG=g.createLinearGradient(12,0,34,0);tipG.addColorStop(0,'#8a8a8a');tipG.addColorStop(1,'rgba(138,138,138,0)');g.fillStyle=tipG;g.fillRect(0,0,34,512);
+  return normalFromCanvas(c,4.5,{flip:false,flipY:false});})();
+// per-scale light/dark speckle, laid over every painted skin with soft-light (one drawImage instead of thousands of dots per skin)
+const scaleTint=(()=>{const c=document.createElement('canvas');c.width=1024;c.height=512;const g=c.getContext('2d');g.fillStyle='#5e5e5e';g.fillRect(0,0,1024,512);
+  // v1.24d: like on the logo every scale is an even, slightly lighter cell with a thin darker seam round it (it used to be random light and dark speckle)
+  const r=mulberry32(91),P=SCALE_PTS;for(let i=0;i<P.length;i+=4){const v=P[i+3]<0?150+r()*14:Math.round(133+r()*14);g.fillStyle=`rgb(${v},${v},${v})`;
+    g.beginPath();g.ellipse(P[i],P[i+1],P[i+2]*.9,P[i+2]*.78,0,0,6.28);g.fill();}
+  g.fillStyle='rgba(128,128,128,.55)';g.fillRect(0,300,1024,160);// the belly is smoother
+  const tipG=g.createLinearGradient(12,0,34,0);tipG.addColorStop(0,'#808080');tipG.addColorStop(1,'rgba(128,128,128,0)');g.fillStyle=tipG;g.fillRect(0,0,34,512);
+  return c;})();
+const skinMats={},_pc0=new THREE.Color(),MOUTH_FRONT=[[8.5,141],[5.2,150],[3.9,160],[3.2,171],[2.8,192],[3.2,213],[3.9,224],[5.2,234],[8.5,243]];
 function skinMaterial(sk){if(skinMats[sk.id])return skinMats[sk.id];
   const tex=paintSkin(sk);tex.flipY=false;
-  const m=new THREE.MeshPhysicalMaterial({map:tex,normalMap:skinScales,normalScale:new THREE.Vector2(.9,.9),roughness:.5,metalness:sk.metal||0,envMapIntensity:.55,clearcoat:.22,clearcoatRoughness:.4,sheen:.08,sheenColor:new THREE.Color(sk.flank),sheenRoughness:.6});
+  const m=new THREE.MeshPhysicalMaterial({map:tex,normalMap:skinScales,normalScale:new THREE.Vector2(.3,.3),roughness:.52,metalness:sk.metal||0,envMapIntensity:.6,clearcoat:.18,clearcoatRoughness:.5,sheen:.45,sheenColor:new THREE.Color(sk.flank).lerp(new THREE.Color('#fff0b8'),.5),sheenRoughness:.5,
+    emissive:'#ffffff',emissiveMap:tex,emissiveIntensity:sk.metal?.06:.13});// a little self-light lifts the shadows; the warm sheen gives the soft rim of the key art
+  m.userData.round=!!sk.round;m.userData.ring=sk.ring||null;
   if(sk.irid){m.iridescence=1;m.iridescenceIOR=1.6;m.iridescenceThicknessRange=[200,700];}
   return skinMats[sk.id]=m;}
 
 const NS=64,NR=22;
-const PROF=[[0,.003,.002],[.015,.013,.009],[.04,.023,.015],[.08,.032,.019],[.12,.034,.021],[.165,.025,.019],[.2,.029,.023],[.3,.044,.03],[.4,.043,.03],[.46,.034,.026],[.5,.029,.023],[.6,.023,.018],[.75,.014,.011],[.9,.0065,.0055],[1,.001,.001]];
+/* v1.24 cross-section: a lizard is not a round tube. The rings are superellipses (a little boxy: flat back, straight flanks, flat belly),
+   most of all on the head, which is flat on top and wide at the jaw; the tail rounds off toward the tip. SE holds, per ring vertex,
+   the shape factors for the position (sign(c)|c|^e) and for the analytic normal (sign(c)|c|^(2-e)). */
+const SE=(()=>{const a=new Float32Array(NS*(NR+1)*4);for(let i=0;i<NS;i++){const s=i/(NS-1);const e=s<.17?.92:s<.5?lerp(.92,.86,smoothstep(.17,.24,s)):lerp(.86,1,smoothstep(.5,.75,s));
+  for(let j=0;j<=NR;j++){const t=j/NR*6.2832,c=Math.cos(t),sn=Math.sin(t),k=(i*(NR+1)+j)*4;const pw=(v,x)=>Math.sign(v)*Math.pow(Math.abs(v),x);
+    a[k]=pw(c,e);a[k+1]=pw(sn,e);a[k+2]=pw(c,2-e);a[k+3]=pw(sn,2-e);}}return a;})();
+/* v1.24b sculpt weights per ring vertex: BUMP swells the skin outward (the raised orbit round each eye, a low ridge along the spine,
+   the hip bones), GUL is the soft throat that pumps in and out while the gecko breathes at rest. */
+const BUMP=new Float32Array(NS*(NR+1)),GUL=new Float32Array(NS*(NR+1));
+for(let i=0;i<NS;i++){const s=i/(NS-1),G=(x,w)=>Math.exp(-x*x/w);for(let j=0;j<=NR;j++){const t=j/NR*6.2832,c=Math.cos(t),sn=Math.sin(t),k=i*(NR+1)+j;
+  BUMP[k]=.1*G(s-.085,.0009)*G(Math.hypot(Math.abs(c)-.74,sn-.62),.07)// the mound each eye sits in
+    +.06*smoothstep(.2,.28,s)*(1-smoothstep(.62,.8,s))*G(c,.012)*(sn>0?1:0)// spine ridge
+    +.07*G(s-.445,.0012)*G(Math.hypot(Math.abs(c)-.55,sn-.75),.06);// hip bones
+  GUL[k]=G(s-.125,.0016)*Math.max(0,-sn);}}
+/* v1.24c head of the logo gecko: big and round with a short blunt snout, a domed crown, full cheeks and a thick neck */
+const PROF=[[0,.0006,.0005],[.0159,.024,.0175],[.035,.035,.0255],[.06,.041,.029],[.09,.0445,.032],[.12,.043,.031],[.15,.037,.0275],[.175,.033,.025],[.2,.031,.024],[.3,.0465,.0335],[.4,.0455,.0335],[.46,.034,.026],[.5,.031,.024],[.6,.025,.0195],[.75,.0155,.012],[.9,.0065,.0055],[1,.001,.001]];
 function profile(s){for(let i=1;i<PROF.length;i++)if(s<=PROF[i][0]){const a=PROF[i-1],b=PROF[i];let t=(s-a[0])/(b[0]-a[0]);t=t*t*(3-2*t);return[lerp(a[1],b[1],t),lerp(a[2],b[2],t)];}return[.001,.001];}
+// SLP: how fast the body widens along the spine per ring; it tilts the normals forward on the blunt snout and back on the tail, so
+// the round head is lit as a round head (the normals used to point straight out from the spine)
+const SLP=(()=>{const a=new Float32Array(NS),h=.5/(NS-1);for(let i=0;i<NS;i++){const s=i/(NS-1),p0=profile(Math.max(0,s-h)),p1=profile(Math.min(1,s+h));
+  a[i]=clamp(((p1[0]+p1[1])-(p0[0]+p0[1]))/2/((Math.min(1,s+h)-Math.max(0,s-h))*.55),-2.5,2.5);}return a;})();
 // CLIMB_OFF: height of the gecko's origin above the bark or wall while climbing; the belly then hugs the surface (~6 mm gap)
-const CLIMB_OFF=-.018,SOLE_A=.0034,SOLE_T=.0023,FOOT_REACH=1,CLIMB_REACH=1.45;// paw depth below the ankle / toe-pad centre, max downward reach of a leg (rad)
-const UPPER_GEO=new THREE.CapsuleGeometry(.0085,.034,3,8),LOWER_GEO=new THREE.CapsuleGeometry(.0075,.04,3,8),TOE_GEO=new THREE.CapsuleGeometry(.0028,.016,2,5),PAD_GEO=new THREE.SphereGeometry(.0052,8,6);
-const EYE_GEO=new THREE.SphereGeometry(.0105,20,14),IRIS_GEO=new THREE.CircleGeometry(.0088,28),CORNEA_GEO=new THREE.SphereGeometry(.0109,20,14,0,Math.PI*2,0,Math.PI*.42),LID_GEO=new THREE.TorusGeometry(.0106,.0021,8,24);
-const irisTex=canvasTex(256,256,(g)=>{const gr=g.createRadialGradient(128,128,10,128,128,128);gr.addColorStop(0,'#fff6d8');gr.addColorStop(.55,'#e6d6a8');gr.addColorStop(.9,'#9a8452');gr.addColorStop(1,'#2a2010');g.fillStyle=gr;g.fillRect(0,0,256,256);
-  for(let i=0;i<260;i++){const a=R(0,6.28),r0=R(20,60),r1=R(80,120);g.strokeStyle=`rgba(${RI(60,140)},${RI(40,100)},20,${R(.15,.45)})`;g.lineWidth=R(.6,1.8);g.beginPath();g.moveTo(128+Math.cos(a)*r0,128+Math.sin(a)*r0);g.lineTo(128+Math.cos(a+R(-.1,.1))*r1,128+Math.sin(a+R(-.1,.1))*r1);g.stroke();}
+const CLIMB_OFF=-.018,SOLE_A=.0034,SOLE_T=.0028,FOOT_REACH=1,CLIMB_REACH=1.45;// paw depth below the ankle / toe-pad centre, max downward reach of a leg (rad)
+/* v1.24 limbs: tapered segments instead of even capsules. The upper leg starts thick with a round shoulder/hip that melts into the
+   flank and narrows to the elbow/knee, the lower leg narrows to a slim wrist. UVs come from the surface direction, so the top of a leg
+   shows the flank colour and pattern and the underside the pale belly, as on the body. */
+function limbGeo(len,r0,r1,dir,side,u0){const prof=[],N=4;
+  for(let k=0;k<=N;k++){const a=-Math.PI/2+k/N*Math.PI/2;prof.push(new THREE.Vector2(Math.max(1e-5,Math.cos(a)*r0),Math.sin(a)*r0*.9));}// round root (shoulder/hip ball)
+  for(let k=1;k<6;k++){const t=k/6;prof.push(new THREE.Vector2(lerp(r0,r1,t)*(1+.1*Math.sin(t*Math.PI)),t*len));}// muscle swell, narrowing to the joint
+  for(let k=0;k<=N;k++){const a=k/N*Math.PI/2;prof.push(new THREE.Vector2(Math.max(1e-5,Math.cos(a)*r1),len+Math.sin(a)*r1));}// round tip (elbow/knee/wrist)
+  const g=new THREE.LatheGeometry(prof,10);g.deleteAttribute('uv');
+  // the lathe runs along +y from the root (0) to the tip (len); turn it to point along dir
+  g.applyQuaternion(new THREE.Quaternion().setFromUnitVectors(new V3(0,1,0),dir));
+  const P=g.attributes.position,Nn=g.attributes.normal,uv=new Float32Array(P.count*2);
+  for(let i=0;i<P.count;i++){const along=clamp(new V3(P.getX(i),P.getY(i),P.getZ(i)).dot(dir)/len,0,1);
+    const up=dir.y<-.5?(side*Nn.getX(i))*.75+Nn.getZ(i)*.25:Nn.getY(i);uv[i*2]=u0+along*.05;uv[i*2+1]=.56-.17*up;}
+  g.setAttribute('uv',new THREE.BufferAttribute(uv,2));return g;}
+const LIMB={};for(const sd of [-1,1])for(const fr of [0,1]){const lo=limbGeo(.0457,.0095,.006,new V3(0,-1,0),sd,fr?.24:.46);
+  // family geckos (lite) get a simple paw baked onto the lower leg, so their feet cost no extra draw call
+  const paw=new THREE.SphereGeometry(.0085,8,6).scale(1,.4,1.25).translate(0,-.049,.005);paw.attributes.uv.array.fill(.6);
+  LIMB[sd+'_'+fr]={up:limbGeo(.042,.014,.0095,new V3(sd,0,0),sd,fr?.2:.42),lo,loLite:mergeGeometries([lo,paw])};}
+// one merged foot per side and front/hind: five slim digits that widen into flat adhesive toe pads
+const TOE_GEO=new THREE.CylinderGeometry(.0023,.003,.022,6),PAD_GEO=new THREE.SphereGeometry(.0052,10,7),TOE_D=.027;
+/* v1.24c hands of the logo gecko: five long, widely spread fingers that end in big round cream-coloured pads */
+const FEET={};function footGeo(side,front){const k0=side+'_'+front;if(FEET[k0])return FEET[k0];const parts=[],o=new THREE.Object3D(),c=new THREE.Object3D();o.add(c);const u=front?.26:.48;
+  for(let k=-2;k<=2;k++){o.rotation.set(0,k*.5+side*(front?-.25:.35)+side*Math.PI/2*(front?.55:.75)*-1+side*Math.PI/2,0);
+    const len=k===2*side||k===-2*side?.82:k===0?1.08:1;// the outer and inner digits are shorter
+    for(const [geo,pos,rot,sc,pad] of [[TOE_GEO,[0,.0004,TOE_D*.5*len],[Math.PI/2,0,0],[1,len,1],0],[PAD_GEO,[0,-.0002,TOE_D*len],[0,0,0],[1.3,.5,1.45],1]]){
+      c.position.set(...pos);c.rotation.set(...rot);c.scale.set(...sc);o.updateMatrixWorld(true);let gg=geo.clone().applyMatrix4(c.matrixWorld);gg=gg.index?gg.toNonIndexed():gg;
+      const Nn=gg.attributes.normal,uv=gg.attributes.uv;for(let i=0;i<Nn.count;i++)uv.setXY(i,u,pad?.74-.06*Nn.getY(i):.6-.18*Nn.getY(i));parts.push(gg);}}
+  return FEET[k0]=mergeGeometries(parts);}
+/* v1.24c eyes of the logo gecko: big glossy balls that bulge out of the head, a large black pupil in a gold iris, a thick coloured
+   ring of eyelid skin and two white glints. One ball per eye (it used to be a pupil ball, an iris disc and a cornea). */
+const EYE_R=.016,EYE_GEO=new THREE.SphereGeometry(EYE_R,24,16),LID_GEO=new THREE.TorusGeometry(.0138,.0024,8,32);
+// the eyelid: a dome of skin over the back and sides of the ball, so from behind (where the camera usually is) the eye is a green bump, not a bare ball
+const SOCKET_GEO=new THREE.SphereGeometry(EYE_R*1.05,24,10,0,Math.PI*2,1.0,Math.PI-1.0).rotateX(Math.PI/2);for(let i=0;i<SOCKET_GEO.attributes.uv.count;i++)SOCKET_GEO.attributes.uv.setXY(i,.07,.3);
+{const P=EYE_GEO.attributes.position,U=EYE_GEO.attributes.uv;for(let i=0;i<P.count;i++)U.setXY(i,.5+P.getX(i)/(2*EYE_R),.5+P.getY(i)/(2*EYE_R));}
+for(let i=0;i<LID_GEO.attributes.uv.count;i++)LID_GEO.attributes.uv.setXY(i,.07,.3);// without its own colour the eye ring wears the skin of the crown
+const EYE_POS=[.031,.0195,.002],EYE_ROT=[-.28,.95];
+const GLINT_GEO=mergeGeometries([-1,1].flatMap(sd=>[[.55,.62,.56,.0031],[.8,.3,.52,.0015]].map(([x,y,z,r])=>{const d=new V3(sd*x,y,z).normalize().multiplyScalar(EYE_R*.94);
+  return new THREE.SphereGeometry(r,8,6).translate(sd*EYE_POS[0]+d.x,EYE_POS[1]+d.y,EYE_POS[2]+d.z);})));
+const glintMat=new THREE.MeshBasicMaterial({color:'#ffffff'});
+const TIP_GEO=new THREE.SphereGeometry(.0048,10,8).scale(1.15,.42,1.5);// the tongue tip that peeks out of the smile
+const irisBase=g=>{const gr=g.createRadialGradient(128,128,10,128,128,128);gr.addColorStop(0,'#fff6d8');gr.addColorStop(.55,'#e6d6a8');gr.addColorStop(.9,'#9a8452');gr.addColorStop(1,'#2a2010');g.fillStyle=gr;g.fillRect(0,0,256,256);
+  for(let i=0;i<260;i++){const a=R(0,6.28),r0=R(20,60),r1=R(80,120);g.strokeStyle=`rgba(${RI(60,140)},${RI(40,100)},20,${R(.15,.45)})`;g.lineWidth=R(.6,1.8);g.beginPath();g.moveTo(128+Math.cos(a)*r0,128+Math.sin(a)*r0);g.lineTo(128+Math.cos(a+R(-.1,.1))*r1,128+Math.sin(a+R(-.1,.1))*r1);g.stroke();}};
+const irisTex=canvasTex(256,256,(g)=>{irisBase(g);
   g.fillStyle='#050505';g.beginPath();g.moveTo(128,18);for(let y=18;y<=238;y+=6){const k=Math.sin((y-18)/220*Math.PI);g.lineTo(128+8*k+Math.sin(y*.3)*1.2,y);}for(let y=238;y>=18;y-=6){const k=Math.sin((y-18)/220*Math.PI);g.lineTo(128-8*k+Math.sin(y*.3)*1.2,y);}g.fill();
   for(const yy of [70,128,186]){g.beginPath();g.arc(128,yy,4,0,6.28);g.fill();}},{repeat:false});
+// day geckos (Phelsuma) hunt by daylight and have round pupils; the night species keep the slit
+const irisRound=canvasTex(256,256,(g)=>{const gr=g.createRadialGradient(128,128,70,128,128,128);gr.addColorStop(0,'#fff0b0');gr.addColorStop(.4,'#ffe08a');gr.addColorStop(.7,'#d99a2a');gr.addColorStop(1,'#6a4410');g.fillStyle=gr;g.fillRect(0,0,256,256);
+  for(let i=0;i<220;i++){const a=R(0,6.28),r0=R(66,80),r1=R(92,118);g.strokeStyle=`rgba(${RI(120,170)},${RI(70,110)},10,${R(.12,.35)})`;g.lineWidth=R(.6,1.6);g.beginPath();g.moveTo(128+Math.cos(a)*r0,128+Math.sin(a)*r0);g.lineTo(128+Math.cos(a)*r1,128+Math.sin(a)*r1);g.stroke();}
+  const pg=g.createRadialGradient(128,128,0,128,128,80);pg.addColorStop(0,'#020202');pg.addColorStop(.94,'#050505');pg.addColorStop(1,'rgba(40,20,0,0)');g.fillStyle=pg;g.beginPath();g.arc(128,128,80,0,6.28);g.fill();},{repeat:false});
+/* Geckos have no eyelids: they clean their eyes with the tongue. The player's gecko does this now and then while it sits still.
+   The tongue is a fixed curved tube from the mouth over the eye, revealed and withdrawn with its draw range. */
+const LICK_CURVE=new THREE.CatmullRomCurve3([new V3(.004,-.004,.04),new V3(.016,-.008,.054),new V3(.04,-.004,.05),new V3(.054,.012,.034),new V3(.052,.028,.018)]);
+const LICK_SEG=24,LICK_GEO=new THREE.TubeGeometry(LICK_CURVE,LICK_SEG,.0026,6),LICK_TIP=new THREE.SphereGeometry(.0034,8,6);
+const lickMat=new THREE.MeshPhysicalMaterial({color:'#f2708c',roughness:.3,clearcoat:.8,side:THREE.DoubleSide});
 const corneaMat=new THREE.MeshPhysicalMaterial({color:'#ffffff',roughness:0,metalness:0,transparent:true,opacity:.12,clearcoat:1,clearcoatRoughness:0,envMapIntensity:2.5,depthWrite:false});
 const nostrilMat=new THREE.MeshStandardMaterial({color:'#140c08',roughness:.6});const NOSTRIL_GEO=new THREE.SphereGeometry(.0019,8,6).scale(1,.6,1.3);
 const pupilMat=new THREE.MeshPhysicalMaterial({color:'#050505',roughness:.1,clearcoat:1});
-const liteEyeMat=new THREE.MeshPhysicalMaterial({color:'#b88a2a',roughness:.15,clearcoat:1});
+const RING_MATS={},ringMat=c=>RING_MATS[c]||(RING_MATS[c]=new THREE.MeshPhysicalMaterial({color:c,roughness:.45,clearcoat:.4}));
+const liteEyeMat=new THREE.MeshPhysicalMaterial({map:irisRound,color:'#f2c444',roughness:.12,clearcoat:1});
 // soft contact shadow under the player's gecko: on phones the shadow map is too coarse to ground a 20 cm animal
 const blobMat=new THREE.MeshBasicMaterial({map:canvasTex(64,64,g=>{const gr=g.createRadialGradient(32,32,2,32,32,31);gr.addColorStop(0,'rgba(0,0,0,.6)');gr.addColorStop(.55,'rgba(0,0,0,.28)');gr.addColorStop(1,'rgba(0,0,0,0)');g.clearRect(0,0,64,64);g.fillStyle=gr;g.fillRect(0,0,64,64);},{repeat:false}),transparent:true,depthWrite:false,opacity:LOW?.8:.5,polygonOffset:true,polygonOffsetFactor:-2,polygonOffsetUnits:-2,fog:false});
 const BLOB_GEO=new THREE.PlaneGeometry(.26,.42);
@@ -1655,35 +1764,33 @@ class Gecko{
     this.mesh=new THREE.Mesh(g,mat);this.mesh.castShadow=true;this.mesh.receiveShadow=true;this.root.add(this.mesh);
     this.P=[];this.S=[];this.U=[];this.T=[];for(let i=0;i<NS;i++){this.P.push(new V3());this.S.push(new V3());this.U.push(new V3());this.T.push(new V3());}
     this.head=new THREE.Group();this.root.add(this.head);
-    this.eyeMat=lite?liteEyeMat:new THREE.MeshPhysicalMaterial({map:irisTex,color:eyeColor,roughness:.25,emissive:eyeColor,emissiveMap:irisTex,emissiveIntensity:.12});
-    this.lids=[];this.nost=[];
-    for(const sd of [-1,1]){const eg=new THREE.Group();eg.position.set(sd*.0225,.0125,.004);eg.rotation.y=sd*Math.PI/2*.82;this.head.add(eg);
-      if(lite){const e=new THREE.Mesh(EYE_GEO,liteEyeMat);e.scale.z=.6;eg.add(e);continue;}
-      const e=new THREE.Mesh(EYE_GEO,pupilMat);e.scale.z=.5;e.position.z=-.001;eg.add(e);
-      const ir=new THREE.Mesh(IRIS_GEO,this.eyeMat);ir.position.z=.0042;eg.add(ir);
-      const co=new THREE.Mesh(CORNEA_GEO,corneaMat);co.rotation.x=Math.PI/2;eg.add(co);
-      const lid=new THREE.Mesh(LID_GEO,mat);lid.position.z=.0035;eg.add(lid);this.lids.push(lid);
+    this.eyeMat=lite?liteEyeMat:new THREE.MeshPhysicalMaterial({map:irisTex,color:eyeColor,roughness:.06,clearcoat:1,envMapIntensity:1.6,emissive:eyeColor,emissiveMap:irisTex,emissiveIntensity:.22});
+    this.lids=[];this.nost=[];this.eyeG=[];this.sockets=[];
+    for(const sd of [-1,1]){const eg=new THREE.Group();eg.position.set(sd*EYE_POS[0],EYE_POS[1],EYE_POS[2]);eg.rotation.set(EYE_ROT[0],sd*EYE_ROT[1],0);this.head.add(eg);
+      const e=new THREE.Mesh(EYE_GEO,this.eyeMat);eg.add(e);if(lite)continue;
+      const lid=new THREE.Mesh(LID_GEO,mat);lid.position.z=.0086;eg.add(lid);this.lids.push(lid);this.eyeG.push(eg);const so=new THREE.Mesh(SOCKET_GEO,mat);eg.add(so);this.sockets.push(so);
       const no=new THREE.Mesh(NOSTRIL_GEO,nostrilMat);no.userData.sd=sd;this.root.add(no);this.nost.push(no);}
+    if(!lite){this.head.add(new THREE.Mesh(GLINT_GEO,glintMat));this.tip=new THREE.Mesh(TIP_GEO,lickMat);this.root.add(this.tip);}
+    if(!lite){this.lick=new THREE.Mesh(LICK_GEO,lickMat);this.lickTip=new THREE.Mesh(LICK_TIP,lickMat);this.lick.add(this.lickTip);this.lick.visible=false;this.head.add(this.lick);this.lickT=R(4,8);this.lickK=0;this.lickSd=1;}
     this.crest=new THREE.Group();this.head.add(this.crest);
-    if(!lite)for(const sd of [-1,1])for(let k=0;k<6;k++){const c=new THREE.Mesh(new THREE.ConeGeometry(.0035,.009,5),mat);c.position.set(sd*(.018-k*.001),.019,.02-k*.009);c.rotation.z=-sd*.6;this.crest.add(c);}
+    if(!lite)for(const sd of [-1,1])for(let k=0;k<6;k++){const c=new THREE.Mesh(new THREE.ConeGeometry(.0035,.009,5),mat);c.position.set(sd*(.03-k*.0015),.034-k*.001,-.012-k*.008);c.rotation.z=-sd*.5;this.crest.add(c);}
     this.legs=[];for(const [sd,front] of [[1,true],[-1,true],[1,false],[-1,false]])this.legs.push(this.makeLeg(sd,front));
     if(!lite){this.blob=new THREE.Mesh(BLOB_GEO,blobMat);this.blob.rotation.x=-Math.PI/2;this.blob.position.set(0,.004,-.03);this.blob.renderOrder=1;this.root.add(this.blob);}
     this.tail=1;this.phase=0;this.t=R(0,9);this.walk=0;this.swimK=0;this.look=0;this.drink=0;this.climbing=0;this.open=0;this.sitK=0;
     this.setMaterial(mat,eyeColor,false);this.update(0,0);
   }
-  makeLeg(side,front){const mat=this.mat;const hip=new THREE.Group();const up=new THREE.Group();hip.add(up);
-    const upper=new THREE.Mesh(UPPER_GEO,mat);upper.rotation.z=Math.PI/2;upper.position.x=side*.021;up.add(upper);
+  makeLeg(side,front){const mat=this.mat;const hip=new THREE.Group();const up=new THREE.Group();hip.add(up);const G=LIMB[side+'_'+(front?1:0)];
+    const upper=new THREE.Mesh(G.up,mat);up.add(upper);
     const knee=new THREE.Group();knee.position.x=side*.042;up.add(knee);
-    const lower=new THREE.Mesh(LOWER_GEO,mat);lower.position.y=-.024;knee.add(lower);
+    const lower=new THREE.Mesh(this.lite?G.loLite:G.lo,mat);knee.add(lower);
     const foot=new THREE.Group();foot.position.y=-.048;knee.add(foot);
-    if(!this.lite)for(let k=-2;k<=2;k++){const tg=new THREE.Group();tg.rotation.y=k*.42+side*(front?-.25:.35)+(side>0?Math.PI/2:-Math.PI/2)*.0;
-      const toe=new THREE.Mesh(TOE_GEO,mat);toe.rotation.x=Math.PI/2;toe.position.z=.011;tg.add(toe);
-      const pad=new THREE.Mesh(PAD_GEO,mat);pad.scale.set(1,.45,1.1);pad.position.z=.021;tg.add(pad);
-      tg.rotation.y+=side*Math.PI/2*(front?.55:.75)*-1+side*Math.PI/2;foot.add(tg);}
+    // the toes are one merged mesh (it used to be ten); toe marks where the middle toe pad sits, for the foot IK
+    const fm=this.lite?null:new THREE.Mesh(footGeo(side,front),mat);if(fm)foot.add(fm);let toe=null;
+    if(!this.lite){toe=new THREE.Object3D();const a=side*(front?-.25:.35)+side*Math.PI/2*(front?.55:.75)*-1+side*Math.PI/2;toe.position.set(Math.sin(a)*TOE_D*1.08,0,Math.cos(a)*TOE_D*1.08);foot.add(toe);}
     for(const m of [upper,lower])m.castShadow=true;
-    this.root.add(hip);return{hip,up,knee,foot,side,front,toe:foot.children[2]?.children[1]||null,parts:[upper,lower,...foot.children.flatMap(c=>c.children)]};}
-  setMaterial(mat,eyeColor,crest){this.mat=mat;this.mesh.material=mat;for(const l of this.legs)for(const p of l.parts)p.material=mat;for(const c of this.crest.children)c.material=mat;for(const l of this.lids||[])l.material=mat;
-    if(!this.lite){this.eyeMat.color.set(eyeColor);this.eyeMat.emissive.set(eyeColor);}this.crest.visible=!!crest;}
+    this.root.add(hip);return{hip,up,knee,foot,side,front,toe,parts:fm?[upper,lower,fm]:[upper,lower]};}
+  setMaterial(mat,eyeColor,crest){this.mat=mat;this.mesh.material=mat;for(const l of this.legs)for(const p of l.parts)p.material=mat;for(const c of this.crest.children)c.material=mat;const rm=mat.userData.ring?ringMat(mat.userData.ring):mat;for(const l of this.lids||[])l.material=rm;for(const e of this.sockets||[])e.material=mat;
+    if(!this.lite){this.eyeMat.color.set(eyeColor);this.eyeMat.emissive.set(eyeColor);const ir=mat.userData.round?irisRound:irisTex;if(this.eyeMat.map!==ir){this.eyeMat.map=this.eyeMat.emissiveMap=ir;}}this.crest.visible=!!crest;}
   update(dt,speed,o={}){
     this.t+=dt;this.walk=damp(this.walk,clamp(speed/2.6,0,1.25),9,dt);const w=Math.min(this.walk,1);
     this.swimK=damp(this.swimK,o.swim?1:0,6,dt);const sk=this.swimK;
@@ -1695,7 +1802,7 @@ class Gecko{
     this.run=damp(this.run||0,o.climbing||o.swim?0:smoothstep(3.8,7,speed),5,dt);const rn=this.run*(1-sk);
     this.phase+=dt*(speed*8.5*(1-sk*.45)/(1+.95*rn)+(o.climbing&&speed>.1?4:0)+sk*2.6);
     this.drink=damp(this.drink,o.drinking?1:0,8,dt);this.sitK=damp(this.sitK,o.sit?1:0,6,dt);const st=this.sitK;this.look=damp(this.look,o.look||0,4,dt);
-    const breathe=Math.sin(this.t*3)*.0015;
+    const breathe=Math.sin(this.t*3)*.0015,gul=.22*(1-w)*(1-this.drink)*Math.pow(Math.max(0,Math.sin(this.t*4.4)),2);// throat pumping at rest
     // Lizard gait: a standing wave bends the trunk between the shoulders and hips in step with the diagonal leg pairs
     // (front-left reaches forward while the trunk bows to the left), the head counter-swings to stay on target and the tail trails the wave.
     const sw=Math.sin(this.phase),A=.016*w+.017*rn,tg=3.2-2*rn;
@@ -1705,7 +1812,7 @@ class Gecko{
       const idle=Math.sin(this.t*1.1-s*3.4)*.03*smoothstep(.45,1,s)*(1-w);
       const curl=o.idleCurl?Math.sin(s*4)*.0:0;
       const x=und+idle+curl+(s<.22?this.look*(.22-s)*.6:0);
-      let y=.056-.004*w-.011*rn+(s<.2?(.2-s)*(.07+.03*rn):0)-(s>.5?(s-.5)*(.06-.035*rn):0)+(s<.5?.0018*rn*Math.cos(2*this.phase):0)+(s<.26?-this.drink*(.26-s)*.32:0)+(s>.2&&s<.5?breathe:0);
+      let y=.056-.004*w-.011*rn+(s<.2?(.2-s)*(.07+.03*rn):0)-(s>.5?(s-.5)*(.06-.035*rn):0)+(s<.5?.0018*rn*Math.cos(2*this.phase):0)+(s<.26?-this.drink*(.26-s)*.32:0)+(s>.2&&s<.5?breathe:0)+(s<.2?(.2-s)*.05*(1-w)*(1-this.drink):0)+(s<.36?.011*smoothstep(.36,.16,s)*(1-w)*(1-this.drink)*(1-st):0);// at rest the head and chest are held up, as on the logo
       let xx=x,zz=.22-s*.55;
       // Sitting on a treetop: chest and head up, the tail hangs down along the shoot
       if(st>.001){const up=s<.4?(.4-s)**1.5*.55:0,hang=s>.5?(s-.5)**1.3*1.1:0;y+=st*(up-hang);zz+=st*(s>.5?(s-.5)**1.6*.9:0);}
@@ -1720,15 +1827,22 @@ class Gecko{
     for(let i=0;i<NS;i++){const s=i/(NS-1);const T=this.T[i].subVectors(this.P[Math.max(i-1,0)],this.P[Math.min(i+1,NS-1)]).normalize();
       const S=this.S[i].crossVectors(Y,T).normalize(),U=this.U[i].crossVectors(T,S);
       let [rx,ry]=profile(s);if(s>.2&&s<.46)rx*=1+breathe*8;if(s>.58&&tk<.995){const m=i>iEnd?.02:Math.sqrt(clamp((tEnd-s)/.07,.02,1));rx*=m;ry*=m;}
-      for(let j=0;j<=NR;j++){const a=j/NR*6.2832,c=Math.cos(a),sn=Math.sin(a);const ry2=sn<0?ry*.78:ry;
+      const sl=SLP[i];
+      for(let j=0;j<=NR;j++){const q=k*4,b=1+BUMP[k],c=SE[q]*b,sn=SE[q+1]*b,cn=SE[q+2],snn=SE[q+3];const ry2=sn<0?ry*.78*(1+gul*GUL[k]):ry;
         pos[k*3]=this.P[i].x+S.x*c*rx+U.x*sn*ry2;pos[k*3+1]=this.P[i].y+S.y*c*rx+U.y*sn*ry2;pos[k*3+2]=this.P[i].z+S.z*c*rx+U.z*sn*ry2;
-        let nx=S.x*c*ry2+U.x*sn*rx,ny=S.y*c*ry2+U.y*sn*rx,nz=S.z*c*ry2+U.z*sn*rx;const l=Math.hypot(nx,ny,nz)||1;nor[k*3]=nx/l;nor[k*3+1]=ny/l;nor[k*3+2]=nz/l;k++;}}
+        let nx=S.x*cn*ry2+U.x*snn*rx,ny=S.y*cn*ry2+U.y*snn*rx,nz=S.z*cn*ry2+U.z*snn*rx;let l=Math.hypot(nx,ny,nz)||1;nx=nx/l+T.x*sl;ny=ny/l+T.y*sl;nz=nz/l+T.z*sl;l=Math.hypot(nx,ny,nz)||1;nor[k*3]=nx/l;nor[k*3+1]=ny/l;nor[k*3+2]=nz/l;k++;}}
     this.geo.attributes.position.needsUpdate=true;this.geo.attributes.normal.needsUpdate=true;
     const hi=Math.round(.085*(NS-1));this.head.position.copy(this.P[hi]);_m.makeBasis(this.S[hi],this.U[hi],this.T[hi]);this.head.quaternion.setFromRotationMatrix(_m);
+    if(this.lick){const idle=w<.12&&!o.climbing&&!o.swim&&!o.drinking&&!o.sit;this.lickT-=dt;
+      if(!idle)this.lickK=0;else if(this.lickK<=0&&this.lickT<=0){this.lickK=1e-4;this.lickSd=-this.lickSd;this.lickT=R(6,13);}
+      if(this.lickK>0){this.lickK+=dt/.8;const k=this.lickK,f=k<.3?smoothstep(0,.3,k):k<.55?1:1-smoothstep(.55,1,k);if(k>=1)this.lickK=0;
+        LICK_GEO.setDrawRange(0,Math.max(1,Math.round(f*LICK_SEG))*36);this.lick.scale.x=this.lickSd;LICK_CURVE.getPoint(Math.max(.02,f),this.lickTip.position);}
+      this.lick.visible=this.lickK>0;}
     // v1.21: the nostrils sit in the skin of the snout. They used to hang on the head group 7.5 cm forward, past the snout tip
     // (which is only ~4.7 cm in front of the head), so they floated in the air. Now they follow the snout ring itself.
     if(this.nost.length){const ni=1,[nrx,nry]=profile(ni/(NS-1)),P=this.P[ni],S=this.S[ni],U=this.U[ni];_m.makeBasis(S,U,this.T[ni]);
-      for(const no of this.nost){no.position.copy(P).addScaledVector(S,no.userData.sd*.42*nrx*.96).addScaledVector(U,.9*nry*.96);no.quaternion.setFromRotationMatrix(_m);}}
+      for(const no of this.nost){no.position.copy(P).addScaledVector(S,no.userData.sd*.42*nrx*.96).addScaledVector(U,.9*nry*.96);no.quaternion.setFromRotationMatrix(_m);}
+      this.tip.position.copy(P).addScaledVector(S,.3*nrx).addScaledVector(U,-.26*nry).addScaledVector(this.T[ni],.0062);this.tip.quaternion.setFromRotationMatrix(_m);this.tip.visible=!(this.lickK>0);}
     for(const L of this.legs){const s=L.front?.215:.445,i=Math.round(s*(NS-1));const [rx]=profile(s);
       L.hip.position.copy(this.P[i]).addScaledVector(this.S[i],L.side*rx*.7).addScaledVector(this.U[i],-.006);
       // the shoulders and hips turn with the trunk's bend, but only about half as far as the spine's own tangent (at a sprint
@@ -1861,7 +1975,7 @@ const netMat=new THREE.MeshStandardMaterial({map:netTex,alphaTest:.4,side:THREE.
 const markTex={};function markTexture(ch,col){const k=ch+col;if(markTex[k])return markTex[k];return markTex[k]=canvasTex(128,128,(g)=>{g.fillStyle=col;g.beginPath();g.arc(64,64,52,0,6.28);g.fill();
   g.lineWidth=8;g.strokeStyle='#fff';g.stroke();g.fillStyle='#fff';g.font='900 84px Nunito, sans-serif';g.textAlign='center';g.textBaseline='middle';g.fillText(ch,64,70);},{repeat:false});}
 function cap(r,l,mat){const m=new THREE.Mesh(new THREE.CapsuleGeometry(r,l,4,10),mat);m.castShadow=true;return m;}
-/* Poacher look (v1.11): khaki bush outfit with a vest, bandana, rolled sleeves, cargo pockets, a real bush hat and a face with eyes, brows and
+/* Poacher look (v1.11, rebuilt as a human figure in v1.24, see the Poacher constructor): khaki bush outfit with a vest, bandana, rolled sleeves, cargo pockets, a real bush hat and a face with eyes, brows and
    moustache or beard. Every limb segment is one merged mesh per material (vertex colours), so a poacher costs ~25 draw calls. */
 const pClothV=new THREE.MeshStandardMaterial({vertexColors:true,map:fabricTex,normalMap:fabricN,roughness:.9});
 const pLeatherV=new THREE.MeshStandardMaterial({vertexColors:true,roughness:.5,metalness:.05});
@@ -1874,10 +1988,48 @@ const PST={skin:['#e7bf9c','#d6a986','#c99b7a','#a8785a','#7d5a40','#5e4230'],sh
   hair:['#2a1d14','#4a3420','#6b4a2a','#1a1a1a','#8a8a80','#9a5a2a'],roll:['#6a3a2a','#3a5a6a','#7a6a4a']};
 const _pm=new THREE.Matrix4(),_pq=new THREE.Quaternion(),_pe=new THREE.Euler(),_pp=new V3(),_ps=new V3(),_pc=new THREE.Color();
 function pbuild(){const L=new Map();return{
-  add(mat,geo,col,p=[0,0,0],r=[0,0,0],sc=[1,1,1]){geo=prep(geo);geo.applyMatrix4(_pm.compose(_pp.set(...p),_pq.setFromEuler(_pe.set(...r)),_ps.set(...sc)));colorize(geo,_pc.set(col));
+  add(mat,geo,col,p=[0,0,0],r=[0,0,0],sc=[1,1,1]){geo=prep(geo,['position','normal','uv','color']);geo.applyMatrix4(_pm.compose(_pp.set(...p),_pq.setFromEuler(_pe.set(...r)),_ps.set(...sc)));if(!geo.attributes.color)colorize(geo,_pc.set(col));
     if(!L.has(mat))L.set(mat,[]);L.get(mat).push(geo);},
   into(group,geos){for(const [mat,list] of L){const g=list.length>1?mergeGeometries(list):list[0];if(list.length>1)for(const q of list)q.dispose();
     const m=new THREE.Mesh(g,mat);m.castShadow=true;m.receiveShadow=true;group.add(m);geos.push(g);}L.clear();}};}
+
+/* v1.24 shape helpers for the poachers */
+// recompute normals and average them across duplicated seam vertices, so tubes and the head have no visible seam line
+function smoothSeams(g){g.computeVertexNormals();const P=g.attributes.position,N=g.attributes.normal,m=new Map();
+  const key=i=>Math.round(P.getX(i)*2e4)+','+Math.round(P.getY(i)*2e4)+','+Math.round(P.getZ(i)*2e4);
+  for(let i=0;i<P.count;i++){const k=key(i);let a=m.get(k);if(!a)m.set(k,a=[0,0,0]);a[0]+=N.getX(i);a[1]+=N.getY(i);a[2]+=N.getZ(i);}
+  for(let i=0;i<P.count;i++){const a=m.get(key(i)),l=Math.hypot(...a)||1;N.setXYZ(i,a[0]/l,a[1]/l,a[2]/l);}return g;}
+// a tube through rings [y, half width, half depth, forward offset, chest bulge]; open>0 leaves a gap of that half-angle at the front
+const PT_CACHE=new Map();// shapes are the same for every poacher (only the colours differ), so each is built once
+function ptube(rings,seg=18,open=0){const key=JSON.stringify([rings,seg,open]);if(PT_CACHE.has(key))return PT_CACHE.get(key);const pos=[],uv=[],idx=[],t0=open?open:Math.PI,tl=open?Math.PI*2-2*open:Math.PI*2;
+  for(const [y,rx,rz,dz=0,fb=0] of rings)for(let j=0;j<=seg;j++){const a=t0+j/seg*tl,sx=Math.sin(a),cz=Math.cos(a);pos.push(sx*rx,y,cz*rz+dz+fb*Math.max(0,cz)**2);uv.push(j/seg,y*2);}
+  for(let i=0;i<rings.length-1;i++)for(let j=0;j<seg;j++){const a=i*(seg+1)+j,b=a+seg+1;rings[i+1][0]>rings[i][0]?idx.push(a,a+1,b+1,a,b+1,b):idx.push(a,b+1,a+1,a,b,b+1);}
+  const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(pos,3));g.setAttribute('uv',new THREE.Float32BufferAttribute(uv,2));g.setIndex(idx);smoothSeams(g);PT_CACHE.set(key,g);return g;}
+// boot toe box: a sphere stretched forward with a flat bottom
+let BOOT_G=null;function bootGeo(){if(BOOT_G)return BOOT_G;const g=new THREE.SphereGeometry(1,16,10);const P=g.attributes.position;
+  for(let i=0;i<P.count;i++){let x=P.getX(i),y=P.getY(i),z=P.getZ(i);if(y<0)y*=.35;P.setXYZ(i,x*.056*(1-.12*Math.max(0,z)),y*.05,z*.135);}return BOOT_G=smoothSeams(g);}
+/* the head: an egg-shaped skull sculpted into a face. The jaw narrows to a rounded chin, the face is flatter than the back of the
+   skull, a brow ridge and cheekbones stand out over sunken eye sockets. Vertex colours add a warmer nose and cheeks and, for some
+   poachers, a shadow of stubble. */
+const _hc=new THREE.Color(),_hh=new THREE.Color();
+let HEAD_G=null;
+function headGeo(skin,hair,stubble){if(!HEAD_G){const g=new THREE.SphereGeometry(1,30,22,-Math.PI/2);const P=g.attributes.position,G=(d2,w)=>Math.exp(-d2/w);g.userData.unit=P.array.slice();
+  for(let i=0;i<P.count;i++){const x=P.getX(i),y=P.getY(i),z=P.getZ(i),f=Math.max(0,z);
+    let X=x*.077,Y=y*(y>0?.118:.105),Z=z*(z>0?.094:.104);
+    if(y<0)X*=1-.3*y*y*(z>-.3?1:.5);// jaw narrows toward the chin
+    if(y>.2&&z<0)Z*=1.04;// fuller back of the skull
+    Z+=.012*G((y+.86)**2,.03)*G(x*x,.08)*f;// chin
+    Z+=.009*G((y-.2)**2,.008)*f**3;// brow ridge
+    for(const sd of [-1,1]){Z-=.008*G((x-sd*.4)**2+(y-.1)**2,.014)*f;// eye socket
+      X+=sd*.005*G((y+.05)**2,.02)*G((z-.55)**2,.05)*(sd*x>0?1:0);}// cheekbone
+    P.setXYZ(i,X,Y,Z);}
+  HEAD_G=smoothSeams(g);}
+  const g=HEAD_G.clone(),U=HEAD_G.userData.unit,col=new Float32Array(U.length),sk=_hc.set(skin),hr=_hh.set(hair),G=(d2,w)=>Math.exp(-d2/w);
+  for(let i=0;i<U.length;i+=3){const x=U[i],y=U[i+1],z=U[i+2],f=Math.max(0,z);
+    let r=sk.r,gg=sk.g,b=sk.b;const warm=G(x*x+(y+.3)**2,.05)*f*.5+G((Math.abs(x)-.45)**2+(y+.2)**2,.03)*f*.6;r*=1+.06*warm;gg*=1-.03*warm;b*=1-.04*warm;
+    if(stubble){const s=smoothstep(-.15,-.55,y)*smoothstep(-.6,.1,z)*.42;r=lerp(r,hr.r*.9+r*.1,s);gg=lerp(gg,hr.g*.9+gg*.1,s);b=lerp(b,hr.b*.9+b*.1,s);}
+    col[i]=r;col[i+1]=gg;col[i+2]=b;}
+  g.setAttribute('color',new THREE.BufferAttribute(col,3));return g;}
 const lathe=(pts,seg=16,ps=0,pl=Math.PI*2)=>new THREE.LatheGeometry(pts.map(([r,y])=>new THREE.Vector2(r,y)),seg,ps,pl);
 class Poacher{
   constructor(x,z){
@@ -1885,71 +2037,102 @@ class Poacher{
     const C={skin:pick(PST.skin),shirt:pick(PST.shirt),vest:pick(PST.vest),pants:pick(PST.pants),scarf:pick(PST.scarf),hat:pick(PST.hat),pack:pick(PST.pack),hair:pick(PST.hair),roll:pick(PST.roll)};
     const dk=(c,k)=>'#'+_pc.set(c).multiplyScalar(k).getHexString();const boot='#3a2a1c',sole='#1a120c',belt='#3a2a1a',metal='#9a9a90',gold='#d8b04a';
     const face=rnd(),glasses=rnd()<.25;
+    /* v1.24 human build. The poachers used to be a wooden mannequin of balls and even tubes. Now the body is made of shaped rings
+       (ptube): a chest that is wider than it is deep, shoulders that slope into the neck, a narrower waist, thighs and calves that
+       taper, arms with a deltoid, an elbow and a slim wrist, and real hands (a fist round the net pole, a relaxed open hand).
+       The head is a sculpted sphere (headGeo) with a jaw and chin, cheekbones, a brow ridge and eye sockets, eyes with lids,
+       a nose, lips and ears. Every group is still one merged mesh per material, so the draw calls stay the same.
+       The upper body hangs in a torso group that can lean and counter-rotate against the hips while walking. */
+    const iris=pick(['#5a3a1e','#3a2a18','#4a6a8a','#5a7a4a','#6a5030']),lip=dk(C.skin,.82),stub=rnd()<.55;
     /* legs: hip -> knee -> boot */
-    this.legs=[];for(const sd of [-1,1]){const hip=new THREE.Group();hip.position.set(sd*.105,.95,0);
-      B.add(pClothV,new THREE.CapsuleGeometry(.08,.3,4,12),C.pants,[0,-.22,0]);
-      B.add(pClothV,new THREE.BoxGeometry(.05,.1,.085),dk(C.pants,.8),[sd*.075,-.26,.005]);
-      B.add(pClothV,new THREE.BoxGeometry(.052,.02,.09),dk(C.pants,.7),[sd*.077,-.205,.005]);B.into(hip,geos);
+    this.legs=[];for(const sd of [-1,1]){const hip=new THREE.Group();hip.position.set(sd*.1,.95,0);
+      B.add(pClothV,ptube([[.05,.06,.065],[0,.088,.09],[-.12,.084,.087,.004],[-.26,.074,.077,.006],[-.38,.064,.066,.004],[-.47,.06,.062]]),C.pants);
+      B.add(pClothV,new THREE.BoxGeometry(.05,.11,.09),dk(C.pants,.8),[sd*.077,-.26,.005],[0,0,sd*.04]);
+      B.add(pClothV,new THREE.BoxGeometry(.054,.02,.094),dk(C.pants,.7),[sd*.079,-.2,.005],[0,0,sd*.04]);B.into(hip,geos);
       const knee=new THREE.Group();knee.position.y=-.45;hip.add(knee);
-      B.add(pClothV,new THREE.CapsuleGeometry(.068,.26,4,12),C.pants,[0,-.17,0]);B.add(pClothV,new THREE.SphereGeometry(.078,12,10),C.pants,[0,0,0]);
-      B.add(pClothV,new THREE.TorusGeometry(.07,.02,6,16),dk(C.pants,.75),[0,-.29,0],[Math.PI/2,0,0]);
-      B.add(pLeatherV,new THREE.CylinderGeometry(.072,.077,.14,14),boot,[0,-.37,0]);
-      B.add(pLeatherV,new THREE.CapsuleGeometry(.062,.14,4,10),boot,[0,-.425,.06],[Math.PI/2,0,0],[1.08,1,.82]);
-      B.add(pLeatherV,new THREE.BoxGeometry(.135,.035,.28),sole,[0,-.468,.05]);B.into(knee,geos);
+      B.add(pClothV,new THREE.SphereGeometry(.064,12,10),C.pants,[0,0,.004]);
+      B.add(pClothV,ptube([[.02,.06,.062],[-.07,.061,.066,-.006],[-.17,.056,.06,-.008],[-.27,.05,.052,-.004],[-.32,.052,.054]]),C.pants);
+      B.add(pClothV,new THREE.TorusGeometry(.054,.014,6,16),dk(C.pants,.75),[0,-.3,0],[Math.PI/2,0,0]);
+      B.add(pLeatherV,ptube([[-.29,.056,.058],[-.33,.06,.062],[-.4,.062,.064],[-.44,.062,.068,.01]],16),boot);
+      // boot foot: a rounded toe box over a thick sole with a heel
+      B.add(pLeatherV,bootGeo(),boot,[0,-.43,.045]);
+      B.add(pLeatherV,new THREE.BoxGeometry(.112,.026,.27),sole,[0,-.472,.055]);
+      B.add(pLeatherV,new THREE.BoxGeometry(.1,.02,.09),sole,[0,-.488,-.03]);B.into(knee,geos);
       g.add(hip);this.legs.push({hip,knee});}
-    /* torso with an open vest, belt, bandana and backpack */
-    B.add(pClothV,lathe([[.15,.97],[.175,1.04],[.19,1.16],[.205,1.3],[.215,1.42],[.2,1.51],[.15,1.58],[.07,1.62],[.04,1.63]],18),C.shirt,[0,0,0],[0,0,0],[1,1,.72]);
-    B.add(pClothV,lathe([[.168,1.0],[.193,1.08],[.207,1.18],[.222,1.3],[.232,1.42],[.218,1.5],[.17,1.57]],18,.62,Math.PI*2-1.24),C.vest,[0,0,0],[0,0,0],[1,1,.74]);
-    for(const sd of [-1,1])for(const [y,w] of [[1.16,.075],[1.36,.065]]){B.add(pClothV,new THREE.BoxGeometry(w,.075,.03),dk(C.vest,.82),[sd*.135,y,.135]);B.add(pClothV,new THREE.BoxGeometry(w+.006,.022,.034),dk(C.vest,.7),[sd*.135,y+.04,.137]);}
-    B.add(pClothV,new THREE.BoxGeometry(.035,.025,.015),dk(C.shirt,.85),[.1,1.43,.15]);
-    B.add(pClothV,lathe([[.2,.82],[.2,.9],[.185,.98],[.17,1.02]],18),C.pants,[0,0,0],[0,0,0],[1,1,.78]);
-    B.add(pLeatherV,new THREE.CylinderGeometry(.18,.18,.065,20),belt,[0,1.0,0],[0,0,0],[1,1,.78]);
-    B.add(pShinyV,new THREE.BoxGeometry(.06,.045,.02),gold,[0,1.0,.143]);
-    B.add(pLeatherV,new THREE.BoxGeometry(.075,.1,.06),dk(belt,1.3),[.17,.96,.06],[0,.5,0]);
-    B.add(pSkinV,new THREE.CylinderGeometry(.05,.06,.12,12),C.skin,[0,1.64,0]);
-    B.add(pClothV,new THREE.TorusGeometry(.068,.03,8,18),C.scarf,[0,1.6,.005],[Math.PI/2,0,0],[1,1.05,1]);
-    B.add(pClothV,new THREE.ConeGeometry(.055,.1,4),C.scarf,[0,1.55,.07],[Math.PI+.25,Math.PI/4,0],[1,1,.4]);
+    /* torso group: pivots at the hips, carries the chest, the head and the arms */
+    const torso=this.torso=new THREE.Group();torso.position.y=.98;g.add(torso);const tin=new THREE.Group();tin.position.y=-.98;torso.add(tin);
+    B.add(pClothV,ptube([[.82,.172,.122],[.9,.172,.12],[.98,.168,.118],[1.03,.166,.117]]),C.pants);
+    B.add(pClothV,ptube([[.98,.165,.115],[1.06,.162,.114],[1.14,.166,.118,0,.006],[1.24,.178,.122,0,.016],[1.32,.188,.126,0,.026],[1.4,.197,.127,0,.03],
+      [1.46,.2,.123,0,.022],[1.51,.196,.114,0,.01],[1.545,.178,.1],[1.57,.142,.086],[1.59,.096,.07],[1.6,.06,.055]],22),C.shirt);
+    // open bush vest over the shirt, with four pockets
+    B.add(pClothV,ptube([[1.0,.177,.127],[1.14,.178,.13,0,.006],[1.24,.19,.134,0,.016],[1.32,.2,.138,0,.026],[1.4,.209,.139,0,.03],[1.46,.212,.134,0,.022],[1.51,.207,.124,0,.01],[1.55,.184,.108]],22,.5),C.vest);
+    for(const sd of [-1,1])for(const [y,z] of [[1.16,.128],[1.37,.152]]){B.add(pClothV,new THREE.BoxGeometry(.07,.075,.022),dk(C.vest,.82),[sd*.125,y,z],[0,sd*.35,0]);B.add(pClothV,new THREE.BoxGeometry(.074,.022,.026),dk(C.vest,.7),[sd*.125,y+.04,z+.002],[0,sd*.35,0]);}
+    for(let i=0;i<4;i++)B.add(pClothV,new THREE.CylinderGeometry(.006,.006,.004,6),dk(C.shirt,.6),[0,1.18+i*.09,.124+(i>1?.012:0)],[Math.PI/2,0,0]);// shirt buttons
+    B.add(pLeatherV,ptube([[.97,.172,.122],[1.03,.172,.122]],22),belt);
+    B.add(pShinyV,new THREE.BoxGeometry(.055,.042,.016),gold,[0,1.0,.124]);
+    B.add(pLeatherV,new THREE.BoxGeometry(.075,.1,.06),dk(belt,1.3),[.17,.96,.05],[0,.5,0]);
+    B.add(pSkinV,ptube([[1.55,.052,.05],[1.62,.048,.047,.008],[1.7,.047,.046,.012]],12),C.skin);
+    B.add(pClothV,new THREE.TorusGeometry(.062,.026,8,18),C.scarf,[0,1.6,.008],[Math.PI/2+.18,0,0],[1,1.08,1]);
+    B.add(pClothV,new THREE.ConeGeometry(.05,.09,4),C.scarf,[0,1.555,.085],[Math.PI+.35,Math.PI/4,0],[1,1,.4]);
     // backpack: body, flap, bedroll, bottle and straps
-    B.add(pClothV,new THREE.BoxGeometry(.3,.38,.17),C.pack,[0,1.3,-.215]);
-    B.add(pClothV,new THREE.BoxGeometry(.31,.1,.18),dk(C.pack,.8),[0,1.46,-.22]);
-    B.add(pClothV,new THREE.BoxGeometry(.2,.1,.04),dk(C.pack,.9),[0,1.2,-.31]);
-    B.add(pClothV,new THREE.CylinderGeometry(.065,.065,.4,12),C.roll,[0,1.56,-.22],[0,0,Math.PI/2]);
-    B.add(pShinyV,new THREE.CylinderGeometry(.035,.035,.15,10),metal,[.19,1.22,-.2]);
-    for(const sd of [-1,1])B.add(pLeatherV,new THREE.BoxGeometry(.035,.3,.012),belt,[sd*.105,1.39,.155],[-.12,0,sd*-.05]);
-    B.into(g,geos);
-    /* head: skull, hair, face and a bush hat; one group so it can look around */
-    const head=this.head=new THREE.Group();head.position.y=1.64;g.add(head);
-    B.add(pSkinV,new THREE.SphereGeometry(.118,20,16),C.skin,[0,.125,0],[0,0,0],[1,1.08,1.04]);
-    B.add(pSkinV,new THREE.SphereGeometry(.085,16,12),C.skin,[0,.065,.03],[0,0,0],[1,.85,1]);
-    B.add(pSkinV,new THREE.SphereGeometry(.028,10,8),C.skin,[0,.11,.122],[0,0,0],[.85,1,1.25]);
-    B.add(pSkinV,new THREE.SphereGeometry(.016,8,6),dk(C.skin,.95),[0,.092,.13],[0,0,0],[1.6,.8,1]);
-    for(const sd of [-1,1]){B.add(pSkinV,new THREE.SphereGeometry(.03,10,8),C.skin,[sd*.118,.12,-.005],[0,0,0],[.5,1,.8]);
-      B.add(pSkinV,new THREE.SphereGeometry(.03,10,8),dk(C.skin,1.04),[sd*.062,.085,.09],[0,0,0],[1,.8,.6]);}
-    B.add(pHairV,new THREE.SphereGeometry(.126,18,10,Math.PI,Math.PI,0,Math.PI*.62),C.hair,[0,.13,-.012],[0,0,0],[1,1.06,1.05]);
-    B.add(pSkinV,new THREE.BoxGeometry(.05,.012,.012),dk(C.skin,.62),[0,.06,.112]);
-    if(glasses){for(const sd of [-1,1])B.add(pShinyV,new THREE.BoxGeometry(.05,.03,.012),'#111',[sd*.043,.142,.118]);B.add(pShinyV,new THREE.BoxGeometry(.04,.008,.01),'#222',[0,.15,.12]);
-      for(const sd of [-1,1])B.add(pShinyV,new THREE.BoxGeometry(.008,.008,.11),'#222',[sd*.07,.148,.065]);}
-    else for(const sd of [-1,1]){B.add(pShinyV,new THREE.SphereGeometry(.019,10,8),'#f4f0e6',[sd*.042,.14,.1],[0,0,0],[1.1,.9,.6]);
-      B.add(pShinyV,new THREE.SphereGeometry(.0105,8,6),'#2a1a10',[sd*.042,.14,.111]);}
-    for(const sd of [-1,1])B.add(pHairV,new THREE.BoxGeometry(.05,.013,.016),C.hair,[sd*.043,.172,.112],[0,0,sd*-.18]);
-    if(face<.38)B.add(pHairV,new THREE.SphereGeometry(.1,14,10,0,Math.PI*2,Math.PI*.5,Math.PI*.5),C.hair,[0,.098,.022],[0,0,0],[1,1.05,1.08]);
-    else if(face<.72)for(const sd of [-1,1])B.add(pHairV,new THREE.CapsuleGeometry(.014,.035,3,8),C.hair,[sd*.024,.078,.118],[0,0,Math.PI/2+sd*.35]);
-    B.add(pStrawV,lathe([[.12,0],[.18,-.004],[.235,-.016],[.275,-.034],[.295,-.05]],24),C.hat,[0,.215,0]);
-    B.add(pStrawV,lathe([[.125,-.01],[.132,.05],[.128,.1],[.104,.128],[.04,.118],[0,.112]],20),C.hat,[0,.215,0]);
-    B.add(pLeatherV,new THREE.CylinderGeometry(.134,.134,.032,20),dk(C.hat,.45),[0,.235,0]);
+    B.add(pClothV,new THREE.BoxGeometry(.3,.38,.16),C.pack,[0,1.3,-.2]);
+    B.add(pClothV,new THREE.BoxGeometry(.31,.1,.17),dk(C.pack,.8),[0,1.46,-.205]);
+    B.add(pClothV,new THREE.BoxGeometry(.2,.1,.04),dk(C.pack,.9),[0,1.2,-.29]);
+    B.add(pClothV,new THREE.CylinderGeometry(.065,.065,.4,12),C.roll,[0,1.56,-.21],[0,0,Math.PI/2]);
+    B.add(pShinyV,new THREE.CylinderGeometry(.035,.035,.15,10),metal,[.19,1.22,-.19]);
+    for(const sd of [-1,1])B.add(pLeatherV,new THREE.BoxGeometry(.03,.3,.008),belt,[sd*.105,1.37,.15],[-.24,0,sd*-.05]);// pack straps
+    B.into(tin,geos);
+    /* head: sculpted skull and face, hair, facial hair and a bush hat; one group so it can look around */
+    const head=this.head=new THREE.Group();head.position.y=1.612;head.scale.setScalar(1.07);tin.add(head);
+    const H=.125,ey=H+.012,ez=.073;// head centre height and the eye line
+    B.add(pSkinV,headGeo(C.skin,C.hair,stub),C.skin,[0,H,0]);
+    for(const sd of [-1,1]){
+      B.add(pShinyV,new THREE.SphereGeometry(.0128,12,10),'#eee8dc',[sd*.031,ey,ez]);// eyeball
+      B.add(pShinyV,new THREE.CircleGeometry(.0062,14),iris,[sd*.031,ey,ez+.0124],[0,sd*.05,0]);
+      B.add(pShinyV,new THREE.CircleGeometry(.0029,10),'#0a0806',[sd*.031,ey,ez+.0127],[0,sd*.05,0]);
+      // eyelids: the upper lid covers the top third of the eye, the lower lid a sliver, so the eyes look calm instead of staring
+      B.add(pSkinV,new THREE.SphereGeometry(.0139,12,5,0,Math.PI*2,0,Math.PI*.3),dk(C.skin,.96),[sd*.031,ey,ez],[.38,0,0]);
+      B.add(pSkinV,new THREE.SphereGeometry(.0136,12,4,0,Math.PI*2,Math.PI*.8,Math.PI*.2),C.skin,[sd*.031,ey,ez],[-.3,0,0]);
+      B.add(pHairV,new THREE.CapsuleGeometry(.0052,.03,3,6),C.hair,[sd*.032,ey+.025,ez+.012],[0,sd*-.15,Math.PI/2+sd*.12],[1,1,.7]);// eyebrow
+      B.add(pSkinV,new THREE.SphereGeometry(1,10,10),C.skin,[sd*.079,ey-.006,-.004],[0,sd*.35,0],[.011,.031,.021]);// ear
+      B.add(pSkinV,new THREE.SphereGeometry(.0085,8,6),dk(C.skin,1.02),[sd*.0115,ey-.05,ez+.022]);}// nostril wing
+    B.add(pSkinV,new THREE.SphereGeometry(1,10,10),C.skin,[0,ey-.022,ez+.022],[-.32,0,0],[.0105,.03,.014]);// bridge
+    B.add(pSkinV,new THREE.SphereGeometry(.0122,10,8),dk(C.skin,1.03),[0,ey-.046,ez+.031]);// tip
+    B.add(pSkinV,new THREE.CapsuleGeometry(.0036,.03,3,8),lip,[0,ey-.076,ez+.016],[0,0,Math.PI/2],[1,1,.8]);
+    B.add(pSkinV,new THREE.CapsuleGeometry(.0018,.032,2,6),dk(C.skin,.45),[0,ey-.0805,ez+.017],[0,0,Math.PI/2]);// mouth line
+    B.add(pSkinV,new THREE.CapsuleGeometry(.0048,.022,3,8),dk(lip,1.08),[0,ey-.086,ez+.013],[0,0,Math.PI/2],[1,1,.75]);
+    // hair below the hat: back and sides down to the nape
+    B.add(pHairV,new THREE.SphereGeometry(1,22,5,Math.PI-.75,Math.PI+1.5,Math.PI*.2,Math.PI*.2),C.hair,[0,H+.002,-.003],[0,0,0],[.081,.122,.106]);// sides above the ears
+    B.add(pHairV,new THREE.SphereGeometry(1,14,6,Math.PI+.45,Math.PI-.9,Math.PI*.38,Math.PI*.26),C.hair,[0,H+.002,-.003],[0,0,0],[.081,.122,.108]);// back down to the nape
+    if(face<.32){B.add(pHairV,new THREE.SphereGeometry(1,18,8,0,Math.PI,Math.PI*.56,Math.PI*.44),C.hair,[0,H+.004,.004],[0,0,0],[.085,.123,.105]);// full beard
+      B.add(pHairV,new THREE.CapsuleGeometry(.008,.04,3,8),C.hair,[0,ey-.068,ez+.02],[0,0,Math.PI/2]);}
+    else if(face<.62)for(const sd of [-1,1])B.add(pHairV,new THREE.CapsuleGeometry(.0075,.026,3,8),C.hair,[sd*.016,ey-.067,ez+.021],[0,sd*.3,Math.PI/2+sd*.32]);// moustache
+    if(glasses){for(const sd of [-1,1]){B.add(pShinyV,new THREE.BoxGeometry(.044,.026,.006),'#111',[sd*.031,ey+.002,ez+.017]);B.add(pShinyV,new THREE.BoxGeometry(.005,.005,.1),'#222',[sd*.072,ey+.006,.04]);}
+      B.add(pShinyV,new THREE.BoxGeometry(.02,.005,.005),'#222',[0,ey+.008,ez+.019]);}
+    B.add(pStrawV,lathe([[.1,0],[.15,-.004],[.195,-.015],[.228,-.03],[.243,-.042]],24),C.hat,[0,H+.084,0]);
+    B.add(pStrawV,lathe([[.1,-.01],[.106,.045],[.103,.088],[.085,.11],[.033,.102],[0,.098]],20),C.hat,[0,H+.084,0]);
+    B.add(pLeatherV,new THREE.CylinderGeometry(.108,.108,.028,20),dk(C.hat,.45),[0,H+.1,0]);
     B.into(head,geos);
     /* arms: shoulder -> elbow -> hand (the right hand holds the net) */
-    this.arms=[];for(const sd of [-1,1]){const sho=new THREE.Group();sho.position.set(sd*.235,1.51,0);
-      B.add(pClothV,new THREE.SphereGeometry(.075,12,10),C.shirt,[0,0,0]);
-      B.add(pClothV,new THREE.CapsuleGeometry(.06,.2,4,10),C.shirt,[0,-.15,0]);
-      B.add(pClothV,new THREE.TorusGeometry(.058,.022,6,14),dk(C.shirt,.85),[0,-.29,0],[Math.PI/2,0,0]);B.into(sho,geos);
+    this.arms=[];for(const sd of [-1,1]){const sho=new THREE.Group();sho.position.set(sd*.188,1.485,0);tin.add(sho);
+      B.add(pClothV,ptube([[.055,.02,.02],[.04,.048,.048],[.012,.058,.058],[-.05,.057,.056],[-.15,.053,.05],[-.24,.048,.046],[-.29,.049,.047]],14),C.shirt);
+      B.add(pClothV,new THREE.TorusGeometry(.046,.017,6,14),dk(C.shirt,.85),[0,-.285,0],[Math.PI/2,0,0]);B.into(sho,geos);
       const el=new THREE.Group();el.position.y=-.32;sho.add(el);
-      B.add(pSkinV,new THREE.CapsuleGeometry(.047,.18,4,10),C.skin,[0,-.12,0]);B.add(pSkinV,new THREE.SphereGeometry(.052,10,8),C.skin,[0,0,0]);
-      if(sd<0)B.add(pLeatherV,new THREE.TorusGeometry(.046,.012,6,14),belt,[0,-.22,0],[Math.PI/2,0,0]);B.into(el,geos);
+      B.add(pSkinV,new THREE.SphereGeometry(.041,10,8),C.skin,[0,.004,-.004]);
+      B.add(pSkinV,ptube([[.02,.04,.04],[-.04,.044,.041,.003],[-.1,.04,.036,.003],[-.18,.033,.028],[-.235,.029,.024]],12),C.skin);
+      if(sd<0)B.add(pLeatherV,new THREE.TorusGeometry(.032,.008,6,14),belt,[0,-.2,0],[Math.PI/2,0,0]);// watch strap
+      B.into(el,geos);
       const hand=new THREE.Group();hand.position.y=-.3;el.add(hand);
-      B.add(pLeatherV,new THREE.SphereGeometry(.055,12,10),'#5a4630',[0,0,0],[0,0,0],[.85,1.1,.7]);
-      B.add(pLeatherV,new THREE.CapsuleGeometry(.018,.035,3,8),'#5a4630',[-sd*.045,.0,.03],[.5,0,sd*.6]);B.into(hand,geos);
-      g.add(sho);this.arms.push({sho,el,hand});}
+      if(sd>0){// a fist round the net pole (the pole runs along the hand's z axis): back of the hand, four fingers wrapped round, thumb over them
+        B.add(pSkinV,new THREE.SphereGeometry(1,10,8),C.skin,[0,.045,0],[0,0,0],[.026,.042,.045]);
+        B.add(pSkinV,new THREE.TorusGeometry(.024,.0125,8,14),C.skin,[.002,0,0],[0,0,0],[1,1,3]);
+        B.add(pSkinV,new THREE.CapsuleGeometry(.0095,.03,3,6),C.skin,[-.02,.012,.042],[.9,0,.5]);}
+      else{// relaxed open hand, palm toward the leg, fingers a little curled
+        B.add(pSkinV,new THREE.SphereGeometry(1,10,8),C.skin,[0,.03,0],[0,0,0],[.021,.046,.043]);
+        for(let f=0;f<4;f++){const z=-.027+f*.018,l=f===0?.028:f===3?.03:.036;
+          B.add(pSkinV,new THREE.CapsuleGeometry(.0085,l,3,6),C.skin,[.004,-.022-l/2,z],[0,0,.3]);}
+        B.add(pSkinV,new THREE.CapsuleGeometry(.0095,.03,3,6),C.skin,[.016,.0,.038],[-.5,0,.6]);}
+      B.into(hand,geos);this.arms.push({sho,el,hand});}
     const net=this.net=new THREE.Group();net.rotation.x=-Math.PI/2;this.arms[1].hand.add(net);
     B.add(pLeatherV,new THREE.CylinderGeometry(.018,.022,1.5,8),pm.pole,[0,.55,0]);
     B.add(pLeatherV,new THREE.CylinderGeometry(.026,.026,.26,8),'#2a1e14',[0,.02,0]);
@@ -2590,13 +2773,19 @@ function dropTail(p){PL.tailT=TAIL_SEC[mode]||180;PL.health=Math.round(PL.maxHea
 function updateTail(dt){if(PL.tailT>0){PL.tailT-=dt;if(PL.tailT<=0){PL.tailT=0;floater(PL.pos.clone().add(_v.set(0,.4,0)),t('tailBack'),'green');AU.sfx.grow();}}
   const full=TAIL_SEC[mode]||180,k=PL.tailT>0?clamp(1-PL.tailT/full,0,1):1;gecko.tail=damp(gecko.tail,PL.tailT>0?.08+.8*k*k:1,6,dt);
   if(tailPiece){const q=tailPiece;q.t+=dt;q.m.rotation.y=q.yaw+Math.sin(q.t*26)*.7*Math.max(0,1-q.t/5);q.m.rotation.z=Math.sin(q.t*19)*.25*Math.max(0,1-q.t/5);if(q.t>9)clearTail();}}
-function animatePoacher(p,dt,sees){const g=p.g;g.position.copy(p.pos);g.rotation.y=p.yaw;const sp=p.speed;p.anim+=dt*sp*3.3;
-  const a=Math.sin(p.anim)*Math.min(sp/2,1)*.7;p.legs[0].hip.rotation.x=a;p.legs[1].hip.rotation.x=-a;
-  p.legs[0].knee.rotation.x=Math.max(0,-Math.cos(p.anim))*.9*Math.min(sp/2,1);p.legs[1].knee.rotation.x=Math.max(0,Math.cos(p.anim))*.9*Math.min(sp/2,1);
-  p.arms[0].sho.rotation.x=-a*.8;p.arms[0].el.rotation.x=-.3;
+function animatePoacher(p,dt,sees){const g=p.g;g.position.copy(p.pos);g.rotation.y=p.yaw;const sp=p.speed;p.anim+=dt*sp*(3.3-.5*smoothstep(2.5,4.5,sp));
+  /* v1.24 human walk: the stride gets longer when running, the knee of the swinging leg folds, the stance knee keeps a soft bend,
+     the chest counter-rotates against the hips, the free arm swings opposite the legs (and pumps with a bent elbow when running),
+     the upper body leans into a chase, and at rest the poacher breathes and shifts his weight a little. */
+  const k=Math.min(sp/2,1),run=smoothstep(2.5,4.5,sp),s=Math.sin(p.anim),c=Math.cos(p.anim);const a=s*k*(.55+.2*run);p.lookT+=dt;
+  p.legs[0].hip.rotation.x=a;p.legs[1].hip.rotation.x=-a;
+  p.legs[0].knee.rotation.x=(Math.max(0,-c)*(.85+.55*run)+.1)*k;p.legs[1].knee.rotation.x=(Math.max(0,c)*(.85+.55*run)+.1)*k;
+  const idle=1-k,br=Math.sin(p.lookT*1.7);
+  p.torso.rotation.x=damp(p.torso.rotation.x,.04*k+.2*run+(p.swing>=0?.12:0)+.012*br*idle,6,dt);p.torso.rotation.y=-a*.22+Math.sin(p.lookT*.4)*.04*idle;p.torso.rotation.z=Math.sin(p.lookT*.4+1)*.02*idle;
+  p.arms[0].sho.rotation.x=-a*(.9+.4*run)+.04*br*idle;p.arms[0].sho.rotation.z=-.07;p.arms[0].el.rotation.x=-.18-.25*k-1.0*run+Math.min(0,a)*.4;
   let r=p.state==='chase'?-1.1:-.35;if(p.swing>=0){const s=p.swing;r=s<.4?lerp(-1.1,-2.8,s/.4):lerp(-2.8,-.15,smoothstep(.4,.6,s));}
-  p.arms[1].sho.rotation.x=damp(p.arms[1].sho.rotation.x,r,p.swing>=0?30:8,dt);p.arms[1].el.rotation.x=-.2;
-  g.position.y+=Math.abs(Math.sin(p.anim))*.04*Math.min(sp/2,1);p.lookT+=dt;
+  p.arms[1].sho.rotation.x=damp(p.arms[1].sho.rotation.x,r,p.swing>=0?30:8,dt);p.arms[1].sho.rotation.z=.07;p.arms[1].el.rotation.x=-.25;
+  g.position.y-=Math.abs(s)*(.028+.012*run)*k;// the hips sink when both feet are down and rise over the standing leg
   {let hy=p.state==='patrol'&&p.alert<.25?Math.sin(p.lookT*.7)*.55*Math.max(0,Math.sin(p.lookT*.23)):0;if(p.alert>=.25||p.state!=='patrol'){const a=Math.atan2(PL.pos.x-p.pos.x,PL.pos.z-p.pos.z)-p.yaw;hy=clamp(Math.atan2(Math.sin(a),Math.cos(a)),-.9,.9);}
    p.head.rotation.y=damp(p.head.rotation.y,hy,5,dt);p.head.rotation.x=damp(p.head.rotation.x,p.state==='chase'?.12:0,4,dt);}
   const show=p.state==='chase'||p.alert>.2;p.mark.visible=show&&!PL.dead;
@@ -3168,7 +3357,7 @@ setTimeout(()=>{$('loading').style.opacity=0;setTimeout(()=>$('loading').remove(
 pokiInit.then(()=>{if(!save.lang&&detectLang()!==lang)applyLang(detectLang());measure('lang',lang,'start');measure('gfx','tier',TIER);Poki.loaded();
   {const b=ms=>{const s=ms/1000;return s<2?'s0-2':s<4?'s2-4':s<6?'s4-6':s<9?'s6-9':s<13?'s9-13':s<20?'s13-20':'s20+';};const end=LT.end;// the moment the loading screen left, not the moment the Poki SDK was ready
    measure('loadtime','total',b(end));measure('loadtime','build',b(LT.js));measure('loadtime','compile',b(LT.compile-LT.js));measure('loadtime','frames',b(end-LT.compile));}measure('screen','menu','visible');onboarding('loaded');});
-window.__gekko={get HAWK(){return HAWK;},startHawk,endHawk,hawkCover,chainState,chainStep,get warmSpots(){return warmSpots;},buildWarmSpots,climate,get combo(){return combo;},knotPress,get gnaw2(){return gnaw;},updateTongue,set tongueQ(v){tongueQ=v;},tongue,LT,hitPlayer,buyUpgrade,get upOffer(){return upOffer;},rockGround,groundBase,get camPos(){return camPos;},get camLook(){return camLook;},eatCricket,newQuest,get quest(){return quest;},get questIdx(){return questIdx;},set questIdx(v){questIdx=v;},startEvent,endEvent,get EVT(){return EVT;},set evLast(v){evLast=v;},gameOver,TIER,get TI(){return TI;},step:(dt,n)=>{for(let i=0;i<n;i++){updateGame(dt);updateCamp(dt);updateCrickets(dt);}},get gnaw(){return gnaw;},get camoQ(){return camoQ;},set camoQ(v){camoQ=v;},updateCamera,smoothVisual,setCamo,mmIcon,drawMinimap,get NESTp(){return NEST;},setupCrickets,normalFromCanvas,cages,get CAMP(){return CAMP;},get NEST(){return NEST;},save,finale,renderShop,setShopTab:v=>{shopTab=v;},travel,buildWorld,gates,AREAS,get areaIdx(){return areaIdx;},get SPAWN(){return SPAWN;},stageIdx,PL,renderer,scene,updatePlayer,treeRadius,trunkR,rockTop,footSurf,climbSurf,updateClimb,get rockGrid(){return rockGrid;},ripples,get LAKES(){return LAKES;},groundAt,poachers,crickets,trees,boxes,rocks,startGame,setMode:m=>{mode=m;},get state(){return state;},camera,gecko,keys,get camYaw(){return camYaw;},set camYaw(v){camYaw=v;},set camPitch(v){camPitch=v;},set camDist(v){camDist=v;}};
+window.__gekko={studio:{THREE,Gecko,Poacher,animatePoacher,skinMaterial,SKINS,setScreen},get HAWK(){return HAWK;},startHawk,endHawk,hawkCover,chainState,chainStep,get warmSpots(){return warmSpots;},buildWarmSpots,climate,get combo(){return combo;},knotPress,get gnaw2(){return gnaw;},updateTongue,set tongueQ(v){tongueQ=v;},tongue,LT,hitPlayer,buyUpgrade,get upOffer(){return upOffer;},rockGround,groundBase,get camPos(){return camPos;},get camLook(){return camLook;},eatCricket,newQuest,get quest(){return quest;},get questIdx(){return questIdx;},set questIdx(v){questIdx=v;},startEvent,endEvent,get EVT(){return EVT;},set evLast(v){evLast=v;},gameOver,TIER,get TI(){return TI;},step:(dt,n)=>{for(let i=0;i<n;i++){updateGame(dt);updateCamp(dt);updateCrickets(dt);}},get gnaw(){return gnaw;},get camoQ(){return camoQ;},set camoQ(v){camoQ=v;},updateCamera,smoothVisual,setCamo,mmIcon,drawMinimap,get NESTp(){return NEST;},setupCrickets,normalFromCanvas,cages,get CAMP(){return CAMP;},get NEST(){return NEST;},save,finale,renderShop,setShopTab:v=>{shopTab=v;},travel,buildWorld,gates,AREAS,get areaIdx(){return areaIdx;},get SPAWN(){return SPAWN;},stageIdx,PL,renderer,scene,updatePlayer,treeRadius,trunkR,rockTop,footSurf,climbSurf,updateClimb,get rockGrid(){return rockGrid;},ripples,get LAKES(){return LAKES;},groundAt,poachers,crickets,trees,boxes,rocks,startGame,setMode:m=>{mode=m;},get state(){return state;},camera,gecko,keys,get camYaw(){return camYaw;},set camYaw(v){camYaw=v;},set camPitch(v){camPitch=v;},set camDist(v){camDist=v;}};
 </script>
 </body>
 </html>
