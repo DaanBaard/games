@@ -77,6 +77,10 @@ button:focus-visible{outline:3px solid var(--leaf);outline-offset:2px}
 #goalArrow svg,#waterArrow svg{width:100%;height:100%;animation:bob .7s ease-in-out infinite alternate}
 @keyframes bob{to{transform:translateY(-6px)}}
 #prompt{position:absolute;left:50%;bottom:calc(24% + env(safe-area-inset-bottom,0px));transform:translateX(-50%);padding:9px 16px;border-radius:12px;background:var(--glass-strong);border:1px solid var(--line);font-weight:800;font-size:15px;white-space:nowrap}
+#upBtn{position:absolute;left:50%;bottom:calc(14px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);display:flex;align-items:center;gap:8px;padding:8px 14px;border-radius:999px;border:2px solid var(--leaf);background:rgba(20,50,22,.88);color:#f2f7e8;font-weight:900;font-size:14px;white-space:nowrap;pointer-events:auto;animation:upGlow .8s ease-in-out infinite alternate}
+#upBtn[hidden]{display:none}#upBtn svg{width:18px;height:18px;color:var(--leaf)}#upBtn b{color:var(--coin);font-family:var(--display);font-weight:400;font-size:16px}#upBtn kbd{font-family:var(--body);font-weight:900;font-size:11px;padding:2px 7px;border-radius:6px;background:var(--leaf);color:#14260d}
+@keyframes upGlow{from{box-shadow:0 0 0 0 rgba(185,228,79,.0)}to{box-shadow:0 0 14px 3px rgba(185,228,79,.55)}}
+#tDrink{display:none}#tSprint{grid-column:2;grid-row:1}#tJump{grid-column:1;grid-row:2}#tTongue{grid-column:2;grid-row:2}
 #prompt kbd,.tip kbd,.keys kbd{font-family:var(--body);font-weight:900;font-size:12px;padding:2px 7px;border-radius:6px;background:var(--leaf);color:#14260d}
 .tip{position:absolute;left:50%;bottom:calc(12% + env(safe-area-inset-bottom,0px));transform:translateX(-50%);max-width:min(560px,86vw);text-align:center;padding:11px 18px;border-radius:14px;background:var(--glass-strong);border:1px solid var(--line);font-weight:700;font-size:15px;line-height:1.45;transition:opacity .4s}
 #crosshair{position:absolute;left:50%;top:50%;width:6px;height:6px;margin:-3px;border-radius:50%;background:rgba(255,255,255,.55);pointer-events:none}
@@ -224,7 +228,8 @@ select.lang{appearance:none;-webkit-appearance:none;padding-right:12px;cursor:po
   .stats{width:min(185px,40vw);padding:7px 9px;gap:4px}.stat{gap:6px;grid-template-columns:15px 1fr}.stat svg{width:15px;height:15px}
   .growth{font-size:10px}.growth b{font-size:12px}.quest{font-size:11px;padding-top:4px}.quest small{font-size:9px}
   .topright{gap:5px}.pill{font-size:15px;padding:3px 9px}.pill svg{width:15px;height:15px}.pill.mode{font-size:9.5px;padding:3px 8px}
-  #minimap{width:88px;height:88px}.iconbtn{width:34px;height:34px}
+  #minimap{width:88px;height:88px;position:absolute;right:calc(100% + 8px);top:0}.iconbtn{width:34px;height:34px}
+  #upBtn{padding:6px 12px;font-size:12.5px;bottom:calc(8px + env(safe-area-inset-bottom,0px))}
 }
 @media (prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;transition-duration:.01ms!important}}
 </style>
@@ -259,6 +264,7 @@ select.lang{appearance:none;-webkit-appearance:none;padding-right:12px;cursor:po
     <div id="prompt" hidden></div>
     <div id="goalArrow" hidden><svg viewBox="0 0 48 48"><path d="M24 4 40 30H30v14H18V30H8z" fill="var(--leaf)" stroke="#14260d" stroke-width="2.5" stroke-linejoin="round"/></svg></div>
     <div id="waterArrow" hidden><svg viewBox="0 0 48 48"><path d="M24 4 40 30H30v14H18V30H8z" fill="var(--water)" stroke="#06202c" stroke-width="2.5" stroke-linejoin="round"/></svg></div>
+    <button id="upBtn" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 21 13h-5.5v8h-7v-8H3z" fill="currentColor"/></svg><span id="upName"></span><b id="upCost"></b><kbd id="upKey">U</kbd></button>
     <div class="tip" id="tip" style="opacity:0"></div>
     <div id="targetRing" hidden></div>
     <div id="floaters"></div>
@@ -285,7 +291,7 @@ select.lang{appearance:none;-webkit-appearance:none;padding-right:12px;cursor:po
         <button class="play" id="playBtn" data-i18n="play">Spelen</button>
         <button class="ghost" id="shopBtn"><svg viewBox="0 0 24 24"><path d="M4 15c3-1 4-5 8-5 3 0 4 2 7 1M7 15l-1 3M10 13.5l1 4M15 11l1 4M18 11.5l2 2" stroke="#b9e44f" stroke-width="2" fill="none" stroke-linecap="round"/><circle cx="6" cy="14" r="1" fill="#b9e44f"/></svg><span data-i18n="geckos">Gekko's</span></button>
       </div>
-      <div class="menuFoot"><span class="coinsBig"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="#ffc93c"/><circle cx="12" cy="12" r="7" fill="none" stroke="#c98a12" stroke-width="1.6"/></svg><span id="menuCoins">0</span></span><span id="menuBest"></span><button class="ghost gfx" id="gfxBtn">Graphics</button><select class="ghost gfx lang" id="langSel" data-i18n-aria="language" aria-label="Taal"></select><span class="ver">v1.20</span></div>
+      <div class="menuFoot"><span class="coinsBig"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="#ffc93c"/><circle cx="12" cy="12" r="7" fill="none" stroke="#c98a12" stroke-width="1.6"/></svg><span id="menuCoins">0</span></span><span id="menuBest"></span><button class="ghost gfx" id="gfxBtn">Graphics</button><select class="ghost gfx lang" id="langSel" data-i18n-aria="language" aria-label="Taal"></select><span class="ver">v1.22</span></div>
       <div class="keys" data-i18n-html="keys"><span><kbd>WASD</kbd> lopen</span><span><kbd>Muis</kbd> kijken</span><span><kbd>Shift</kbd> sprinten</span><span><kbd>Spatie</kbd> springen</span><span><kbd>Klik</kbd>/<kbd>E</kbd> tong</span><span><kbd>F</kbd> drinken</span></div>
     </div>
   </div>
@@ -359,15 +365,18 @@ select.lang{appearance:none;-webkit-appearance:none;padding-right:12px;cursor:po
      thread while the game script is busy building the world. Each real milestone re-estimates the finish time and the animation
      is re-aimed from where it visibly is, so it never jumps back and never stands still. The duration of the last load is remembered. */
   (function(){var bar=document.getElementById('ldBar'),run=document.getElementById('ldRun');if(!bar||!bar.animate){if(bar)bar.style.transform='none';window.__ld={mark:function(){}};return;}
-    var t0=performance.now(),total=7000;try{total=+localStorage.getItem('gekko_load_ms')||total;}catch(e){}total=Math.max(2500,Math.min(total,30000));
+    var t0=performance.now(),total=9000;try{total=+localStorage.getItem('gekko_load_ms')||total;}catch(e){}total=Math.max(2500,Math.min(total,30000));
     // Two animations that are never restarted and whose movements add up (nested elements):
     //  A: 0-90% in 9 s at speed 1; its speed is re-aimed at every real milestone, which the browser applies without a jump.
-    //  B: a tail, +8% in 10 s at a fixed speed, timed to begin when A arrives; it keeps the meter moving if loading takes longer
-    //     than estimated. B's last 2% is kept for the finish.
-    var T1=9000,TB=10000,done=false,pend=null,bar2=document.getElementById('ldBar2'),run2=document.getElementById('ldRun2');
-    var oA={duration:T1,fill:'both',easing:'linear'},oB={duration:TB+1000,fill:'both',easing:'linear'},kB=TB/(TB+1000);
+    //  B: a tail at a fixed speed, timed to begin when A arrives; it keeps the meter moving if loading takes longer than estimated.
+    // v1.22: the tail no longer ends. It slows down step by step over two minutes (3% in 6 s, 5.2% in 15 s, 7% in 30 s, 8.6% in 60 s,
+    // 9.6% in 120 s), so on a slow phone the meter still creeps on instead of standing at 98%.
+    var T1=9000,TB=120000,done=false,pend=null,bar2=document.getElementById('ldBar2'),run2=document.getElementById('ldRun2');
+    var KB=[[0,0],[.05,3],[.125,5.2],[.25,7],[.5,8.6],[1,9.6]],kfB=KB.map(function(k){return{transform:'translateX('+k[1]+'%)',offset:k[0]};});
+    function posB(tb){if(tb<=0)return 0;var u=Math.min(1,tb/TB);for(var i=1;i<KB.length;i++)if(u<=KB[i][0]){var a=KB[i-1],b=KB[i];return a[1]+(b[1]-a[1])*(u-a[0])/(b[0]-a[0]);}return 9.6;}
+    var oA={duration:T1,fill:'both',easing:'linear'},oB={duration:TB,fill:'both',easing:'linear'};
     var A=[bar.animate([{transform:'translateX(-100%)'},{transform:'translateX(-10%)'}],oA),run.animate([{transform:'translateX(0%)'},{transform:'translateX(90%)'}],oA)];
-    var B=[bar2.animate([{transform:'translateX(0%)'},{transform:'translateX(8%)',offset:kB},{transform:'translateX(10%)'}],oB),run2.animate([{transform:'translateX(0%)'},{transform:'translateX(8%)',offset:kB},{transform:'translateX(10%)'}],oB)];
+    var B=[bar2.animate(kfB,oB),run2.animate(kfB,oB)];
     function rate(L,r){for(var i=0;i<L.length;i++){try{L[i].updatePlaybackRate(r);}catch(e){L[i].playbackRate=r;}}}
     function aim(r){var tau=+A[0].currentTime||0;rate(A,r);var tb=+B[0].currentTime||0;if(tb<=0){var d=-(T1-tau)/r;for(var i=0;i<B.length;i++)B[i].currentTime=d;}}
     var known=false;try{known=!!localStorage.getItem('gekko_load_ms');}catch(e){}
@@ -375,7 +384,7 @@ select.lang{appearance:none;-webkit-appearance:none;padding-right:12px;cursor:po
     // The finish never touches A or B (changing a running animation after the script was busy can make it jump back): a third
     // layer C adds the remaining distance in 0.2 s. Any overshoot is clipped by the bar.
     function apply(){var m=pend;pend=null;if(!m||done)return;var now=performance.now()-t0,tau=+A[0].currentTime||0,tb=+B[0].currentTime||0;
-      if(m.f>=1){done=true;var pos=90*Math.min(1,tau/T1)+(tb<=0?0:tb<TB?8*tb/TB:8+2*Math.min(1,(tb-TB)/1000)),x=Math.max(0,100-pos),oc={duration:200,fill:'both',easing:'ease-out'};
+      if(m.f>=1){done=true;var pos=90*Math.min(1,tau/T1)+posB(tb),x=Math.max(0,100-pos),oc={duration:200,fill:'both',easing:'ease-out'};
         document.getElementById('ldBar3').animate([{transform:'translateX(0%)'},{transform:'translateX('+x+'%)'}],oc);document.getElementById('ldRun3').animate([{transform:'translateX(0%)'},{transform:'translateX('+x+'%)'}],oc);
         try{localStorage.setItem('gekko_load_ms',Math.round(m.el));}catch(e){}return;}
       if(known||m.f>.5||tau>=T1)return;// re-aim only during the build steps, where the script pauses are short
@@ -502,10 +511,10 @@ const SKILLS=[
   {id:'waterbuik',cost:[60,160,350],req:'robijnkever'},{id:'plakpoten',cost:[70,180,380],req:'smaragdkever'},{id:'groei',cost:[90,220,450],req:'vuurvliegje'},
 ];
 const skillLv=id=>Math.min(3,save.skills[id]||0);
-function perks(){const id=save.skin;const k=id==='koning';return{
-  hunger:(id==='luipaard'?0.8:k?0.85:1)*(1-.1*skillLv('maag')), health:id==='tokeh'?130:k?115:100, jump:id==='kuif'?1.35:k?1.15:1,
+function perks(){const id=save.skin;const k=id==='koning',xs=stageExtra();return{
+  hunger:(id==='luipaard'?0.8:k?0.85:1)*(1-.1*skillLv('maag')), health:(id==='tokeh'?130:k?115:100)+15*xs, jump:id==='kuif'?1.35:k?1.15:1,
   camo:id==='blad'?0.7:k?0.85:1, stamina:id==='nacht'?1.4:k?1.15:1, coins:id==='goud'?1.5:k?1.15:1,
-  thirst:1-.1*skillLv('waterbuik'), reach:3.8*(1+.15*skillLv('tong')), speed:1+.05*skillLv('poten'), climb:1+.15*skillLv('plakpoten'), grow:1+.15*skillLv('groei')};}
+  thirst:1-.1*skillLv('waterbuik'), reach:3.8*(1+.15*skillLv('tong'))*(1+.08*xs), speed:1+.05*skillLv('poten'), climb:1+.15*skillLv('plakpoten'), grow:1+.15*skillLv('groei')};}
 /* Rescue: every area has a poacher camp with three caged geckos. The rainforest camp is the main camp: its locks only open once the other nine are free. */
 const FAMILY=12;
 
@@ -513,6 +522,9 @@ const FAMILY=12;
    Renderer, scene, sky
    ===================================================================== */
 const isTouch=matchMedia('(pointer: coarse)').matches||('ontouchstart' in window&&navigator.maxTouchPoints>0);
+// v1.22: which controls are shown follows what the player really uses. A laptop or Chromebook with a touch screen counted as a phone
+// and showed the joystick and the touch tips to someone playing with keyboard and mouse.
+let touchUI=isTouch&&matchMedia('(pointer: coarse)').matches||(isTouch&&!matchMedia('(any-pointer: fine)').matches);
 /* v1.17: weak desktops (school laptops, integrated graphics) get the same light world as phones. On desktop "Laag" only switched
    effects off; the world itself stayed at 2.6M triangles per frame. The light world is 0.6M and loads in about half the time.
    ?tier=low / ?tier=full overrides the choice; a session that dropped itself to Laag starts light the next time. */
@@ -540,6 +552,9 @@ renderer.toneMapping=THREE.ACESFilmicToneMapping;
 renderer.toneMappingExposure=0.97;
 renderer.shadowMap.enabled=true;
 renderer.shadowMap.type=THREE.PCFSoftShadowMap;
+// v1.22: in the light world the shadow map is redrawn every second frame (every third in potato mode). The world does not move and
+// the shadow keeps its own matrix until the next redraw, so nothing swims; it saves about a quarter of the draw calls on phones.
+renderer.shadowMap.autoUpdate=false;let shadowN=0;
 $('game').prepend(renderer.domElement);
 const MAX_ANISO=renderer.capabilities.getMaxAnisotropy();
 
@@ -813,14 +828,14 @@ function buildTerrain(A){
   geo.setAttribute('color',new THREE.BufferAttribute(col,3));
   terrainMesh=new THREE.Mesh(geo,terrainMat);terrainMesh.receiveShadow=true;world.add(terrainMesh);
 }
-const waterMat=new THREE.MeshStandardMaterial({color:'#ffffff',roughness:.07,metalness:.02,transparent:true,opacity:.9,normalMap:waterNormal,normalScale:new THREE.Vector2(.3,.3),envMapIntensity:.6});
+const waterMat=new THREE.MeshStandardMaterial({color:'#ffffff',roughness:.07,metalness:.02,transparent:true,opacity:.9,normalMap:waterNormal,normalScale:new THREE.Vector2(.3,.3),envMapIntensity:.4});
 const waterU={uTime:{value:0},uShal:{value:new V3(.16,.2,.1)},uDeep:{value:new V3(.012,.07,.065)}};
 waterMat.onBeforeCompile=sh=>{sh.uniforms.uTime=waterU.uTime;sh.uniforms.uShal=waterU.uShal;sh.uniforms.uDeep=waterU.uDeep;
   sh.vertexShader='attribute float aDepth;varying float vDepth;\n'+sh.vertexShader.replace('#include <begin_vertex>','#include <begin_vertex>\nvDepth=aDepth;');
   sh.fragmentShader='uniform float uTime;uniform vec3 uShal,uDeep;varying float vDepth;\n'+sh.fragmentShader.replace('#include <color_fragment>',`#include <color_fragment>
   if(vDepth< -0.03) discard;
   float dd=smoothstep(0.,1.5,vDepth);
-  diffuseColor.rgb=mix(uShal,uDeep,dd);
+  diffuseColor.rgb=mix(uShal,uDeep,dd)*vec3(1.15,1.7,2.3);
   diffuseColor.a=mix(.25,.94,smoothstep(0.,1.,vDepth));
   float foam=smoothstep(.14,.0,vDepth)*(.55+.45*sin(uTime*1.6+vDepth*70.));
   diffuseColor.rgb=mix(diffuseColor.rgb,vec3(.75,.78,.72),foam*.5);
@@ -914,11 +929,15 @@ function frondGeo(len,width,droop,lift,tex=1){
    climb all the way up and sit on the very tip (t.tip = height of that seat above t.base). crownTop finds the highest leaf of the tree. */
 function crownTop(x,z,l0,y0){let top=y0;for(let i=l0;i<leafM.length;i++){const e=leafM[i].elements,sc=Math.hypot(e[0],e[1],e[2]),ext=.8*sc;
   const r=Math.hypot(e[12]-x,e[14]-z);top=Math.max(top,e[13]+ext*(r<ext+.5?.95:.5));}return top;}
-function addLeader(t,l0){const x=t.x,z=t.z,y0=t.base+t.top,tipY=Math.min(crownTop(x,z,l0,y0+.6)+.15,y0+7);
-  const r0=Math.max(t.rT*.55,.06),r1=.035;trunkGeos.push(branchGeo(new V3(x,y0-.7,z),new V3(x,tipY,z),r0,r1));
+function addLeader(t,l0,fixTip){const x=t.x,z=t.z,y0=t.base+t.top,tipY=fixTip!==undefined?fixTip:Math.min(crownTop(x,z,l0,y0+.6)+.15,y0+7);
+  // v1.21: the shoot starts a little wider than the trunk top and covers its rim (no ledge, no hollow trunk end), with 12 sides
+  // so it looks round, and the climbing body no longer jumps inward when it passes the top
+  const r0=Math.max(t.rT*1.12,.06),r1=.035,yb=y0-.25;
+  {const L=tipY-yb,g=new THREE.CylinderGeometry(r1,r0,L,12,3,true);g.translate(x,yb+L/2,z);const uv=g.attributes.uv;for(let i=0;i<uv.count;i++)uv.setXY(i,uv.getX(i)*Math.max(1,Math.round(r0*5)),uv.getY(i)*L/2.4);
+   g.computeVertexNormals();trunkGeos.push(prep(colorize(g,new THREE.Color(.85,.92,.8)),['position','normal','uv','color']));}
   // a little knot on the tip to sit on
   {const g=new THREE.SphereGeometry(.055,7,5);g.scale(1,.6,1);g.translate(x,tipY,z);trunkGeos.push(prep(colorize(g,new THREE.Color(.85,.92,.8)),['position','normal','uv','color']));}
-  t.lead={r0,r1,y0:y0-.7-t.base,y1:tipY-t.base};t.tip=tipY-t.base+.03;t.climbMax=t.tip-.25;}
+  t.lead={r0,r1,y0:yb-t.base,y1:tipY-t.base};t.tip=tipY-t.base+.03;t.climbMax=t.tip-.25;}
 function placeTree(x,z,kind){
   const base=terrainH(x,z),l0=leafM.length;
   if(kind==='big'){
@@ -944,18 +963,21 @@ function placeTree(x,z,kind){
       trunkGeos.push(branchGeo(from,to,rT*.9,rT*.3));branches.push(branchInfo(from,to,rT*.9,rT*.3,a));
       const tw=new V3().lerpVectors(from,to,R(.55,.8)),a2=a+R(-.9,.9),l2=R(.8,1.4);trunkGeos.push(branchGeo(tw,new V3(tw.x+Math.cos(a2)*l2,tw.y+R(.6,1.2),tw.z+Math.sin(a2)*l2),rT*.3,rT*.1));}
     trees.push({x,z,base,rB,rT,H,top:H-.3,climbMax:H-.45,canopy:H*.7,kind,yOff:-.3,flare:true,fins:null,branches,seed:_ts});
+    addLeader(trees[trees.length-1],l0,base+H-.3+R(.6,1));// v1.21: a tapering tip instead of an open, hollow trunk end
   }else if(kind==='pine'){
-    const H=R(8,14),rB=R(.22,.3),rT=rB*.35;
-    trunkGeos.push(trunkGeo(rB,rT,H,x,base-.2,z,R(0,99)));
-    const tiers=RI(4,6),sd=R(0,99);for(let k=0;k<tiers;k++){const t=k/tiers;pineGeos.push(pineCone(x,base+H*(.22+t*.62),z,lerp(R(2,2.6)*H/11,.55,t),lerp(H*.34,H*.22,t),sd+k));}
+    const H0=R(8,14),rB=R(.22,.3),rT=rB*.35;
+    const tiers=RI(4,6),sd=R(0,99);let apex=0;for(let k=0;k<tiers;k++){const t=k/tiers,h=lerp(H0*.34,H0*.22,t);pineGeos.push(pineCone(x,base+H0*(.22+t*.62),z,lerp(R(2,2.6)*H0/11,.55,t),h,sd+k));apex=H0*(.22+t*.62)+h;}
+    // v1.21: the trunk ends inside the top cone (it used to stick out above it as a flat stump); a thin spire carries the seat
+    const H=apex-.35+.2;trunkGeos.push(trunkGeo(rB,rT,H,x,base-.2,z,R(0,99)));
     trees.push({x,z,base,rB,rT,H,top:H-.2,climbMax:H-.35,canopy:H*.35,kind,yOff:-.2,flare:true,fins:null,branches:null,seed:_ts});
+    addLeader(trees[trees.length-1],l0,base+apex+.3);
   }else if(kind==='cactus'){
     const H=R(3.5,6.5),rB=R(.28,.38),rT=rB*.95;
     cactusGeos.push(cactusPart(x,base-.2,z,rB,H+.2-rB*.4));
     const na=RI(0,3),branches=[];for(let i=0;i<na;i++){const a=i/Math.max(na,1)*6.28+R(-.5,.5),hy=base+H*R(.32,.58),L=R(.7,1.2),ra=rB*.72;
       const from=new V3(x,hy,z),el=new V3(x+Math.cos(a)*(rB+L),hy,z+Math.sin(a)*(rB+L));
       cactusGeos.push(cactusArm(from,el,ra));cactusGeos.push(cactusPart(el.x,hy,el.z,ra,R(1,2.2)));branches.push(branchInfo(from,el,ra,ra,a));}
-    trees.push({x,z,base,rB,rT,H,top:H,climbMax:H-.25,canopy:H*.8,kind,yOff:-.2,flare:false,fins:null,branches:na?branches:null});
+    trees.push({x,z,base,rB,rT,H,top:H,tip:H+rB*.66,climbMax:H-.25,canopy:H*.8,kind,yOff:-.2,flare:false,fins:null,branches:na?branches:null});// v1.21: sit on the dome, not inside it
   }else if(kind==='acacia'){
     const H=R(4,6.5),rB=R(.24,.34),rT=rB*.55,seed=R(0,99);
     trunkGeos.push(trunkGeo(rB,rT,H,x,base-.2,z,seed));const nb=RI(3,5),branches=[];
@@ -1078,8 +1100,10 @@ function rockTop(r,x,z){const dx=(x-r.x)/r.s,dz=(z-r.z)/r.s;if(dx*dx+dz*dz>(1+r.
   for(let i=0;i<4;i++){ux=dx/f;uz=dz/f;q=Math.max(0,1-ux*ux-uz*uz);f=1+(fbm(ux*r.fq+r.sd,uz*r.fq+Math.sqrt(q)*.7,3)-.5)*r.n;}
   ux=dx/f;uz=dz/f;q=1-ux*ux-uz*uz;if(q<=0)return -Infinity;return r.cy+r.sy*f*Math.sqrt(q);}
 // o: {detail, n (noise amount), fq (noise frequency), sink (part below ground), cTop, cSide, geos, jit (colour jitter)}
+// the welded unit sphere per detail level is made once and cloned (welding it again for every rock took a third of the world build)
+const ROCK_BASE={};function rockBase(d){let b=ROCK_BASE[d];if(!b){b=new THREE.IcosahedronGeometry(1,d);b.deleteAttribute('normal');b.deleteAttribute('uv');b=ROCK_BASE[d]=mergeVertices(b);}return b.clone();}
 function makeRock(x,z,s,sy,o={}){const h=o.base??terrainH(x,z),n=o.n??.24,fq=o.fq??1.3,sd=R(0,50);
-  let g=new THREE.IcosahedronGeometry(1,o.detail??4);g.deleteAttribute('normal');g.deleteAttribute('uv');g=mergeVertices(g);const p=g.attributes.position;
+  const g=rockBase(o.detail??4),p=g.attributes.position;
   for(let k=0;k<p.count;k++){_p.fromBufferAttribute(p,k);const f=1+(fbm(_p.x*fq+sd,_p.z*fq+_p.y*.7,3)-.5)*n;p.setXYZ(k,_p.x*s*f,_p.y*sy*f,_p.z*s*f);}
   g.computeVertexNormals();const nn=g.attributes.normal;const col=new Float32Array(p.count*3);const mc=new THREE.Color(o.cTop),rc=new THREE.Color(o.cSide),c=new THREE.Color();const jit=o.jit??.1;
   const tb=o.topBand??[.35,.8];
@@ -1180,7 +1204,7 @@ function tileInstanced(im,far=0,tile=TILE){const geo=im.geometry,n=im.count,buck
   im.dispose();}
 const _col=new THREE.Color();
 const FAR_K=[.5,.9,1];// Laag/Hoog/Ultra: small plants and decoration fade out sooner on lower settings
-function cullFarTiles(){const cp=camera.position;for(const f of farTiles){const b=f.m.boundingSphere;f.m.visible=Math.hypot(b.center.x-cp.x,b.center.z-cp.z)-b.radius<f.far*(LOW?1:FAR_K[QUALITY]);}}
+function cullFarTiles(){const cp=camera.position;for(const f of farTiles){const b=f.m.boundingSphere;f.m.visible=Math.hypot(b.center.x-cp.x,b.center.z-cp.z)-b.radius<f.far*(LOW?(potato?.6:1):FAR_K[QUALITY]);}}
 const windUniforms={uTime:{value:0},uPlayer:{value:new V3()}};
 // push: instanced plants lean away from the gecko when it walks through them
 function addWind(mat,amp,instanced,push=false){mat.onBeforeCompile=sh=>{sh.uniforms.uTime=windUniforms.uTime;sh.uniforms.uPlayer=windUniforms.uPlayer;
@@ -1213,18 +1237,26 @@ const pineMat=new THREE.MeshStandardMaterial({vertexColors:true,roughness:.86});
 const cactusTex=canvasTex(256,256,(g,w,h)=>{g.fillStyle='#4f8a3e';g.fillRect(0,0,w,h);for(let i=0;i<12;i++){const x=(i+.5)*w/12;const gr=g.createLinearGradient(x-11,0,x+11,0);gr.addColorStop(0,'rgba(20,50,20,.45)');gr.addColorStop(.5,'rgba(170,215,120,.35)');gr.addColorStop(1,'rgba(20,50,20,.45)');g.fillStyle=gr;g.fillRect(x-11,0,22,h);
   for(let y=6;y<h;y+=16){g.fillStyle='rgba(245,235,200,.9)';g.fillRect(x-1,y,2,2);g.strokeStyle='rgba(245,235,200,.6)';g.lineWidth=1;g.beginPath();g.moveTo(x,y);g.lineTo(x-4,y-4);g.moveTo(x,y);g.lineTo(x+4,y-4);g.stroke();}}});
 const cactusMat=new THREE.MeshStandardMaterial({map:cactusTex,vertexColors:true,roughness:.65});
+/* v1.21: leaves between the camera and the gecko (and right in front of the lens) dissolve with a dither, so climbing up through a
+   crown or sitting on a treetop no longer fills the screen with leaves. uFocus = the gecko; w = 0 turns it off. */
+const leafFocus={value:new THREE.Vector4(0,0,0,0)};
 const leafMat=new THREE.MeshStandardMaterial({map:null,alphaTest:.5,alphaToCoverage:!LOW,side:THREE.DoubleSide,roughness:.6,emissive:'#2c4a0a',emissiveMap:null,emissiveIntensity:.32});
- leafMat.onBeforeCompile=sh=>{sh.uniforms.uTime=windUniforms.uTime;
-  sh.vertexShader='uniform float uTime;attribute vec3 aCenter;\n'+sh.vertexShader.replace('#include <beginnormal_vertex>',`#include <beginnormal_vertex>
+ leafMat.onBeforeCompile=sh=>{sh.uniforms.uTime=windUniforms.uTime;sh.uniforms.uFocus=leafFocus;
+  sh.vertexShader='uniform float uTime;attribute vec3 aCenter;varying vec3 vLW;\n'+sh.vertexShader.replace('#include <beginnormal_vertex>',`#include <beginnormal_vertex>
   vec3 icw=(instanceMatrix*vec4(0.,0.,0.,1.)).xyz;vec3 sn=normalize(icw-aCenter+vec3(0.,.25,0.));
   float sc2=dot(instanceMatrix[0].xyz,instanceMatrix[0].xyz);
   objectNormal=normalize(mix(objectNormal,(transpose(mat3(instanceMatrix))*sn)/sqrt(sc2),.8));`).replace('#include <begin_vertex>',`#include <begin_vertex>
   vec4 wpw=modelMatrix*instanceMatrix*vec4(position,1.0);
   float sway=sin(uTime*1.6+wpw.x*.35+wpw.z*.27)+.5*sin(uTime*2.7+wpw.x*.9);
-  transformed.x+=sway*.06*(.4+.6*clamp(position.y,0.,3.));`);
-  sh.fragmentShader=sh.fragmentShader.replace('normal *= faceDirection;','');};
+  transformed.x+=sway*.06*(.4+.6*clamp(position.y,0.,3.));`).replace('#include <project_vertex>',`#include <project_vertex>
+  vLW=(modelMatrix*instanceMatrix*vec4(transformed,1.0)).xyz;`);
+  sh.fragmentShader='uniform vec4 uFocus;varying vec3 vLW;\n'+sh.fragmentShader.replace('normal *= faceDirection;','').replace('#include <clipping_planes_fragment>',`#include <clipping_planes_fragment>
+  if(uFocus.w>.5){vec3 cf=uFocus.xyz-cameraPosition;float L2=max(dot(cf,cf),1e-4);float u=clamp(dot(vLW-cameraPosition,cf)/L2,0.,1.);
+   float dd=distance(vLW,cameraPosition+cf*u);float rad=mix(1.,.4,u*u);
+   float k=smoothstep(rad,rad+.5,dd);
+   if(k<1.){float h=fract(52.9829189*fract(dot(gl_FragCoord.xy,vec2(.06711056,.00583715))));if(h>k)discard;}}`);};
 /* Grass: blade geometry shared by the far field, reeds and the dense patch around the player */
-function bladeGeometry(){const g=new THREE.BufferGeometry();const P=[],I=[],C=[];const L=6;
+function bladeGeometry(){const g=new THREE.BufferGeometry();const P=[],I=[],C=[];const L=LOW?3:6;// v1.22: a blade is 5 triangles instead of 11 in the light world (a quarter of all triangles on phones was grass)
   const cA=new THREE.Color('#1f3a0c'),cB=new THREE.Color('#a6c442');
   for(let k=0;k<=L;k++){const t=k/L,w=.5*(1-t*t*.92),bend=t*t*.32;
     if(k<L){P.push(-w,t,bend,w,t,bend);const c=cA.clone().lerp(cB,Math.pow(t,.8));C.push(c.r,c.g,c.b,c.r,c.g,c.b);}else{P.push(0,1,bend);C.push(cB.r,cB.g,cB.b);}}
@@ -1333,7 +1365,10 @@ const butterflies=[];
 /* =====================================================================
    Build one area. Async so the loading bar can move between steps.
    ===================================================================== */
-const frameYield=()=>new Promise(r=>requestAnimationFrame(()=>setTimeout(r,0)));
+// v1.22: while the world build waits for a frame, the running game (insects, camp, sounds) draws its random numbers from another
+// generator. It used to take them from the world's own seeded one, so an area could come out differently after every trip.
+const sideRnd=mulberry32((Date.now()^0x5f356495)|0);
+const frameYield=()=>new Promise(r=>{const w=rnd;rnd=sideRnd;requestAnimationFrame(()=>setTimeout(()=>{rnd=w;r();},0));});
 let worldMap=null;
 function clearWorld(){world.traverse(o=>{if(o.geometry)o.geometry.dispose();if(o.isSprite){o.material.map?.dispose();o.material.dispose();}if(o.material&&o.material!==stoneMat&&(o.material.uniforms?.uOn||o.material.uniforms?.uCol))o.material.dispose();});world.clear();
   rockGrid.clear();trees.length=boxes.length=rocks.length=exclusion.length=gates.length=farTiles.length=0;coverGrid.clear();leafM.length=leafC.length=leafCtr.length=0;stoneGeos.length=rockGeos.length=0;
@@ -1443,7 +1478,7 @@ async function buildWorld(idx,prog=()=>{}){
   SPAWN=findSpawn();exclusion.push({x:SPAWN.x,z:SPAWN.z,r:3});
   /* gates: back to the previous area next to the spawn point, onward to the next area far away */
   if(idx>0){const s=findGateSpot(SPAWN.x,SPAWN.z,7,16)||{x:SPAWN.x+8,z:SPAWN.z};makeGate(s.x,s.z,Math.atan2(SPAWN.x-s.x,SPAWN.z-s.z),idx-1,false);}
-  if(idx<AREAS.length-1){const s=findGateSpot(SPAWN.x,SPAWN.z,85,130)||findGateSpot(0,0,30,120)||{x:-SPAWN.x*.6,z:-SPAWN.z*.6};makeGate(s.x,s.z,Math.atan2(SPAWN.x-s.x,SPAWN.z-s.z),idx+1,true);}
+  if(idx<AREAS.length-1){const s=findGateSpot(SPAWN.x,SPAWN.z,60,95)||findGateSpot(0,0,30,120)||{x:-SPAWN.x*.6,z:-SPAWN.z*.6};makeGate(s.x,s.z,Math.atan2(SPAWN.x-s.x,SPAWN.z-s.z),idx+1,true);}
   buildCamp(A,idx);buildNest();
   buildTemple(A);
   /* Scattered ruins */
@@ -1581,9 +1616,12 @@ const irisTex=canvasTex(256,256,(g)=>{const gr=g.createRadialGradient(128,128,10
   g.fillStyle='#050505';g.beginPath();g.moveTo(128,18);for(let y=18;y<=238;y+=6){const k=Math.sin((y-18)/220*Math.PI);g.lineTo(128+8*k+Math.sin(y*.3)*1.2,y);}for(let y=238;y>=18;y-=6){const k=Math.sin((y-18)/220*Math.PI);g.lineTo(128-8*k+Math.sin(y*.3)*1.2,y);}g.fill();
   for(const yy of [70,128,186]){g.beginPath();g.arc(128,yy,4,0,6.28);g.fill();}},{repeat:false});
 const corneaMat=new THREE.MeshPhysicalMaterial({color:'#ffffff',roughness:0,metalness:0,transparent:true,opacity:.12,clearcoat:1,clearcoatRoughness:0,envMapIntensity:2.5,depthWrite:false});
-const nostrilMat=new THREE.MeshStandardMaterial({color:'#140c08',roughness:.6});
+const nostrilMat=new THREE.MeshStandardMaterial({color:'#140c08',roughness:.6});const NOSTRIL_GEO=new THREE.SphereGeometry(.0019,8,6).scale(1,.6,1.3);
 const pupilMat=new THREE.MeshPhysicalMaterial({color:'#050505',roughness:.1,clearcoat:1});
 const liteEyeMat=new THREE.MeshPhysicalMaterial({color:'#b88a2a',roughness:.15,clearcoat:1});
+// soft contact shadow under the player's gecko: on phones the shadow map is too coarse to ground a 20 cm animal
+const blobMat=new THREE.MeshBasicMaterial({map:canvasTex(64,64,g=>{const gr=g.createRadialGradient(32,32,2,32,32,31);gr.addColorStop(0,'rgba(0,0,0,.6)');gr.addColorStop(.55,'rgba(0,0,0,.28)');gr.addColorStop(1,'rgba(0,0,0,0)');g.clearRect(0,0,64,64);g.fillStyle=gr;g.fillRect(0,0,64,64);},{repeat:false}),transparent:true,depthWrite:false,opacity:LOW?.8:.5,polygonOffset:true,polygonOffsetFactor:-2,polygonOffsetUnits:-2,fog:false});
+const BLOB_GEO=new THREE.PlaneGeometry(.26,.42);
 const Y=new V3(0,1,0),_fp=new V3(),_fq=new V3();
 class Gecko{
   // lite: a cheaper gecko for the caged and rescued family members (no toes, simple eyes)
@@ -1598,18 +1636,19 @@ class Gecko{
     this.P=[];this.S=[];this.U=[];this.T=[];for(let i=0;i<NS;i++){this.P.push(new V3());this.S.push(new V3());this.U.push(new V3());this.T.push(new V3());}
     this.head=new THREE.Group();this.root.add(this.head);
     this.eyeMat=lite?liteEyeMat:new THREE.MeshPhysicalMaterial({map:irisTex,color:eyeColor,roughness:.25,emissive:eyeColor,emissiveMap:irisTex,emissiveIntensity:.12});
-    this.lids=[];
+    this.lids=[];this.nost=[];
     for(const sd of [-1,1]){const eg=new THREE.Group();eg.position.set(sd*.0225,.0125,.004);eg.rotation.y=sd*Math.PI/2*.82;this.head.add(eg);
       if(lite){const e=new THREE.Mesh(EYE_GEO,liteEyeMat);e.scale.z=.6;eg.add(e);continue;}
       const e=new THREE.Mesh(EYE_GEO,pupilMat);e.scale.z=.5;e.position.z=-.001;eg.add(e);
       const ir=new THREE.Mesh(IRIS_GEO,this.eyeMat);ir.position.z=.0042;eg.add(ir);
       const co=new THREE.Mesh(CORNEA_GEO,corneaMat);co.rotation.x=Math.PI/2;eg.add(co);
       const lid=new THREE.Mesh(LID_GEO,mat);lid.position.z=.0035;eg.add(lid);this.lids.push(lid);
-      const no=new THREE.Mesh(new THREE.SphereGeometry(.0018,6,5),nostrilMat);no.position.set(sd*.0068,.0085,.075);this.head.add(no);}
+      const no=new THREE.Mesh(NOSTRIL_GEO,nostrilMat);no.userData.sd=sd;this.root.add(no);this.nost.push(no);}
     this.crest=new THREE.Group();this.head.add(this.crest);
     if(!lite)for(const sd of [-1,1])for(let k=0;k<6;k++){const c=new THREE.Mesh(new THREE.ConeGeometry(.0035,.009,5),mat);c.position.set(sd*(.018-k*.001),.019,.02-k*.009);c.rotation.z=-sd*.6;this.crest.add(c);}
     this.legs=[];for(const [sd,front] of [[1,true],[-1,true],[1,false],[-1,false]])this.legs.push(this.makeLeg(sd,front));
-    this.phase=0;this.t=R(0,9);this.walk=0;this.swimK=0;this.look=0;this.drink=0;this.climbing=0;this.open=0;this.sitK=0;
+    if(!lite){this.blob=new THREE.Mesh(BLOB_GEO,blobMat);this.blob.rotation.x=-Math.PI/2;this.blob.position.set(0,.004,-.03);this.blob.renderOrder=1;this.root.add(this.blob);}
+    this.tail=1;this.phase=0;this.t=R(0,9);this.walk=0;this.swimK=0;this.look=0;this.drink=0;this.climbing=0;this.open=0;this.sitK=0;
     this.setMaterial(mat,eyeColor,false);this.update(0,0);
   }
   makeLeg(side,front){const mat=this.mat;const hip=new THREE.Group();const up=new THREE.Group();hip.add(up);
@@ -1647,15 +1686,22 @@ class Gecko{
       if(sk>.001){const As=.012+.016*w,xs=As*Math.sin(this.phase*.9-s*7.5)*(.15+s*1.7)+(s<.22?this.look*(.22-s)*.6:0);
         const ys=.05+(s<.2?(.2-s)*.11:0)-(s>.6?(s-.6)*.03:0)+Math.sin(this.t*2.3)*.0025+(s<.26?-this.drink*(.26-s)*.32:0);xx=lerp(x,xs,sk);y=lerp(y,ys,sk);}
       this.P[i].set(xx,y,zz);}
+    // a dropped tail: the spine ends in a short stump (rings past the stump are folded into its tip)
+    const tk=this.tail,tEnd=tk<.995?.58+.42*tk:2,iEnd=Math.min(NS-1,Math.ceil(tEnd*(NS-1)));
+    if(tk<.995)for(let i=iEnd+1;i<NS;i++)this.P[i].copy(this.P[iEnd]).addScaledVector(_fp.subVectors(this.P[i],this.P[iEnd]),.03);
     const pos=this.pos,nor=this.nor;let k=0;
     for(let i=0;i<NS;i++){const s=i/(NS-1);const T=this.T[i].subVectors(this.P[Math.max(i-1,0)],this.P[Math.min(i+1,NS-1)]).normalize();
       const S=this.S[i].crossVectors(Y,T).normalize(),U=this.U[i].crossVectors(T,S);
-      let [rx,ry]=profile(s);if(s>.2&&s<.46)rx*=1+breathe*8;
+      let [rx,ry]=profile(s);if(s>.2&&s<.46)rx*=1+breathe*8;if(s>.58&&tk<.995){const m=i>iEnd?.02:Math.sqrt(clamp((tEnd-s)/.07,.02,1));rx*=m;ry*=m;}
       for(let j=0;j<=NR;j++){const a=j/NR*6.2832,c=Math.cos(a),sn=Math.sin(a);const ry2=sn<0?ry*.78:ry;
         pos[k*3]=this.P[i].x+S.x*c*rx+U.x*sn*ry2;pos[k*3+1]=this.P[i].y+S.y*c*rx+U.y*sn*ry2;pos[k*3+2]=this.P[i].z+S.z*c*rx+U.z*sn*ry2;
         let nx=S.x*c*ry2+U.x*sn*rx,ny=S.y*c*ry2+U.y*sn*rx,nz=S.z*c*ry2+U.z*sn*rx;const l=Math.hypot(nx,ny,nz)||1;nor[k*3]=nx/l;nor[k*3+1]=ny/l;nor[k*3+2]=nz/l;k++;}}
     this.geo.attributes.position.needsUpdate=true;this.geo.attributes.normal.needsUpdate=true;
     const hi=Math.round(.085*(NS-1));this.head.position.copy(this.P[hi]);_m.makeBasis(this.S[hi],this.U[hi],this.T[hi]);this.head.quaternion.setFromRotationMatrix(_m);
+    // v1.21: the nostrils sit in the skin of the snout. They used to hang on the head group 7.5 cm forward, past the snout tip
+    // (which is only ~4.7 cm in front of the head), so they floated in the air. Now they follow the snout ring itself.
+    if(this.nost.length){const ni=1,[nrx,nry]=profile(ni/(NS-1)),P=this.P[ni],S=this.S[ni],U=this.U[ni];_m.makeBasis(S,U,this.T[ni]);
+      for(const no of this.nost){no.position.copy(P).addScaledVector(S,no.userData.sd*.42*nrx*.96).addScaledVector(U,.9*nry*.96);no.quaternion.setFromRotationMatrix(_m);}}
     for(const L of this.legs){const s=L.front?.215:.445,i=Math.round(s*(NS-1));const [rx]=profile(s);
       L.hip.position.copy(this.P[i]).addScaledVector(this.S[i],L.side*rx*.7).addScaledVector(this.U[i],-.006);
       _m.makeBasis(this.S[i],this.U[i],this.T[i]);L.hip.quaternion.setFromRotationMatrix(_m);
@@ -1699,10 +1745,12 @@ const tongue={t:-1,dur:.32,target:null,from:new V3(),to:new V3(),cool:0,
   mesh:new THREE.Mesh(new THREE.CylinderGeometry(.0045,.006,1,8,1,true).translate(0,.5,0),new THREE.MeshPhysicalMaterial({color:'#ff6f8e',roughness:.25,clearcoat:.8})),
   tip:new THREE.Mesh(new THREE.SphereGeometry(.011,12,10),new THREE.MeshPhysicalMaterial({color:'#ff5c80',roughness:.2,clearcoat:1}))};
 tongue.mesh.visible=tongue.tip.visible=false;scene.add(tongue.mesh,tongue.tip);
-function geckoScale(){return .92+PL.growth*.45;}
-const STAGE_KEYS=['baby','jong','volwassen'];
-const STAGE_AT=[0,.25,.7],GROW_CRICKET=.05,GROW_GOLD=.1;
-const stageIdx=()=>PL.growth<STAGE_AT[1]?0:PL.growth<STAGE_AT[2]?1:2;
+function geckoScale(){const g=PL.growth;return .92+Math.min(g,1)*.45+.07*clamp((g-1)/(GROW_MAX-1),0,1);}
+const STAGE_KEYS=['baby','jong','volwassen','alfa','legende'];
+/* v1.22: growing does not stop at Volwassen. After 16 more insects the gecko becomes an Alfa and after 24 more a Legende: a little
+   bigger, more health and a longer tongue each time. In the report most players were adult after 3 minutes and then had nothing left to grow for. */
+const STAGE_AT=[0,.25,.7,1.5,2.7],GROW_MAX=2.7,LAST_STAGE=4,GROW_CRICKET=.05,GROW_GOLD=.1;
+const stageIdx=()=>{let i=0;while(i<LAST_STAGE&&PL.growth>=STAGE_AT[i+1])i++;return i;};const stageExtra=()=>Math.max(0,stageIdx()-2);
 function stageName(){return L().stages[stageIdx()];}
 const stageKey=()=>STAGE_KEYS[stageIdx()];
 
@@ -1921,7 +1969,7 @@ drawMute();
 const keys={};let camYaw=SPAWN.face+Math.PI,camPitch=.32,camDist=1.15;let jumpQ=false,tongueQ=false,camoQ=false;
 const touch={x:0,y:0,sprint:false,drink:false,joyId:null,camId:null,cx:0,cy:0};
 addEventListener('keydown',e=>{if(['Space','ArrowUp','ArrowDown','ArrowLeft','ArrowRight'].includes(e.code))e.preventDefault();if(adBusy)return;if(e.repeat&&(e.code==='Space'))return;keys[e.code]=true;AU.init();
-  if(state==='play'){if(e.code==='Space'){jumpQ=true;e.preventDefault();}if(e.code==='KeyE')tongueQ=true;if(e.code==='KeyC')camoQ=true;if(e.code==='Escape'||e.code==='KeyP')setPause(true);}
+  if(state==='play'){if(e.code==='Space'){jumpQ=true;e.preventDefault();}if(e.code==='KeyE')tongueQ=true;if(e.code==='KeyC')camoQ=true;if(e.code==='KeyU')buyUpgrade();if(e.code==='Escape'||e.code==='KeyP')setPause(true);}
   else if(state==='pause'&&(e.code==='Escape'||e.code==='KeyP'))setPause(false);});
 addEventListener('keyup',e=>{keys[e.code]=false;});
 addEventListener('blur',()=>{for(const k in keys)keys[k]=false;if(state==='play')setPause(true);});
@@ -1937,6 +1985,11 @@ addEventListener('mousemove',e=>{if(state!=='play')return;let dx=0,dy=0;
   if(document.pointerLockElement===cvs){dx=e.movementX;dy=e.movementY;}else if(dragging){dx=e.clientX-lx;dy=e.clientY-ly;lx=e.clientX;ly=e.clientY;}
   camYaw-=dx*.0032;camPitch=clamp(camPitch+dy*.0028,-.25,1.25);});
 cvs.addEventListener('wheel',e=>{camDist=clamp(camDist+e.deltaY*.0015,1.2,5);},{passive:true});
+/* which controls are in use: a real touch shows the joystick and buttons, a key or a real mouse hides them */
+function setTouchUI(v){if(v===touchUI)return;touchUI=v;show('touch',touchUI&&state==='play');measureOnce('input','switch',v?'touch':'keys');}
+addEventListener('touchstart',()=>setTouchUI(true),{passive:true,capture:true});
+addEventListener('pointerdown',e=>{if(e.pointerType==='mouse'&&e.target===cvs)setTouchUI(false);},{passive:true,capture:true});
+addEventListener('keydown',e=>{if(/^(Key[WASDEC]|Arrow|Space|Shift)/.test(e.code))setTouchUI(false);},{capture:true});
 /* touch */
 const joy=$('joy'),knob=$('joyKnob');
 joy.addEventListener('touchstart',e=>{AU.init();const t=e.changedTouches[0];touch.joyId=t.identifier;e.preventDefault();},{passive:false});
@@ -1951,7 +2004,7 @@ addEventListener('touchcancel',e=>{touch.joyId=touch.camId=null;touch.x=touch.y=
 const tb=(id,down,up)=>{const el=$(id);el.addEventListener('touchstart',e=>{e.preventDefault();e.stopPropagation();AU.init();down();},{passive:false});if(up)el.addEventListener('touchend',e=>{e.preventDefault();up();});
   el.addEventListener('mousedown',e=>{e.preventDefault();down();});if(up)el.addEventListener('mouseup',up);};
 tb('tTongue',()=>tongueQ=true);tb('tJump',()=>jumpQ=true);tb('tSprint',()=>{touch.sprint=!touch.sprint;$('tSprint').classList.toggle('on',touch.sprint);});
-tb('tDrink',()=>touch.drink=true,()=>touch.drink=false);tb('tCamo',()=>camoQ=true);
+tb('tDrink',()=>touch.drink=true,()=>touch.drink=false);tb('tCamo',()=>camoQ=true);tb('upBtn',()=>buyUpgrade());
 
 /* =====================================================================
    Ground, climbing, collision
@@ -1988,7 +2041,7 @@ function trunkVR(t,i,j,dy,da){const y=i*dy,ang=j*da,r0=lerp(t.rB,t.rT,y/t.H);
 function trunkR(t,hy,a){if(t.lead&&hy>t.top)return leadR(t,hy);const ly=hy-t.yOff;
   if(t.kind==='palm')return lerp(t.rB,t.rT,clamp(ly/t.H,0,1))*.97+.012;
   const S=t.kind==='cactus'?24:16,da=6.2832/S;let fa=a/da;fa-=Math.floor(fa/S)*S;const j=Math.floor(fa),u=fa-j;
-  if(t.kind==='cactus')return t.rB*(1+.08*lerp(j%2?-1:1,j%2?1:-1,u))+.012;
+  if(t.kind==='cactus'){const dy=hy-(t.H-t.rB*.4),k=dy>0?Math.sqrt(Math.max(.04,1-(dy/t.rB)**2)):1;return t.rB*k*(1+.08*lerp(j%2?-1:1,j%2?1:-1,u))+.012;}// rounded top (cactusPart dome)
   if(t.seed===undefined)return treeRadius(t,hy);
   const rows=Math.max(4,Math.round(t.H/1.5)),dy=t.H/rows,yy=clamp(ly,0,t.H-.001)/dy,i=Math.floor(yy),v=yy-i;
   const a0=lerp(trunkVR(t,i,j,dy,da),trunkVR(t,i,j+1,dy,da),u),a1=lerp(trunkVR(t,i+1,j,dy,da),trunkVR(t,i+1,j+1,dy,da),u);
@@ -2027,7 +2080,7 @@ let state='loading',mode=save.mode in MODES?save.mode:'easy',CFG=MODES[mode];
 let nextSpawn=0,quest=null,questIdx=0,tipIdx=0,tipT=0,lostTimer=0,wasChased=false,alertCool=0,hudT=0,climbedHigh=0,maxChase=0;
 const QUESTS=[
   {i:0,coins:15,init:()=>({n:PL.crickets}),done:q=>PL.crickets-q.n>=5,target:()=>nearestInsect(landBug)},
-  {i:1,coins:10,done:()=>PL.thirst>=99&&PL.drinking,target:()=>nearestWater(_wt)>2?_wt:null},
+  {i:1,coins:10,done:()=>PL.thirst>=99&&(PL.drinking||PL.inWater),target:()=>nearestWater(_wt)>2?_wt:null},
   {i:2,coins:15,done:()=>PL.climb&&PL.climb.type==='tree'&&PL.climb.h>=6,target:()=>{if(PL.climb)return null;let b=null,bd=1e9;for(const t of trees){if(!(t.climbMax>=6.5))continue;const d=Math.hypot(t.x-PL.pos.x,t.z-PL.pos.z);if(d<bd){bd=d;b=t;}}return b;}},
   {i:3,coins:20,init:()=>({g:goldEaten}),done:q=>goldEaten>q.g,target:()=>nearestInsect(c=>c.gold&&!c.water&&(!c.temple||inTemple()))||TI},
   {i:4,coins:20,init:()=>({e:escapes}),done:q=>escapes>q.e},
@@ -2043,32 +2096,48 @@ function fitScreens(){for(const id of ['menu','over','pause','win','travel']){co
   const cs=getComputedStyle(sc),avail=sc.clientHeight-parseFloat(cs.paddingTop)-parseFloat(cs.paddingBottom),need=c.offsetHeight;
   if(avail>0&&need>avail)c.style.zoom=Math.max(.5,(avail-6)/need).toFixed(3);}}
 function setScreen(s){state=s;show('menu',s==='menu');show('shop',s==='shop');show('pause',s==='pause');show('over',s==='over');
-  show('travel',s==='travel');show('win',s==='win');show('hud',s==='play'||s==='pause');show('touch',isTouch&&s==='play');if(s!=='play'&&document.pointerLockElement)document.exitPointerLock?.();fitScreens();}
+  show('travel',s==='travel');show('win',s==='win');show('hud',s==='play'||s==='pause');show('touch',touchUI&&s==='play');if(s!=='play'&&document.pointerLockElement)document.exitPointerLock?.();fitScreens();}
 function placeGeckoAtSpawn(){PL.pos.set(SPAWN.x,terrainH(SPAWN.x,SPAWN.z),SPAWN.z);PL.yaw=SPAWN.face;PL.vel.set(0,0,0);PL.climb=null;PL.perch=null;PL.up.set(0,1,0);
   gecko.root.position.copy(PL.pos);gecko.root.quaternion.setFromAxisAngle(Y,PL.yaw);}
 
+const startStage=()=>clamp(Math.max(save.adult?2:0,save.top||0)-1,0,2);// one stage below the highest stage ever reached, at most Volwassen
 /* v1.17: a new run starts in the area you were in (no trip back to the jungle), and as Jong once you have ever been an adult. */
-async function startGame(){goalEnd=0;endEvent();evNext=150;evLast='';lastGoal='';
+async function startGame(){goalEnd=0;endEvent();evNext=85;evLast='';lastGoal='';
   perfSkip=3;hideBanner();
   AU.init();CFG=MODES[mode];save.mode=mode;persist();const pk=perks();
-  Object.assign(PL,{health:pk.health,maxHealth:pk.health,hunger:100,thirst:100,stamina:100,growth:save.adult?STAGE_AT[1]:0,inv:2,crickets:0,coins:0,time:0,dead:false,regrab:0,drinking:false,seen:false});
-  placeGeckoAtSpawn();camYaw=PL.yaw+Math.PI;camPitch=.3;camDist=1.15;camPos.copy(PL.pos).add(_v.set(Math.sin(camYaw)*1.6,.6,Math.cos(camYaw)*1.6));
+  Object.assign(PL,{health:pk.health,maxHealth:pk.health,hunger:100,thirst:100,stamina:100,growth:STAGE_AT[startStage()],inv:2,tailT:0,autoD:false,crickets:0,coins:0,time:0,dead:false,regrab:0,drinking:false,seen:false});
+  placeGeckoAtSpawn();camYaw=PL.yaw+Math.PI;camPitch=.3;camDist=touchUI?.95:1.15;camArm=1;camPos.copy(PL.pos).add(_v.set(Math.sin(camYaw)*1.6,.6,Math.cos(camYaw)*1.6));
   for(const p of poachers)p.dispose();poachers.length=0;
   for(let i=0;i<CFG.start+Math.floor(areaIdx/2);i++)spawnPoacher();spawnGuard();nextSpawn=CFG.every;
   for(const c of cages)c.prog=0;
   setCamo(false);camoQ=false;templeSeen=false;$('tCamo').hidden=save.skin!=='blad';
   setupCrickets(CFG.crickets,mode==='master'?.06:.09);
-  goldEaten=0;escapes=0;questIdx=0;newQuest();tipIdx=save.tutorial?99:0;tipT=1;lostTimer=0;wasChased=false;maxChase=0;
+  goldEaten=0;escapes=0;questIdx=0;newQuest();upOffer=null;upT=0;$('upBtn').hidden=true;tipIdx=save.tutorial?99:0;tipT=1;lostTimer=0;wasChased=false;maxChase=0;
   setHudArea();$('floaters').innerHTML='';
   PL.revived=false;PL.doubled=false;EV.runSec=0;EV.si=0;EV.runs++;EV.flags={};
   measure('run',EV.runs<=10?'run'+EV.runs:'run11+','start');measure('mode',mode,'start');measure('skin',save.skin,'play');onboarding('start');
-  measure('start',AREAS[areaIdx].id,save.adult?'jong':'baby');
+  measure('start',AREAS[areaIdx].id,STAGE_KEYS[startStage()]);
   setScreen('play');Poki.start();
-  if(save.adult)showBanner(L().stages[1],t('headStart'),6);
+  if(startStage()>0)showBanner(L().stages[startStage()],t('headStart'),6);gecko.tail=1;clearTail();
 }
 /* ---- areas: gates, travel and the banner ---- */
 let traveling=false,bannerT=0;
-function travelBar(p){if(p===0)$('travelBar').dataset.v=0;setBar('travel',p);}
+/* v1.22: the travel meter runs on the compositor like the boot meter (a transform animation keeps moving while the world is being
+   built; the old width steps stood still). It aims at the duration of the last trip and its tail slows down but never stops. */
+let travelAn=null;
+function travelStart(){const bar=$('travelBar'),g=$('travelGecko');$('travelPct').hidden=true;if(!bar.animate){bar.style.width='100%';return;}
+  for(const el of [bar,g])for(const a of el.getAnimations())a.cancel();
+  let est=3500;try{est=clamp(+localStorage.getItem('gekko_travel_ms')||est,1500,20000);}catch(e){}
+  const W=bar.parentNode.clientWidth,K=[[0,0],[1/12,.88],[.25,.94],[.5,.97],[1,.995]],o={duration:est*12,fill:'both',easing:'linear'};
+  bar.style.width='100%';bar.style.transformOrigin='0 50%';g.style.left='0';
+  const gx=v=>`translateX(${(v*W).toFixed(1)}px) translateX(-50%)`;
+  travelAn={t0:performance.now(),K,gx,a:[bar.animate(K.map(k=>({transform:`scaleX(${k[1]})`,offset:k[0]})),o),g.animate(K.map(k=>({transform:gx(k[1]),offset:k[0]})),o)]};}
+function travelEnd(){const T=travelAn;if(!T)return;travelAn=null;const u=clamp((+T.a[0].currentTime||0)/T.a[0].effect.getTiming().duration,0,1);let v=.995;
+  for(let i=1;i<T.K.length;i++)if(u<=T.K[i][0]){const a=T.K[i-1],b=T.K[i];v=a[1]+(b[1]-a[1])*(u-a[0])/(b[0]-a[0]);break;}
+  const o={duration:200,fill:'both',easing:'ease-out'},bar=$('travelBar'),g=$('travelGecko');for(const a of T.a)a.cancel();
+  bar.animate([{transform:`scaleX(${v})`},{transform:'scaleX(1)'}],o);g.animate([{transform:T.gx(v)},{transform:T.gx(1)}],o);
+  try{localStorage.setItem('gekko_travel_ms',Math.round(performance.now()-T.t0));}catch(e){}}
+function travelReset(){const bar=$('travelBar'),g=$('travelGecko');if(bar.getAnimations)for(const el of [bar,g])for(const a of el.getAnimations())a.cancel();bar.style.width='0';g.style.left='0';}
 function setHudArea(){$('hudMode').textContent=CFG.name+' \u00b7 '+areaName(areaIdx);}
 function showBanner(title,text,sec=6){$('bannerTitle').textContent=title;$('bannerText').textContent=text;const b=$('banner');b.hidden=false;b.style.animation='none';void b.offsetWidth;b.style.animation='';bannerT=sec;}
 function hideBanner(){$('banner').hidden=true;bannerT=0;}
@@ -2081,18 +2150,18 @@ function checkGates(dt){gateCool-=dt;lockMsgT-=dt;if(gateCool>0||PL.climb||trave
     if(Math.abs(along)<.55&&Math.abs(lat)<1.3&&PL.pos.y-g.base<3.6){
       if(!gateOpen(g)){if(lockMsgT<=0){lockMsgT=3;floater(PL.pos.clone().add(_v.set(0,.45,0)),t('gateLocked'),'');showBanner(areaName(g.to),t('gateLocked'),4);measureOnce('gate',AREAS[g.to].id,'locked');}continue;}
       travel(g.to);return;}}}
-function warmUp(){for(const f of farTiles)f.m.visible=true;renderer.compile(scene,camera);renderer.shadowMap.needsUpdate=true;}
+function warmUp(){for(const f of farTiles)f.m.visible=true;renderer.setRenderTarget(composer.readBuffer);try{renderer.compile(scene,camera);}catch(e){}renderer.setRenderTarget(null);renderer.shadowMap.needsUpdate=true;}
 async function travel(to){if(traveling)return;traveling=true;const from=areaIdx;Poki.stop();PL.drinking=false;
-  setScreen('travel');$('travelTitle').textContent=t('travelTo',{area:areaName(to)});travelBar(0);
-  await Poki.brk();
+  travelReset();setScreen('travel');$('travelTitle').textContent=t('travelTo',{area:areaName(to)});
+  await Poki.brk();travelStart();await bootYield();
   for(const p of poachers)p.dispose();poachers.length=0;if(netDome){scene.remove(netDome);netDome=null;}
   setCamo(false);templeSeen=false;endEvent();evNext=PL.time+R(60,90);
-  await buildWorld(to,p=>travelBar(p*.95));
+  await buildWorld(to,()=>{});
   const g=gates.find(q=>q.to===from)||gates[0];if(g)placeAtGate(g);else placeGeckoAtSpawn();
   lastPL.copy(PL.pos);visOff.set(0,0,0);
   for(let i=0;i<CFG.start+Math.floor(areaIdx/2);i++)spawnPoacher();spawnGuard();nextSpawn=CFG.every;
   setupCrickets(CFG.crickets,mode==='master'?.06:.09);
-  warmUp();updateCamera(1);travelBar(.97);await waitFrames(2);travelBar(.99);await settleFrames();travelBar(1);
+  warmUp();updateCamera(1);await waitFrames(2);await settleFrames();travelEnd();await new Promise(r=>setTimeout(r,200));
   measure('area',AREAS[to].id,to>from?'enter':'return');
   gateCool=2.5;PL.inv=Math.max(PL.inv,2);traveling=false;setHudArea();setScreen('play');Poki.start();perfSkip=3;
   const hint=L().areaHints?.[AREAS[to].id]||'';const fg=gates.find(q=>q.fwd);
@@ -2157,7 +2226,7 @@ const landBug=c=>!c.water&&(!c.temple||inTemple());
 function bookWant(){const S=SPECIES.filter(q=>q.area===areaIdx);for(const sp of S)if((save.book[sp.id]||0)<RARITY[sp.r].need&&crickets.some(c=>c.alive&&c.sp===sp&&!c.temple))return sp;return null;}
 const growNeed=()=>{const si=stageIdx();return Math.max(1,Math.ceil((STAGE_AT[si+1]-PL.growth)/(GROW_CRICKET*perks().grow)-1e-6));};
 const GOALS={
-  grow:{coins:20,ok:()=>stageIdx()<2,init:()=>({s:stageIdx(),n:growNeed()}),done:q=>stageIdx()>q.s,text:q=>t('goalGrow',{n:q.n,stage:L().stages[q.s+1]}),target:()=>nearestInsect(landBug)},
+  grow:{coins:20,ok:()=>stageIdx()<LAST_STAGE,init:()=>({s:stageIdx(),n:growNeed()}),done:q=>stageIdx()>q.s,text:q=>t('goalGrow',{n:q.n,stage:L().stages[q.s+1]}),target:()=>nearestInsect(landBug)},
   rescue:{coins:30,ok:()=>cages.some(c=>!c.open&&!cageLocked(c)),init:()=>({n:save.rescued.length}),done:q=>save.rescued.length>q.n,text:()=>t('goalRescue'),target:()=>CAMP},
   travel:{coins:25,ok:()=>gates.some(g=>g.fwd&&gateOpen(g)),init:()=>({a:areaIdx,to:gates.find(g=>g.fwd).to}),done:q=>areaIdx!==q.a,text:q=>t('goalTravel',{area:areaName(q.to)}),target:()=>gates.find(g=>g.fwd)},
   book:{coins:15,ok:()=>!!bookWant(),init:()=>{const sp=bookWant();return{sp,n:save.book[sp.id]||0};},done:q=>(save.book[q.sp.id]||0)>q.n,text:q=>t('goalBook',{n:insectName(q.sp)}),target:q=>nearestInsect(c=>c.sp===q.sp&&!c.temple)},
@@ -2182,7 +2251,7 @@ function gameOver(reason){if(PL.dead)return;PL.dead=true;Poki.stop();
   persist();
   setTimeout(()=>{$('overTitle').textContent=T[0];$('overText').textContent=T[1]+unlockMsg;$('rTime').textContent=fmtTime(PL.time);$('rCrickets').textContent=PL.crickets;$('rCoins').textContent='+'+PL.coins;
     $('rBest').textContent=nb?t('newRecord',{mode:CFG.name}):t('recordMode',{mode:CFG.name,t:fmtTime(prev)});
-    const si=stageIdx();$('rNext').textContent=si<2?t('nextStage',{n:Math.ceil((STAGE_AT[si+1]-PL.growth)/(GROW_CRICKET*perks().grow)-1e-6),stage:L().stages[si+1]}):t('wasAdult');updateShopBadge();
+    const si=stageIdx();$('rNext').textContent=si<LAST_STAGE?t('nextStage',{n:Math.ceil((STAGE_AT[si+1]-PL.growth)/(GROW_CRICKET*perks().grow)-1e-6),stage:L().stages[si+1]}):t('wasAdult');updateShopBadge();
     const canRevive=!PL.revived&&Poki.hasRewarded();$('reviveBtn').hidden=true;if(canRevive)measure('button','revive','visible');
     const canDouble=!PL.doubled&&PL.coins>=5&&Poki.hasRewarded();$('doubleBtn').hidden=!canDouble;$('doubleAmt').textContent='(+'+PL.coins+')';if(canDouble)measure('button','double-coins','visible');
     $('adRow').hidden=!canDouble;$('askTitle').textContent=T[0];
@@ -2206,6 +2275,17 @@ async function revive(){if(adBusy||state!=='over')return;clearInterval(askIv);me
   if(netDome){scene.remove(netDome);netDome=null;}
   for(const p of poachers)p.dispose();poachers.length=0;for(let i=0;i<CFG.start;i++)spawnPoacher();nextSpawn=CFG.every;
   measure('revive',mode,'used');setScreen('play');Poki.start();}
+/* v1.22 upgrades while playing: only 8% of the players ever opened the shop, so coins meant nothing to most. As soon as the coins
+   cover a skill level, a button offers the cheapest one; one tap (or U) buys it without leaving the game. */
+let upOffer=null,upT=0;
+function updateUpgrade(){upT-=1;if(upT>0)return;upT=20;const b=$('upBtn');let best=null;
+  if(tipIdx>=5||save.tutorial)for(const k of SKILLS){const st=skillState(k);if(st.ok&&(!best||st.cost<best.st.cost))best={k,st};}
+  if(!best){if(upOffer){upOffer=null;b.hidden=true;}return;}
+  if(!upOffer||upOffer.k!==best.k||upOffer.st.lv!==best.st.lv){if(!upOffer)measure('button','upgrade','visible');upOffer=best;$('upName').textContent=L().skills[best.k.id][0]+' '+(best.st.lv+1);$('upCost').textContent=best.st.cost;b.hidden=false;}
+  $('upKey').hidden=touchUI;}
+function buyUpgrade(){const o=upOffer;if(!o||state!=='play'||PL.dead)return;const st=skillState(o.k);if(!st.ok)return;save.coins-=st.cost;save.skills[o.k.id]=st.lv+1;persist();
+  measure('button','upgrade','interact');measure('skill',o.k.id,'lv'+(st.lv+1));AU.sfx.gold();floater(PL.pos.clone().add(_v.set(0,.5,0)),L().skills[o.k.id][0]+' '+(st.lv+1)+'!','green');
+  showBanner(L().skills[o.k.id][0]+' '+(st.lv+1),L().skills[o.k.id][1],4);upOffer=null;$('upBtn').hidden=true;upT=0;}
 let netDome=null;
 function dropNet(){if(netDome)scene.remove(netDome);netDome=new THREE.Mesh(new THREE.SphereGeometry(.4,16,10,0,6.28,0,Math.PI/2),netMat);netDome.position.copy(PL.pos);scene.add(netDome);}
 function addCoins(n){const v=Math.max(1,Math.round(n));PL.coins+=v;save.coins+=v;persist();return v;}
@@ -2253,9 +2333,12 @@ function updatePlayer(dt){
   const wantDrink=keys.KeyF||touch.drink;
   PL.inWater=!PL.climb&&terrainH(PL.pos.x,PL.pos.z)<WATER_Y-.05&&PL.pos.y<WATER_Y+.05;
   const nearWater=PL.inWater||(!PL.climb&&PL.onGround&&!PL.perch&&(terrainH(PL.pos.x+Math.sin(PL.yaw)*.4,PL.pos.z+Math.cos(PL.yaw)*.4)<WATER_Y+.02||terrainH(PL.pos.x,PL.pos.z)<WATER_Y+.08));
-  PL.drinking=wantDrink&&nearWater&&!moving;
+  // v1.22: standing still at the water is enough to drink (half of the new players never drank; the drink quest was skipped 104 times)
+  PL.autoD=nearWater&&!moving&&!PL.chased&&(PL.thirst<97||(PL.autoD&&PL.thirst<100));
+  PL.drinking=(wantDrink||PL.autoD)&&nearWater&&!moving;
   PL.canDrink=nearWater;
   if(PL.drinking){PL.thirst=Math.min(100,PL.thirst+22*dt);if(Math.random()<dt*5)AU.sfx.drink();}
+  else if(PL.inWater&&PL.thirst<100)PL.thirst=Math.min(100,PL.thirst+9*dt);// wading or swimming through a lake quenches thirst too, a little slower
 
   if(PL.climb){updateClimb(dt,ix,iy,moving,sprint);return;}
   const speed=(sprint?7.2:3.5)*pk.speed*(PL.swim?.62:PL.inWater?.55:1)*(.85+sc*.2)*(mode==='easy'?1.05:1);
@@ -2364,10 +2447,11 @@ function updateTongue(dt){tongue.cool-=dt;
     if(k>=1){tongue.t=-1;tongue.mesh.visible=tongue.tip.visible=false;if(tongue.target&&tongue.target.alive)eatCricket(tongue.target);tongue.target=null;}}}
 function eatCricket(c){onboarding('first-cricket');if(c.gold)measure('cricket','gold','eaten');c.alive=false;c.g.visible=false;c.g.scale.setScalar(c.sp.strider?1.1:1.45);const pk=perks();const Rv=RARITY[c.sp.r];
   PL.hunger=Math.min(100,PL.hunger+Rv.hunger);PL.health=Math.min(PL.maxHealth,PL.health+4);PL.crickets++;
-  const feast=EVT&&EVT.kind==='feast'?2:1;const before=stageName();PL.growth=Math.min(1,PL.growth+Rv.grow*pk.grow*feast);
+  const feast=EVT&&EVT.kind==='feast'?2:1;const before=stageName();PL.growth=Math.min(GROW_MAX,PL.growth+Rv.grow*pk.grow*feast);
   const v=addCoins(Rv.coins*CFG.coinMult*pk.coins*feast);addToBook(c.sp);AU.sfx.eat();c.gold?AU.sfx.gold():AU.sfx.coin();if(c.gold)goldEaten++;
   floater(PL.pos.clone().add(_v.set(0,.25,0)),'+'+v,'');
-  if(stageName()!==before){AU.sfx.grow();if(stageIdx()===2){announceGate();if(!save.adult){save.adult=true;persist();}}measure('growth',stageKey(),'reached');measure('growth-time',stageKey(),timeKey(PL.time));floater(PL.pos.clone().add(_v.set(0,.5,0)),stageName()+'!','green');}
+  if(stageName()!==before){AU.sfx.grow();const si=stageIdx();if(si>(save.top||0)){save.top=si;persist();}if(si===2){announceGate();if(!save.adult){save.adult=true;persist();}}else showBanner(stageName()+'!',t('growText'),5);
+    if(si>2){PL.maxHealth=perks().health;PL.health=Math.min(PL.maxHealth,PL.health+15);}measure('growth',stageKey(),'reached');measure('growth-time',stageKey(),timeKey(PL.time));floater(PL.pos.clone().add(_v.set(0,.5,0)),stageName()+'!','green');}
   if(c.ev)return;
   if(c.temple){const area=areaIdx;setTimeout(()=>{if((state==='play'||state==='pause')&&areaIdx===area&&TI&&crickets.includes(c))spawnTempleCricket(c);},R(25000,40000));return;}
   setTimeout(()=>{if(state==='play'||state==='pause')c.water?spawnWaterBug(c,PL.pos):spawnCricket(c,PL.pos);},R(2500,6000));}
@@ -2406,7 +2490,7 @@ function updatePoachers(dt){
   const inCanopy=PL.climb?PL.climb.type==='tree'&&PL.climb.h>PL.climb.t.canopy-1:!!PL.perch&&PL.pos.y-PL.perch.base>PL.perch.canopy-1;
   for(const p of poachers){
     const to=_v.subVectors(PL.pos,p.pos);const dist=Math.hypot(to.x,to.z);
-    let range=CFG.see*pk.camo*(PL.speed>5?1.25:1)*(hide?.42:1)*(inCanopy?.3:1)*(.85+PL.growth*.3);
+    let range=CFG.see*pk.camo*(PL.speed>5?1.25:1)*(hide?.42:1)*(inCanopy?.3:1)*(.85+Math.min(PL.growth,1)*.3)*(mode==='easy'&&PL.time<45&&EV.runs<=1&&isNewPlayer?.5:1);
     const facing=_w.set(Math.sin(p.yaw),0,Math.cos(p.yaw));const dot=(to.x*facing.x+to.z*facing.z)/(dist||1);
     let sees=dist<range&&(dot>.42||dist<2.4||(PL.speed>5&&dist<6));if(PL.camo)sees=sees&&dist<.8&&geckoHeightAboveGround()<.5;
     if(hide&&dist>3)sees=sees&&dot>.75;
@@ -2451,7 +2535,20 @@ function updatePoachers(dt){
 }
 function hitPlayer(p){const pk=perks();PL.health-=CFG.dmg;PL.inv=1.3;AU.sfx.hit();$('hurt').style.opacity=1;setTimeout(()=>$('hurt').style.opacity=0,250);
   const away=_v.subVectors(PL.pos,p.pos).setY(0).normalize();PL.climb=null;PL.vel.copy(away).multiplyScalar(6).setY(4.5);PL.onGround=false;
-  floater(PL.pos.clone().add(_w.set(0,.3,0)),'-'+CFG.dmg,'');if(PL.health<=0){PL.health=0;gameOver('caught');}}
+  floater(PL.pos.clone().add(_w.set(0,.3,0)),'-'+CFG.dmg,'');if(PL.health<=0){if(PL.tailT<=0)dropTail(p);else{PL.health=0;gameOver('caught');}}}
+/* v1.22 tail drop: like a real gecko, the first catch costs the tail instead of the run. The wriggling tail keeps the poachers busy
+   for a few seconds while the gecko gets away; the tail grows back (2 minutes on Makkelijk, longer on the harder modes) and only
+   then can it save the gecko again. */
+const TAIL_SEC={easy:120,medium:180,hard:240,master:300};let tailPiece=null;
+function clearTail(){if(tailPiece){scene.remove(tailPiece.m);tailPiece.m.geometry.dispose();tailPiece=null;}}
+function dropTail(p){PL.tailT=TAIL_SEC[mode]||180;PL.health=Math.round(PL.maxHealth*.35);PL.inv=3.5;PL.stamina=100;AU.sfx.quest();measure('tail',mode,'drop');
+  clearTail();const sc=geckoScale(),g=new THREE.CylinderGeometry(.002,.02,.2,8,6);g.rotateX(Math.PI/2);const m=new THREE.Mesh(g,gecko.mat);m.castShadow=true;m.scale.setScalar(sc);
+  m.position.copy(PL.pos).addScaledVector(_v.set(Math.sin(PL.yaw),0,Math.cos(PL.yaw)),-.2*sc);m.position.y=rockGround(m.position.x,m.position.z)+.02*sc;scene.add(m);tailPiece={m,t:0,yaw:PL.yaw};
+  for(const q of poachers)if(q.state==='chase'||q===p){q.state='search';q.searchT=5;q.alert=.35;q.last.copy(m.position);q.swing=-1;q.cool=2.5;}
+  showBanner(t('tailTitle'),t('tailText'),6);}
+function updateTail(dt){if(PL.tailT>0){PL.tailT-=dt;if(PL.tailT<=0){PL.tailT=0;floater(PL.pos.clone().add(_v.set(0,.4,0)),t('tailBack'),'green');AU.sfx.grow();}}
+  const full=TAIL_SEC[mode]||180,k=PL.tailT>0?clamp(1-PL.tailT/full,0,1):1;gecko.tail=damp(gecko.tail,PL.tailT>0?.08+.8*k*k:1,6,dt);
+  if(tailPiece){const q=tailPiece;q.t+=dt;q.m.rotation.y=q.yaw+Math.sin(q.t*26)*.7*Math.max(0,1-q.t/5);q.m.rotation.z=Math.sin(q.t*19)*.25*Math.max(0,1-q.t/5);if(q.t>9)clearTail();}}
 function animatePoacher(p,dt,sees){const g=p.g;g.position.copy(p.pos);g.rotation.y=p.yaw;const sp=p.speed;p.anim+=dt*sp*3.3;
   const a=Math.sin(p.anim)*Math.min(sp/2,1)*.7;p.legs[0].hip.rotation.x=a;p.legs[1].hip.rotation.x=-a;
   p.legs[0].knee.rotation.x=Math.max(0,-Math.cos(p.anim))*.9*Math.min(sp/2,1);p.legs[1].knee.rotation.x=Math.max(0,Math.cos(p.anim))*.9*Math.min(sp/2,1);
@@ -2476,16 +2573,42 @@ function smoothVisual(dt){_jv.subVectors(PL.pos,lastPL);const L=_jv.length();las
   if(L>1.5)visOff.set(0,0,0);else if(L>allowed)visOff.addScaledVector(_jv,-(1-allowed/L));
   visOff.multiplyScalar(Math.exp(-15*dt));if(PL.onGround&&!PL.climb)visOff.y*=Math.exp(-30*dt);// on the ground a height step settles fast, so the paws do not hover above a lower step
   if(visOff.length()>.6)visOff.setLength(.6);gecko.root.position.copy(PL.pos).add(visOff);}
+/* v1.22 camera arm: the camera never stands inside or behind something solid. From the gecko toward the wanted camera position the
+   line is walked in small steps; at the first rock, wall, trunk, branch or hillside the camera stops just in front of it. It moves in
+   at once and eases back out, so nothing is ever between the camera and the gecko for longer than a blink. */
+const _cn=[],_cb=[],_cq=new V3(),_cd=new V3();let camArm=1;
+function camSolid(x,y,z,m,mt=m){if(y<rockGround(x,z)+m*.6)return true;
+  for(const b of _cb)if(x>b.minX-m&&x<b.maxX+m&&z>b.minZ-m&&z<b.maxZ+m&&y>b.bottom-m&&y<b.top+mt)return true;
+  for(const t of _cn){const hy=y-t.base;if(hy<-1||hy>t.tip+m)continue;const dx=x-t.x,dz=z-t.z,d2=dx*dx+dz*dz;
+    if(d2<9){const rr=(hy>t.top&&!t.lead?0:treeRadius(t,hy))+m;if(d2<rr*rr)return true;}
+    if(t.branches){_cq.set(x,y,z);for(const br of t.branches)if(branchDepth(br,_cq)>-m)return true;}}
+  return false;}
+function camNear(len){_cn.length=0;_cb.length=0;const tx=camTarget.x,tz=camTarget.z,r=len+.4;
+  for(const t of trees){const dx=t.x-tx,dz=t.z-tz,e=r+(t.branches?7:3);if(Math.abs(dx)<e&&Math.abs(dz)<e)_cn.push(t);}
+  for(const b of boxes)if(tx>b.minX-r&&tx<b.maxX+r&&tz>b.minZ-r&&tz<b.maxZ+r)_cb.push(b);}
 function updateCamera(dt){
   const sc=geckoScale();camTarget.copy(PL.pos).add(visOff).addScaledVector(PL.up,.18*sc);if(PL.climb)camTarget.addScaledVector(PL.up,.25);
-  if(isTouch&&state==='play'&&touch.camId===null&&(Math.abs(touch.x)+Math.abs(touch.y))>.2&&!PL.climb){let d=(PL.yaw+Math.PI)-camYaw;d=Math.atan2(Math.sin(d),Math.cos(d));camYaw+=d*dt*1.2;}
+  if(touchUI&&state==='play'&&touch.camId===null&&(Math.abs(touch.x)+Math.abs(touch.y))>.2&&!PL.climb){let d=(PL.yaw+Math.PI)-camYaw;d=Math.atan2(Math.sin(d),Math.cos(d));camYaw+=d*dt*1.2;}
   const sit=PL.climb&&PL.climb.sit,dist=camDist*(.75+sc*.3)*(sit?1.7:1),cp=sit?Math.max(camPitch,.42):camPitch;
   desired.set(Math.sin(camYaw)*Math.cos(cp),Math.sin(cp),Math.cos(camYaw)*Math.cos(cp)).multiplyScalar(dist).add(camTarget);
   const inT=state==='play'&&inTemple();if(inT){desired.x=clamp(desired.x,TI.x-TI.i+.2,TI.x+TI.i-.2);desired.z=clamp(desired.z,TI.z-TI.i+.2,TI.z+TI.i-.2);desired.y=Math.min(desired.y,TI.W-.2);}
-  const floor=Math.max(groundAt(desired.x,desired.z,desired.y+.3),WATER_Y)+.14;if(desired.y<floor)desired.y=floor;
-  const b=inT?null:insideBox(desired.x,desired.z,.15);if(b&&desired.y<b.top+.25&&desired.y>b.bottom-1)desired.y=b.top+.25;
-  if(!inT)for(const t of trees){const dx=desired.x-t.x,dz=desired.z-t.z;if(Math.abs(dx)>2.5||Math.abs(dz)>2.5)continue;const rr=treeRadius(t,desired.y-t.base)+.15;const d=Math.hypot(dx,dz);if(d<rr&&desired.y<t.base+t.top){desired.x=t.x+dx/d*rr;desired.z=t.z+dz/d*rr;}}
-  camPos.lerp(desired,1-Math.exp(-dt*14));camera.position.copy(camPos);
+  const floor=Math.max(rockGround(desired.x,desired.z),WATER_Y)+.14;if(desired.y<floor)desired.y=floor;
+  _cd.subVectors(desired,camTarget);const len=_cd.length();camNear(len);let arm=1;
+  if(len>.3){const n=Math.min(40,Math.ceil(len/.1)),u0=Math.min(.6,.16/len);let hit=-1,prev=u0;
+    const mt=u=>.1+Math.min(.25,u*len*.2);// further out, the camera keeps more room above walls and stairs, or it would skim over the stone
+    for(let i=1;i<=n;i++){const u=u0+(1-u0)*i/n;if(camSolid(camTarget.x+_cd.x*u,camTarget.y+_cd.y*u,camTarget.z+_cd.z*u,.1,mt(u))){hit=u;break;}prev=u;}
+    if(hit>=0){let lo=prev,hi=hit;for(let k=0;k<5;k++){const u=(lo+hi)/2;if(camSolid(camTarget.x+_cd.x*u,camTarget.y+_cd.y*u,camTarget.z+_cd.z*u,.1,mt(u)))hi=u;else lo=u;}
+      arm=Math.max(lo-.04/len,Math.min(1,.24*sc/len));}}
+  const snap=arm<camArm;camArm=snap?arm:camArm+(arm-camArm)*(1-Math.exp(-dt*4.5));
+  desired.copy(camTarget).addScaledVector(_cd,camArm);
+  // last resort when even the shortest arm is inside something (pressed between a trunk and a wall): slide out sideways / upward
+  if(camSolid(desired.x,desired.y,desired.z,.04)){
+    for(const b of _cb)if(desired.x>b.minX-.15&&desired.x<b.maxX+.15&&desired.z>b.minZ-.15&&desired.z<b.maxZ+.15&&desired.y<b.top+.25&&desired.y>b.bottom-.2&&!(inT&&b.top>TI.W-.5)){desired.y=b.top+.25;break;}
+    for(const t of _cn){const dx=desired.x-t.x,dz=desired.z-t.z;if(Math.abs(dx)>2.5||Math.abs(dz)>2.5)continue;const rr=treeRadius(t,desired.y-t.base)+.15;const d=Math.hypot(dx,dz);if(d<rr&&d>1e-4&&desired.y<t.base+t.tip){desired.x=t.x+dx/d*rr;desired.z=t.z+dz/d*rr;}}
+    const f2=Math.max(rockGround(desired.x,desired.z),WATER_Y)+.14;if(desired.y<f2)desired.y=f2;}
+  if(snap&&camPos.distanceToSquared(desired)>.0004&&camSolid(camPos.x,camPos.y,camPos.z,.06))camPos.copy(desired);else camPos.lerp(desired,1-Math.exp(-dt*14));
+  if(camPos.y<WATER_Y+.1)camPos.y=WATER_Y+.1;camera.position.copy(camPos);
+  {const g=gecko.root.position;leafFocus.value.set(g.x,g.y+.06*sc,g.z,state==='play'?1:0);}
   if(camLook.distanceToSquared(camTarget)>4)camLook.copy(camTarget);else camLook.lerp(camTarget,1-Math.exp(-dt*22));camera.lookAt(camLook);
 }
 let menuAng=0;
@@ -2542,7 +2665,7 @@ const _wt=new V3();
 let goalEnd=0;
 /* v1.17 events: every few minutes something happens for a short while, so the middle of a run keeps changing.
    swarm = a cluster of rare insects nearby (arrow), rain = thirst refills by itself, feast = insects count double. */
-let EVT=null,evNext=150,evLast='';const EV_KINDS=['swarm','rain','feast'],EV_SEC={swarm:55,rain:45,feast:40};
+let EVT=null,evNext=85,evLast='';const EV_KINDS=['swarm','rain','feast'],EV_SEC={swarm:55,rain:45,feast:40};
 function endEvent(){if(!EVT)return;if(EVT.bugs){for(const c of EVT.bugs){scene.remove(c.g);const i=crickets.indexOf(c);if(i>=0)crickets.splice(i,1);}}
   if(EVT.kind==='rain')rain.m.visible=!!AREA.fx.rain;EVT=null;$('evBox').hidden=true;}
 function startEvent(){const pool=EV_KINDS.filter(k=>k!==evLast);const kind=pool[Math.floor(Math.random()*pool.length)];evLast=kind;const T=L().ev[kind];
@@ -2553,7 +2676,7 @@ function startEvent(){const pool=EV_KINDS.filter(k=>k!==evLast);const kind=pool[
   if(kind==='rain')rain.m.visible=true;
   AU.sfx.quest();showBanner(T[0],T[1],6);$('evName').textContent=T[0];$('evBox').hidden=false;measure('event',kind,'start');}
 function updateEvents(){if(PL.dead)return;
-  if(EVT){const left=EVT.end-PL.time;if(left<=0||(EVT.bugs&&!EVT.bugs.some(c=>c.alive))){endEvent();evNext=PL.time+R(110,150);}else $('evTime').textContent=fmtTime(Math.ceil(left));}
+  if(EVT){const left=EVT.end-PL.time;if(left<=0||(EVT.bugs&&!EVT.bugs.some(c=>c.alive))){endEvent();evNext=PL.time+R(80,120);}else $('evTime').textContent=fmtTime(Math.ceil(left));}
   else if(PL.time>=evNext&&!traveling)startEvent();}
 /* Climb tip (v1.14): first-climb fell from 82% (v1.10) to 72% (v1.13) of new players. Shown near a trunk, or while chased, until the first climb. */
 let climbedOnce=false;
@@ -2569,22 +2692,22 @@ function updateWaterArrow(){const el=$('waterArrow');const on=state==='play'&&PL
   $('sThirst').classList.add('low');}
 function updateHUD(dt){hudT-=dt;if(hudT>0)return;hudT=.1;
   setStat('health',PL.health,PL.maxHealth);setStat('hunger',PL.hunger);setStat('thirst',PL.thirst);setStat('stamina',PL.stamina);
-  $('growthFill').style.width=(PL.growth*100)+'%';$('growthLabel').innerHTML='<b>'+stageName()+'</b>';
+  {const si=stageIdx();$('growthFill').style.width=(si>=LAST_STAGE?100:clamp((PL.growth-STAGE_AT[si])/(STAGE_AT[si+1]-STAGE_AT[si]),0,1)*100)+'%';}$('growthLabel').innerHTML='<b>'+stageName()+'</b>';
   $('hudCoins').textContent=save.coins;$('hudTime').textContent=fmtTime(PL.time);
   const al=$('alert');if(PL.camo){al.hidden=false;al.className='hidden-status';al.textContent=t('alertCamo');}
   else if(PL.chased){al.hidden=false;al.className='';al.textContent=t('alertChased');}
   else if(PL.hidden&&PL.sus){al.hidden=false;al.className='hidden-status';al.textContent=t('alertHidden');}
   else if(PL.sus){al.hidden=false;al.className='';al.textContent=t('alertSus');}else al.hidden=true;
   $('hudFam').textContent=Math.min(FAMILY,save.rescued.length)+'/'+FAMILY;
-  let pr='';if(gnaw)pr=gnaw.locked?t('prLocked',{n:gnaw.locked}):t('prGnaw',{p:Math.min(100,Math.round(gnaw.p*100))});else if(PL.canDrink&&PL.thirst<97&&!PL.drinking)pr=t(isTouch?'prDrinkTouch':'prDrinkKb');
-  else if(PL.drinking)pr=t('prDrinking');else if(!PL.camo&&canCamo())pr=t(isTouch?'prCamoTouch':'prCamoKb');else if(PL.climb&&PL.climb.sit)pr=t(isTouch?'prTopTouch':'prTopKb');else if(PL.climb&&PL.climb.type==='tree'&&PL.climb.h>=PL.climb.t.climbMax-.05)pr=t(isTouch?'prSafeTouch':'prSafeKb');
-  else if(ringT&&PL.crickets<3)pr=t(isTouch?'prEatTouch':'prEatKb');
+  let pr='';if(gnaw)pr=gnaw.locked?t('prLocked',{n:gnaw.locked}):t('prGnaw',{p:Math.min(100,Math.round(gnaw.p*100))});else if(PL.canDrink&&PL.thirst<97&&!PL.drinking)pr=t('prDrinkAuto');
+  else if(PL.drinking)pr=t('prDrinking');else if(!PL.camo&&canCamo())pr=t(touchUI?'prCamoTouch':'prCamoKb');else if(PL.climb&&PL.climb.sit)pr=t(touchUI?'prTopTouch':'prTopKb');else if(PL.climb&&PL.climb.type==='tree'&&PL.climb.h>=PL.climb.t.climbMax-.05)pr=t(touchUI?'prSafeTouch':'prSafeKb');
+  else if(ringT&&PL.crickets<3)pr=t(touchUI?'prEatTouch':'prEatKb');
   else if(!climbedOnce&&!PL.climb&&!PL.swim&&(nearTrunk()||poachers.some(q=>q.state==='chase')))pr=t('prClimb');
   else if(PL.thirst<WATER_WARN&&!PL.canDrink)pr=t('prWater');
   if(pr!==promptKey){promptKey=pr;$('prompt').hidden=!pr;$('prompt').innerHTML=pr;}
   updateEvents();updateWaterArrow();updateGoalArrow();$('thirstFx').style.opacity=PL.thirst<20||PL.hunger<20?.9:0;
   drawMinimap();}
-function updateTips(dt){if(tipIdx>=5){$('tip').style.opacity=0;return;}tipT-=dt;if(tipT<=0){const T=isTouch?L().tipsTouch:L().tipsKb;$('tip').innerHTML=T[tipIdx];$('tip').style.opacity=1;tipIdx++;tipT=7;
+function updateTips(dt){if(tipIdx>=5){$('tip').style.opacity=0;return;}tipT-=dt;if(tipT<=0){const T=touchUI?L().tipsTouch:L().tipsKb;$('tip').innerHTML=tipIdx===2?t('tipDrink'):T[tipIdx];$('tip').style.opacity=1;tipIdx++;tipT=7;
   if(tipIdx>=5){setTimeout(()=>$('tip').style.opacity=0,7000);save.tutorial=true;persist();}}}
 let ringT=null;
 function updateTargetRing(){const ring=$('targetRing');ringT=null;if(state!=='play'||tongue.t>=0){ring.hidden=true;return;}const t=findTarget();ringT=t;if(!t){ring.hidden=true;return;}
@@ -2600,15 +2723,15 @@ function updateGame(dt){
   updatePlayer(dt);updateTongue(dt);jumpQ=false;
   PL.hunger=Math.max(0,PL.hunger-dt*100/CFG.hungerT*pk.hunger*AREA.needs.hunger*(PL.speed>5?1.3:1));
   if(EVT&&EVT.kind==='rain')PL.thirst=Math.min(100,PL.thirst+dt*1.5);
-  else PL.thirst=Math.max(0,PL.thirst-dt*100/CFG.thirstT*pk.thirst*AREA.needs.thirst*(PL.speed>5?1.3:1)*(PL.drinking?0:1));
-  if(PL.hunger<=0||PL.thirst<=0){PL.health-=dt*(mode==='master'?6:4);if(PL.health<=0){PL.health=0;gameOver(PL.thirst<=0?'thirst':'hunger');}}
+  else PL.thirst=Math.max(0,PL.thirst-dt*100/CFG.thirstT*pk.thirst*AREA.needs.thirst*(PL.speed>5?1.3:1)*(PL.drinking||PL.inWater?0:1));
+  if(PL.hunger<=0||PL.thirst<=0){PL.health-=dt*(mode==='master'?6:mode==='easy'?2.5:4);if(PL.health<=0){PL.health=0;gameOver(PL.thirst<=0?'thirst':'hunger');}}
   else if(PL.hunger>55&&PL.thirst>55)PL.health=Math.min(PL.maxHealth,PL.health+dt*1.5);
-  updatePoachers(dt);
+  updatePoachers(dt);updateTail(dt);updateUpgrade();
   nextSpawn-=dt;if(nextSpawn<=0){nextSpawn=CFG.every*(1-areaIdx*.08);if(poachers.length<CFG.max+areaIdx){spawnPoacher();}}
   checkGates(dt);updateBanner(dt);tripMsgT-=dt;
   if(!templeSeen&&TI&&inTemple()){templeSeen=true;AU.sfx.quest();showBanner(t('templeTitle'),t('templeText'),5);measure('temple',AREAS[areaIdx].id,'enter');}updateCamo(dt);
   if(PL.time>9&&PL.time-dt<=9&&areaIdx===0&&closedCages()&&tipIdx>=5)showBanner(t('campTitle'),t('campLeft',{n:closedCages()}).trim(),6);
-  if(quest&&questIdx>0&&PL.time-quest.t0>(questIdx<TUT?150:210)){measure(questIdx<TUT?'quest':'goal',quest.kind,'skip');questIdx++;newQuest();}
+  if(quest&&questIdx>0&&PL.time-quest.t0>(questIdx<TUT?100:210)){measure(questIdx<TUT?'quest':'goal',quest.kind,'skip');questIdx++;newQuest();}
   if(quest&&quest.done(quest.data)){measure(questIdx<TUT?'quest':'goal',quest.kind,'complete');if(questIdx===0)onboarding('first-quest');const v=addCoins(quest.coins);AU.sfx.quest();floater(PL.pos.clone().add(_v.set(0,.45,0)),t('questDone',{v}),'green');questIdx++;newQuest();}
   updateTips(dt);updateHUD(dt);
 }
@@ -2644,7 +2767,7 @@ const GradeShader={uniforms:{tDiffuse:{value:null},uSun:{value:new THREE.Vector2
       uv+=d*fract(sin(dot(vUv,vec2(12.9898,78.233)))*43758.5453);
       for(int i=0;i<36;i++){uv+=d;vec3 sm=texture2D(tDiffuse,clamp(uv,0.,1.)).rgb;acc+=max(lum(sm)-1.25,0.)*decay;decay*=.95;}
       vec2 dd=vUv-uSun;dd.x*=uAspect;col+=vec3(1.,.85,.6)*acc*.016*uSunVis/(1.+dot(dd,dd)*2.5);}
-    float l=lum(col);col=mix(vec3(l),col,1.1);
+    float l=lum(col);col=mix(vec3(l),col,1.17);
     col=mix(col,col*vec3(.9,1.,1.06),smoothstep(.35,0.,l)*.45);
     col*=mix(vec3(1.),vec3(1.05,1.01,.95),smoothstep(.2,1.,l));
     vec2 q=vUv-.5;q.x*=uAspect*.85;col*=1.-dot(q,q)*.6;
@@ -2662,18 +2785,33 @@ function buildComposer(){const pr=renderer.getPixelRatio();
   grade=new ShaderPass(GradeShader);grade.uniforms.uShafts={value:1};composer.addPass(grade);composer.addPass(new OutputPass());}
 buildComposer();
 /* adaptive quality: drop the most expensive effects when the frame rate stays low */
-let perfT=0,perfN=0,perfAcc=0,resScale=1,perfSkip=3,perfGood=0;
+/* v1.22: the light world (phones, weak laptops) used to render at pixel ratio 1 at most, which looks blocky on a sharp phone screen.
+   It still starts there, but a device that holds 57+ fps is stepped up to at most 1.5; one that cannot hold 48 fps is stepped down.
+   resCap remembers the level that proved too heavy, so the picture does not keep jumping up and down. Below 30 fps at the lowest
+   resolution the "potato" mode halves the shadow work and the plant distance once more. */
+const PR_BASE=()=>Math.min(devicePixelRatio||1,[LOW?1.5:1,1.25,LOW?1.25:1.75][QUALITY]);
+const RES_MIN=()=>LOW&&QUALITY===0?Math.min(1,.7/PR_BASE()):.7,RES_START=()=>LOW&&QUALITY===0?Math.min(1,1/PR_BASE()):1;
+let perfT=0,perfN=0,perfAcc=0,resScale=1,resCap=1,perfSkip=3,perfGood=0,potato=false,justUp=0,fpsSum=0,fpsN=0,fpsSent=false;
 const GFX=['Laag','Hoog','Ultra']; // stable keys for measuring; labels come from the language table
-function applyQuality(q){QUALITY=clamp(q,0,2);if(gtao)gtao.enabled=QUALITY>=2;if(waterMirror){waterMirror.visible=QUALITY>=2;waterSimple.visible=QUALITY<2;}
-  bloom.enabled=QUALITY>=1;grade.uniforms.uShafts.value=QUALITY>=1?1:0;nearGrass.geo.instanceCount=Math.round(nearGrass.N*[LOW?.45:.3,.75,1][QUALITY]);
-  const pr=Math.min(devicePixelRatio,[1,1.25,LOW?1.25:1.75][QUALITY])*resScale;renderer.setPixelRatio(pr);composer.setPixelRatio(pr);
+function applyQuality(q){const was=QUALITY;QUALITY=clamp(q,0,2);if(gtao)gtao.enabled=QUALITY>=2;if(waterMirror){waterMirror.visible=QUALITY>=2;waterSimple.visible=QUALITY<2;}
+  if(!applyQuality.init||was!==QUALITY){applyQuality.init=true;resScale=Math.min(resScale,1);if(LOW&&QUALITY===0)resScale=RES_START();resCap=1;}
+  bloom.enabled=QUALITY>=1;grade.uniforms.uShafts.value=QUALITY>=1?1:0;nearGrass.geo.instanceCount=Math.round(nearGrass.N*[LOW?.45:.3,.75,1][QUALITY]*(potato?.5:1));
+  const pr=PR_BASE()*resScale;renderer.setPixelRatio(pr);composer.setPixelRatio(pr);
   const sm=[1024,2048,LOW?2048:4096][QUALITY];if(sun.shadow.mapSize.x!==sm){sun.shadow.mapSize.set(sm,sm);if(sun.shadow.map){sun.shadow.map.dispose();sun.shadow.map=null;}}
+  renderer.shadowMap.needsUpdate=true;
   onResize();for(const id of ['gfxBtn','gfxBtn2'])$(id).textContent=t('gfx')+': '+L().gfxQ[QUALITY];}
-for(const id of ['gfxBtn','gfxBtn2'])$(id).onclick=()=>{AU.init();AU.sfx.click();const q=(QUALITY+1)%3;save.gfx=q;if(q>0){try{localStorage.removeItem('gekko_tier');}catch(e){}}measure('gfx','select',GFX[q].toLowerCase());persist();resScale=1;applyQuality(q);perfT=perfAcc=perfN=0;perfSkip=3;};
-function setRes(){const pr=Math.min(devicePixelRatio,[1,1.25,LOW?1.25:1.75][QUALITY])*resScale;renderer.setPixelRatio(pr);composer.setPixelRatio(pr);onResize();}
+for(const id of ['gfxBtn','gfxBtn2'])$(id).onclick=()=>{AU.init();AU.sfx.click();const q=(QUALITY+1)%3;save.gfx=q;if(q>0){try{localStorage.removeItem('gekko_tier');}catch(e){}}measure('gfx','select',GFX[q].toLowerCase());persist();resScale=1;potato=false;applyQuality(q);perfT=perfAcc=perfN=0;perfSkip=3;};
+function setRes(){const pr=PR_BASE()*resScale;renderer.setPixelRatio(pr);composer.setPixelRatio(pr);renderer.shadowMap.needsUpdate=true;onResize();}
 function adaptQuality(dt){if(perfSkip>0){perfSkip-=dt;return;}perfAcc+=dt;perfN++;perfT+=dt;if(perfT<2.5)return;const avg=perfAcc/perfN;perfT=perfAcc=perfN=0;
-  if(avg>1/48){perfGood=0;if(resScale>.7){resScale=Math.max(.7,resScale-.15);setRes();}else if(QUALITY>0){resScale=.85;applyQuality(QUALITY-1);measure('gfx','auto-drop',GFX[QUALITY].toLowerCase());if(QUALITY===0&&!LOW){try{localStorage.setItem('gekko_tier','low');}catch(e){}}}perfSkip=1.5;}
-  else if(avg<1/57&&resScale<1){if(++perfGood>=4){perfGood=0;resScale=Math.min(1,resScale+.15);setRes();perfSkip=1.5;}}else perfGood=0;}
+  fpsSum+=1/avg;fpsN++;if(!fpsSent&&fpsN>=12){fpsSent=true;const f=fpsSum/fpsN;measure('fps',TIER+(potato?'-potato':''),f<20?'b0-20':f<30?'b20-30':f<45?'b30-45':f<55?'b45-55':'b55+');measure('res',TIER,'pr'+Math.round(renderer.getPixelRatio()*10));}
+  const rmin=RES_MIN(),slow=avg>1/48,fast=avg<1/57;
+  if(slow){if(justUp){resCap=Math.max(rmin,resScale-.15);justUp=0;}perfGood=0;
+    if(resScale>rmin+.01){resScale=Math.max(rmin,resScale-.15);setRes();}
+    else if(QUALITY>0){applyQuality(QUALITY-1);resScale=LOW?RES_START():.85;setRes();measure('gfx','auto-drop',GFX[QUALITY].toLowerCase());if(QUALITY===0&&!LOW){try{localStorage.setItem('gekko_tier','low');}catch(e){}}}
+    else if(!potato&&avg>1/30){potato=true;applyQuality(0);measure('gfx','auto-drop','potato');}
+    perfSkip=1.5;return;}
+  if(justUp&&--justUp<=0)justUp=0;// the step up has held for a few windows: it stays
+  if(fast&&resScale<Math.min(1,resCap)-.01){if(++perfGood>=4){perfGood=0;justUp=3;resScale=Math.min(1,resCap,resScale+.15);setRes();perfSkip=1.5;}}else perfGood=0;}
 const _sunScr=new V3(),_camDir=new V3();
 let lastTs=0,dtS=1/60;
 let frameN=0;
@@ -2688,7 +2826,7 @@ function frame(ts){requestAnimationFrame(frame);frameN++;
   else if(state==='play'&&PL.dead){updatePoachers(dt);}
   if(state==='menu'||state==='shop'){gecko.root.position.copy(PL.pos);menuCamera(dt);gecko.update(dt,0,{look:Math.sin(time*.7)*.6,surf:footSurf});}
   else{if(state==='play')smoothVisual(dt);gecko.update(dt,PL.speed,{drinking:PL.drinking,climbing:!!PL.climb&&!PL.climb.sit,sit:!!(PL.climb&&PL.climb.sit),swim:PL.swim&&!PL.climb,surf:PL.climb?climbSurf:footSurf,grip:!!(PL.perch&&perchBr)});if(state==='play'||state==='over')updateCamera(dt);}
-  gecko.root.scale.setScalar(geckoScale());gecko.root.visible=!(PL.dead&&state==='over');
+  gecko.root.scale.setScalar(geckoScale());gecko.root.visible=!(PL.dead&&state==='over');gecko.blob.visible=!PL.swim&&(PL.onGround||!!PL.climb)&&!(PL.climb&&PL.climb.sit);
   if(PL.inv>0&&state==='play'&&!PL.dead)gecko.root.visible=Math.floor(time*14)%2===0;
   if(state!=='pause'){updateCamp(state==='win'?0:dt);updateTemple(dt);updateCrickets(dt);updateRipples(dt);updateButterflies(dt);updateDust(dt);AU.update(dt);}
   updateTargetRing();
@@ -2703,6 +2841,7 @@ function frame(ts){requestAnimationFrame(frame);frameN++;
    const a=Math.round(P.dot(_sr)/texel)*texel,b=Math.round(P.dot(_su)/texel)*texel,d=P.dot(sunDir);
    sun.target.position.copy(_sr).multiplyScalar(a).addScaledVector(_su,b).addScaledVector(sunDir,d);sun.position.copy(sun.target.position).addScaledVector(sunDir,90);}
   cullFarTiles();
+  if(++shadowN>=(LOW?(potato?3:2):1)||state!=='play'&&frameN<8){shadowN=0;renderer.shadowMap.needsUpdate=true;}
   composer.render(dt);}
 const _sr=new V3(),_su=new V3();
 
@@ -2780,7 +2919,7 @@ $('reviveBtn').onclick=()=>revive();$('askRevive').onclick=()=>revive();$('askSk
 $('doubleBtn').onclick=()=>doubleCoins();
 $('overShop').onclick=()=>{measure('button','shop-over','interact');toMenu();$('shopBtn').onclick();};
 $('menuBtn').onclick=()=>{measure('button','menu','interact');toMenu();};
-function toMenu(){clearInterval(askIv);endEvent();Poki.stop();setCamo(false);for(const p of poachers)p.dispose();poachers.length=0;if(netDome){scene.remove(netDome);netDome=null;}PL.dead=false;PL.drinking=false;PL.speed=0;PL.growth=0;
+function toMenu(){clearInterval(askIv);endEvent();Poki.stop();setCamo(false);for(const p of poachers)p.dispose();poachers.length=0;if(netDome){scene.remove(netDome);netDome=null;}PL.dead=false;PL.drinking=false;PL.speed=0;PL.growth=0;PL.tailT=0;gecko.tail=1;clearTail();
   curSkin=skinById(save.skin);previewSkin(curSkin);placeGeckoAtSpawn();renderModes();setupCrickets(14);setScreen('menu');}
 function onResize(){viewSize();fitScreens();camera.aspect=vw/vh;camera.updateProjectionMatrix();renderer.setSize(vw,vh,false);composer.setSize(vw,vh);if(waterMirror)waterMirror.getRenderTarget().setSize(Math.round(vw*.5),Math.round(vh*.5));}
 // Poki resizes the iframe (window resize, fullscreen, rotating a phone); listen to all of it and resize once per frame at most.
@@ -2799,7 +2938,11 @@ bootProg(.9);await bootYield();const LT={js:performance.now()};
 // while the page keeps painting; the bar creeps on meanwhile. A timeout keeps a stuck driver from blocking the game.
 {const wp=new Poacher(SPAWN.x+2,SPAWN.z+2);const ws=waterSimple&&waterSimple.visible,wm=waterMirror&&waterMirror.visible;if(waterSimple)waterSimple.visible=true;if(waterMirror)waterMirror.visible=true;
  for(const f of farTiles)f.m.visible=true;
- try{await Promise.race([renderer.compileAsync(scene,camera),new Promise(r=>setTimeout(r,6000))]);}catch(e){renderer.compile(scene,camera);}
+ // v1.22: compile for the composer's render target. Compiled for the canvas (as before) every program got a different key (tone
+ // mapping, colour space) than the one the game really draws with, so all of them were built a second time in the first frame.
+ renderer.setRenderTarget(composer.readBuffer);
+ try{await Promise.race([renderer.compileAsync(scene,camera),new Promise(r=>setTimeout(r,6000))]);}catch(e){try{renderer.compile(scene,camera);}catch(e2){}}
+ renderer.setRenderTarget(null);
  renderer.shadowMap.needsUpdate=true;
  if(waterSimple)waterSimple.visible=ws;if(waterMirror)waterMirror.visible=wm;wp.dispose();}
 // v1.16: the first frames upload every texture and buffer and build the shadow map and post-processing shaders, which froze the
@@ -2807,12 +2950,12 @@ bootProg(.9);await bootYield();const LT={js:performance.now()};
 LT.compile=performance.now();bootProg(.96);await bootYield();
 setScreen('menu');requestAnimationFrame(frame);document.fonts?.ready.then(fitScreens);
 {await waitFrames(1);bootProg(.98);await waitFrames(1);bootProg(.99);await settleFrames();}
-bootProg(1);
+bootProg(1);LT.end=performance.now();
 setTimeout(()=>{$('loading').style.opacity=0;setTimeout(()=>$('loading').remove(),400);},320);
 pokiInit.then(()=>{if(!save.lang&&detectLang()!==lang)applyLang(detectLang());measure('lang',lang,'start');measure('gfx','tier',TIER);Poki.loaded();
-  {const b=ms=>{const s=ms/1000;return s<2?'s0-2':s<4?'s2-4':s<6?'s4-6':s<9?'s6-9':s<13?'s9-13':s<20?'s13-20':'s20+';};const end=performance.now();
+  {const b=ms=>{const s=ms/1000;return s<2?'s0-2':s<4?'s2-4':s<6?'s4-6':s<9?'s6-9':s<13?'s9-13':s<20?'s13-20':'s20+';};const end=LT.end;// the moment the loading screen left, not the moment the Poki SDK was ready
    measure('loadtime','total',b(end));measure('loadtime','build',b(LT.js));measure('loadtime','compile',b(LT.compile-LT.js));measure('loadtime','frames',b(end-LT.compile));}measure('screen','menu','visible');onboarding('loaded');});
-window.__gekko={eatCricket,newQuest,get quest(){return quest;},get questIdx(){return questIdx;},set questIdx(v){questIdx=v;},startEvent,endEvent,get EVT(){return EVT;},set evLast(v){evLast=v;},gameOver,TIER,get TI(){return TI;},step:(dt,n)=>{for(let i=0;i<n;i++){updateGame(dt);updateCamp(dt);updateCrickets(dt);}},get gnaw(){return gnaw;},get camoQ(){return camoQ;},set camoQ(v){camoQ=v;},updateCamera,smoothVisual,setCamo,mmIcon,drawMinimap,get NESTp(){return NEST;},setupCrickets,normalFromCanvas,cages,get CAMP(){return CAMP;},get NEST(){return NEST;},save,finale,renderShop,setShopTab:v=>{shopTab=v;},travel,buildWorld,gates,AREAS,get areaIdx(){return areaIdx;},get SPAWN(){return SPAWN;},stageIdx,PL,renderer,scene,updatePlayer,treeRadius,trunkR,rockTop,footSurf,climbSurf,updateClimb,get rockGrid(){return rockGrid;},ripples,get LAKES(){return LAKES;},groundAt,poachers,crickets,trees,boxes,rocks,startGame,setMode:m=>{mode=m;},get state(){return state;},camera,gecko,keys,get camYaw(){return camYaw;},set camYaw(v){camYaw=v;},set camPitch(v){camPitch=v;},set camDist(v){camDist=v;}};
+window.__gekko={LT,hitPlayer,buyUpgrade,get upOffer(){return upOffer;},rockGround,groundBase,get camPos(){return camPos;},get camLook(){return camLook;},eatCricket,newQuest,get quest(){return quest;},get questIdx(){return questIdx;},set questIdx(v){questIdx=v;},startEvent,endEvent,get EVT(){return EVT;},set evLast(v){evLast=v;},gameOver,TIER,get TI(){return TI;},step:(dt,n)=>{for(let i=0;i<n;i++){updateGame(dt);updateCamp(dt);updateCrickets(dt);}},get gnaw(){return gnaw;},get camoQ(){return camoQ;},set camoQ(v){camoQ=v;},updateCamera,smoothVisual,setCamo,mmIcon,drawMinimap,get NESTp(){return NEST;},setupCrickets,normalFromCanvas,cages,get CAMP(){return CAMP;},get NEST(){return NEST;},save,finale,renderShop,setShopTab:v=>{shopTab=v;},travel,buildWorld,gates,AREAS,get areaIdx(){return areaIdx;},get SPAWN(){return SPAWN;},stageIdx,PL,renderer,scene,updatePlayer,treeRadius,trunkR,rockTop,footSurf,climbSurf,updateClimb,get rockGrid(){return rockGrid;},ripples,get LAKES(){return LAKES;},groundAt,poachers,crickets,trees,boxes,rocks,startGame,setMode:m=>{mode=m;},get state(){return state;},camera,gecko,keys,get camYaw(){return camYaw;},set camYaw(v){camYaw=v;},set camPitch(v){camPitch=v;},set camDist(v){camDist=v;}};
 </script>
 </body>
 </html>
