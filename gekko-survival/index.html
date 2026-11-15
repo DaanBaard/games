@@ -311,7 +311,7 @@ select.lang{appearance:none;-webkit-appearance:none;padding-right:12px;cursor:po
         <button class="play" id="playBtn" data-i18n="play">Spelen</button>
         <button class="ghost" id="shopBtn"><svg viewBox="0 0 24 24"><path d="M4 15c3-1 4-5 8-5 3 0 4 2 7 1M7 15l-1 3M10 13.5l1 4M15 11l1 4M18 11.5l2 2" stroke="#b9e44f" stroke-width="2" fill="none" stroke-linecap="round"/><circle cx="6" cy="14" r="1" fill="#b9e44f"/></svg><span data-i18n="geckos">Gekko's</span></button>
       </div>
-      <div class="menuFoot"><span class="coinsBig"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="#ffc93c"/><circle cx="12" cy="12" r="7" fill="none" stroke="#c98a12" stroke-width="1.6"/></svg><span id="menuCoins">0</span></span><span id="menuBest"></span><button class="ghost gfx" id="gfxBtn">Graphics</button><select class="ghost gfx lang" id="langSel" data-i18n-aria="language" aria-label="Taal"></select><span class="ver">v1.25</span></div>
+      <div class="menuFoot"><span class="coinsBig"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="#ffc93c"/><circle cx="12" cy="12" r="7" fill="none" stroke="#c98a12" stroke-width="1.6"/></svg><span id="menuCoins">0</span></span><span id="menuBest"></span><button class="ghost gfx" id="gfxBtn">Graphics</button><select class="ghost gfx lang" id="langSel" data-i18n-aria="language" aria-label="Taal"></select><span class="ver">v1.26</span></div>
       <div class="keys" data-i18n-html="keys"><span><kbd>WASD</kbd> lopen</span><span><kbd>Muis</kbd> kijken</span><span><kbd>Shift</kbd> sprinten</span><span><kbd>Spatie</kbd> springen</span><span><kbd>Klik</kbd>/<kbd>E</kbd> tong</span><span><kbd>F</kbd> drinken</span></div>
     </div>
   </div>
@@ -405,7 +405,8 @@ select.lang{appearance:none;-webkit-appearance:none;padding-right:12px;cursor:po
     // layer C adds the remaining distance in 0.2 s. Any overshoot is clipped by the bar.
     function apply(){var m=pend;pend=null;if(!m||done)return;var now=performance.now()-t0,tau=+A[0].currentTime||0,tb=+B[0].currentTime||0;
       if(m.f>=1){done=true;var pos=90*Math.min(1,tau/T1)+posB(tb),x=Math.max(0,100-pos),oc={duration:200,fill:'both',easing:'ease-out'};
-        document.getElementById('ldBar3').animate([{transform:'translateX(0%)'},{transform:'translateX('+x+'%)'}],oc);document.getElementById('ldRun3').animate([{transform:'translateX(0%)'},{transform:'translateX('+x+'%)'}],oc);
+        var b3=document.getElementById('ldBar3'),r3=document.getElementById('ldRun3');// gone when this frame comes late (tab in the background): v1.26
+        if(b3&&r3){b3.animate([{transform:'translateX(0%)'},{transform:'translateX('+x+'%)'}],oc);r3.animate([{transform:'translateX(0%)'},{transform:'translateX('+x+'%)'}],oc);}
         try{localStorage.setItem('gekko_load_ms',Math.round(m.el));}catch(e){}return;}
       if(known||m.f>.5||tau>=T1)return;// re-aim only during the build steps, where the script pauses are short
       total=Math.max(now+350,.5*total+.5*m.el/Math.max(m.f,.02));aim(Math.max(.25,Math.min(3,(T1-tau)/(total-now))));}
@@ -2275,7 +2276,13 @@ function tryClimbOrCollide(np,prev,move,moving){
   for(const t of trees){const dx=np.x-t.x,dz=np.z-t.z;if(Math.abs(dx)>4||Math.abs(dz)>4)continue;const hy=np.y-t.base;if(hy>t.top-.02)continue;
     const tr=trunkR(t,hy,Math.atan2(dz,dx)),rr=tr+GR;let d=Math.hypot(dx,dz);
     if(d<rr){const toward=moving?-(dx*move.x+dz*move.z)/(d||1):0;
-      if(grab&&toward>.3&&PL.regrab<=0&&hy<t.climbMax-.1){PL.climb={type:'tree',t,a:Math.atan2(dz,dx),h:Math.max(hy,.06)};PL.vel.set(0,0,0);return true;}
+      if(grab&&toward>.3&&PL.regrab<=0&&hy<t.climbMax-.1){const c=PL.climb={type:'tree',t,a:Math.atan2(dz,dx),h:Math.max(hy,.06)};PL.vel.set(0,0,0);
+        // v1.26: grabbing the trunk from a branch (or at its height) used to put the gecko straight back on that branch with W held,
+        // so it hopped between trunk and branch and never got higher. That branch is skipped until the gecko has left its height.
+        if(t.branches){const rr0=treeRadius(t,c.h),cx=Math.cos(c.a),cz=Math.sin(c.a),y0=t.base+c.h;
+          for(const br of t.branches){let da=c.a-br.ang;da=Math.atan2(Math.sin(da),Math.cos(da));if(Math.abs(da)*rr0>br.r0+.12)continue;
+            const by=branchTop(br,t.x+cx*(rr0+.15),t.z+cz*(rr0+.15));if(y0>=by-.3&&y0<=by+.35){c.skip=br;break;}}}
+        return true;}
       let ux=dx,uz=dz;if(d<1e-4){ux=prev.x-t.x;uz=prev.z-t.z;d=Math.hypot(ux,uz)||1;}
       np.x=t.x+ux/d*rr;np.z=t.z+uz/d*rr;}
     if(t.fins){const fy=np.y-(t.base-.15);
@@ -2371,7 +2378,10 @@ function checkGates(dt){gateCool-=dt;lockMsgT-=dt;if(gateCool>0||PL.climb||trave
     if(Math.abs(along)<.55&&Math.abs(lat)<1.3&&PL.pos.y-g.base<3.6){
       if(!gateOpen(g)){if(lockMsgT<=0){lockMsgT=3;floater(PL.pos.clone().add(_v.set(0,.45,0)),t('gateLocked'),'');showBanner(areaName(g.to),t('gateLocked'),4);measureOnce('gate',AREAS[g.to].id,'locked');}continue;}
       travel(g.to);return;}}}
-function warmUp(){for(const f of farTiles)f.m.visible=true;renderer.setRenderTarget(composer.readBuffer);try{renderer.compile(scene,camera);}catch(e){}renderer.setRenderTarget(null);renderer.shadowMap.needsUpdate=true;}
+// v1.26: one insect of every kind of this area is in the scene while the shaders are compiled. The rare ones often only appear with
+// a swarm, and their shader was then built in the middle of play (one slow frame).
+const warmBugs=()=>SPECIES.filter(q=>q.area===areaIdx).map(sp=>{const g=makeInsect(sp);scene.add(g);return g;});
+function warmUp(){for(const f of farTiles)f.m.visible=true;const wb=warmBugs();renderer.setRenderTarget(composer.readBuffer);try{renderer.compile(scene,camera);}catch(e){}renderer.setRenderTarget(null);renderer.shadowMap.needsUpdate=true;for(const g of wb)scene.remove(g);}
 async function travel(to){if(traveling)return;traveling=true;const from=areaIdx;Poki.stop();PL.drinking=false;
   travelReset();setScreen('travel');$('travelTitle').textContent=t('travelTo',{area:areaName(to)});
   await Poki.brk();travelStart();await bootYield();
@@ -2625,11 +2635,12 @@ function updateClimb(dt,ix,iy,moving,sprint){
     const rr=treeRadius(t,c.h);c.a+=lat*sp*dt/(rr+.05);
     const gsc=geckoScale();let br=0;for(const k of [-.34,-.22,-.08,.06,.18])br=Math.max(br,trunkR(t,c.h+k*gsc,c.a));
     const cap=t.tip-.17*gsc;if(c.h>cap)c.h=cap;
-    if(iy>.3){const y=t.base+c.h;
-      if(t.branches)for(const br of t.branches){let da=c.a-br.ang;da=Math.atan2(Math.sin(da),Math.cos(da));if(Math.abs(da)*rr>br.r0+.12)continue;
+    if(iy>.3||c.skip){const y=t.base+c.h;
+      if(t.branches)for(const br of t.branches){let da=c.a-br.ang;da=Math.atan2(Math.sin(da),Math.cos(da));if(Math.abs(da)*rr>br.r0+.12){if(c.skip===br)c.skip=null;continue;}
         const hx=t.x+n.x*(rr+.15),hz=t.z+n.z*(rr+.15),by=branchTop(br,hx,hz);
-        if(y>=by-.3&&y<=by+.35){stepOff(hx,by,hz,Math.atan2(n.x,n.z));return;}}
-      if(c.h>=cap-.01){sitOnTip(c,Math.atan2(-n.x,-n.z));return;}}
+        if(c.skip===br){if(!(y>=by-.3&&y<=by+.35))c.skip=null;continue;}
+        if(iy>.3&&y>=by-.3&&y<=by+.35){stepOff(hx,by,hz,Math.atan2(n.x,n.z));return;}}
+      if(iy>.3&&c.h>=cap-.01){sitOnTip(c,Math.atan2(-n.x,-n.z));return;}}
     const gy=terrainH(t.x+n.x*(rr+.1),t.z+n.z*(rr+.1));
     if(c.h+t.base<=gy+.02&&iy<0){PL.climb=null;PL.regrab=.5;PL.pos.set(t.x+n.x*(rr+.18),gy,t.z+n.z*(rr+.18));PL.yaw=Math.atan2(n.x,n.z);return;}
     {const px=t.x+n.x*(br+CLIMB_OFF*gsc),pz=t.z+n.z*(br+CLIMB_OFF*gsc),gy=terrainH(px,pz)+.05*gsc;if(t.base+c.h<gy)c.h=gy-t.base;// never under the slope on the uphill side
@@ -3349,7 +3360,7 @@ applyLang(save.lang||detectLang());applyQuality(QUALITY);placeGeckoAtSpawn();cam
 bootProg(.9);await bootYield();const LT={js:performance.now()};
 // Compile every shader before the menu shows. compileAsync lets the GPU driver compile in parallel (KHR_parallel_shader_compile)
 // while the page keeps painting; the bar creeps on meanwhile. A timeout keeps a stuck driver from blocking the game.
-{const wp=new Poacher(SPAWN.x+2,SPAWN.z+2);const ws=waterSimple&&waterSimple.visible,wm=waterMirror&&waterMirror.visible;if(waterSimple)waterSimple.visible=true;if(waterMirror)waterMirror.visible=true;
+{const wp=new Poacher(SPAWN.x+2,SPAWN.z+2);if(!hawkMesh)hawkMesh=makeHawk();scene.add(hawkMesh.g,hawkMesh.sh);hawkMesh.g.visible=hawkMesh.sh.visible=true;const wb=warmBugs();const ws=waterSimple&&waterSimple.visible,wm=waterMirror&&waterMirror.visible;if(waterSimple)waterSimple.visible=true;if(waterMirror)waterMirror.visible=true;
  for(const f of farTiles)f.m.visible=true;
  // v1.22: compile for the composer's render target. Compiled for the canvas (as before) every program got a different key (tone
  // mapping, colour space) than the one the game really draws with, so all of them were built a second time in the first frame.
@@ -3357,7 +3368,7 @@ bootProg(.9);await bootYield();const LT={js:performance.now()};
  try{await Promise.race([renderer.compileAsync(scene,camera),new Promise(r=>setTimeout(r,6000))]);}catch(e){try{renderer.compile(scene,camera);}catch(e2){}}
  renderer.setRenderTarget(null);
  renderer.shadowMap.needsUpdate=true;
- if(waterSimple)waterSimple.visible=ws;if(waterMirror)waterMirror.visible=wm;wp.dispose();}
+ if(waterSimple)waterSimple.visible=ws;if(waterMirror)waterMirror.visible=wm;wp.dispose();scene.remove(hawkMesh.g,hawkMesh.sh);for(const g of wb)scene.remove(g);}
 // v1.16: the first frames upload every texture and buffer and build the shadow map and post-processing shaders, which froze the
 // screen on 99-100%. Render them behind the loading screen and only fade it out once frames come quickly.
 LT.compile=performance.now();bootProg(.96);await bootYield();
