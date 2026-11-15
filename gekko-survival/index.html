@@ -311,7 +311,7 @@ select.lang{appearance:none;-webkit-appearance:none;padding-right:12px;cursor:po
         <button class="play" id="playBtn" data-i18n="play">Spelen</button>
         <button class="ghost" id="shopBtn"><svg viewBox="0 0 24 24"><path d="M4 15c3-1 4-5 8-5 3 0 4 2 7 1M7 15l-1 3M10 13.5l1 4M15 11l1 4M18 11.5l2 2" stroke="#b9e44f" stroke-width="2" fill="none" stroke-linecap="round"/><circle cx="6" cy="14" r="1" fill="#b9e44f"/></svg><span data-i18n="geckos">Gekko's</span></button>
       </div>
-      <div class="menuFoot"><span class="coinsBig"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="#ffc93c"/><circle cx="12" cy="12" r="7" fill="none" stroke="#c98a12" stroke-width="1.6"/></svg><span id="menuCoins">0</span></span><span id="menuBest"></span><button class="ghost gfx" id="gfxBtn">Graphics</button><select class="ghost gfx lang" id="langSel" data-i18n-aria="language" aria-label="Taal"></select><span class="ver">v1.24</span></div>
+      <div class="menuFoot"><span class="coinsBig"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="#ffc93c"/><circle cx="12" cy="12" r="7" fill="none" stroke="#c98a12" stroke-width="1.6"/></svg><span id="menuCoins">0</span></span><span id="menuBest"></span><button class="ghost gfx" id="gfxBtn">Graphics</button><select class="ghost gfx lang" id="langSel" data-i18n-aria="language" aria-label="Taal"></select><span class="ver">v1.25</span></div>
       <div class="keys" data-i18n-html="keys"><span><kbd>WASD</kbd> lopen</span><span><kbd>Muis</kbd> kijken</span><span><kbd>Shift</kbd> sprinten</span><span><kbd>Spatie</kbd> springen</span><span><kbd>Klik</kbd>/<kbd>E</kbd> tong</span><span><kbd>F</kbd> drinken</span></div>
     </div>
   </div>
@@ -556,6 +556,9 @@ const TIER=(()=>{try{const q=new URLSearchParams(location.search).get('tier');if
     if(/swiftshader|llvmpipe|software|basic render/i.test(r))return 'weak';
     if(/mali|adreno|powervr|videocore/i.test(r))return 'weak';
     if(/intel/i.test(r)&&!/iris|arc\b|xe\b/i.test(r))return 'weak';
+    // v1.25: graphics built into an AMD processor ("AMD Radeon(TM) Graphics", "Radeon Vega 8", "Radeon 680M"; a separate card is called
+    // "Radeon RX ..." or "Radeon Pro ..."). Measured on such a laptop on battery: 21 fps in the full world, 60 in the light one.
+    if(/radeon(\(tm\))?\s*(graphics|vega|r[2-7]\b|\d{3}m\b)/i.test(r))return 'weak';
     if((navigator.hardwareConcurrency||8)<=4&&(navigator.deviceMemory||8)<=4)return 'weak';}catch(e){}
   return 'full';})();
 const LOW=TIER!=='full';
@@ -2320,7 +2323,7 @@ function placeGeckoAtSpawn(){PL.pos.set(SPAWN.x,terrainH(SPAWN.x,SPAWN.z),SPAWN.
 const startStage=()=>clamp(Math.max(save.adult?2:0,save.top||0)-1,0,2);// one stage below the highest stage ever reached, at most Volwassen
 /* v1.17: a new run starts in the area you were in (no trip back to the jungle), and as Jong once you have ever been an adult. */
 async function startGame(){goalEnd=0;endEvent();evNext=85;evLast='';lastGoal='';
-  perfSkip=3;hideBanner();
+  perfSkip=3;perfT=perfAcc=perfN=0;hideBanner();
   AU.init();CFG=MODES[mode];save.mode=mode;persist();const pk=perks();
   endHawk();hawkNext=0;combo=0;comboT=-99;tbSeen={};chainRest=false;
   Object.assign(PL,{tb:100,tbSrc:'',health:pk.health,maxHealth:pk.health,hunger:100,thirst:100,stamina:100,growth:STAGE_AT[startStage()],inv:2,tailT:0,autoD:false,crickets:0,coins:0,time:0,dead:false,regrab:0,drinking:false,seen:false});
@@ -3193,7 +3196,7 @@ buildComposer();
    resolution the "potato" mode halves the shadow work and the plant distance once more. */
 const PR_BASE=()=>Math.min(devicePixelRatio||1,[LOW?1.5:1,1.25,LOW?1.25:1.75][QUALITY]);
 const RES_MIN=()=>LOW&&QUALITY===0?Math.min(1,.7/PR_BASE()):.7,RES_START=()=>LOW&&QUALITY===0?Math.min(1,1/PR_BASE()):1;
-let perfT=0,perfN=0,perfAcc=0,resScale=1,resCap=1,perfSkip=3,perfGood=0,potato=false,justUp=0,fpsSum=0,fpsN=0,fpsSent=false;
+let perfT=0,perfN=0,perfAcc=0,resScale=1,resCap=1,perfSkip=2,perfGood=0,potato=false,justUp=0,fpsSum=0,fpsN=0,fpsSent=false;
 const GFX=['Laag','Hoog','Ultra']; // stable keys for measuring; labels come from the language table
 function applyQuality(q){const was=QUALITY;QUALITY=clamp(q,0,2);if(gtao)gtao.enabled=QUALITY>=2;if(waterMirror){waterMirror.visible=QUALITY>=2;waterSimple.visible=QUALITY<2;}
   if(!applyQuality.init||was!==QUALITY){applyQuality.init=true;resScale=Math.min(resScale,1);if(LOW&&QUALITY===0)resScale=RES_START();resCap=1;}
@@ -3204,12 +3207,20 @@ function applyQuality(q){const was=QUALITY;QUALITY=clamp(q,0,2);if(gtao)gtao.ena
   onResize();for(const id of ['gfxBtn','gfxBtn2'])$(id).textContent=t('gfx')+': '+L().gfxQ[QUALITY];}
 for(const id of ['gfxBtn','gfxBtn2'])$(id).onclick=()=>{AU.init();AU.sfx.click();const q=(QUALITY+1)%3;save.gfx=q;if(q>0){try{localStorage.removeItem('gekko_tier');}catch(e){}}measure('gfx','select',GFX[q].toLowerCase());persist();resScale=1;potato=false;applyQuality(q);perfT=perfAcc=perfN=0;perfSkip=3;};
 function setRes(){const pr=PR_BASE()*resScale;renderer.setPixelRatio(pr);composer.setPixelRatio(pr);renderer.shadowMap.needsUpdate=true;onResize();}
-function adaptQuality(dt){if(perfSkip>0){perfSkip-=dt;return;}perfAcc+=dt;perfN++;perfT+=dt;if(perfT<2.5)return;const avg=perfAcc/perfN;perfT=perfAcc=perfN=0;
-  fpsSum+=1/avg;fpsN++;if(!fpsSent&&fpsN>=12){fpsSent=true;const f=fpsSum/fpsN;measure('fps',TIER+(potato?'-potato':''),f<20?'b0-20':f<30?'b20-30':f<45?'b30-45':f<55?'b45-55':'b55+');measure('res',TIER,'pr'+Math.round(renderer.getPixelRatio()*10));}
+/* v1.25: (1) measures the real time between frames; the smoothed game step is capped at 50 ms, so anything under 20 fps looked like 20.
+   (2) also runs in the menu, with a shorter window, so a slow device is already on a lower level when the first run starts. On a
+   laptop with built-in AMD graphics "Hoog" gave 21 fps and the game took 15 s of play to work its way down.
+   (3) under 30 fps a lower resolution alone cannot reach 48, so it goes straight to the next lower level.
+   A hidden or throttled tab (gap over half a second) and a running ad say nothing about the device and restart the window. */
+function adaptQuality(dt,gap){const menu=state==='menu';
+  if(gap>.5||document.hidden||adBusy){perfT=perfAcc=perfN=0;perfSkip=Math.max(perfSkip,1);return;}
+  if(perfSkip>0){perfSkip-=dt;return;}perfAcc+=dt;perfN++;perfT+=dt;if(perfT<(menu?1.5:2.5))return;const avg=perfAcc/perfN;perfT=perfAcc=perfN=0;
+  if(!menu){fpsSum+=1/avg;fpsN++;}if(!menu&&!fpsSent&&fpsN>=12){fpsSent=true;const f=fpsSum/fpsN;measure('fps',TIER+(potato?'-potato':''),f<20?'b0-20':f<30?'b20-30':f<45?'b30-45':f<55?'b45-55':'b55+');measure('res',TIER,'pr'+Math.round(renderer.getPixelRatio()*10));}
   const rmin=RES_MIN(),slow=avg>1/48,fast=avg<1/57;
   if(slow){if(justUp){resCap=Math.max(rmin,resScale-.15);justUp=0;}perfGood=0;
-    if(resScale>rmin+.01){resScale=Math.max(rmin,resScale-.15);setRes();}
-    else if(QUALITY>0){applyQuality(QUALITY-1);resScale=LOW?RES_START():.85;setRes();measure('gfx','auto-drop',GFX[QUALITY].toLowerCase());if(QUALITY===0&&!LOW){try{localStorage.setItem('gekko_tier','low');}catch(e){}}}
+    const far=QUALITY>0&&avg>1/30;
+    if(!far&&resScale>rmin+.01){resScale=Math.max(rmin,resScale-.15);setRes();}
+    else if(QUALITY>0){const rs=resScale;applyQuality(QUALITY-1);resScale=far?Math.min(rs,RES_START()):LOW?RES_START():.85;setRes();measure('gfx','auto-drop',GFX[QUALITY].toLowerCase());measure('gfx','drop-in',menu?'menu':'play');if(QUALITY===0&&!LOW){try{localStorage.setItem('gekko_tier','low');}catch(e){}}}
     else if(!potato&&avg>1/30){potato=true;applyQuality(0);measure('gfx','auto-drop','potato');}
     perfSkip=1.5;return;}
   if(justUp&&--justUp<=0)justUp=0;// the step up has held for a few windows: it stays
@@ -3222,7 +3233,7 @@ const waitFrames=n=>new Promise(r=>{const s=frameN;const chk=()=>frameN>=s+n?r()
 const settleFrames=()=>new Promise(r=>{const t0=performance.now();let last=t0,ok=0;const chk=t=>{ok=t-last<80?ok+1:0;last=t;if(ok>=2||t-t0>800)r();else requestAnimationFrame(chk);};requestAnimationFrame(chk);});
 function frame(ts){requestAnimationFrame(frame);frameN++;
   {const w=gameEl.clientWidth,h=gameEl.clientHeight;if(w>0&&h>0&&(w!==vw||h!==vh))onResize();}// a missed resize event never leaves the picture stretched
-  const raw=lastTs?Math.min((ts-lastTs)/1000,.1):1/60;lastTs=ts;
+  const gap=lastTs?(ts-lastTs)/1000:0,raw=lastTs?Math.min(gap,.1):1/60;lastTs=ts;
   dtS+=(raw-dtS)*(Math.abs(raw-dtS)>.03?1:.25);const dt=Math.min(dtS,.05);time+=dt;
   if(state==='play'&&!PL.dead)updateGame(dt);
   else if(state==='play'&&PL.dead){updatePoachers(dt);}
@@ -3238,7 +3249,7 @@ function frame(ts){requestAnimationFrame(frame);frameN++;
   for(const g of gates){const on=gateOpen(g);g.portal.material.uniforms.uTime.value=time;g.portal.material.uniforms.uOn.value=on?1:0;g.beam.visible=g.fwd&&on;g.beam.material.uniforms.uTime.value=time;}
   camera.getWorldDirection(_camDir);_sunScr.copy(camera.position).addScaledVector(sunDir,500).project(camera);
   grade.uniforms.uSun.value.set(_sunScr.x*.5+.5,_sunScr.y*.5+.5);grade.uniforms.uSunVis.value=smoothstep(.15,.6,_camDir.dot(sunDir));grade.uniforms.uAspect.value=vw/vh;
-  if(state==='play')adaptQuality(dt);
+  if(state==='play'||state==='menu')adaptQuality(raw,gap);
   {const texel=2*SH/sun.shadow.mapSize.x;_sr.crossVectors(Y,sunDir).normalize();_su.crossVectors(sunDir,_sr);const P=PL.pos;
    const a=Math.round(P.dot(_sr)/texel)*texel,b=Math.round(P.dot(_su)/texel)*texel,d=P.dot(sunDir);
    sun.target.position.copy(_sr).multiplyScalar(a).addScaledVector(_su,b).addScaledVector(sunDir,d);sun.position.copy(sun.target.position).addScaledVector(sunDir,90);}
@@ -3357,7 +3368,7 @@ setTimeout(()=>{$('loading').style.opacity=0;setTimeout(()=>$('loading').remove(
 pokiInit.then(()=>{if(!save.lang&&detectLang()!==lang)applyLang(detectLang());measure('lang',lang,'start');measure('gfx','tier',TIER);Poki.loaded();
   {const b=ms=>{const s=ms/1000;return s<2?'s0-2':s<4?'s2-4':s<6?'s4-6':s<9?'s6-9':s<13?'s9-13':s<20?'s13-20':'s20+';};const end=LT.end;// the moment the loading screen left, not the moment the Poki SDK was ready
    measure('loadtime','total',b(end));measure('loadtime','build',b(LT.js));measure('loadtime','compile',b(LT.compile-LT.js));measure('loadtime','frames',b(end-LT.compile));}measure('screen','menu','visible');onboarding('loaded');});
-window.__gekko={studio:{THREE,Gecko,Poacher,animatePoacher,skinMaterial,SKINS,setScreen},get HAWK(){return HAWK;},startHawk,endHawk,hawkCover,chainState,chainStep,get warmSpots(){return warmSpots;},buildWarmSpots,climate,get combo(){return combo;},knotPress,get gnaw2(){return gnaw;},updateTongue,set tongueQ(v){tongueQ=v;},tongue,LT,hitPlayer,buyUpgrade,get upOffer(){return upOffer;},rockGround,groundBase,get camPos(){return camPos;},get camLook(){return camLook;},eatCricket,newQuest,get quest(){return quest;},get questIdx(){return questIdx;},set questIdx(v){questIdx=v;},startEvent,endEvent,get EVT(){return EVT;},set evLast(v){evLast=v;},gameOver,TIER,get TI(){return TI;},step:(dt,n)=>{for(let i=0;i<n;i++){updateGame(dt);updateCamp(dt);updateCrickets(dt);}},get gnaw(){return gnaw;},get camoQ(){return camoQ;},set camoQ(v){camoQ=v;},updateCamera,smoothVisual,setCamo,mmIcon,drawMinimap,get NESTp(){return NEST;},setupCrickets,normalFromCanvas,cages,get CAMP(){return CAMP;},get NEST(){return NEST;},save,finale,renderShop,setShopTab:v=>{shopTab=v;},travel,buildWorld,gates,AREAS,get areaIdx(){return areaIdx;},get SPAWN(){return SPAWN;},stageIdx,PL,renderer,scene,updatePlayer,treeRadius,trunkR,rockTop,footSurf,climbSurf,updateClimb,get rockGrid(){return rockGrid;},ripples,get LAKES(){return LAKES;},groundAt,poachers,crickets,trees,boxes,rocks,startGame,setMode:m=>{mode=m;},get state(){return state;},camera,gecko,keys,get camYaw(){return camYaw;},set camYaw(v){camYaw=v;},set camPitch(v){camPitch=v;},set camDist(v){camDist=v;}};
+window.__gekko={studio:{THREE,Gecko,Poacher,animatePoacher,skinMaterial,SKINS,setScreen},get HAWK(){return HAWK;},startHawk,endHawk,hawkCover,chainState,chainStep,get warmSpots(){return warmSpots;},buildWarmSpots,climate,get combo(){return combo;},knotPress,get gnaw2(){return gnaw;},updateTongue,set tongueQ(v){tongueQ=v;},tongue,LT,hitPlayer,buyUpgrade,get upOffer(){return upOffer;},rockGround,groundBase,get camPos(){return camPos;},get camLook(){return camLook;},eatCricket,newQuest,get quest(){return quest;},get questIdx(){return questIdx;},set questIdx(v){questIdx=v;},startEvent,endEvent,get EVT(){return EVT;},set evLast(v){evLast=v;},gameOver,TIER,adaptQuality,get QUALITY(){return QUALITY;},get resScale(){return resScale;},get TI(){return TI;},step:(dt,n)=>{for(let i=0;i<n;i++){updateGame(dt);updateCamp(dt);updateCrickets(dt);}},get gnaw(){return gnaw;},get camoQ(){return camoQ;},set camoQ(v){camoQ=v;},updateCamera,smoothVisual,setCamo,mmIcon,drawMinimap,get NESTp(){return NEST;},setupCrickets,normalFromCanvas,cages,get CAMP(){return CAMP;},get NEST(){return NEST;},save,finale,renderShop,setShopTab:v=>{shopTab=v;},travel,buildWorld,gates,AREAS,get areaIdx(){return areaIdx;},get SPAWN(){return SPAWN;},stageIdx,PL,renderer,scene,updatePlayer,treeRadius,trunkR,rockTop,footSurf,climbSurf,updateClimb,get rockGrid(){return rockGrid;},ripples,get LAKES(){return LAKES;},groundAt,poachers,crickets,trees,boxes,rocks,startGame,setMode:m=>{mode=m;},get state(){return state;},camera,gecko,keys,get camYaw(){return camYaw;},set camYaw(v){camYaw=v;},set camPitch(v){camPitch=v;},set camDist(v){camDist=v;}};
 </script>
 </body>
 </html>
