@@ -736,10 +736,12 @@ function updateDoors(dt){for(const d of DOORS){if(d.f!==p.f&&d.a===d.t)continue;
 
 // ================= realistic people (Microsoft Rocketbox avatars, MIT licence) =================
 const PEOPLE={ready:false,protos:[],clips:{f:{},m:{}},pool:[],t:0,max:TOUCH?18:36};
+// on GitHub Pages the models sit next to the game; elsewhere (e.g. the Claude artifact) they come from the repo via jsDelivr
+const PB=/github\.io$|^local(host)?$/.test(location.hostname)?'people/':'https://cdn.jsdelivr.net/gh/DaanBaard/games@main/docentenleven/people/';
 const AVATARS=['f01','m09','f05','m12','f08','m16','f12','m17','f14','m06'];
-async function loadPeople(){try{const L=new GLTFLoader();const [af,am]=await Promise.all([L.loadAsync('people/anim_f.glb'),L.loadAsync('people/anim_m.glb')]);
+async function loadPeople(){try{const L=new GLTFLoader();const [af,am]=await Promise.all([L.loadAsync(PB+'anim_f.glb'),L.loadAsync(PB+'anim_m.glb')]);
   for(const [k,g] of [['f',af],['m',am]])for(const c of g.animations){if(c.name==='run'){for(const t of c.tracks)if(t.name==='Bip01.position'){const v=t.values;for(let i=3;i<v.length;i+=3){v[i]=v[0];v[i+2]=v[2];}}}PEOPLE.clips[k][c.name]=c;}
-  for(const n of AVATARS){const g=await L.loadAsync('people/'+n+'.glb');g.scene.traverse(m=>{if(m.isMesh){m.castShadow=false;m.receiveShadow=true;m.frustumCulled=false;if(m.material){m.material.envMapIntensity=0.6;}}});PEOPLE.protos.push({scene:g.scene,sex:n[0]});
+  for(const n of AVATARS){const g=await L.loadAsync(PB+n+'.glb');g.scene.traverse(m=>{if(m.isMesh){m.castShadow=false;m.receiveShadow=true;m.frustumCulled=false;if(m.material){m.material.envMapIntensity=0.6;}}});PEOPLE.protos.push({scene:g.scene,sex:n[0]});
     if(PEOPLE.protos.length===4&&!PEOPLE.ready){PEOPLE.ready=true;ALLF.forEach(f=>F[f].pg.visible=false);chaserAvatar();}}
   if(!PEOPLE.ready&&PEOPLE.protos.length){PEOPLE.ready=true;ALLF.forEach(f=>F[f].pg.visible=false);chaserAvatar();}
 }catch(e){console.warn('people not loaded',e);}}
