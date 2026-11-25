@@ -130,7 +130,7 @@ button:disabled{opacity:.35;cursor:not-allowed}
         <span class="key">M</span><span>plattegrond per verdieping</span>
         <span class="key">!</span><span>krijg je een melding dat een boze student achter je aan zit? Ren (Shift) naar de 9e verdieping, daar ben je veilig.</span>
       </div>
-      <div class="row"><button class="primary" id="b-start" type="button">Begin de zoektocht</button><span class="note">Op telefoon: joystick links, veeg rechts om te kijken. · v6</span></div>
+      <div class="row"><button class="primary" id="b-start" type="button">Begin de zoektocht</button><span class="note">Op telefoon: joystick links, veeg rechts om te kijken. · v7</span></div>
     </div>
   </div>
 </div>
@@ -492,7 +492,7 @@ const SEGS=[
   {id:'front',axis:'x',c:9,a0:-38,a1:38,out:1,ry:0,fl:R10},{axis:'x',c:9,a0:-48,a1:-38,out:1,ry:0,fl:RT},{axis:'x',c:9,a0:38,a1:48,out:1,ry:0,fl:RT},
   {axis:'x',c:12,a0:-48,a1:-38,out:1,ry:0,fl:R7},{axis:'x',c:12,a0:38,a1:48,out:1,ry:0,fl:R7},
   {axis:'z',c:-38,a0:9,a1:12,out:1,ry:Math.PI/2,fl:R7},{axis:'z',c:38,a0:9,a1:12,out:-1,ry:-Math.PI/2,fl:R7},
-  {axis:'x',c:-9,a0:-38,a1:38,out:-1,ry:Math.PI,fl:R10},{axis:'x',c:-9,a0:-48,a1:-38,out:-1,ry:Math.PI,fl:RT},{axis:'x',c:-9,a0:38,a1:48,out:-1,ry:Math.PI,fl:RT},
+  {id:'back',axis:'x',c:-9,a0:-38,a1:38,out:-1,ry:Math.PI,fl:R10},{axis:'x',c:-9,a0:-48,a1:-38,out:-1,ry:Math.PI,fl:RT},{axis:'x',c:-9,a0:38,a1:48,out:-1,ry:Math.PI,fl:RT},
   {axis:'x',c:-12,a0:-48,a1:-38,out:-1,ry:Math.PI,fl:R7},{axis:'x',c:-12,a0:38,a1:48,out:-1,ry:Math.PI,fl:R7},
   {axis:'z',c:-38,a0:-12,a1:-9,out:1,ry:Math.PI/2,fl:R7},{axis:'z',c:38,a0:-12,a1:-9,out:-1,ry:-Math.PI/2,fl:R7},
   {axis:'z',c:-48,a0:-12,a1:12,out:-1,ry:-Math.PI/2,fl:R7},{axis:'z',c:-48,a0:-9,a1:9,out:-1,ry:-Math.PI/2,fl:RT},
@@ -528,7 +528,7 @@ function buildFacade(){
   for(const s of SEGS){
     for(const f of s.fl){if(!REAL.has(f))continue;
       const opt={};
-      if(f===0&&s.id==='front'){opt.skipWin=a=>Math.abs(a)<2.3;opt.skipPier=a=>Math.abs(a)<0.5;}
+      if(f===0&&(s.id==='front'||s.id==='back')){opt.skipWin=a=>Math.abs(a)<2.3;opt.skipPier=a=>Math.abs(a)<0.5;}
       facadeFloor(s,f,opt);}
     // painted floors in runs
     const painted=s.fl.filter(f=>!REAL.has(f));if(!painted.length)continue;
@@ -546,7 +546,19 @@ function buildFacade(){
       col(f,-48.25,-12,-47.8,12,'w');col(f,47.8,-12,48.25,12,'w');}
     else{col(f,-48,8.8,48,9.25,'w');col(f,-48,-9.25,48,-8.8,'w');col(f,-48.25,-9,-47.8,9,'w');col(f,47.8,-9,48.25,9,'w');}
   }
-  F[0].rects=F[0].rects.filter(r=>!(r.z0===8.8&&r.x0===-38));col(0,-38,8.8,-1.94,9.25,'w');col(0,1.94,8.8,38,9.25,'w');
+  F[0].rects=F[0].rects.filter(r=>!((r.z0===8.8||r.z0===-9.25)&&r.x0===-38&&r.x1===38));col(0,-38,8.8,-1.94,9.25,'w');col(0,1.94,8.8,38,9.25,'w');col(0,-38,-9.25,-1.94,-8.8,'w');col(0,1.94,-9.25,38,-8.8,'w');
+  // since 1997 the entrance is at the back, on the Kohnstammhof; the old street doors stay shut
+  col(0,-1.94,7.45,1.94,7.75,'w');
+  sign(shell,plainText([{t:'Ingang aan de achterzijde',s:52},{t:'via de Kohnstammhof (om het gebouw heen)',s:34,b:false}],{bg:'#1d1f5e',w:768,h:200}),1.5,0.39,0,1.55,7.67,0);
+  B(shell,mat.conc,-1.94,0,-8.3,0.2,3.0,1.4);B(shell,mat.conc,1.94,0,-8.3,0.2,3.0,1.4);col(0,-2.1,-9.1,-1.8,-7.6,'w');col(0,1.8,-9.1,2.1,-7.6,'w');B(shell,mat.conc,0,2.9,-8.3,4.1,0.7,1.4);
+  for(const x of [-1.95,1.95]){B(shell,mat.glass,x*0.62,0,-7.62,0.02,2.6,1.4*0+0.02);}
+  B(shell,mat.dark,0,0.003,-8.4,3.8,0.01,2.2);
+  // luifel (canopy) over the entrance, on slender columns
+  B(shell,mat.conc,0,3.3,-11.2,9,0.28,4.4);B(shell,mat.frame,0,3.28,-13.38,9,0.34,0.06);
+  for(const x of [-4.2,4.2]){P('cyl',shell,mat.steelDark,x,0,-13.0,0.16,3.3,0.16);col(0,x-0.12,-13.12,x+0.12,-12.88,'w');}
+  for(let x=-3.5;x<=3.5;x+=1.75)B(shell,mat.light,x,3.27,-11.2,1.2,0.02,0.5);
+  sign(shell,plainText([{t:'KOHNSTAMMHUIS',s:92}],{bg:'#2d2f33',fg:'#f2e7c9',w:1024,h:128}),3.6,0.45,0,3.44,-13.42,Math.PI,false);
+  sign(shell,plainText([{t:'Ingang',s:70},{t:'Hogeschool van Amsterdam',s:34,b:false}],{bg:'#1d1f5e',w:512,h:200}),1.0,0.39,3.0,1.75,-9.06,Math.PI);
   // entrance portal: recessed doors, concrete surround, coats of arms
   B(shell,mat.conc,-1.94,0,8.3,0.2,3.0,1.4);B(shell,mat.conc,1.94,0,8.3,0.2,3.0,1.4);col(0,-2.1,7.6,-1.8,9.1,'w');col(0,1.8,7.6,2.1,9.1,'w');
   B(shell,mat.conc,0,2.9,8.3,4.1,0.7,1.4);
@@ -905,13 +917,20 @@ function buildOutside(){
   P('cyl',g,mat.steelDark,60,0,14.9,0.08,2.8,0.08);sign(g,plainText([{t:'Wibautstraat',s:58}],{bg:'#e9e9e9',fg:'#c0392b',w:512,h:110}),1.2,0.26,60,2.7,14.95,0);col(0,59.9,14.8,60.1,15);
   // Theo Thijssenhuis (1970, white, five storeys) behind the north end, with the Kohnstammhof square
   const ann=cvs(128,288,(q)=>{q.fillStyle='#ecebe6';q.fillRect(0,0,128,288);q.fillStyle='#2f3c47';q.fillRect(0,64,128,144);q.fillStyle='#d4d3cd';q.fillRect(0,58,128,6);q.fillStyle='#9aa4ab';q.fillRect(62,64,4,144);});
-  const aM=(r)=>LM({map:tex(ann,r,5)});
-  const anx=new THREE.Mesh(new THREE.BoxGeometry(30,18,26),[aM(16),aM(16),L(0xd9d8d2),L(0xd9d8d2),aM(19),aM(19)]);anx.position.set(-31,9,-28);anx.castShadow=anx.receiveShadow=true;g.add(anx);
+  const aM=(r)=>LM({map:tex(ann,r,7)});
+  const anx=new THREE.Mesh(new THREE.BoxGeometry(30,25.2,26),[aM(16),aM(16),L(0xd9d8d2),L(0xd9d8d2),aM(19),aM(19)]);anx.position.set(-31,12.6,-28);
+  for(let k=4;k<7;k++){const y=k*FH;B(g,mat.conc,-30,y,-12.05,4.4,0.3,5.9);B(g,mat.glass,-30,y+0.3,-12.05,4.2,3.0,5.7);B(g,mat.frame,-32.15,y+0.3,-12.05,0.08,3.0,5.9);B(g,mat.frame,-27.85,y+0.3,-12.05,0.08,3.0,5.9);}
+  B(g,mat.conc,-30,7*FH,-12.05,4.4,0.3,5.9);anx.castShadow=anx.receiveShadow=true;g.add(anx);
   sign(g,plainText([{t:'THEO THIJSSENHUIS',s:70}],{bg:'#ecebe6',fg:'#1d1f5e',w:1024,h:110}),6,0.65,-31,3.9,-14.98,0);col(0,-46.2,-41.2,-15.8,-14.8);
   sign(g,plainText([{t:'Kohnstammhof',s:56}],{bg:'#1d1f5e',w:512,h:96}),1.3,0.24,-6,2.2,-14.9,0);P('cyl',g,mat.steelDark,-6,0,-15,0.06,2.1,0.06);
   const studio=new THREE.Mesh(new THREE.BoxGeometry(9,3.4,6),[mat.glass,mat.glass,L(0x2d2f33),L(0x2d2f33),mat.glass,mat.glass]);studio.position.set(2,1.7,-27);g.add(studio);B(g,mat.frame,2,3.4,-27,9.2,0.25,6.2);
   sign(g,plainText([{t:'Studio HvA',s:64}],{w:512,h:110}),1.8,0.38,2,2.7,-23.98,0);col(0,-2.6,-30.1,6.6,-23.9);
-  for(const [x,z] of [[-8,-22],[12,-20],[12,-34],[-8,-36],[24,-28]]){tree(g,x,z,0.9);col(0,x-0.2,z-0.2,x+0.2,z+0.2);}
+  const voidM=L(0x1c1d20,{roughness:1});
+  for(const [x,z] of [[-8,-21],[12,-20],[20,-33]]){flat(g,x-2.2,x+2.2,z-1.6,z+1.6,0.03,voidM);
+    for(const [a,b,c,d] of [[x-2.2,x+2.2,z-1.6,z-1.6],[x-2.2,x+2.2,z+1.6,z+1.6],[x-2.2,x-2.2,z-1.6,z+1.6],[x+2.2,x+2.2,z-1.6,z+1.6]]){const along=b-a>0.1;B(g,mat.steel,(a+b)/2,1.0,(c+d)/2,along?b-a:0.05,0.05,along?0.05:d-c);B(g,mat.glassIn,(a+b)/2,0,(c+d)/2,along?b-a:0.02,1.0,along?0.02:d-c);}
+    col(0,x-2.25,z-1.65,x+2.25,z+1.65,'w');tree(g,x-0.9,z-0.3,0.95);tree(g,x+1.0,z+0.4,0.8);}
+  for(const [x,z] of [[-8,-36],[26,-22]]){tree(g,x,z,0.9);col(0,x-0.2,z-0.2,x+0.2,z+0.2);}
+  sign(g,plainText([{t:'P  Q-Park Kohnstammhof',s:52}],{bg:'#1d5aa6',w:768,h:110}),1.8,0.26,30,2.4,-14.9,0);P('cyl',g,mat.steelDark,30,0,-15,0.08,2.3,0.08);
   for(const x of [-12,16]){B(g,mat.wood,x,0,-18,3,0.45,0.6);col(0,x-1.5,-18.3,x+1.5,-17.7);}
   // the other side of the Wibautstraat
   const pal2=['#6f5a47','#7a6450','#655140','#80694f'];
@@ -949,7 +968,7 @@ function setupPiles(){
 }
 
 // ================= player & input =================
-const P0={x:0,z:16.5,f:0,yaw:0,pitch:0.08,gy:0,jy:0,vy:0};
+const P0={x:0,z:-18.5,f:0,yaw:Math.PI,pitch:0.1,gy:0,jy:0,vy:0};
 const p=Object.assign({},P0);
 const keys={};let locked=false;let state='start';let gameT=0;let found=0;let menuOpen=false;let lateShown=false;
 const isTouch=('ontouchstart' in window)||navigator.maxTouchPoints>0;
@@ -1187,7 +1206,7 @@ function loop(now){const dt=Math.min(0.05,(now-last)/1000);last=now;frame++;
   shadowFollow(p.x,p.f*FH,p.z);if(state==='play')adapt(dt);composer.render();requestAnimationFrame(loop);}
 
 function reset(){if(ch.on)endChase();if(rat.on)removeRat();ratsCaught=0;rat.next=55;ch.next=95;Object.assign(p,P0);gameT=0;found=0;lateShown=false;$('clock').classList.remove('late');setupPiles();renderSlots();renderAgenda();updateVis();}
-$('b-start').onclick=()=>{hide('ov-start');state='play';$('btns').hidden=false;if(isTouch){joy.hidden=false;$('actbtn').hidden=false;$('jumpbtn').hidden=false;}else lock();toast('Je staat op de Wibautstraat. Loop naar de ingang en open je agenda (N).');};
+$('b-start').onclick=()=>{hide('ov-start');state='play';$('btns').hidden=false;if(isTouch){joy.hidden=false;$('actbtn').hidden=false;$('jumpbtn').hidden=false;}else lock();toast('Je staat op de Kohnstammhof, achter het gebouw. De ingang is onder de luifel. Open je agenda (N).');};
 $('b-again').onclick=()=>{hide('ov-end');reset();state='play';if(!isTouch)lock();};
 reset();
 [0,1,2,3,4].forEach((f,i)=>setTimeout(()=>grid(f),2500+i*500));// build the chase grids while the start screen is up
