@@ -130,7 +130,7 @@ button:disabled{opacity:.35;cursor:not-allowed}
         <span class="key">M</span><span>plattegrond per verdieping</span>
         <span class="key">!</span><span>krijg je een melding dat een boze student achter je aan zit? Ren (Shift) naar de 9e verdieping, daar ben je veilig.</span>
       </div>
-      <div class="row"><button class="primary" id="b-start" type="button">Begin de zoektocht</button><span class="note">Op telefoon: joystick links, veeg rechts om te kijken. · v8</span></div>
+      <div class="row"><button class="primary" id="b-start" type="button">Begin de zoektocht</button><span class="note">Op telefoon: joystick links, veeg rechts om te kijken. · v9</span></div>
     </div>
   </div>
 </div>
@@ -246,7 +246,8 @@ addEventListener('resize',()=>{renderer.setSize(innerWidth,innerHeight);camera.a
 
 const FH=3.6, CEIL=3.3, WT=0.16;const FH0=FH;
 const FLOORS=[0,1,2,3,4,9];
-const F={};FLOORS.forEach(i=>{F[i]={g:new THREE.Group(),rects:[],rooms:[],inter:[],spots:[],toilets:[]};scene.add(F[i].g);});
+const ALLF=[0,1,2,3,4,5,6,7,8,9],SFL=[5,6,7,8];
+const F={};ALLF.forEach(i=>{F[i]={g:new THREE.Group(),rects:[],rooms:[],inter:[],spots:[],toilets:[]};scene.add(F[i].g);});
 const shell=new THREE.Group();scene.add(shell);
 let seed=11;const rnd=()=>{seed=(seed*16807)%2147483647;return (seed-1)/2147483646;};
 const pick=a=>a[Math.floor(rnd()*a.length)];
@@ -326,7 +327,7 @@ for(const [m,r,mt] of [[mat.steel,0.32,0.75],[mat.steelDark,0.4,0.6],[mat.copier
 Object.assign(mat.glass,{roughness:0.06,metalness:0.25,envMapIntensity:1.4});Object.assign(mat.glassIn,{roughness:0.05,envMapIntensity:1.2});
 mat.skin.forEach(m=>m.roughness=0.6);mat.hair.forEach(m=>m.roughness=0.7);
 mat.iron=L(0x18191b,{roughness:0.45,metalness:0.5});mat.navyRail=L(0x22306b,{roughness:0.4,metalness:0.3});mat.bench=L(0x1e1f22,{roughness:0.7});mat.yellowSeat=L(0xe9b42a,{roughness:0.8});
-mat.lampWarm=new THREE.MeshBasicMaterial({color:new THREE.Color(3.2,2.5,1.5)});mat.sconce=new THREE.MeshBasicMaterial({color:new THREE.Color(3.4,2.5,0.9)});mat.dome=new THREE.MeshBasicMaterial({color:new THREE.Color(2.6,2.1,1.2)});
+mat.lampWarm=new THREE.MeshBasicMaterial({color:new THREE.Color(3.2,2.5,1.5)});mat.vacant=new THREE.MeshBasicMaterial({color:new THREE.Color(0.3,2.2,0.6)});mat.callBtn=new THREE.MeshBasicMaterial({color:new THREE.Color(3.0,1.4,0.4)});mat.cabin=L(0xb9bcc0,{metalness:0.85,roughness:0.32});mat.mirror=L(0xc4cacf,{metalness:0.7,roughness:0.22});mat.liftDoor=L(0xb3b7bc,{metalness:0.9,roughness:0.28});mat.cubicle=L(0x2f6f73,{roughness:0.45});mat.porcelain=L(0xfbfbf8,{roughness:0.12});mat.seat=L(0xf2f2ee,{roughness:0.3});mat.sconce=new THREE.MeshBasicMaterial({color:new THREE.Color(3.4,2.5,0.9)});mat.dome=new THREE.MeshBasicMaterial({color:new THREE.Color(2.6,2.1,1.2)});
 mat.piano=L(0x0d0d0f,{roughness:0.15,metalness:0.1});mat.white.roughness=0.45;
 // rough natural stone of the street-side plinth, and grilled basement windows
 const plinthC=cvs(256,128,(g,w,h)=>{g.fillStyle='#6b6862';g.fillRect(0,0,w,h);for(let r=0;r<3;r++){const bh=h/3,off=(r%2)*40;for(let x=-off;x<w;x+=80){g.fillStyle=pick(['#8f8c84','#a29f96','#97948c','#8a877f','#9d998f']);g.fillRect(x+2,r*bh+2,76,bh-4);for(let i=0;i<260;i++){g.fillStyle=`rgba(${rnd()<.5?0:255},${rnd()<.5?0:255},${rnd()<.5?0:255},${0.05+rnd()*0.06})`;g.fillRect(x+2+rnd()*74,r*bh+2+rnd()*(bh-4),2,2);}}}});
@@ -373,12 +374,16 @@ function doorZ(f,a,b,x,face,code,name){const y=f*FH,g=F[f].g;
   B(g,mat.frame,x,y,a,WT+0.04,2.25,0.06);B(g,mat.frame,x,y,b,WT+0.04,2.25,0.06);B(g,mat.frame,x,y+2.2,(a+b)/2,WT+0.04,0.06,b-a);
   B(g,mat.woodDark,x-face*0.5,y,a+0.03,0.95,2.15,0.045);
   if(code)sign(g,signTex(code,name),0.44,0.22,x+face*(WT/2+0.012),y+1.62,b+0.35,face>0?Math.PI/2:-Math.PI/2);}
-function ceilLights(f,x0,x1,z0,z1,step=2.4,yTop){const y=yTop!==undefined?yTop:f*FH+CEIL;const g=F[f].g;for(let x=x0+step/2;x<x1-0.3;x+=step)for(let z=z0+step/2;z<z1-0.3;z+=step)if(inside(x,z))B(g,mat.light,x,y-0.025,z,1.18,0.02,0.58);}
-function ceiling(f,x0,x1,z0,z1,y){clipF(f,x0,x1,z0,z1,(a,b,c,d)=>plane(F[f].g,a,b,c,d,y!==undefined?y:f*FH+CEIL,T.ceil,0.6,true));}
+function ceilLights(f,x0,x1,z0,z1,step=2.4,yTop){const y=yTop!==undefined?yTop:f*FH+CEIL;const g=F[f].g;for(let x=x0+step/2;x<x1-0.3;x+=step)for(let z=z0+step/2;z<z1-0.3;z+=step)if(inside(x,z)&&!(f<=8&&x>HOLE[0]&&x<HOLE[1]&&z>HOLE[2]&&z<HOLE[3]))B(g,mat.light,x,y-0.025,z,1.18,0.02,0.58);}
+function ceiling(f,x0,x1,z0,z1,y){clipF(f,x0,x1,z0,z1,(a,b,c,d)=>plane(F[f].g,a,b,c,d,y!==undefined?y:f*FH+CEIL,T.ceil,0.6,true),f<=8);}
 // building outline helpers
 const FOOT=[[-38,38,-9,9],[-48,-38,-12,7],[38,48,-12,7]],FOOT9=[[-38,38,-9,9],[-48,-38,-9,7],[38,48,-9,7]];const FP=f=>f<=6?FOOT:FOOT9;
-function clipF(f,x0,x1,z0,z1,cb){for(const [a,b,c,d] of FP(f)){const xa=Math.max(a,x0),xb=Math.min(b,x1),za=Math.max(c,z0),zb=Math.min(d,z1);if(xb-xa>0.01&&zb-za>0.01)cb(xa,xb,za,zb);}}
-function fplane(g,f,x0,x1,z0,z1,y,base,tile){clipF(f,x0,x1,z0,z1,(a,b,c,d)=>plane(g,a,b,c,d,y,base,tile));}
+// the stair flights pass through every floor here: floors (from 1 up) and ceilings (up to 8) get a hole
+const HOLE=[14,20,-9,-3.3];
+function cutHole(a,b,c,d){const [h0,h1,h2,h3]=HOLE;if(b<=h0||a>=h1||d<=h2||c>=h3)return [[a,b,c,d]];const r=[];if(a<h0)r.push([a,h0,c,d]);if(b>h1)r.push([h1,b,c,d]);const xa=Math.max(a,h0),xb=Math.min(b,h1);if(c<h2)r.push([xa,xb,c,h2]);if(d>h3)r.push([xa,xb,h3,d]);return r;}
+function clipF(f,x0,x1,z0,z1,cb,hole){for(const [a,b,c,d] of FP(f)){const xa=Math.max(a,x0),xb=Math.min(b,x1),za=Math.max(c,z0),zb=Math.min(d,z1);if(xb-xa>0.01&&zb-za>0.01)for(const q of (hole?cutHole(xa,xb,za,zb):[[xa,xb,za,zb]]))if(q[1]-q[0]>0.01&&q[3]-q[2]>0.01)cb(...q);}}
+function slabs(g,f,rects){for(const [a,b,c,d] of rects)for(const q of (f>=1?cutHole(a,b,c,d):[[a,b,c,d]]))B(g,mat.wall,(q[0]+q[1])/2,f*FH-0.32,(q[2]+q[3])/2,q[1]-q[0],0.3,q[3]-q[2]);}
+function fplane(g,f,x0,x1,z0,z1,y,base,tile){clipF(f,x0,x1,z0,z1,(a,b,c,d)=>plane(g,a,b,c,d,y,base,tile),f>=1);}
 const inside=(x,z)=>(x>-38&&x<38&&z>-9&&z<9)||(Math.abs(x)>=38&&Math.abs(x)<48&&z>-12&&z<7);
 
 // ================= furniture =================
@@ -456,10 +461,24 @@ function furnish(f,r,type,cw,dir,code,flag){
   } else if(type==='toilet'){
     plane(g,r.x0,r.x1,zlo,zhi,y+0.006,T.tiles,1.2);
     const n=Math.floor((w-0.4)/1.15);const sd=Math.min(depth-2.6,2.2);const z1=far-dir*sd;
-    for(let i=0;i<=n;i++){const x=r.x0+0.2+i*1.15;B(g,mat.wallAccent,x,y,(z1+far)/2,0.04,2.1,sd);}
-    B(g,mat.wallAccent,mx,y,z1,w-0.3,2.1,0.04);
-    for(let i=0;i<n;i++){const x=r.x0+0.2+i*1.15+0.575,zb=far-dir*0.6;P('cap',g,mat.white,x,y,zb,0.36,0.4,0.5);Q('tor',g,mat.white,x,y+0.42,zb,0.95,1.3,0.95,Math.PI/2,0);P('rb',g,mat.white,x,y+0.38,far-dir*0.17,0.42,0.48,0.2);B(g,mat.woodDark,x,y,z1,0.95,2.0,0.05);F[f].toilets.push({x,zb,zo:z1-dir*0.5,dir});}
-    col(f,r.x0,z1-dir*0.05,r.x1,far,'w');
+    for(let i=0;i<=n;i++){const x=r.x0+0.2+i*1.15;B(g,mat.cubicle,x,y+0.12,(z1+far)/2,0.04,1.98,sd);P('cyl',g,mat.steel,x,y,z1,0.04,0.12,0.04);col(f,x-0.03,Math.min(z1,far),x+0.03,Math.max(z1,far),'w');}
+    for(let i=0;i<n;i++){const x=r.x0+0.2+i*1.15+0.575,zb=far-dir*0.62,zi=far-dir*0.17;
+      for(const u of [-1,1]){const xc=x+u*0.4625;B(g,mat.cubicle,xc,y+0.12,z1,0.225,1.98,0.04);col(f,xc-0.1125,z1-0.03,xc+0.1125,z1+0.03,'w');}
+      B(g,mat.steel,x,y+2.1,z1,1.15,0.04,0.06);
+      // wall-hung toilet: bowl, seat, raised lid, concealed cistern panel with flush plate, paper roll
+      B(g,mat.tileWall||mat.white,x,y,far-dir*0.1,0.8,1.15,0.2);B(g,mat.steel,x,y+0.98,far-dir*0.205,0.22,0.14,0.012);
+      P('sph',g,mat.porcelain,x,y+0.2,zb+dir*0.04,0.4,0.3,0.56);B(g,mat.porcelain,x,y+0.25,far-dir*0.28,0.3,0.18,0.22);
+      Q('tor',g,mat.seat,x,y+0.45,zb,0.92,1.28,0.95,Math.PI/2,0);Q('rb',g,mat.seat,x,y+0.68,far-dir*0.24,0.4,0.46,0.03,-dir*0.12,0,0);
+      Q('cyl',g,mat.white,x+0.45,y+0.72,zb-dir*0.25,0.11,0.11,0.11,0,0,Math.PI/2);B(g,mat.steel,x+0.53,y+0.72,zb-dir*0.25,0.02,0.04,0.12);
+      col(f,x-0.24,Math.min(far,zb-dir*0.35),x+0.24,Math.max(far,zb-dir*0.35));
+      const closed={x0:x-0.35,x1:x+0.35,z0:z1-0.03,z1:z1+0.03,k:'w'},opened={x0:x-0.38,x1:x-0.32,z0:Math.min(z1,z1+dir*0.7),z1:Math.max(z1,z1+dir*0.7),k:'w'};
+      const rect=Object.assign({},closed);F[f].rects.push(rect);
+      const piv=doorMesh(f,mat.cubicle,0.7,1.98,0.04,x-0.35,y+0.12,z1,0.35);
+      const ind=new THREE.Mesh(geos.box,mat.vacant);ind.scale.set(0.05,0.03,0.05);ind.position.set(0.62,1.0,0);piv.add(ind);
+      const d={f,a:0,t:0,kind:'wc',rect,closed,opened,upd(d){piv.rotation.y=-dir*d.a*1.7;}};DOORS.push(d);
+      const lab={get label(){return d.t?'Wc-deur sluiten':'Wc-deur openen';},act:()=>toggleDoor(d)};
+      F[f].inter.push(Object.assign(Object.create(lab),{x,z:z1-dir*0.55,r:0.95}),Object.assign(Object.create(lab),{x,z:z1+dir*0.5,r:0.75}));
+      F[f].toilets.push({x,zb,zo:z1-dir*0.5,dir,door:d});}
     for(let i=0;i<3;i++){const x=r.x0+1.6+i*1.0;B(g,mat.white,x,y+0.8,cw+dir*0.35,0.5,0.12,0.4);B(g,mat.glassIn,x,y+1.2,cw+dir*0.11,0.6,0.8,0.01);}
     ceilLights(f,r.x0,r.x1,zlo,zhi,3);
   } else if(type==='kopie'||type==='repro'){
@@ -629,35 +648,94 @@ function buildFacade(){
   B(shell,mat.roof,0,yc+1.4,0,28,0.3,18);
 }
 
+// ================= moving doors (lifts, toilet cubicles) =================
+const DOORS=[];
+function doorMesh(f,m,w,h,d,px,py,pz,ox){const piv=new THREE.Group();piv.position.set(px,py,pz);const me=new THREE.Mesh(geos.box,m);me.scale.set(w,h,d);me.position.set(ox,h/2,0);me.receiveShadow=true;piv.add(me);F[f].g.add(piv);return piv;}
+function liftCabin(f,lx){const y=f*FH,g=F[f].g,zf=-1.2-WT/2,zb=-2.85;
+  plane(g,lx-0.6,lx+0.6,zb,zf,y+0.012,T.anth||T.tiles,1);
+  B(g,mat.cabin,lx-0.64,y,(zf+zb)/2,0.06,2.4,zf-zb);B(g,mat.cabin,lx+0.64,y,(zf+zb)/2,0.06,2.4,zf-zb);B(g,mat.cabin,lx,y,zb-0.03,1.34,2.4,0.06);
+  B(g,mat.mirror,lx,y+0.95,zb+0.005,1.0,1.2,0.01);B(g,mat.cabin,lx,y+2.4,(zf+zb)/2,1.34,0.05,zf-zb+0.06);B(g,mat.lampWarm,lx,y+2.37,(zf+zb)/2,0.9,0.02,1.2);
+  Q('cyl',g,mat.steel,lx,y+0.92,zb+0.06,0.035,1.0,0.035,0,0,Math.PI/2);
+  B(g,mat.dark,lx+0.6,y+0.9,-1.7,0.02,0.5,0.18);for(let k=0;k<5;k++)B(g,mat.callBtn,lx+0.59,y+0.97-k*0.09,-1.7,0.01,0.035,0.035);
+  col(f,lx-0.7,zb,lx-0.6,zf);col(f,lx+0.6,zb,lx+0.7,zf);col(f,lx-0.7,zb-0.1,lx+0.7,zb);
+  const rect={x0:lx-0.6,x1:lx+0.6,z0:-1.24,z1:-1.16,k:'w'};F[f].rects.push(rect);
+  const L=doorMesh(f,mat.liftDoor,0.56,2.12,0.035,lx,y,-1.2,-0.28),R=doorMesh(f,mat.liftDoor,0.56,2.12,0.035,lx,y,-1.2,0.28);
+  DOORS.push({f,a:0,t:0,kind:'lift',lx,rect,upd(d){L.position.x=lx-d.a*0.55;R.position.x=lx+d.a*0.55;},auto(){const near=p.f===f&&Math.hypot(p.x-lx,p.z+1.5)<2.1;return near?1:0;}});}
+function hangSign(g,x,y,z,txtA,txtB){B(g,mat.iron,x,y+0.32,z,0.015,0.5,0.015);B(g,mat.navy,x,y,z,0.04,0.34,1.5);
+  sign(g,plainText([{t:txtA,s:56}],{bg:'#1d1f5e',w:768,h:160}),1.45,0.3,x-0.025,y+0.17,z,-Math.PI/2);
+  sign(g,plainText([{t:txtB,s:56}],{bg:'#1d1f5e',w:768,h:160}),1.45,0.3,x+0.025,y+0.17,z,Math.PI/2);}
+function wayfinding(f){const y=f*FH,g=F[f].g,h=y+CEIL-0.85;
+  for(const x of [-34,-25])hangSign(g,x,h,0,'↑  Liften   ↑  Trap',f===0?'↑  Uitgang Wibautstraat':'↑  Lokalen');
+  for(const x of [26,35])hangSign(g,x,h,0,'↑  Lokalen','↑  Trap   ↑  Liften');
+  if(f>=2&&f<=4)hangSign(g,-8,h,0,'↑  Trap','↑  Liften');}
+function toggleDoor(d){if(d.t>0.5){const r=d.closed;if(p.f===d.f&&p.x>r.x0-RAD&&p.x<r.x1+RAD&&p.z>r.z0-RAD&&p.z<r.z1+RAD){toast('Stap eerst uit de deuropening.');return;}d.t=0;Object.assign(d.rect,d.closed);}else{d.t=1;Object.assign(d.rect,d.opened);}beep(1,d.t?300:240);}
+function updateDoors(dt){for(const d of DOORS){if(d.f!==p.f&&d.a===d.t)continue;if(d.auto){d.t=d.auto();Object.assign(d.rect,d.t?{x0:0,x1:0,z0:999,z1:999}:{x0:d.lx-0.6,x1:d.lx+0.6,z0:-1.24,z1:-1.16});}
+  const na=d.a+(d.t-d.a)*Math.min(1,dt*(d.kind==='lift'?4:7));d.a=Math.abs(na-d.t)<0.002?d.t:na;d.upd(d);}}
+
 // ================= lift + stair cores =================
 function floorLabel(f){return f===0?'Begane grond':f+'e verdieping';}
 function cores(f){
   const y=f*FH,g=F[f].g;
   // lift core x -20..-14 (doors facing the corridor, z=-1.2)
-  wallX(f,-20,-14,-1.2,[],mat.wallCore);wallZ(f,-9,-1.2,-20,[],mat.wallCore);wallZ(f,-9,-1.2,-14,[],mat.wallCore);
-  for(const lx of [-18.4,-15.6]){onWall(f,mat.steelDark,lx,-1.2,0,1.3,2.3,0,0.02,0.09);onWall(f,mat.steel,lx,-1.2,0,1.1,2.15,0,0.04,0.11);onWall(f,mat.dark,lx,-1.2,0,0.015,2.15,0,0.01,0.135);
-    sign(g,plainText([{t:'▲▼  '+f,s:70}],{bg:'#111',fg:'#ff8a3d',w:256,h:96}),0.4,0.15,lx,y+2.45,-1.1,0);}
-  onWall(f,mat.dark,-17,-1.2,0,0.12,0.25,1.0,0.03,0.1);
+  wallX(f,-20,-14,-1.2,[[-18.95,-17.85],[-16.15,-15.05]],mat.wallCore);wallZ(f,-9,-1.2,-20,[],mat.wallCore);wallZ(f,-9,-1.2,-14,[],mat.wallCore);
+  for(const lx of [-18.4,-15.6]){
+    // frame around the opening
+    for(const u of [-1,1])B(g,mat.steelDark,lx+u*0.61,y,-1.1,0.12,2.32,0.05);B(g,mat.steelDark,lx,y+2.2,-1.1,1.34,0.12,0.05);
+    sign(g,plainText([{t:'▲▼  '+f,s:70}],{bg:'#111',fg:'#ff8a3d',w:256,h:96}),0.4,0.15,lx,y+2.45,-1.1,0);
+    liftCabin(f,lx);}
+  onWall(f,mat.dark,-17,-1.2,0,0.12,0.25,1.0,0.03,0.1);B(g,mat.callBtn,-17,y+1.06,-1.04,0.04,0.04,0.02);B(g,mat.callBtn,-17,y+1.16,-1.04,0.04,0.04,0.02);
   sign(g,plainText([{t:String(f),s:200}],{bg:'#1d1f5e',w:256,h:256}),0.62,0.62,-17,y+2.25,-1.1,0);
   sign(g,plainText([{t:floorLabel(f),s:52}],{bg:'#1d1f5e',w:512,h:96}),1.0,0.19,-17,y+1.62,-1.1,0);
   addRoom(f,null,'Liften',-20,-14,-9,-1.2,'core');
   if(f!==0){P('cyl',g,mat.iron,-17,y+CEIL-0.75,0.4,0.015,0.75,0.015);P('sph',g,mat.dome,-17,y+CEIL-1.05,0.4,0.95,0.55,0.95);P('cyl',g,mat.iron,-17,y+CEIL-0.8,0.4,0.5,0.06,0.5);}
   F[f].inter.push({x:-17,z:-0.3,r:2.3,label:'Lift nemen',act:()=>openFloor('lift')});
-  // restored stair hall x 14..20 (door 16.2..17.8)
-  wallX(f,14,20,-1.2,[[16.2,17.8]],mat.wallCore);wallZ(f,-9,-1.2,14,[],mat.wallCore);wallZ(f,-9,-1.2,20,[],mat.wallCore);
-  doorX(f,16.2,17.8,-1.2,1,null);
-  sign(g,plainText([{t:'Trappenhuis',s:56},{t:'Nooduitgang',s:36,b:false}],{bg:'#1f7a3d',w:512,h:200}),0.6,0.23,18.6,y+1.7,-1.1,0);
-  plane(g,14,20,-9,-1.2,y+0.008,T.terrazzo,2);
-  for(let k=0;k<10;k++){B(g,mat.stairStone,15.4,y,-2.8-k*0.42,2.6,(k+1)*0.18,0.42);B(g,mat.dark,15.4,y+(k+1)*0.18,-2.6-k*0.42,2.62,0.02,0.04);}
-  B(g,mat.stairStone,17,y,-8.2,5.8,1.8,1.4);
-  for(let k=0;k<10;k++)B(g,mat.stairStone,18.6,y+1.8+k*0.18,-7.3+k*0.42,2.6,0.18,0.42);
-  B(g,mat.iron,17,y+0.9,-5,0.06,0.05,5.6);for(let zz=-7.7;zz<=-2.3;zz+=0.14)P('cyl',g,mat.iron,17,y,zz,0.025,0.9,0.025);B(g,mat.iron,17,y+2.7,-5,0.06,0.05,5.6);
-  col(f,14.2,-9,19.8,-2.6);
-  addRoom(f,null,'Trappenhuis',14,20,-9,-1.2,'core');
-  if(f!==9)F[f].inter.push({x:17,z:-1.9,r:1.7,label:'Trap nemen',act:()=>openFloor('trap')});
-  ceilLights(f,14,20,-9,-1.2,3);
+  for(const lx of [-18.4,-15.6])F[f].inter.push({x:lx,z:-2.0,r:0.9,label:'Kies verdieping',act:()=>openFloor('lift')});
+  wayfinding(f);
+  stairwell(f);
   extinguisher(f,13.7,-1.5);
 }
+
+// ================= stairwell: real switchback stairs you walk up and down, x 14..20 =================
+// flight A rises towards -z on the west side, landing at 1.8 m at the back, flight B rises towards +z on the east side and arrives at the next floor
+function stairwell(f){const y=f*FH,g=F[f].g;
+  wallX(f,14,20,-1.2,[[16.2,17.8]],mat.wallCore);wallZ(f,-9,-1.2,14,[],mat.wallCore,FH);wallZ(f,-9,-1.2,20,[],mat.wallCore,FH);
+  if(SFL.includes(f))B(g,mat.wallCore,17,y,-9.05,6,FH,0.1);
+  doorX(f,16.2,17.8,-1.2,1,null,null,SFL.includes(f));
+  sign(g,plainText([{t:'Trappenhuis',s:56},{t:SFL.includes(f)?'Kantoren · geen toegang':'Nooduitgang',s:36,b:false}],{bg:'#1f7a3d',w:512,h:200}),0.6,0.23,18.6,y+1.7,-1.1,0);
+  plane(g,14,20,f===0?-9:-3.3,-1.2,y+0.008,T.terrazzo,2);
+  if(f>=1)B(g,mat.wall,17,y-0.32,-2.25,6,0.3,2.1);
+  if(SFL.includes(f))ceiling(f,14,20,-3.3,-1.2);
+  if(f<=8){
+    for(let k=0;k<10;k++){B(g,mat.stairStone,15.4,y+k*0.18,-2.8-k*0.42,2.6,0.18,0.42);B(g,mat.dark,15.4,y+(k+1)*0.18,-2.6-k*0.42,2.62,0.012,0.04);}
+    B(g,mat.stairStone,17,y+1.62,-8.055,5.8,0.18,1.69);
+    for(let k=0;k<10;k++){B(g,mat.stairStone,18.6,y+1.8+k*0.18,-7.3+k*0.42,2.6,0.18,0.42);B(g,mat.dark,18.6,y+1.8+(k+1)*0.18,-7.1+k*0.42,2.62,0.012,0.04);}
+    // slender black balusters between the flights, with a handrail following each flight
+    for(let zz=-7.35;zz<=-2.7;zz+=0.15){const hA=Math.max(0,Math.min(1.8,(Math.floor((-2.59-zz)/0.42)+1)*0.18));P('cyl',g,mat.iron,17,y+hA,zz,0.022,FH-hA+(zz<-3.3?0:-0.6),0.022);}
+    Q('box',g,mat.iron,17.05,y+0.9+0.9+0.09,-4.9,0.05,0.05,Math.hypot(4.62,1.8),Math.atan2(1.8,4.62),0,0);
+    Q('box',g,mat.iron,16.95,y+0.9+0.9+1.8,-5.4,0.05,0.05,Math.hypot(4.2,1.8),-Math.atan2(1.8,4.2),0,0);
+    col(f,16.82,-7.3,17.18,-2.85,'w');
+    sign(g,plainText([{t:f===4?'↑ 5–8 kantoren · 9 Kohnstammzaal':'↑ '+(f+1)+(f===8?' · Kohnstammzaal':''),s:42}],{bg:'#1d1f5e',w:768,h:96}),1.4,0.18,15.4,y+2.3,-1.3,Math.PI);
+  }
+  if(f===9){// no flight up: railing round the opening
+    for(let x=14.15;x<=16.9;x+=0.14)P('cyl',g,mat.iron,x,y,-3.32,0.022,1.0,0.022);B(g,mat.iron,15.5,y+1.0,-3.32,2.8,0.05,0.05);
+    for(let zz=-8.9;zz<=-3.3;zz+=0.14)P('cyl',g,mat.iron,17,y,zz,0.022,1.0,0.022);B(g,mat.iron,17,y+1.0,-6.1,0.05,0.05,5.6);
+    col(9,14,-9,17.2,-3.15,'w');}
+  addRoom(f,null,'Trappenhuis',14,20,-9,-1.2,'core');
+  B(g,mat.lampWarm,14.1,y+2.6,-5,0.06,0.3,0.6);B(g,mat.lampWarm,19.9,y+2.6+(f<=8?1.6:0),-5.2,0.06,0.3,0.6);
+  ceilLights(f,14,20,-3.3,-1.2,2.1);
+  extinguisher(f,13.7,-1.5);
+}
+// walkable heights in the stairwell for a player on floor f; own flights plus the flights of the floor below (negative)
+const hasStair=f=>f>=0&&f<=8;
+function stairSurf(f,x,z){if(!(x>14&&x<20&&z>-9&&z<-1.2))return null;const c=[];
+  const add=(ff,off)=>{if(!hasStair(ff))return;
+    if(x>=14.1&&x<=16.7&&z>=-7.21&&z<=-2.59){const k=Math.min(9,Math.floor((-2.59-z)/0.42));c.push(off+(k+1)*0.18);}
+    if(z>=-8.9&&z<=-7.21&&x>=14.1&&x<=19.9)c.push(off+1.8);
+    if(x>=17.3&&x<=19.9&&z>=-7.51&&z<=-3.31){const k=Math.min(9,Math.floor((z+7.51)/0.42));c.push(off+1.8+(k+1)*0.18);}};
+  add(f,0);add(f-1,-FH);if(z>-3.33)c.push(0);return c;}
+function hAt(f,x,z,cur,up){const c=stairSurf(f,x,z);if(c===null)return groundH(f,x,z);let b=null,bd=1e9;for(const h of c){const d=h-cur;if(d<up&&d>-0.6&&Math.abs(d)<bd){bd=Math.abs(d);b=h;}}return b;}
+function stairFloor(){let ch2=0;if(p.sh>1.85&&p.f<9){p.f++;p.sh-=FH;p.gy-=FH;ch2=1;}else if(p.sh<-1.75&&p.f>0){p.f--;p.sh+=FH;p.gy+=FH;ch2=1;}
+  if(ch2){updateVis();toast(floorLabel(p.f)+(SFL.includes(p.f)?' · kantoren, geen toegang. Loop door naar de 9e.':p.f===9?' · de Kohnstammzaal is rechts':''));onFloorChange('trap');}}
 
 // ================= floor 0 =================
 function buildF0(){
@@ -775,6 +853,7 @@ function pizzaCorner(){const f=0,g=F[0].g,cx=-6.4,cz=3.0;
   sign(g,plainText([{t:'Pizza-actie studievereniging',s:40},{t:'Gratis voor leden · tot 08:45',s:30,b:false}],{bg:'#c0392b',w:640,h:170}),1.1,0.29,-9.3,1.35,4.55,0);
   spot(0,-8.7,0.42,4.3,'00A31','heb ik een punt pizza meegegeten bij de studenten en de pizzadozen in de centrale hal');}
 function groundH(f,x,z){
+  {const c=stairSurf(f,x,z);if(c){let b=0,bd=1e9;for(const h of c)if(Math.abs(h)<bd){bd=Math.abs(h);b=h;}return b;}}
   if(f===0&&!inside(x,z)){
     if(x>=-45.25&&x<=-42&&z>=6.3&&z<=8.85)return 0;
     if(x>-42&&x<-39&&z>=7){const k=Math.floor((x+42)/0.6);if(z<=(k<3?8.85:9.6))return -(k+1)/6;}
@@ -789,7 +868,7 @@ function groundH(f,x,z){
 // ================= floor 1 =================
 function buildF1(){
   const f=1,y=FH,g=F[1].g;
-  for(const [a,b,c,d] of [[-38,-10,-9,9],[10,38,-9,9],[-10,10,-9,-5.5],[-10,10,5.5,9],...FOOT.slice(1)])B(g,mat.wall,(a+b)/2,y-0.32,(c+d)/2,b-a,0.3,d-c);
+  slabs(g,1,[[-38,-10,-9,9],[10,38,-9,9],[-10,10,-9,-5.5],[-10,10,5.5,9],...FOOT.slice(1)]);
   fplane(g,1,-48,-14,-12,9,y+0.003,T.libcarpet,1);
   for(const [a,b,c,d] of [[-14,14,-9,-5.5],[-14,14,5.5,9],[-14,-10,-5.5,5.5],[10,14,-5.5,5.5]])plane(g,a,b,c,d,y+0.003,T.terrazzo,3);
   fplane(g,1,14,48,-12,9,y+0.003,T.carpet,1);
@@ -856,7 +935,7 @@ function corridor(f,spans=[[-48,48]]){const y=f*FH,g=F[f].g;
 function buildStd(f){
   const y=f*FH,g=F[f].g,plan=PLAN[f];
   fplane(g,f,-48,48,-12,9,y+0.002,T.lino,2);plane(g,-48,48,-0.75,0.75,y+0.004,T.anth,2);
-  for(const [a,b,c,d] of FOOT)B(g,mat.wall,(a+b)/2,y-0.32,(c+d)/2,b-a,0.3,d-c);
+  slabs(g,f,FOOT);
   ceiling(f,-48,48,1.2,9);ceiling(f,-48,48,-12,-1.2);
   corridor(f);cores(f);
   const dA=AX.map(([a])=>[a+0.6,a+1.8]),dB=BX.map(([a])=>[a+0.6,a+1.8]);
@@ -909,7 +988,7 @@ function muralTex(){
 function buildF9(){
   const f=9,y=9*FH,g=F[9].g;
   fplane(g,9,-48,48,-9,9,y+0.002,T.lino,2);plane(g,-14,14,-9,9,y+0.006,T.wood,2);plane(g,-48,-14,-0.75,0.75,y+0.004,T.anth,2);plane(g,14,48,-0.75,0.75,y+0.004,T.anth,2);
-  for(const [a,b,c,d] of FOOT9)B(g,mat.wall,(a+b)/2,y-0.32,(c+d)/2,b-a,0.3,d-c);
+  slabs(g,9,FOOT9);
   ceiling(9,-48,-14,-9,9);ceiling(9,14,48,-9,9);
   const ZH=4.8;ceiling(9,-14,14,-9,9,y+ZH);
   corridor(9,[[-48,-14],[14,48]]);cores(9);
@@ -1028,7 +1107,7 @@ function buildOutside(){
 }
 
 // ================= build =================
-buildFacade();buildOutside();buildF0();buildF1();[2,3,4].forEach(buildStd);buildF9();
+buildFacade();buildOutside();buildF0();buildF1();[2,3,4].forEach(buildStd);buildF9();SFL.forEach(stairwell);
 flush();
 shell.traverse(o=>{if(o.isMesh&&!o.isInstancedMesh){o.receiveShadow=true;}});
 
@@ -1053,7 +1132,7 @@ function setupPiles(){
 }
 
 // ================= player & input =================
-const P0={x:-35.5,z:13.2,f:0,yaw:0.95,pitch:0.05,gy:-1,jy:0,vy:0};
+const P0={x:-35.5,z:13.2,f:0,yaw:0.95,pitch:0.05,gy:-1,sh:-1,jy:0,vy:0};
 const p=Object.assign({},P0);
 const keys={};let locked=false;let state='start';let gameT=0;let found=0;let menuOpen=false;let lateShown=false;
 const isTouch=('ontouchstart' in window)||navigator.maxTouchPoints>0;
@@ -1089,11 +1168,12 @@ function joyMove(t){const r=joy.getBoundingClientRect();let dx=t.clientX-(r.left
 
 // ================= movement =================
 const RAD=0.3;
-function blocked(f,x,z){if(x<-75||x>75||z<-45||z>34.5)return true;const Ls=F[f].rects;for(let i=0;i<Ls.length;i++){const r=Ls[i];if(x<r.x0-RAD||x>r.x1+RAD||z<r.z0-RAD||z>r.z1+RAD)continue;const cx=Math.max(r.x0,Math.min(x,r.x1)),cz=Math.max(r.z0,Math.min(z,r.z1));if((x-cx)*(x-cx)+(z-cz)*(z-cz)<RAD*RAD)return true;}return false;}
+function blocked(f,x,z){if(x<-75||x>75||z<-45||z>34.5)return true;if(f>=5&&f<=8&&!(x>14.3&&x<19.7&&z>-8.7&&z<-1.5))return true;const Ls=F[f].rects;for(let i=0;i<Ls.length;i++){const r=Ls[i];if(x<r.x0-RAD||x>r.x1+RAD||z<r.z0-RAD||z>r.z1+RAD)continue;const cx=Math.max(r.x0,Math.min(x,r.x1)),cz=Math.max(r.z0,Math.min(z,r.z1));if((x-cx)*(x-cx)+(z-cz)*(z-cz)<RAD*RAD)return true;}return false;}
 function jump(){if(p.jy<=0.001&&p.vy===0){p.vy=4.4;}}
-function tryMove(nx,nz){const h0=groundH(p.f,p.x,p.z),up=0.5+p.jy;
-  if(!blocked(p.f,nx,p.z)&&groundH(p.f,nx,p.z)-h0<up)p.x=nx;
-  if(!blocked(p.f,p.x,nz)&&groundH(p.f,p.x,nz)-groundH(p.f,p.x,p.z)<up)p.z=nz;}
+function tryMove(nx,nz){const up=0.5+p.jy;if(p.sh===undefined)p.sh=groundH(p.f,p.x,p.z);
+  let h=hAt(p.f,nx,p.z,p.sh,up);if(!blocked(p.f,nx,p.z)&&h!==null&&h-p.sh<up){p.x=nx;p.sh=h;}
+  h=hAt(p.f,p.x,nz,p.sh,up);if(!blocked(p.f,p.x,nz)&&h!==null&&h-p.sh<up){p.z=nz;p.sh=h;}
+  stairFloor();}
 
 // ================= interaction =================
 let curInter=null;
@@ -1134,9 +1214,9 @@ function openFloor(kind){closeAll();menuOpen=true;unlockMouse();$('fl-eyebrow').
     else{b.innerHTML=`<span class="n">${f}</span><span>${floorLabel(f)}<small>${FLOORDESC[f]}</small></span>`;if(f===p.f){b.classList.add('cur');b.disabled=true;}b.onclick=()=>goFloor(f,kind);}
     list.appendChild(b);}
   show('ov-floor');}
-function goFloor(f,kind){closeAll();const fd=$('fade');fd.style.opacity=1;setTimeout(()=>{p.f=f;if(kind==='lift'){p.x=-17;p.z=0.5;}else{p.x=17;p.z=0.4;}p.yaw=Math.PI;p.pitch=0;p.gy=0;updateVis();fd.style.opacity=0;toast(floorLabel(f)+(f===2?' · tentamenzaal 02B03 ligt aan de straatkant, noordelijk':f===9?' · de Kohnstammzaal is rechts':''));onFloorChange(kind);},kind==='lift'?450:300);if(!isTouch)lock();}
+function goFloor(f,kind){closeAll();const fd=$('fade');fd.style.opacity=1;setTimeout(()=>{p.f=f;if(kind==='lift'){p.x=-15.6;p.z=-2.2;beep(1,880);}else{p.x=17;p.z=0.4;}p.yaw=Math.PI;p.pitch=0;p.gy=0;p.sh=0;updateVis();fd.style.opacity=0;toast(floorLabel(f)+(f===2?' · tentamenzaal 02B03 ligt aan de straatkant, noordelijk':f===9?' · de Kohnstammzaal is rechts':''));onFloorChange(kind);},kind==='lift'?450:300);if(!isTouch)lock();}
 let visKey='';
-function updateVis(){const ins=inside(p.x,p.z);FLOORS.forEach(i=>{F[i].g.visible=!ins||i===p.f||(p.f<=1&&i<=1);});const k=FLOORS.map(i=>F[i].g.visible?1:0).join('');if(k!==visKey){visKey=k;renderer.shadowMap.needsUpdate=true;}}
+function updateVis(){const ins=inside(p.x,p.z),sw=p.x>13.5&&p.x<20.5&&p.z>-9.5&&p.z<-0.8;ALLF.forEach(i=>{F[i].g.visible=(!ins&&!SFL.includes(i))||i===p.f||(p.f<=1&&i<=1)||(sw&&Math.abs(i-p.f)===1);});const k=ALLF.map(i=>F[i].g.visible?1:0).join('');if(k!==visKey){visKey=k;renderer.shadowMap.needsUpdate=true;}}
 
 // ================= maps =================
 const mini=$('mini'),mctx=mini.getContext('2d');
@@ -1181,7 +1261,7 @@ const ratM=makeRat();
 const rat={on:false,f:0,x:0,z:0,next:55,t:0,tx:0,tz:0,hop:0,from:null,inter:null,ph:0};let ratsCaught=0;
 function roomAt(f,x,z){let b=null;for(const r of F[f].rooms)if(x>=r.x0&&x<=r.x1&&z>=r.z0&&z<=r.z1&&(!b||r.area<b.area))b=r;return b;}
 function spawnRat(){const ts=F[p.f].toilets;if(!ts.length)return false;let best=null,bd=1e9;for(const t of ts){const d=Math.hypot(t.x-p.x,t.zb-p.z)+Math.random()*25;if(d<bd){bd=d;best=t;}}
-  Object.assign(rat,{on:true,f:p.f,x:best.x,z:best.zb,t:0,hop:0.9,from:best,tx:best.x,tz:best.zo});
+  Object.assign(rat,{on:true,f:p.f,x:best.x,z:best.zb,t:0,hop:0.9,from:best,tx:best.x,tz:best.zo});if(best.door&&!best.door.t){best.door.t=1;Object.assign(best.door.rect,best.door.opened);}
   rat.inter={x:rat.x,z:rat.z,r:2.0,label:'Rat vangen',act:catchRat};F[p.f].inter.push(rat.inter);
   const rm=roomAt(p.f,best.x,best.zo);toast('🐀 Er is een rat uit een wc-pot ontsnapt'+(rm&&rm.code?' in '+rm.code:'')+'! Vang hem met E.');beep(3,1250);return true;}
 function removeRat(){rat.on=false;ratM.g.visible=false;FLOORS.forEach(f=>{F[f].inter=F[f].inter.filter(it=>it!==rat.inter);});rat.next=50+Math.random()*50;}
@@ -1271,13 +1351,13 @@ function loop(now){const dt=Math.min(0.05,(now-last)/1000);last=now;frame++;
     gameT+=dt*2.5;
     if(gameT>=30*60&&!lateShown){lateShown=true;$('clock').classList.add('late');toast('09:00. Het tentamen had moeten beginnen. Opschieten!');}
     if(frame%10===0)updateVis();
-    updateChase(dt);updateRat(dt);
+    updateChase(dt);updateRat(dt);updateDoors(dt);
     const mv=Math.hypot(dx,dz)/Math.max(dt,1e-4);bobA+=((mv>0.5?1:0)-bobA)*Math.min(1,dt*8);bobT+=dt*mv*2.1;
     const fovT=mv>5?76:70;if(Math.abs(camera.fov-fovT)>0.05){camera.fov+=(fovT-camera.fov)*Math.min(1,dt*6);camera.updateProjectionMatrix();}
   }
   {const ins=inside(p.x,p.z)?1:0;inMix+=(ins-inMix)*Math.min(1,dt*3);fillWin.intensity=0.55*PI*inMix;fillWarm.intensity=0.35*PI*inMix;hemi.intensity=(0.6-0.12*inMix)*PI;amb.intensity=0.16*PI;}
   if(p.vy!==0||p.jy>0){p.vy-=13*dt;p.jy+=p.vy*dt;if(p.jy<=0){p.jy=0;p.vy=0;bobA=Math.max(bobA,0.6);}}
-  const target=groundH(p.f,p.x,p.z);p.gy+=(target-p.gy)*Math.min(1,dt*12);
+  const target=p.sh!==undefined?p.sh:groundH(p.f,p.x,p.z);p.gy+=(target-p.gy)*Math.min(1,dt*12);
   camera.position.set(p.x+Math.cos(p.yaw)*Math.sin(bobT)*0.025*bobA,p.f*FH+p.gy+p.jy+1.65+Math.abs(Math.cos(bobT))*0.05*bobA-0.025*bobA,p.z-Math.sin(p.yaw)*Math.sin(bobT)*0.025*bobA);camera.rotation.z=Math.sin(bobT)*0.004*bobA;camera.rotation.y=p.yaw;camera.rotation.x=p.pitch;sky.position.copy(camera.position);
   const tt=now/1000;piles.forEach(pl=>{if(!pl.found){pl.gl.position.y=0.32+Math.sin(tt*2.5+pl.i)*0.06;pl.gl.material.opacity=0.65+Math.sin(tt*3+pl.i)*0.3;}});
   if(state==='play'){
@@ -1295,7 +1375,7 @@ $('b-start').onclick=()=>{hide('ov-start');state='play';$('btns').hidden=false;i
 $('b-again').onclick=()=>{hide('ov-end');reset();state='play';if(!isTouch)lock();};
 reset();
 [0,1,2,3,4].forEach((f,i)=>setTimeout(()=>grid(f),2500+i*500));// build the chase grids while the start screen is up
-window.__dbg={p,updateVis,ch,startChase,rat,spawnRat};
+window.__dbg={p,updateVis,ch,startChase,rat,spawnRat,tryMove,DOORS,toggleDoor,openFloor,goFloor,F};
 renderer.shadowMap.needsUpdate=true;
 requestAnimationFrame(loop);
 })();
