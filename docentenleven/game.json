@@ -1,9 +1,10 @@
 {
   "title": "Docentenleven",
-  "version": "4",
-  "description": "3D-zoekspel in het Kohnstammhuis van de HvA aan de Wibautstraat: vind vóór 09:00 zes stapels toetsen, van de centrale hal tot de Kohnstammzaal op de 9e. Gele baksteen, zwarte gangplafonds, leerpleinen. Mobiel speelbaar.",
+  "version": "5",
+  "description": "3D-zoekspel in het Kohnstammhuis van de HvA: vind vóór 09:00 zes stapels toetsen, en vlucht naar de 9e als een boze student het niet eens is met zijn cijfer. Gele baksteen, zwarte gangplafonds, leerpleinen. Mobiel speelbaar.",
   "tags": [
     "3d",
-    "verkenning"
+    "verkenning",
+    "achtervolging"
   ]
 }
