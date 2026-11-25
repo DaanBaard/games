@@ -1,7 +1,7 @@
 {
   "title": "Docentenleven",
-  "version": "5",
-  "description": "3D-zoekspel in het Kohnstammhuis van de HvA: vind vóór 09:00 zes stapels toetsen, en vlucht naar de 9e als een boze student het niet eens is met zijn cijfer. Gele baksteen, zwarte gangplafonds, leerpleinen. Mobiel speelbaar.",
+  "version": "6",
+  "description": "3D-zoekspel in het Kohnstammhuis van de HvA: vind vóór 09:00 zes stapels toetsen, ontvlucht boze studenten naar de 9e, vang ratten die uit de wc ontsnappen en spring over obstakels. Met ambient occlusion, bloom en echte 3D-figuren. Mobiel speelbaar.",
   "tags": [
     "3d",
     "verkenning",
