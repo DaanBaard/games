@@ -1,7 +1,7 @@
 {
   "title": "Docentenleven",
-  "version": "7",
-  "description": "3D-zoekspel in het Kohnstammhuis van de HvA: vind vóór 09:00 zes stapels toetsen, ontvlucht boze studenten naar de 9e, vang ratten die uit de wc ontsnappen en spring over obstakels. Met ambient occlusion, bloom en echte 3D-figuren. Mobiel speelbaar.",
+  "version": "8",
+  "description": "3D-zoekspel in het Kohnstammhuis van de HvA, nagebouwd met BAG-omtrek, Street View en de 360°-tour: vind vóór 09:00 zes stapels toetsen, ontvlucht boze studenten naar de 9e, vang ratten en ga naar binnen via de echte hoofdingang aan de Wibautstraat. Mobiel speelbaar.",
   "tags": [
     "3d",
     "verkenning",
